@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "spaceship-domain-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.spaceship.com/mcp"
+      ]
+    }
+  }
+}

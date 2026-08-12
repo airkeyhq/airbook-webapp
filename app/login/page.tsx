@@ -58,7 +58,9 @@ export default function LoginPage() {
     }
 
     setSuccessMessage('Welcome back! Taking you to your dashboard…');
-    setTimeout(() => router.push('/dashboard'), 600);
+    setTimeout(() => {
+      window.location.href = '/dashboard';
+    }, 400);
     setLoading(false);
   };
 
@@ -83,7 +85,9 @@ export default function LoginPage() {
     }
 
     setSuccessMessage('Account created! Setting up your workspace…');
-    setTimeout(() => router.push('/onboarding'), 600);
+    setTimeout(() => {
+      window.location.href = '/onboarding';
+    }, 400);
     setLoading(false);
   };
 
