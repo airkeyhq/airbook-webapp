@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import {
   ArrowLeft24Filled,
   ArrowRight24Filled,

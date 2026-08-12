@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         const appointmentId = session.metadata?.appointmentId;
         if (appointmentId) {
           await db.update(appointments)
-            .set({ status: 'confirmed', updatedAt: new Date() })
+            .set({ status: 'confirmed' })
             .where(eq(appointments.id, appointmentId));
         }
         break;
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         const appointmentId = paymentIntent.metadata?.appointmentId;
         if (appointmentId) {
           await db.update(appointments)
-            .set({ status: 'completed', updatedAt: new Date() })
+            .set({ status: 'completed' })
             .where(eq(appointments.id, appointmentId));
         }
         break;
