@@ -127,6 +127,23 @@ export const InventoryModule: React.FC = () => {
         </div>
       </div>
 
+      {/* Empty State Banner */}
+      {!loading && products.length === 0 && (
+        <div className="p-8 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 text-center space-y-3 shadow-sm">
+          <Box24Regular className="w-10 h-10 text-slate-400 mx-auto" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)]">No products in inventory yet</h3>
+          <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">
+            Your catalog is currently empty. Add your retail & back-bar products or load sample catalog items.
+          </p>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md"
+          >
+            + Add First Product
+          </button>
+        </div>
+      )}
+
       {/* Stock Alerts */}
       {lowStockItems.length > 0 && (
         <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs flex items-center justify-between">

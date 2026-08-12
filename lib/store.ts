@@ -5,7 +5,7 @@ export interface Service {
   name: string;
   durationMinutes: number;
   price: number;
-  color: string; // Tailored pastel accent
+  color: string;
   category: string;
 }
 
@@ -13,7 +13,7 @@ export interface Staff {
   id: string;
   name: string;
   role: string;
-  avatar: string; // Emoji / Avatar representation
+  avatar: string;
   color: string;
 }
 
@@ -26,7 +26,7 @@ export interface Appointment {
   staffId: string;
   staffName: string;
   dateStr: string; // YYYY-MM-DD
-  startTime: string; // HH:mm (e.g., "14:00")
+  startTime: string; // HH:mm
   durationMinutes: number;
   price: number;
   color: string;
@@ -43,6 +43,12 @@ interface AirBookState {
   businessType: string;
   setBusinessType: (type: string) => void;
 
+  // Demo Mode
+  isDemoMode: boolean;
+  toggleDemoMode: () => void;
+  loadDemoData: () => void;
+  clearAllData: () => void;
+
   // View & Date State
   selectedDateStr: string; // YYYY-MM-DD
   setSelectedDateStr: (date: string) => void;
@@ -51,7 +57,7 @@ interface AirBookState {
 
   // Drawer & Command Palette Modals
   isBookingDrawerOpen: boolean;
-  selectedSlotTime: string | null; // e.g. "14:00"
+  selectedSlotTime: string | null;
   openBookingDrawer: (slotTime?: string) => void;
   closeBookingDrawer: () => void;
 
@@ -68,23 +74,9 @@ interface AirBookState {
   addAppointment: (appointment: Omit<Appointment, 'id'>) => void;
   setAppointments: (appointments: Appointment[]) => void;
   deleteAppointment: (id: string) => void;
+  setServices: (services: Service[]) => void;
+  setStaffMembers: (staff: Staff[]) => void;
 }
-
-// Initial Sample Data (Reflecting the Amie.so aesthetics & SaaS booking domain)
-const INITIAL_SERVICES: Service[] = [
-  { id: 'srv-1', name: 'Haircut & Precision Styling', durationMinutes: 45, price: 75, color: '#FF4D8D', category: 'Hair' },
-  { id: 'srv-2', name: 'Beard Sculpting & Hot Towel', durationMinutes: 30, price: 45, color: '#00C7BE', category: 'Barber' },
-  { id: 'srv-3', name: 'HydraFacial Glow Treatment', durationMinutes: 60, price: 160, color: '#9D50BB', category: 'Spa' },
-  { id: 'srv-4', name: 'Deep Tissue Body Therapy', durationMinutes: 60, price: 130, color: '#34C759', category: 'Wellness' },
-  { id: 'srv-5', name: 'Botox & Aesthetic Consultation', durationMinutes: 30, price: 220, color: '#FF9500', category: 'Injectables' },
-];
-
-const INITIAL_STAFF: Staff[] = [
-  { id: 'stf-1', name: 'Eduardo Moreno', role: 'Master Stylist & Owner', avatar: '👨🏻‍🎨', color: '#007AFF' },
-  { id: 'stf-2', name: 'Dennis Müller', role: 'Senior Aesthetician', avatar: '🧑🏼‍⚕️', color: '#34C759' },
-  { id: 'stf-3', name: 'Ivo Silva', role: 'Therapy Specialist', avatar: '🧔🏻‍♂️', color: '#FF9500' },
-  { id: 'stf-4', name: 'Agnes K.', role: 'Spa Director', avatar: '👩🏼‍🦱', color: '#9D50BB' },
-];
 
 const getTodayDateStr = (offsetDays = 0) => {
   const d = new Date();
@@ -99,7 +91,23 @@ const TODAY_STR = getTodayDateStr(0);
 const TOMORROW_STR = getTodayDateStr(1);
 const YESTERDAY_STR = getTodayDateStr(-1);
 
-const INITIAL_APPOINTMENTS: Appointment[] = [
+// Sample Demo Datasets (Strictly used when Demo Mode is ON or explicitly requested)
+export const DEMO_SERVICES: Service[] = [
+  { id: 'srv-1', name: 'Haircut & Precision Styling', durationMinutes: 45, price: 75, color: '#FF4D8D', category: 'Hair' },
+  { id: 'srv-2', name: 'Beard Sculpting & Hot Towel', durationMinutes: 30, price: 45, color: '#00C7BE', category: 'Barber' },
+  { id: 'srv-3', name: 'HydraFacial Glow Treatment', durationMinutes: 60, price: 160, color: '#9D50BB', category: 'Spa' },
+  { id: 'srv-4', name: 'Deep Tissue Body Therapy', durationMinutes: 60, price: 130, color: '#34C759', category: 'Wellness' },
+  { id: 'srv-5', name: 'Botox & Aesthetic Consultation', durationMinutes: 30, price: 220, color: '#FF9500', category: 'Injectables' },
+];
+
+export const DEMO_STAFF: Staff[] = [
+  { id: 'stf-1', name: 'Eduardo Moreno', role: 'Master Stylist & Owner', avatar: '👨🏻‍🎨', color: '#007AFF' },
+  { id: 'stf-2', name: 'Dennis Müller', role: 'Senior Aesthetician', avatar: '🧑🏼‍⚕️', color: '#34C759' },
+  { id: 'stf-3', name: 'Ivo Silva', role: 'Therapy Specialist', avatar: '🧔🏻‍♂️', color: '#FF9500' },
+  { id: 'stf-4', name: 'Agnes K.', role: 'Spa Director', avatar: '👩🏼‍🦱', color: '#9D50BB' },
+];
+
+export const DEMO_APPOINTMENTS: Appointment[] = [
   {
     id: 'apt-101',
     clientName: 'Mikael from Amie',
@@ -195,10 +203,38 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
 export const useAirBookStore = create<AirBookState>((set) => ({
   theme: 'light',
   toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
-  workspaceName: "Eduardo Moreno's Workspace",
+  workspaceName: "AirBook Business Workspace",
   setWorkspaceName: (name) => set({ workspaceName: name }),
   businessType: 'salon',
   setBusinessType: (type) => set({ businessType: type }),
+
+  // Demo Mode (Defaults to FALSE in production so real DB data is shown!)
+  isDemoMode: false,
+  toggleDemoMode: () =>
+    set((state) => {
+      const nextDemo = !state.isDemoMode;
+      return {
+        isDemoMode: nextDemo,
+        services: nextDemo ? DEMO_SERVICES : [],
+        staffMembers: nextDemo ? DEMO_STAFF : [],
+        appointments: nextDemo ? DEMO_APPOINTMENTS : [],
+      };
+    }),
+  loadDemoData: () =>
+    set({
+      isDemoMode: true,
+      services: DEMO_SERVICES,
+      staffMembers: DEMO_STAFF,
+      appointments: DEMO_APPOINTMENTS,
+    }),
+  clearAllData: () =>
+    set({
+      isDemoMode: false,
+      services: [],
+      staffMembers: [],
+      appointments: [],
+    }),
+
   selectedDateStr: TODAY_STR,
   setSelectedDateStr: (dateStr) => set({ selectedDateStr: dateStr }),
   viewMode: 'week',
@@ -213,9 +249,10 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   setCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
   toggleCommandPalette: () => set((state) => ({ isCommandPaletteOpen: !state.isCommandPaletteOpen })),
 
-  services: INITIAL_SERVICES,
-  staffMembers: INITIAL_STAFF,
-  appointments: INITIAL_APPOINTMENTS,
+  // Defaults to empty array so real DB data populates without hardcoded overrides!
+  services: [],
+  staffMembers: [],
+  appointments: [],
 
   addAppointment: (newApt) =>
     set((state) => ({
@@ -230,6 +267,8 @@ export const useAirBookStore = create<AirBookState>((set) => ({
     })),
 
   setAppointments: (apts) => set({ appointments: apts }),
+  setServices: (srvs) => set({ services: srvs }),
+  setStaffMembers: (stf) => set({ staffMembers: stf }),
 
   deleteAppointment: (id) =>
     set((state) => ({

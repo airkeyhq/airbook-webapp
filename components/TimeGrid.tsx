@@ -148,6 +148,20 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
         
         {/* STICKY HEADER ROW (Corner + Day Headers) */}
+        {appointments.length === 0 && (
+          <div className="bg-blue-500/10 border-b border-blue-500/20 px-4 py-2 flex items-center justify-between z-[55] relative text-xs">
+            <span className="font-semibold text-blue-600 dark:text-blue-400">
+              🗓️ No appointments scheduled in database yet. Click any slot to add a booking, or load sample demo data.
+            </span>
+            <button
+              onClick={useAirBookStore.getState().loadDemoData}
+              className="px-3 py-1 rounded-full bg-blue-500 text-white font-bold text-[11px] hover:bg-blue-600 transition-colors shadow-sm"
+            >
+              ⚡ Load Sample Demo Data
+            </button>
+          </div>
+        )}
+
         {viewMode === 'week' && (
           <div className="sticky top-0 z-50 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-sm">
             {/* Corner Cell (Sticky Left inside Sticky Top) */}
