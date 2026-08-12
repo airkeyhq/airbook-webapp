@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { products } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { getActiveWorkspaceId } from '@/lib/workspace';
 
 export async function GET(req: Request) {
   try {
@@ -29,10 +30,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Product name and price are required.' }, { status: 400 });
     }
 
+    const activeWorkspaceId = await getActiveWorkspaceId(workspaceId);
+
     const [newProduct] = await db
       .insert(products)
       .values({
-        workspaceId: workspaceId || '00000000-0000-0000-0000-000000000001',
+        workspaceId: activeWorkspaceId,
         name,
         sku: sku || null,
         category: category || 'General',
@@ -53,13 +56,17 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { id, stockQuantity, retailPriceCents } = body;
+    const { id, name, sku, category, isRetail, stockQuantity, retailPriceCents } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Product ID is required.' }, { status: 400 });
     }
 
     const updateFields: Record<string, any> = {};
+    if (name !== undefined) updateFields.name = name;
+    if (sku !== undefined) updateFields.sku = sku || null;
+    if (category !== undefined) updateFields.category = category;
+    if (isRetail !== undefined) updateFields.isRetail = Boolean(isRetail);
     if (stockQuantity !== undefined) updateFields.stockQuantity = Number(stockQuantity);
     if (retailPriceCents !== undefined) updateFields.retailPriceCents = Number(retailPriceCents);
 

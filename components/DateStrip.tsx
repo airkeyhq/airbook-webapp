@@ -33,11 +33,11 @@ export const DateStrip: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-[var(--datestrip-bg)] border-b border-[var(--border-subtle)] px-3 py-2 sm:px-4 sm:py-2.5 flex flex-col flex-shrink-0 z-20 relative shadow-sm gap-2">
+    <div className="w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 px-3 py-2.5 sm:px-5 sm:py-3 flex flex-col flex-shrink-0 z-20 relative gap-2">
       {/* Top Row: Month/Week Title (Left) + View Mode & Navigation Controls (Right) */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full flex-wrap gap-2">
         {/* Month & Week Number Indicator */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <h2 className="text-sm sm:text-base font-black text-[var(--text-primary)] tracking-tight">
             {format(selectedDate, 'MMMM yyyy')}
           </h2>
@@ -47,21 +47,21 @@ export const DateStrip: React.FC = () => {
         </div>
 
         {/* View Toggle & Navigation Controls (Standardized h-9 / 36px Height Token) */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
           {/* View Toggle (Day / Week) */}
-          <div className="h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-1 gap-0.5">
+          <div className="h-8 sm:h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-1 gap-0.5">
             <button
               onClick={() => setViewMode('day')}
-              className={`h-7 flex items-center px-3 rounded-full text-xs font-extrabold transition-all ${
-                viewMode === 'day' ? 'bg-white text-black shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              className={`h-6 sm:h-7 flex items-center px-2.5 sm:px-3 rounded-full text-[11px] sm:text-xs font-extrabold transition-all ${
+                viewMode === 'day' ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               {t('day')}
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`h-7 flex items-center px-3 rounded-full text-xs font-extrabold transition-all ${
-                viewMode === 'week' ? 'bg-white text-black shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              className={`h-6 sm:h-7 flex items-center px-2.5 sm:px-3 rounded-full text-[11px] sm:text-xs font-extrabold transition-all ${
+                viewMode === 'week' ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               {t('week')}
@@ -70,20 +70,22 @@ export const DateStrip: React.FC = () => {
 
           <button
             onClick={handleToday}
-            className="h-9 flex items-center px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)]"
+            className="h-8 sm:h-9 flex items-center px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[11px] sm:text-xs font-extrabold text-[var(--text-primary)]"
           >
             {t('today')}
           </button>
 
-          <div className="h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-1 gap-0.5">
+          <div className="h-8 sm:h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-0.5 sm:p-1 gap-0.5">
             <button
               onClick={handlePrev}
+              aria-label="Previous"
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <ArrowLeft24Filled className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleNext}
+              aria-label="Next"
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <ArrowRight24Filled className="w-3.5 h-3.5" />

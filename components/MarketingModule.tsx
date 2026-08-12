@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Send24Filled, Sparkle24Filled, Star24Filled, Comment24Regular, CheckmarkCircle24Regular, Flash24Regular } from '@fluentui/react-icons';
+import { Send24Filled, Sparkle24Filled, Star24Regular, Comment24Regular, CheckmarkCircle24Regular, Flash24Regular } from '@fluentui/react-icons';
 
 export const MarketingModule: React.FC = () => {
   const { t } = useTranslation();
@@ -72,7 +72,7 @@ export const MarketingModule: React.FC = () => {
         {/* Campaign 2: Google Review Automation */}
         <div className="p-6 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <Star24Filled className="w-5 h-5 text-yellow-500" />
+            <Star24Regular className="w-5 h-5 text-amber-500" />
             <h3 className="text-sm font-bold text-[var(--text-primary)]">
               {t('googleReviewTitle')}
             </h3>

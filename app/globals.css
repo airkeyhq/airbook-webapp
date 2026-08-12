@@ -44,7 +44,7 @@
     --space-2xl: var(--space-8);
 
     /* Light Theme Surface & Text Tokens */
-    --canvas-bg: #FAFBFD;
+    --canvas-bg: #F2F4F8;
     --canvas-fg: #0F172A;
 
     --bg-primary: #FFFFFF;
@@ -53,7 +53,7 @@
     --sidebar-bg: #FFFFFF;
     --header-bg: #FFFFFF;
     --datestrip-bg: #FFFFFF;
-    --grid-bg: #FAFBFD;
+    --grid-bg: #FAFAFC;
 
     --accent-primary: var(--color-accent-primary);
     --accent-primary-hover: var(--color-accent-primary-hover);

@@ -84,6 +84,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
   // Fetch real appointments from Neon DB when selected date changes
   useEffect(() => {
     async function loadDbAppointments() {
+      if (useAirBookStore.getState().isDemoMode) return;
       try {
         const res = await fetch(`/api/appointments?dateStr=${selectedDateStr}`);
         const data = await res.json();
@@ -91,9 +92,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
           const mapped: Appointment[] = data.appointments.map((a: any) => ({
             id: a.id,
             clientName: a.client?.name || 'Client',
-            serviceId: a.service?.id || 'srv-1',
+            serviceId: a.service?.id || '',
             serviceName: a.service?.name || 'Service',
-            staffId: a.staff?.id || 'stf-1',
+            staffId: a.staff?.id || '',
             staffName: a.staff?.name || 'Staff Specialist',
             dateStr: a.dateStr,
             startTime: a.startTime,
@@ -148,19 +149,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
         
         {/* STICKY HEADER ROW (Corner + Day Headers) */}
-        {appointments.length === 0 && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
-          <div className="bg-blue-500/10 border-b border-blue-500/20 px-4 py-2 flex items-center justify-between z-[55] relative text-xs">
-            <span className="font-semibold text-blue-600 dark:text-blue-400">
-              🗓️ Local Dev Mode: Click any slot to add a booking, or load sample demo data.
-            </span>
-            <button
-              onClick={useAirBookStore.getState().loadDemoData}
-              className="px-3 py-1 rounded-full bg-blue-500 text-white font-bold text-[11px] hover:bg-blue-600 transition-colors shadow-sm"
-            >
-              ⚡ Load Sample Demo Data
-            </button>
-          </div>
-        )}
+
 
         {viewMode === 'week' && (
           <div className="sticky top-0 z-50 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-sm">
@@ -168,7 +157,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
             <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-[60] bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
             
             {/* Day Headers (7 Columns Responsively Filling Viewport) */}
-            <div className="flex flex-1 min-w-0">
+            <div className="flex flex-1 min-w-[380px] sm:min-w-0">
               {daysToRender.map((day) => {
                 const dayStr = format(day, 'yyyy-MM-dd');
                 const isToday = dayStr === todayStr;
@@ -283,6 +272,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                           initial={{ scale: 0.95, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           whileHover={{ scale: 1.02, zIndex: 30 }}
+                          transition={{ duration: 0.1, ease: 'easeOut' }}
                           onClick={(e) => {
                             e.stopPropagation();
                             onSelectAppointment?.(apt);

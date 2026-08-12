@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { services } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { getActiveWorkspaceId } from '@/lib/workspace';
 
 export async function GET(req: Request) {
   try {
@@ -29,10 +30,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Name, duration, and price are required.' }, { status: 400 });
     }
 
+    const activeWorkspaceId = await getActiveWorkspaceId(workspaceId);
+
     const [newService] = await db
       .insert(services)
       .values({
-        workspaceId: workspaceId || '00000000-0000-0000-0000-000000000001',
+        workspaceId: activeWorkspaceId,
         name,
         category: category || 'Hair',
         durationMinutes: Number(durationMinutes),

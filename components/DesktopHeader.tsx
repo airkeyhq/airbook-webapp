@@ -6,11 +6,11 @@ import { PricingModal } from './PricingModal';
 import { AuthModal } from './AuthModal';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { ChevronDown24Filled, Share24Filled, Sparkle24Filled, SignOut24Filled, Person24Filled } from '@fluentui/react-icons';
+import { ChevronDown24Filled, Share24Filled, Sparkle24Filled, SignOut24Filled, Person24Filled, Navigation24Filled } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
 
 export const DesktopHeader: React.FC = () => {
-  const { workspaceName } = useAirBookStore();
+  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const router = useRouter();
@@ -21,7 +21,7 @@ export const DesktopHeader: React.FC = () => {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   const handleShareLink = () => {
-    navigator.clipboard.writeText(`https://airbook.app/book/eduardos-lounge`);
+    navigator.clipboard.writeText(`https://airbook.app/book/${workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -31,33 +31,42 @@ export const DesktopHeader: React.FC = () => {
     router.push('/login');
   };
 
-  const userName = session?.user?.name || 'Eduardo Moreno';
+  const userName = session?.user?.name || '';
   const userEmail = session?.user?.email;
 
   return (
     <>
-      <header className="w-full h-14 bg-[var(--header-bg)] border-b border-[var(--border-subtle)] px-4 flex items-center justify-between flex-shrink-0 z-[70] relative">
-        {/* Left: Workspace Dropdown Pill */}
-        <div className="flex items-center gap-2">
+      <header className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-[70] relative shadow-sm gap-1.5 overflow-x-auto hide-scrollbar">
+        {/* Left: Workspace Dropdown Pill & Sidebar Toggle */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <button
+            onClick={toggleSidebar}
+            aria-label={isSidebarCollapsed ? t('expandSidebar') : t('collapseSidebar')}
+            title={isSidebarCollapsed ? t('expandSidebar') : t('collapseSidebar')}
+            className="h-9 w-9 hidden md:flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)]"
+          >
+            <Navigation24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+          </button>
+
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="h-9 flex items-center gap-2.5 px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)]"
+            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
           >
-            <div className="w-5 h-5 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-[10px]">
+            <div className="w-5 h-5 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-[10px] flex-shrink-0">
               {workspaceName.charAt(0)}
             </div>
-            <span className="truncate max-w-[110px] sm:max-w-[200px]">{workspaceName}</span>
-            <ChevronDown24Filled className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+            <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
+            <ChevronDown24Filled className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           </button>
         </div>
 
         {/* Right Action Pills */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {/* Language Switcher Pill */}
           <div className="relative z-[80]">
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="h-9 flex items-center gap-1.5 px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              className="h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
             >
               <img
                 src={`https://hatscripts.github.io/circle-flags/flags/${availableLanguages.find((l) => l.id === language)?.flagCode || 'us'}.svg`}
@@ -99,21 +108,22 @@ export const DesktopHeader: React.FC = () => {
           {typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
             <button
               onClick={useAirBookStore.getState().toggleDemoMode}
-              className={`h-9 flex items-center gap-1.5 px-3 rounded-full transition-all text-xs font-extrabold border ${
+              className={`h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full transition-all text-xs font-extrabold border ${
                 useAirBookStore((s) => s.isDemoMode)
                   ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
                   : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border-transparent hover:bg-black/10'
               }`}
             >
               <span className={`w-2 h-2 rounded-full ${useAirBookStore((s) => s.isDemoMode) ? 'bg-amber-500 animate-pulse' : 'bg-gray-400'}`} />
-              <span>{useAirBookStore((s) => s.isDemoMode) ? '⚡ Demo Mode: ON' : 'Demo Mode'}</span>
+              <span className="hidden sm:inline">{useAirBookStore((s) => s.isDemoMode) ? '⚡ Demo Mode: ON' : 'Demo Mode'}</span>
+              <span className="sm:hidden text-[10px]">{useAirBookStore((s) => s.isDemoMode) ? '⚡ Demo' : 'Demo'}</span>
             </button>
           )}
 
           {/* Upgrade Plan Pill */}
           <button
             onClick={() => setIsPricingOpen(true)}
-            className="h-9 hidden sm:flex items-center gap-1.5 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all text-xs font-extrabold"
+            className="h-9 hidden md:flex items-center gap-1.5 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all text-xs font-extrabold"
           >
             <Sparkle24Filled className="w-3.5 h-3.5" />
             <span>{t('upgradePlan')}</span>
@@ -123,10 +133,10 @@ export const DesktopHeader: React.FC = () => {
           <div className="relative z-[80]">
             <button
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-              className="h-9 flex items-center gap-2 px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
             >
-              <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-[10px]">
-                {userName.charAt(0).toUpperCase()}
+              <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0">
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
               </div>
               <span className="hidden md:inline">{userName}</span>
             </button>
@@ -164,7 +174,7 @@ export const DesktopHeader: React.FC = () => {
           {/* Share Booking Link Button */}
           <button
             onClick={handleShareLink}
-            className="h-9 flex items-center gap-1.5 px-3.5 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0"
+            className="h-9 flex items-center justify-center gap-1.5 px-3 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0"
           >
             <Share24Filled className="w-3.5 h-3.5 flex-shrink-0" />
             <span className="hidden sm:inline">{copied ? t('linkCopied') : t('shareLink')}</span>

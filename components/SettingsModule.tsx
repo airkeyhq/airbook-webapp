@@ -105,7 +105,7 @@ const INPUT_CLS =
   'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers } = useAirBookStore();
+  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
@@ -135,7 +135,7 @@ export const SettingsModule: React.FC = () => {
 
   // Workspace state
   const [wsName, setWsName] = useState(workspaceName);
-  const [slug, setSlug] = useState('eduardos-lounge');
+  const [slug, setSlug] = useState(workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-') || '');
   const [timezone, setTimezone] = useState('America/New_York');
   const [cancellation, setCancellation] = useState('24');
   const [deposit, setDeposit] = useState('20');

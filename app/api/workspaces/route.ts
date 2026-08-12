@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, slug, businessType } = body;
+    const { name, slug, businessType, ownerName } = body;
 
     if (!name || !slug) {
       return NextResponse.json({ error: 'Workspace name and slug are required.' }, { status: 400 });
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         .insert(staff)
         .values({
           workspaceId: newWorkspace.id,
-          name: 'Eduardo Moreno',
+          name: ownerName || 'Owner',
           role: 'Master Specialist & Owner',
           avatarEmoji: '👨🏻‍🎨',
           commissionPercent: 70,

@@ -118,7 +118,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                       {t('specialist')}
                     </p>
                     <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">
-                      {appointment.staffName || 'Eduardo Moreno'}
+                      {appointment.staffName || ''}
                     </p>
                   </div>
                 </div>

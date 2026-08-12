@@ -5,10 +5,14 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Copy24Filled, Share24Filled, Globe24Regular, Code24Regular, Checkmark24Regular } from '@fluentui/react-icons';
 
+import { useAirBookStore } from '@/lib/store';
+
 export const MarketplaceModule: React.FC = () => {
   const { t } = useTranslation();
+  const { workspaceName } = useAirBookStore();
   const [copied, setCopied] = useState(false);
-  const embedCode = `<iframe src="https://getairbook.com/embed/eduardos-lounge" width="100%" height="700px" frameborder="0"></iframe>`;
+  const slug = workspaceName ? workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-') : 'my-business';
+  const embedCode = `<iframe src="https://getairbook.com/embed/${slug}" width="100%" height="700px" frameborder="0"></iframe>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(embedCode);
@@ -45,7 +49,7 @@ export const MarketplaceModule: React.FC = () => {
           </p>
 
           <button
-            onClick={() => window.open('/book/eduardos-lounge', '_blank')}
+            onClick={() => window.open(`/book/${slug}`, '_blank')}
             className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline"
           >
             <span>{t('previewMarketplace')}</span>

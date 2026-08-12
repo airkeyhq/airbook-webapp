@@ -46,7 +46,7 @@ const slideVariants = {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { setWorkspaceName, setBusinessType } = useAirBookStore();
+  const { setWorkspaceName, setBusinessType, setWorkspaceSlug } = useAirBookStore();
   const { data: session } = useSession();
   const { t } = useTranslation();
   const userFirstName = session?.user?.name ? session.user.name.split(' ')[0] : '';
@@ -102,15 +102,23 @@ export default function OnboardingPage() {
     if (selectedType) setBusinessType(selectedType);
 
     try {
-      await fetch('/api/workspaces', {
+      const slugValue = slugInput.trim() || wsName.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+      const res = await fetch('/api/workspaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: wsName,
-          slug: slugInput.trim() || wsName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+          slug: slugValue,
           businessType: selectedType || 'salon',
+          ownerName: session?.user?.name || 'Owner',
         }),
       });
+      const data = await res.json();
+      if (data?.workspace?.slug) {
+        setWorkspaceSlug(data.workspace.slug);
+      } else {
+        setWorkspaceSlug(slugValue);
+      }
     } catch (err) {
       console.error('Failed to create workspace in DB:', err);
     } finally {

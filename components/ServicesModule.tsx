@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular, Cut24Regular } from '@fluentui/react-icons';
+import { useAirBookStore } from '@/lib/store';
+import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular } from '@fluentui/react-icons';
 
 interface ServiceItem {
   id: string;
@@ -27,6 +28,9 @@ export const ServicesModule: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const demoServices = useAirBookStore((s) => s.services);
+
   const fetchServices = async () => {
     try {
       setLoading(true);
@@ -43,8 +47,12 @@ export const ServicesModule: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchServices();
-  }, []);
+    if (isDemoMode) {
+      setServiceList(demoServices as any);
+    } else {
+      fetchServices();
+    }
+  }, [isDemoMode, demoServices]);
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,8 +171,26 @@ export const ServicesModule: React.FC = () => {
       )}
 
       {loading && (
-        <div className="p-8 text-center text-xs text-[var(--text-muted)] animate-pulse">
-          ...
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 shadow-sm animate-pulse"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="h-4 w-16 rounded-full bg-black/10 dark:bg-white/10" />
+                  <div className="h-4 w-12 rounded-lg bg-black/10 dark:bg-white/10" />
+                </div>
+                <div className="h-4 w-4/5 rounded-lg bg-black/10 dark:bg-white/10 mb-2" />
+                <div className="h-3 w-full rounded-md bg-black/5 dark:bg-white/5" />
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/10">
+                <div className="h-3 w-20 rounded-md bg-black/5 dark:bg-white/5" />
+                <div className="h-3 w-16 rounded-md bg-black/5 dark:bg-white/5" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -172,9 +198,10 @@ export const ServicesModule: React.FC = () => {
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {serviceList.length === 0 ? (
-            <div className="col-span-3 p-8 rounded-3xl border border-dashed border-[var(--border-subtle)] text-center">
-              <Cut24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2 opacity-50" />
-              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noServices')}</p>
+            <div className="col-span-3 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+              <Tag24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
+              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noServices')}</p>
+              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noServicesSub')}</p>
             </div>
           ) : (
             serviceList.map((srv) => {
@@ -185,7 +212,8 @@ export const ServicesModule: React.FC = () => {
                 <motion.div
                   key={srv.id}
                   whileHover={{ y: -2 }}
-                  className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 shadow-sm"
+                  transition={{ duration: 0.1, ease: 'easeOut' }}
+                  className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 shadow-sm transition-all duration-100 ease-out"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">

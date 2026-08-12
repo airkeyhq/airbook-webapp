@@ -40,6 +40,8 @@ interface AirBookState {
   toggleTheme: () => void;
   workspaceName: string;
   setWorkspaceName: (name: string) => void;
+  workspaceSlug: string;
+  setWorkspaceSlug: (slug: string) => void;
   businessType: string;
   setBusinessType: (type: string) => void;
 
@@ -48,6 +50,10 @@ interface AirBookState {
   toggleDemoMode: () => void;
   loadDemoData: () => void;
   clearAllData: () => void;
+
+  // Sidebar Collapse State
+  isSidebarCollapsed: boolean;
+  toggleSidebar: () => void;
 
   // View & Date State
   selectedDateStr: string; // YYYY-MM-DD
@@ -205,6 +211,8 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
   workspaceName: "AirBook Business Workspace",
   setWorkspaceName: (name) => set({ workspaceName: name }),
+  workspaceSlug: '',
+  setWorkspaceSlug: (slug) => set({ workspaceSlug: slug }),
   businessType: 'salon',
   setBusinessType: (type) => set({ businessType: type }),
 
@@ -234,6 +242,9 @@ export const useAirBookStore = create<AirBookState>((set) => ({
       staffMembers: [],
       appointments: [],
     }),
+
+  isSidebarCollapsed: false,
+  toggleSidebar: () => set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
 
   selectedDateStr: TODAY_STR,
   setSelectedDateStr: (dateStr) => set({ selectedDateStr: dateStr }),

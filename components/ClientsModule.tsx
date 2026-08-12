@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Add24Filled, Dismiss24Filled, Person24Regular, Comment24Regular, Mail24Regular, Phone24Regular } from '@fluentui/react-icons';
+import { ClientNotesModal } from '@/components/ClientNotesModal';
 
 interface ClientItem {
   id: string;
@@ -20,6 +21,7 @@ export const ClientsModule: React.FC = () => {
   const [clients, setClients] = useState<ClientItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<ClientItem | null>(null);
 
   // Form State
   const [name, setName] = useState('');
@@ -105,8 +107,21 @@ export const ClientsModule: React.FC = () => {
 
       {/* Loading state */}
       {loading && (
-        <div className="p-8 text-center text-xs text-[var(--text-muted)] animate-pulse">
-          ...
+        <div className="space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-center justify-between gap-4 shadow-sm animate-pulse"
+            >
+              <div className="flex items-center gap-3.5 w-full">
+                <div className="w-10 h-10 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 w-36 rounded-lg bg-black/10 dark:bg-white/10" />
+                  <div className="h-3 w-48 rounded-lg bg-black/5 dark:bg-white/5" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -114,24 +129,26 @@ export const ClientsModule: React.FC = () => {
       {!loading && (
         <div className="space-y-3">
           {clients.length === 0 ? (
-            <div className="p-8 rounded-3xl border border-dashed border-[var(--border-subtle)] text-center">
-              <Person24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2 opacity-50" />
-              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noClients')}</p>
-              <p className="text-[11px] text-[var(--text-muted)] mt-1">{t('noClientsSub')}</p>
+            <div className="min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+              <Person24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
+              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noClients')}</p>
+              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noClientsSub')}</p>
             </div>
           ) : (
             clients.map((cli) => (
               <motion.div
                 key={cli.id}
                 whileHover={{ scale: 1.005 }}
-                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+                transition={{ duration: 0.1, ease: 'easeOut' }}
+                onClick={() => setSelectedClient(cli)}
+                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm hover:border-blue-500/40 hover:shadow-md cursor-pointer transition-all duration-100 ease-out group"
               >
                 <div className="flex items-start gap-3.5">
                   <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">
                     {cli.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                       <span>{cli.name}</span>
                       <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-semibold">
                         {cli.totalVisits} {t('visits')}
@@ -162,6 +179,22 @@ export const ClientsModule: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Client Profile & Technical Specs Modal */}
+      <ClientNotesModal
+        isOpen={!!selectedClient}
+        onClose={() => {
+          setSelectedClient(null);
+          fetchClients();
+        }}
+        clientId={selectedClient?.id}
+        clientName={selectedClient?.name}
+        clientEmail={selectedClient?.email}
+        clientPhone={selectedClient?.phone}
+        totalVisits={selectedClient?.totalVisits}
+        noShowCount={selectedClient?.noShowCount}
+        initialNotes={selectedClient?.notes || ''}
+      />
 
       {/* Add Client Modal */}
       <AnimatePresence>

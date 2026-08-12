@@ -20,10 +20,10 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   isOpen,
   onClose,
   appointmentId,
-  clientName = 'Mikael from Amie',
-  serviceName = 'Haircut & Precision Styling',
-  totalPrice = 75,
-  staffName = 'Eduardo Moreno',
+  clientName = 'Client',
+  serviceName = 'Service',
+  totalPrice = 0,
+  staffName = 'Staff Specialist',
   commissionPercent = 70,
 }) => {
   const { t } = useTranslation();
@@ -50,8 +50,6 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          workspaceId: '00000000-0000-0000-0000-000000000001',
-          clientId: '00000000-0000-0000-0000-000000000004',
           appointmentId: appointmentId || undefined,
           totalCents: Math.round(finalTotal * 100),
           paymentMethod: paymentMethod,

@@ -24,14 +24,18 @@ import {
 export default function PublicBookingPage({ params }: { params: Promise<{ slug?: string }> }) {
   const unwrappedParams = React.use(params);
   const slug = unwrappedParams?.slug || 'default';
-  const { workspaceName, services, staffMembers, addAppointment } = useAirBookStore();
+  const { workspaceName, addAppointment } = useAirBookStore();
+
+  const [dbServices, setDbServices] = useState<any[]>([]);
+  const [dbStaff, setDbStaff] = useState<any[]>([]);
+  const [loadingDb, setLoadingDb] = useState(true);
 
   // Booking Flow Steps: 1 = Service, 2 = Staff, 3 = Date & Time, 4 = Details & Confirmation
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Selected State
-  const [selectedServiceId, setSelectedServiceId] = useState(services[0]?.id || '');
-  const [selectedStaffId, setSelectedStaffId] = useState(staffMembers[0]?.id || '');
+  const [selectedServiceId, setSelectedServiceId] = useState('');
+  const [selectedStaffId, setSelectedStaffId] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSlotTime, setSelectedSlotTime] = useState<string>('11:00');
   const [clientName, setClientName] = useState('');
@@ -39,10 +43,54 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
   const [clientPhone, setClientPhone] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
+  React.useEffect(() => {
+    async function loadPublicData() {
+      try {
+        setLoadingDb(true);
+        const [srvRes, stfRes] = await Promise.all([
+          fetch('/api/services').then((r) => r.json()).catch(() => ({})),
+          fetch('/api/staff').then((r) => r.json()).catch(() => ({})),
+        ]);
+
+        if (srvRes.success && Array.isArray(srvRes.services)) {
+          const mappedSrvs = srvRes.services.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            durationMinutes: s.durationMinutes,
+            price: (s.priceCents || 0) / 100,
+            color: s.colorTag || '#00C7BE',
+            category: s.category || 'Service',
+          }));
+          setDbServices(mappedSrvs);
+          if (mappedSrvs.length > 0) setSelectedServiceId(mappedSrvs[0].id);
+        }
+
+        if (stfRes.success && Array.isArray(stfRes.staff)) {
+          const mappedStaff = stfRes.staff.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            role: s.role,
+            avatar: s.avatarEmoji || '👨🏻‍🎨',
+          }));
+          setDbStaff(mappedStaff);
+          if (mappedStaff.length > 0) setSelectedStaffId(mappedStaff[0].id);
+        }
+      } catch (e) {
+        console.warn('Error loading public booking data:', e);
+      } finally {
+        setLoadingDb(false);
+      }
+    }
+    loadPublicData();
+  }, []);
+
+  const services = dbServices;
+  const staffMembers = dbStaff;
+
   const selectedService = services.find((s) => s.id === selectedServiceId) || services[0];
   const selectedStaff = staffMembers.find((s) => s.id === selectedStaffId) || staffMembers[0];
 
-  // Available Time Slots Mock
+  // Available Time Slots
   const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:30', '16:00', '17:15'];
   const DATE_OPTIONS = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
 
@@ -360,7 +408,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Eduardo Moreno"
+                      placeholder="e.g. Alex Johnson"
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
                       className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] focus:outline-none"

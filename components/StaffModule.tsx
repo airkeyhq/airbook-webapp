@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useAirBookStore } from '@/lib/store';
 import { Add24Filled, Dismiss24Filled, People24Regular, Person24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -31,6 +32,9 @@ export const StaffModule: React.FC = () => {
   const [commissionPercent, setCommissionPercent] = useState(70);
   const [submitting, setSubmitting] = useState(false);
 
+  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const demoStaff = useAirBookStore((s) => s.staffMembers);
+
   const fetchStaff = async () => {
     try {
       setLoading(true);
@@ -47,8 +51,12 @@ export const StaffModule: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStaff();
-  }, []);
+    if (isDemoMode) {
+      setStaffList(demoStaff as any);
+    } else {
+      fetchStaff();
+    }
+  }, [isDemoMode, demoStaff]);
 
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,25 +119,40 @@ export const StaffModule: React.FC = () => {
       </div>
 
       {loading && (
-        <div className="p-8 text-center text-xs text-[var(--text-muted)] animate-pulse">
-          Loading team roster from database…
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm animate-pulse"
+            >
+              <div className="flex items-center gap-4 w-full">
+                <div className="w-14 h-14 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 w-32 rounded-lg bg-black/10 dark:bg-white/10" />
+                  <div className="h-3 w-24 rounded-lg bg-black/5 dark:bg-white/5" />
+                  <div className="h-4 w-28 rounded-full bg-black/5 dark:bg-white/5 mt-1" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {staffList.length === 0 ? (
-            <div className="col-span-2 p-8 rounded-3xl border border-dashed border-[var(--border-subtle)] text-center">
-              <People24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2 opacity-50" />
-              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noStaff')}</p>
-              <p className="text-[11px] text-[var(--text-muted)] mt-1">{t('noStaffSub')}</p>
+            <div className="col-span-2 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+              <People24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
+              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noStaff')}</p>
+              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noStaffSub')}</p>
             </div>
           ) : (
             staffList.map((stf) => (
               <motion.div
                 key={stf.id}
                 whileHover={{ y: -2 }}
-                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm"
+                transition={{ duration: 0.1, ease: 'easeOut' }}
+                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm transition-all duration-100 ease-out"
               >
                 <div className="flex items-center gap-4">
                   <span className="text-4xl p-3 rounded-2xl bg-black/5 dark:bg-white/5">{stf.avatarEmoji || '👨🏻‍🎨'}</span>

@@ -1,12 +1,16 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search24Filled, Add24Filled, WeatherMoon24Filled, WeatherSunny24Filled } from '@fluentui/react-icons';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
-export const FloatingDock: React.FC = () => {
+interface FloatingDockProps {
+  activeTab?: string;
+}
+
+export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calendar' }) => {
   const {
     theme,
     toggleTheme,
@@ -24,15 +28,17 @@ export const FloatingDock: React.FC = () => {
   ];
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-lg pointer-events-none">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 pointer-events-none flex justify-center">
       <motion.div
+        layout
         initial={{ y: 50, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-        className="glass-floating-dock pointer-events-auto rounded-full p-2 flex items-center justify-between gap-1 sm:gap-2 backdrop-blur-3xl shadow-2xl border border-white/60 dark:border-white/10"
+        className="glass-floating-dock pointer-events-auto rounded-full p-1.5 sm:p-2 inline-flex items-center gap-1.5 sm:gap-2 backdrop-blur-3xl shadow-2xl border border-white/60 dark:border-white/10"
       >
         {/* Search / Command Palette (⌘K) */}
         <motion.button
+          layout
           whileTap={{ scale: 0.92 }}
           whileHover={{ scale: 1.05 }}
           onClick={toggleCommandPalette}
@@ -46,37 +52,52 @@ export const FloatingDock: React.FC = () => {
           </kbd>
         </motion.button>
 
-        <div className="h-4 w-[1px] bg-gray-200 dark:bg-gray-800 my-auto" />
+        {/* Date Segmented Control - Only visible when in Calendar module */}
+        <AnimatePresence mode="popLayout">
+          {activeTab === 'calendar' && (
+            <motion.div
+              key="calendar-segmented"
+              initial={{ opacity: 0, scale: 0.85, x: -6 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.85, x: -6 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+              className="flex items-center gap-1.5 sm:gap-2"
+            >
+              <div className="h-4 w-[1px] bg-black/10 dark:bg-white/10 my-auto" />
 
-        {/* Framer Motion Animated Segmented Control Track */}
-        <div className="relative flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/10">
-          {SEGMENTS.map((seg) => {
-            const isActive = viewMode === seg.id;
-            return (
-              <button
-                key={seg.id}
-                onClick={() => setViewMode(seg.id)}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs font-extrabold z-10 transition-colors ${
-                  isActive
-                    ? 'text-black dark:text-black'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="dock-segmented-active"
-                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                    className="absolute inset-0 bg-white rounded-full shadow-md -z-10"
-                  />
-                )}
-                <span>{seg.label}</span>
-              </button>
-            );
-          })}
-        </div>
+              {/* Framer Motion Animated Segmented Control Track */}
+              <div className="relative flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/10">
+                {SEGMENTS.map((seg) => {
+                  const isActive = viewMode === seg.id;
+                  return (
+                    <button
+                      key={seg.id}
+                      onClick={() => setViewMode(seg.id)}
+                      className={`relative px-3.5 py-1.5 rounded-full text-xs font-extrabold z-10 transition-colors ${
+                        isActive
+                          ? 'text-black dark:text-black'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="dock-segmented-active"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                          className="absolute inset-0 bg-white rounded-full shadow-md -z-10"
+                        />
+                      )}
+                      <span>{seg.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Quick Add Button (The Iconic Action Trigger) */}
         <motion.button
+          layout
           whileTap={{ scale: 0.9 }}
           whileHover={{ scale: 1.08, rotate: 90 }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
@@ -87,10 +108,11 @@ export const FloatingDock: React.FC = () => {
           <Add24Filled className="w-5 h-5" />
         </motion.button>
 
-        <div className="h-4 w-[1px] bg-gray-200 dark:bg-gray-800 my-auto" />
+        <div className="h-4 w-[1px] bg-black/10 dark:bg-white/10 my-auto" />
 
         {/* Theme Toggle */}
         <motion.button
+          layout
           whileTap={{ scale: 0.9 }}
           whileHover={{ scale: 1.05 }}
           onClick={toggleTheme}

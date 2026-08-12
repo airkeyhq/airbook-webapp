@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { clients } from '@/db/schema';
 import { eq, ilike, or, desc } from 'drizzle-orm';
+import { getActiveWorkspaceId } from '@/lib/workspace';
 
 export async function GET(req: Request) {
   try {
@@ -45,10 +46,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Client name is required.' }, { status: 400 });
     }
 
+    const activeWorkspaceId = await getActiveWorkspaceId(workspaceId);
+
     const [newClient] = await db
       .insert(clients)
       .values({
-        workspaceId: workspaceId || '00000000-0000-0000-0000-000000000001',
+        workspaceId: activeWorkspaceId,
         name,
         email: email || null,
         phone: phone || null,

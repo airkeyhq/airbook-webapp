@@ -7,11 +7,14 @@ import { Add24Filled, Phone24Regular, Clock24Regular } from '@fluentui/react-ico
 
 export const WalkInKioskModule: React.FC = () => {
   const { t } = useTranslation();
-  const [queue, setQueue] = useState([
-    { id: 'q-1', name: 'Dennis Müller', service: 'Beard Sculpting', barber: 'Eduardo Moreno', estWaitMins: 10, status: 'In Chair' },
-    { id: 'q-2', name: 'Ivo Silva', service: 'Precision Haircut', barber: 'Agnes K.', estWaitMins: 18, status: 'Waiting' },
-    { id: 'q-3', name: 'Mikael A.', service: 'Haircut & Styling', barber: 'First Available', estWaitMins: 25, status: 'Waiting' },
-  ]);
+  const [queue, setQueue] = useState<Array<{
+    id: string;
+    name: string;
+    service: string;
+    barber: string;
+    estWaitMins: number;
+    status: string;
+  }>>([]);
 
   const [clientName, setClientName] = useState('');
   const [phone, setPhone] = useState('');
@@ -20,7 +23,7 @@ export const WalkInKioskModule: React.FC = () => {
     try {
       const res = await fetch('/api/waitlists');
       const data = await res.json();
-      if (data.success && Array.isArray(data.waitlists) && data.waitlists.length > 0) {
+      if (data.success && Array.isArray(data.waitlists)) {
         const mapped = data.waitlists.map((w: any, idx: number) => ({
           id: w.id,
           name: w.clientName,
@@ -148,41 +151,49 @@ export const WalkInKioskModule: React.FC = () => {
             Active Shop Queue ({queue.length} Clients Waiting)
           </h3>
 
-          {queue.map((item, index) => (
-            <motion.div
-              key={item.id}
-              whileHover={{ scale: 1.005 }}
-              className="p-4 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-center justify-between gap-4 shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-2xl bg-black/5 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-xs">
-                  #{index + 1}
-                </span>
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--text-primary)]">{item.name}</h4>
-                  <p className="text-[11px] text-[var(--text-secondary)]">
-                    {item.service} • Assigned to: <strong className="text-[var(--text-primary)]">{item.barber}</strong>
-                  </p>
+          {queue.length === 0 ? (
+            <div className="min-h-[260px] p-8 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center space-y-2">
+              <Clock24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto opacity-50" />
+              <p className="text-xs font-bold text-[var(--text-secondary)]">No clients currently in queue</p>
+              <p className="text-[11px] text-[var(--text-muted)]">Check in walk-in clients using the form to add them to the queue.</p>
+            </div>
+          ) : (
+            queue.map((item, index) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.005 }}
+                className="p-4 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-center justify-between gap-4 shadow-sm"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-2xl bg-black/5 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-xs">
+                    #{index + 1}
+                  </span>
+                  <div>
+                    <h4 className="text-xs font-bold text-[var(--text-primary)]">{item.name}</h4>
+                    <p className="text-[11px] text-[var(--text-secondary)]">
+                      {item.service} • Assigned to: <strong className="text-[var(--text-primary)]">{item.barber}</strong>
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-[var(--text-muted)] flex items-center gap-1">
-                  <Clock24Regular className="w-3.5 h-3.5 text-blue-500" />
-                  <span>~{item.estWaitMins}m wait</span>
-                </span>
-                <span
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                    item.status === 'In Chair'
-                      ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-[var(--text-muted)] flex items-center gap-1">
+                    <Clock24Regular className="w-3.5 h-3.5 text-blue-500" />
+                    <span>~{item.estWaitMins}m wait</span>
+                  </span>
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                      item.status === 'In Chair'
+                        ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                        : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </div>

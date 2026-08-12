@@ -37,10 +37,12 @@ export const AnalyticsModule: React.FC = () => {
     fetchAnalytics();
   }, []);
 
-  const rev = data?.totalRevenue ? (data.totalRevenue / 100).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '18,450.00';
-  const net = data?.netProfit ? (data.netProfit / 100).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '15,200.00';
-  const apts = data?.totalAppointments || 42;
-  const clientsCount = data?.totalClients || 38;
+  const revNum = data ? data.totalRevenue : 0;
+  const rev = revNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const netNum = data ? data.netProfit : 0;
+  const net = netNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const apts = data ? data.totalAppointments : 0;
+  const clientsCount = data ? data.totalClients : 0;
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
@@ -103,7 +105,7 @@ export const AnalyticsModule: React.FC = () => {
               <h3 className="text-sm font-extrabold text-white tracking-tight">AirBook Capital — Pre-Approved Merchant Advance</h3>
             </div>
             <p className="text-xs text-blue-50 max-w-xl leading-relaxed font-medium">
-              Based on your historical platform booking volume (${(rev || 18450).toLocaleString()}), your business qualifies for up to <strong className="text-white font-bold">$15,000</strong> in flexible working capital with automatic percentage-based repayments.
+              Based on your historical platform booking volume (${rev}), your business qualifies for up to <strong className="text-white font-bold">$15,000</strong> in flexible working capital with automatic percentage-based repayments.
             </p>
             <button className="px-5 py-2.5 rounded-2xl bg-white text-blue-900 font-extrabold text-xs shadow-md hover:bg-blue-50 transition-colors flex items-center gap-1.5">
               <Sparkle24Regular className="w-4 h-4 text-blue-600" />

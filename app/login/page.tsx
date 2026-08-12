@@ -259,7 +259,7 @@ export default function LoginPage() {
                       type="text"
                       required
                       autoComplete="name"
-                      placeholder="e.g. Eduardo Moreno"
+                      placeholder="e.g. Alex Johnson"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60"
