@@ -148,10 +148,10 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
         
         {/* STICKY HEADER ROW (Corner + Day Headers) */}
-        {appointments.length === 0 && (
+        {appointments.length === 0 && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
           <div className="bg-blue-500/10 border-b border-blue-500/20 px-4 py-2 flex items-center justify-between z-[55] relative text-xs">
             <span className="font-semibold text-blue-600 dark:text-blue-400">
-              🗓️ No appointments scheduled in database yet. Click any slot to add a booking, or load sample demo data.
+              🗓️ Local Dev Mode: Click any slot to add a booking, or load sample demo data.
             </span>
             <button
               onClick={useAirBookStore.getState().loadDemoData}

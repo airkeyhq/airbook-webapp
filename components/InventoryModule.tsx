@@ -133,7 +133,7 @@ export const InventoryModule: React.FC = () => {
           <Box24Regular className="w-10 h-10 text-slate-400 mx-auto" />
           <h3 className="text-sm font-bold text-[var(--text-primary)]">No products in inventory yet</h3>
           <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">
-            Your catalog is currently empty. Add your retail & back-bar products or load sample catalog items.
+            Your catalog is currently empty. Click below to add your first retail or back-bar product.
           </p>
           <button
             onClick={() => setIsAddModalOpen(true)}

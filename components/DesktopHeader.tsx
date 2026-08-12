@@ -95,18 +95,20 @@ export const DesktopHeader: React.FC = () => {
             )}
           </div>
 
-          {/* Demo Mode Toggle Pill */}
-          <button
-            onClick={useAirBookStore.getState().toggleDemoMode}
-            className={`h-9 flex items-center gap-1.5 px-3 rounded-full transition-all text-xs font-extrabold border ${
-              useAirBookStore((s) => s.isDemoMode)
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
-                : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border-transparent hover:bg-black/10'
-            }`}
-          >
-            <span className={`w-2 h-2 rounded-full ${useAirBookStore((s) => s.isDemoMode) ? 'bg-amber-500 animate-pulse' : 'bg-gray-400'}`} />
-            <span>{useAirBookStore((s) => s.isDemoMode) ? '⚡ Demo Mode: ON' : 'Demo Mode'}</span>
-          </button>
+          {/* Demo Mode Toggle Pill (ONLY rendered in Local Dev environment) */}
+          {typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
+            <button
+              onClick={useAirBookStore.getState().toggleDemoMode}
+              className={`h-9 flex items-center gap-1.5 px-3 rounded-full transition-all text-xs font-extrabold border ${
+                useAirBookStore((s) => s.isDemoMode)
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                  : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border-transparent hover:bg-black/10'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${useAirBookStore((s) => s.isDemoMode) ? 'bg-amber-500 animate-pulse' : 'bg-gray-400'}`} />
+              <span>{useAirBookStore((s) => s.isDemoMode) ? '⚡ Demo Mode: ON' : 'Demo Mode'}</span>
+            </button>
+          )}
 
           {/* Upgrade Plan Pill */}
           <button
