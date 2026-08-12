@@ -227,6 +227,16 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
 
           {/* Day Columns (7 Columns Responsively Filling Viewport) */}
           <div className="flex flex-1 min-w-0 relative">
+            {/* Full-width Continuous Current Time Line connected to left time dot */}
+            {nowOffsetPx !== null && (
+              <div 
+                className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none"
+                style={{ top: `${nowOffsetPx}px` }}
+              >
+                <div className="h-[2px] w-full bg-[#FF3B30] shadow-sm" />
+              </div>
+            )}
+
             {daysToRender.map((day) => {
               const dayStr = format(day, 'yyyy-MM-dd');
               const dayApts = appointments.filter((a) => a.dateStr === dayStr);
@@ -240,15 +250,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                     isSelected && viewMode === 'week' ? 'bg-black/[0.02] dark:bg-white/[0.02]' : ''
                   }`}
                 >
-                  {/* Current Time Line (ONLY on Today Column) */}
-                  {isToday && nowOffsetPx !== null && (
-                    <div 
-                      className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none"
-                      style={{ top: `${nowOffsetPx}px` }}
-                    >
-                      <div className="h-[2px] w-full bg-[#FF3B30] shadow-sm" />
-                    </div>
-                  )}
 
                   {/* Grid Lines */}
                   <div className="relative w-full">
