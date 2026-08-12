@@ -59,6 +59,17 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
   const { appointments, selectedDateStr, viewMode, setViewMode, openBookingDrawer, setSelectedDateStr, setAppointments } = useAirBookStore();
   const { t } = useTranslation();
   
+  const [now, setNow] = React.useState<Date | null>(null);
+
+  React.useEffect(() => {
+    setNow(new Date());
+    const interval = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nowOffsetPx = now ? (now.getHours() + now.getMinutes() / 60) * 80 : null;
+  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  
   const selectedDate = new Date(selectedDateStr + 'T00:00:00');
   
   // Calculate days to render
@@ -146,7 +157,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
             <div className="flex flex-1 min-w-0">
               {daysToRender.map((day) => {
                 const dayStr = format(day, 'yyyy-MM-dd');
-                const isToday = dayStr === format(new Date(), 'yyyy-MM-dd');
+                const isToday = dayStr === todayStr;
                 
                 return (
                   <div 
@@ -177,13 +188,15 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
           {/* Time Axis (Sticky Left) */}
           <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-40 bg-[var(--grid-bg)] border-r border-[var(--border-subtle)]">
             {/* Current Time Dot */}
-            <div 
-              className="absolute right-0 z-50 flex items-center justify-center translate-x-[4px] -translate-y-1/2 opacity-80 pointer-events-none"
-              style={{ top: `${(new Date().getHours() + (new Date().getMinutes() / 60)) * 80}px` }}
-            >
-              <span className="absolute w-3 h-3 rounded-full bg-red-500/40 animate-ping" />
-              <span className="w-2 h-2 rounded-full bg-red-500 shadow-sm z-10" />
-            </div>
+            {nowOffsetPx !== null && (
+              <div 
+                className="absolute right-0 z-50 flex items-center justify-center translate-x-[4px] -translate-y-1/2 opacity-90 pointer-events-none"
+                style={{ top: `${nowOffsetPx}px` }}
+              >
+                <span className="absolute w-3.5 h-3.5 rounded-full bg-[#FF3B30]/40 animate-ping" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B30] shadow-sm z-10" />
+              </div>
+            )}
 
             {/* Time Labels */}
             {HOURS.map((hour) => {
@@ -204,6 +217,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
               const dayStr = format(day, 'yyyy-MM-dd');
               const dayApts = appointments.filter((a) => a.dateStr === dayStr);
               const isSelected = dayStr === selectedDateStr;
+              const isToday = dayStr === todayStr;
 
               return (
                 <div
@@ -212,13 +226,15 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                     isSelected && viewMode === 'week' ? 'bg-black/[0.02] dark:bg-white/[0.02]' : ''
                   }`}
                 >
-                  {/* Current Time Line */}
-                  <div 
-                    className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none opacity-80"
-                    style={{ top: `${(new Date().getHours() + (new Date().getMinutes() / 60)) * 80}px` }}
-                  >
-                    <div className="h-[2px] w-full bg-red-500/80 shadow-sm" />
-                  </div>
+                  {/* Current Time Line (ONLY on Today Column) */}
+                  {isToday && nowOffsetPx !== null && (
+                    <div 
+                      className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none"
+                      style={{ top: `${nowOffsetPx}px` }}
+                    >
+                      <div className="h-[2px] w-full bg-[#FF3B30] shadow-sm" />
+                    </div>
+                  )}
 
                   {/* Grid Lines */}
                   <div className="relative w-full">
