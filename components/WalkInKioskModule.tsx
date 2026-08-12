@@ -16,23 +16,64 @@ export const WalkInKioskModule: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [phone, setPhone] = useState('');
 
-  const handleAddWalkIn = (e: React.FormEvent) => {
+  const fetchWaitlist = async () => {
+    try {
+      const res = await fetch('/api/waitlists');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.waitlists) && data.waitlists.length > 0) {
+        const mapped = data.waitlists.map((w: any, idx: number) => ({
+          id: w.id,
+          name: w.clientName,
+          service: w.serviceName || 'Walk-in Haircut',
+          barber: 'First Available',
+          estWaitMins: (idx + 1) * 15,
+          status: w.status === 'booked' ? 'In Chair' : 'Waiting',
+        }));
+        setQueue(mapped);
+      }
+    } catch (err) {
+      console.warn('Failed to load waitlist from DB:', err);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchWaitlist();
+  }, []);
+
+  const handleAddWalkIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim()) return;
 
-    setQueue([
-      ...queue,
+    const newName = clientName.trim();
+    const newPhone = phone.trim();
+
+    setQueue((prev) => [
+      ...prev,
       {
         id: `q-${Date.now()}`,
-        name: clientName.trim(),
+        name: newName,
         service: 'Walk-in Haircut',
         barber: 'First Available',
-        estWaitMins: (queue.length + 1) * 12,
+        estWaitMins: (prev.length + 1) * 12,
         status: 'Waiting',
       },
     ]);
     setClientName('');
     setPhone('');
+
+    try {
+      await fetch('/api/waitlists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: newName,
+          clientPhone: newPhone || undefined,
+        }),
+      });
+      fetchWaitlist();
+    } catch (err) {
+      console.error('Failed to save walk-in to DB:', err);
+    }
   };
 
   return (

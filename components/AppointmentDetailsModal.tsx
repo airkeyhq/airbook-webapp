@@ -33,8 +33,13 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   if (!isOpen || !appointment) return null;
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     deleteAppointment(appointment.id);
+    try {
+      await fetch(`/api/appointments?id=${appointment.id}`, { method: 'DELETE' });
+    } catch (err) {
+      console.warn('Failed to delete appointment from DB:', err);
+    }
     onClose();
   };
 

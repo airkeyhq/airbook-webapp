@@ -8,7 +8,7 @@ import { Copy24Filled, Share24Filled, Globe24Regular, Code24Regular, Checkmark24
 export const MarketplaceModule: React.FC = () => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
-  const embedCode = `<iframe src="https://airbook.app/embed/eduardos-lounge" width="100%" height="700px" frameborder="0"></iframe>`;
+  const embedCode = `<iframe src="https://getairbook.com/embed/eduardos-lounge" width="100%" height="700px" frameborder="0"></iframe>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(embedCode);

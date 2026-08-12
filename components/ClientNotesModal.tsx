@@ -8,6 +8,7 @@ import { Save24Filled, Dismiss24Filled, Camera24Filled, Cut24Regular, Checkmark2
 interface ClientNotesModalProps {
   isOpen: boolean;
   onClose: () => void;
+  clientId?: string;
   clientName?: string;
   initialNotes?: string;
 }
@@ -15,6 +16,7 @@ interface ClientNotesModalProps {
 export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   isOpen,
   onClose,
+  clientId,
   clientName = 'Mikael from Amie',
   initialNotes = '#2 guard on sides, low taper fade, finger length top, foil shave neck.',
 }) => {
@@ -24,8 +26,19 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSaved(true);
+    if (clientId) {
+      try {
+        await fetch('/api/clients', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: clientId, notes }),
+        });
+      } catch (err) {
+        console.warn('Failed to sync client notes to DB:', err);
+      }
+    }
     setTimeout(() => {
       setIsSaved(false);
       onClose();
