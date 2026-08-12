@@ -1,0 +1,259 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Add24Filled, Dismiss24Filled, Person24Regular, Comment24Regular, Mail24Regular, Phone24Regular } from '@fluentui/react-icons';
+
+interface ClientItem {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  totalVisits: number;
+  noShowCount?: number;
+  notes?: string;
+}
+
+export const ClientsModule: React.FC = () => {
+  const { t } = useTranslation();
+  const [clients, setClients] = useState<ClientItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Form State
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/clients');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.clients)) {
+        setClients(data.clients);
+      }
+    } catch (err) {
+      console.warn('Failed to load clients from DB:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const handleAddClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    try {
+      setSubmitting(true);
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim() || undefined,
+          phone: phone.trim() || undefined,
+          notes: notes.trim() || undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIsAddModalOpen(false);
+        setName('');
+        setEmail('');
+        setPhone('');
+        setNotes('');
+        fetchClients();
+      }
+    } catch (err) {
+      console.error('Failed to create client:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            {t('clientsTitle')}
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            {t('clientsDesc')}
+          </p>
+        </div>
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsAddModalOpen(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md hover:opacity-90 transition-opacity"
+        >
+          <Add24Filled className="w-4 h-4" />
+          <span>{t('addClient')}</span>
+        </motion.button>
+      </div>
+
+      {/* Loading state */}
+      {loading && (
+        <div className="p-8 text-center text-xs text-[var(--text-muted)] animate-pulse">
+          ...
+        </div>
+      )}
+
+      {/* Clients List */}
+      {!loading && (
+        <div className="space-y-3">
+          {clients.length === 0 ? (
+            <div className="p-8 rounded-3xl border border-dashed border-[var(--border-subtle)] text-center">
+              <Person24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2 opacity-50" />
+              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noClients')}</p>
+              <p className="text-[11px] text-[var(--text-muted)] mt-1">{t('noClientsSub')}</p>
+            </div>
+          ) : (
+            clients.map((cli) => (
+              <motion.div
+                key={cli.id}
+                whileHover={{ scale: 1.005 }}
+                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+              >
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">
+                    {cli.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <span>{cli.name}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-semibold">
+                        {cli.totalVisits} {t('visits')}
+                      </span>
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5 flex items-center gap-2">
+                      {cli.email && <span className="flex items-center gap-1"><Mail24Regular className="w-3 h-3" />{cli.email}</span>}
+                      {cli.phone && <span className="flex items-center gap-1"><Phone24Regular className="w-3 h-3" />{cli.phone}</span>}
+                    </p>
+
+                    {/* Preference Notes */}
+                    {cli.notes && (
+                      <div className="mt-2.5 flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-300 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl">
+                        <Comment24Regular className="w-3.5 h-3.5 text-pink-500 flex-shrink-0" />
+                        <span className="truncate italic">"{cli.notes}"</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:flex-col sm:items-end flex-shrink-0">
+                  <span className="text-xs font-mono text-[var(--text-muted)]">
+                    {t('noShows')}: <strong className={(cli.noShowCount || 0) > 0 ? 'text-red-500' : 'text-green-500'}>{cli.noShowCount || 0}</strong>
+                  </span>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Add Client Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddModalOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                <h3 className="text-base font-bold text-[var(--text-primary)]">{t('addClient')}</h3>
+                <button onClick={() => setIsAddModalOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                  <Dismiss24Filled className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddClient} className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('fullName')} *</label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Alex Rivera"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('email')}</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="alex@example.com"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(555) 019-2834"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('notes')}</label>
+                  <textarea
+                    rows={3}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="e.g. Prefers low fade, sensitive skin, morning visits"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-secondary)]"
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-4 py-2 rounded-2xl bg-blue-600 text-white text-xs font-bold shadow-md hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {submitting ? t('saving') : t('saveClient')}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};

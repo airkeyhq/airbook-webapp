@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+@layer base {
+  /* ─── ASTRYX-INSPIRED DESIGN TOKEN SYSTEM ─── */
+  :root {
+    /* 1. Component Size Tokens */
+    --size-control-sm: 32px;  /* Micro buttons, inline badges, compact inputs */
+    --size-control-md: 36px;  /* Header pills, segmented controls, toolbar items */
+    --size-control-lg: 44px;  /* Primary CTAs, modal submit buttons */
+
+    /* 2. Spacing Scale Tokens */
+    --space-1: 0.25rem;   /* 4px  - Micro inline gaps */
+    --space-2: 0.5rem;    /* 8px  - Compact list item gap */
+    --space-3: 0.75rem;   /* 12px - Standard list breathing space */
+    --space-4: 1.0rem;    /* 16px - Card list gap & section padding */
+    --space-6: 1.5rem;    /* 24px - Container padding */
+    --space-8: 2.0rem;    /* 32px - Module section separation */
+
+    /* 3. Border Radius Tokens */
+    --radius-sm: 0.75rem; /* 12px - Inner pills & input fields */
+    --radius-md: 1.0rem;  /* 16px - Standard cards & dropdown menus */
+    --radius-lg: 1.5rem;  /* 24px - Large modals & drawers */
+    --radius-pill: 9999px;/* Full pill buttons & dock controls */
+
+    /* 4. Brand & Accent Color Tokens (AirBook Amie Values) */
+    --color-accent-primary: #2BB5FF;       /* Electric Sky Blue */
+    --color-accent-primary-hover: #1A8EFF;
+    --color-accent-primary-fg: #FFFFFF;
+
+    --color-indicator-today: #FF3B30;       /* Signature Apple Red */
+
+    /* Legacy CSS Variable Mappings */
+    --control-height-sm: var(--size-control-sm);
+    --control-height-md: var(--size-control-md);
+    --control-height-lg: var(--size-control-lg);
+
+    --space-xs: var(--space-1);
+    --space-sm: var(--space-2);
+    --space-md: var(--space-3);
+    --space-lg: var(--space-4);
+    --space-xl: var(--space-6);
+    --space-2xl: var(--space-8);
+
+    /* Light Theme Surface & Text Tokens */
+    --canvas-bg: #FAFBFD;
+    --canvas-fg: #0F172A;
+
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+
+    --sidebar-bg: #FFFFFF;
+    --header-bg: #FFFFFF;
+    --datestrip-bg: #FFFFFF;
+    --grid-bg: #FAFBFD;
+
+    --accent-primary: var(--color-accent-primary);
+    --accent-primary-hover: var(--color-accent-primary-hover);
+    --accent-primary-fg: var(--color-accent-primary-fg);
+
+    --border-subtle: #E2E8F0;
+
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+
+    --nav-inactive: #475569;
+    --nav-active-bg: #2BB5FF;
+    --nav-active-fg: #FFFFFF;
+
+    --apt-card-bg: #FFFFFF;
+    --apt-card-border: #E2E8F0;
+  }
+
+  [data-theme="dark"] {
+    /* Dark Theme Surface & Text Tokens */
+    --canvas-bg: #0F1117;
+    --canvas-fg: #F8FAFC;
+
+    --bg-primary: #141720;
+    --bg-secondary: #1B1E2B;
+
+    --sidebar-bg: #141720;
+    --header-bg: #141720;
+    --datestrip-bg: #141720;
+    --grid-bg: #0F1117;
+
+    --accent-primary: #2BB5FF;
+    --accent-primary-hover: #45C0FF;
+    --accent-primary-fg: #FFFFFF;
+
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+
+    --nav-inactive: #94A3B8;
+    --nav-active-bg: #2BB5FF;
+    --nav-active-fg: #FFFFFF;
+
+    --apt-card-bg: #1B1E2B;
+    --apt-card-border: rgba(255, 255, 255, 0.12);
+  }
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100%;
+  background-color: var(--canvas-bg);
+  color: var(--canvas-fg);
+}
+
+/* App shell: used ONLY by the operator dashboard to lock the viewport */
+.app-shell {
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-floating-dock {
+  background: var(--header-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom Soft Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+.calendar-time-col {
+  width: 64px;
+  flex-shrink: 0;
+}
+
+/* ─── TOKEN UTILITY CLASSES ─── */
+
+/* Component Size Classes */
+.control-sm {
+  height: var(--size-control-sm);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.control-md {
+  height: var(--size-control-md);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.control-lg {
+  height: var(--size-control-lg);
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Vertical Stacking List Utilities (Guarantees Breathing Space) */
+.stack-1 { display: flex; flex-direction: column; gap: var(--space-1); }
+.stack-2 { display: flex; flex-direction: column; gap: var(--space-2); }
+.stack-3 { display: flex; flex-direction: column; gap: var(--space-3); }
+.stack-4 { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-6 { display: flex; flex-direction: column; gap: var(--space-6); }
+
+/* Aliases for backwards compatibility */
+.stack-xs { display: flex; flex-direction: column; gap: var(--space-1); }
+.stack-sm { display: flex; flex-direction: column; gap: var(--space-2); }
+.stack-md { display: flex; flex-direction: column; gap: var(--space-3); }
+.stack-lg { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-xl { display: flex; flex-direction: column; gap: var(--space-6); }
+
+/* ─── DESIGN DNA BUTTON SYSTEM ─── */
+.btn-primary {
+  background-color: var(--color-accent-primary);
+  color: var(--color-accent-primary-fg);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 2px 10px -2px rgba(43, 181, 255, 0.4);
+}
+.btn-primary:hover {
+  background-color: var(--color-accent-primary-hover);
+  box-shadow: 0 4px 14px -2px rgba(43, 181, 255, 0.55);
+}
+
+.btn-secondary {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+.btn-secondary:hover {
+  background-color: var(--bg-secondary);
+  border-color: rgba(43, 181, 255, 0.3);
+}
