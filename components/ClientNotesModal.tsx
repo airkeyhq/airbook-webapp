@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useAirBookStore } from '@/lib/store';
 import {
   Save24Filled,
   Dismiss24Filled,
@@ -16,6 +17,9 @@ import {
   Calendar24Filled,
   Calendar24Regular,
   Delete24Filled,
+  Shield24Filled,
+  DocumentCheckmark24Filled,
+  CheckmarkCircle24Filled,
 } from '@fluentui/react-icons';
 
 interface ClientNotesModalProps {
@@ -42,6 +46,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   initialNotes = '',
 }) => {
   const { t } = useTranslation();
+  const { addons } = useAirBookStore();
   const [activeTab, setActiveTab] = useState<'specs' | 'contact' | 'history'>('specs');
   const [notes, setNotes] = useState(initialNotes);
   const [name, setName] = useState(clientName);
@@ -130,7 +135,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="relative w-full max-w-xl glass-panel rounded-[32px] p-6 sm:p-8 shadow-2xl bg-white/95 dark:bg-gray-900/95 border border-white/80 dark:border-white/10 z-10 space-y-6 max-h-[90vh] overflow-y-auto"
+          className="relative w-full max-w-xl glass-panel rounded-[32px] p-6 sm:p-8 shadow-2xl bg-white/95 dark:bg-gray-900/95 border border-white/80 dark:border-white/10 z-10 space-y-6 max-h-[90vh] overflow-y-auto scroll-fade-y"
         >
           {/* Close Button */}
           <button
@@ -149,13 +154,32 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
               <h3 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
                 {name}
               </h3>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex flex-wrap items-center gap-2 mt-1">
                 <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold">
                   {totalVisits} {t('visits')}
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-muted)] text-xs font-mono">
                   {t('noShows')}: <strong className={noShowCount > 0 ? 'text-red-500' : 'text-green-500'}>{noShowCount}</strong>
                 </span>
+
+                {addons.esign && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-extrabold flex items-center gap-1">
+                    <DocumentCheckmark24Filled className="w-3 h-3" />
+                    <span>eSign Active</span>
+                  </span>
+                )}
+                {addons.hipaa && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-600/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold flex items-center gap-1">
+                    <Shield24Filled className="w-3 h-3" />
+                    <span>HIPAA Encrypted</span>
+                  </span>
+                )}
+                {addons.kyc && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold flex items-center gap-1">
+                    <CheckmarkCircle24Filled className="w-3 h-3" />
+                    <span>KYC Verified</span>
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -201,6 +225,45 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   className="w-full p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono text-[var(--text-primary)] focus:outline-none"
                 />
               </div>
+
+              {/* Active Add-On Widgets */}
+              {addons.esign && (
+                <div className="p-3.5 rounded-2xl bg-purple-500/10 border border-purple-500/20 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-purple-700 dark:text-purple-300">
+                    <span className="flex items-center gap-1.5">
+                      <DocumentCheckmark24Filled className="w-4 h-4" />
+                      <span>Digital Liability & Consent Waiver (eSign)</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-800 dark:text-purple-200">Signed & Timestamps Logged</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/80 dark:bg-gray-800/80 border border-purple-500/10 flex items-center justify-between">
+                    <div className="font-serif italic text-sm text-purple-900 dark:text-purple-100 font-extrabold tracking-wider">
+                      {name}
+                    </div>
+                    <span className="text-[10px] font-mono text-purple-600 dark:text-purple-400">SHA-256 Verified • 2026-08-12</span>
+                  </div>
+                </div>
+              )}
+
+              {addons.hipaa && (
+                <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300 font-bold">
+                    <Shield24Filled className="w-4 h-4" />
+                    <span>HIPAA Encrypted BAA Audit Log (45 CFR § 164.312)</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-800 dark:text-blue-200 text-[10px] font-bold">AES-256 Protected</span>
+                </div>
+              )}
+
+              {addons.kyc && (
+                <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-bold">
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <span>KYC Government ID & Biometrics Match</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 text-[10px] font-bold">Passed (ID Verified)</span>
+                </div>
+              )}
 
               {/* Before / After Photos */}
               <div>

@@ -21,7 +21,6 @@ export const InventoryModule: React.FC = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [poSent, setPoSent] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Form State
@@ -121,10 +120,6 @@ export const InventoryModule: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const handleGeneratePO = () => {
-    setPoSent(true);
-    setTimeout(() => setPoSent(false), 2500);
-  };
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,14 +180,9 @@ export const InventoryModule: React.FC = () => {
             <span>{t('addProduct')}</span>
           </motion.button>
 
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={handleGeneratePO}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-600 text-white font-semibold text-xs shadow-md hover:bg-blue-700"
-          >
-            <VehicleTruck24Filled className="w-4 h-4" />
-            <span>{poSent ? t('poGenerated') : t('generatePOs')}</span>
-          </motion.button>
+          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+            Auto POs {t('comingSoonV12')}
+          </span>
         </div>
       </div>
 
@@ -206,9 +196,6 @@ export const InventoryModule: React.FC = () => {
               {lowStockItems.map((i) => `${i.name} (${i.stockQuantity})`).join(', ')}.
             </span>
           </div>
-          <button onClick={handleGeneratePO} className="px-3 py-1 rounded-xl bg-amber-500 text-white font-bold text-[10px]">
-            {t('generatePOs')}
-          </button>
         </div>
       )}
 

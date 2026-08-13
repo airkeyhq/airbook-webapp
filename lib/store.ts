@@ -34,7 +34,13 @@ export interface Appointment {
   notes?: string;
 }
 
-interface AirBookState {
+export interface AddOnSettings {
+  hipaa: boolean;
+  esign: boolean;
+  kyc: boolean;
+}
+
+export interface AirBookState {
   // Theme & Workspace
   theme: 'light' | 'dark';
   toggleTheme: () => void;
@@ -55,11 +61,25 @@ interface AirBookState {
   isSidebarCollapsed: boolean;
   toggleSidebar: () => void;
 
-  // View & Date State
+  // View & Date & Staff Filter State
   selectedDateStr: string; // YYYY-MM-DD
   setSelectedDateStr: (date: string) => void;
   viewMode: 'day' | 'week' | 'list';
   setViewMode: (mode: 'day' | 'week' | 'list') => void;
+  selectedStaffId: string | 'all';
+  setSelectedStaffId: (id: string | 'all') => void;
+
+  // Calendar Provider Color Settings (auto = system auto-balanced, custom = user selected)
+  providerColorMode: 'auto' | 'custom';
+  setProviderColorMode: (mode: 'auto' | 'custom') => void;
+
+  // Add-On Modules & Beta Program
+  addons: AddOnSettings;
+  setAddons: (addons: Partial<AddOnSettings>) => void;
+  toggleAddon: (key: keyof AddOnSettings) => void;
+  isBetaAccess: boolean;
+  setBetaAccess: (enabled: boolean) => void;
+  unlockBetaWithCode: (code: string) => boolean;
 
   // Drawer & Command Palette Modals
   isBookingDrawerOpen: boolean;
@@ -70,6 +90,11 @@ interface AirBookState {
   isCommandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
   toggleCommandPalette: () => void;
+
+  // Pricing Modal State
+  isPricingModalOpen: boolean;
+  openPricingModal: () => void;
+  closePricingModal: () => void;
 
   // Data Collections
   services: Service[];
@@ -250,6 +275,25 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   setSelectedDateStr: (dateStr) => set({ selectedDateStr: dateStr }),
   viewMode: 'week',
   setViewMode: (mode) => set({ viewMode: mode }),
+  selectedStaffId: 'all',
+  setSelectedStaffId: (id) => set({ selectedStaffId: id }),
+
+  providerColorMode: 'auto',
+  setProviderColorMode: (mode) => set({ providerColorMode: mode }),
+
+  addons: { hipaa: false, esign: true, kyc: false },
+  setAddons: (newAddons) => set((state) => ({ addons: { ...state.addons, ...newAddons } })),
+  toggleAddon: (key) => set((state) => ({ addons: { ...state.addons, [key]: !state.addons[key] } })),
+  isBetaAccess: false,
+  setBetaAccess: (enabled) => set({ isBetaAccess: enabled }),
+  unlockBetaWithCode: (code) => {
+    const validCodes = ['AIRBOOK-BETA-2026', 'BETA', 'EARLYACCESS', 'AIRBOOKVIP'];
+    const isValid = validCodes.includes(code.trim().toUpperCase());
+    if (isValid) {
+      set({ isBetaAccess: true });
+    }
+    return isValid;
+  },
 
   isBookingDrawerOpen: false,
   selectedSlotTime: null,
@@ -259,6 +303,10 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   isCommandPaletteOpen: false,
   setCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
   toggleCommandPalette: () => set((state) => ({ isCommandPaletteOpen: !state.isCommandPaletteOpen })),
+
+  isPricingModalOpen: false,
+  openPricingModal: () => set({ isPricingModalOpen: true }),
+  closePricingModal: () => set({ isPricingModalOpen: false }),
 
   // Defaults to empty array so real DB data populates without hardcoded overrides!
   services: [],

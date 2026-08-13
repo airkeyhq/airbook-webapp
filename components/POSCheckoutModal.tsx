@@ -96,14 +96,72 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           </button>
 
           {isCompleted ? (
-            <div className="py-8 text-center flex flex-col items-center gap-3">
+            <div className="py-6 text-center flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
                 <CheckmarkCircle24Regular className="w-10 h-10 stroke-[2.5]" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--text-primary)]">Payment Successful!</h3>
-              <p className="text-xs text-[var(--text-secondary)]">
-                ${finalTotal} charged via {paymentMethod === 'cash' ? 'Cash' : 'Stripe'}. ${staffEarnings} deposited to {staffName.split(' ')[0]}'s balance.
-              </p>
+              <div>
+                <h3 className="text-xl font-bold text-[var(--text-primary)]">Payment Successful!</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-1">
+                  ${finalTotal} charged via {paymentMethod === 'cash' ? 'Cash' : 'Stripe'}. ${staffEarnings} allocated to {staffName.split(' ')[0]}.
+                </p>
+              </div>
+
+              {/* Action Buttons: Print Thermal Receipt & Close */}
+              <div className="flex flex-col sm:flex-row items-center gap-2 w-full pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const printWin = window.open('', '_blank', 'width=400,height=600');
+                    if (printWin) {
+                      printWin.document.write(`
+                        <html>
+                          <head>
+                            <title>Receipt - ${clientName}</title>
+                            <style>
+                              body { font-family: monospace; padding: 20px; text-align: center; width: 280px; margin: auto; }
+                              .divider { border-top: 1px dashed #000; margin: 10px 0; }
+                              .flex { display: flex; justify-content: space-between; font-size: 12px; }
+                              .bold { font-weight: bold; }
+                              .title { font-size: 16px; font-weight: bold; }
+                            </style>
+                          </head>
+                          <body>
+                            <div class="title">AIRBOOK POS</div>
+                            <div>RECEIPT #${Date.now().toString().slice(-6)}</div>
+                            <div>${new Date().toLocaleString()}</div>
+                            <div class="divider"></div>
+                            <div class="flex"><span>CLIENT:</span><span>${clientName}</span></div>
+                            <div class="flex"><span>STAFF:</span><span>${staffName}</span></div>
+                            <div class="divider"></div>
+                            <div class="flex"><span>${serviceName}</span><span>$${totalPrice}</span></div>
+                            <div class="flex"><span>TIP</span><span>$${tipAmount}</span></div>
+                            <div class="divider"></div>
+                            <div class="flex bold" style="font-size: 14px;"><span>TOTAL PAID</span><span>$${finalTotal}</span></div>
+                            <div class="flex"><span>METHOD</span><span>${paymentMethod.toUpperCase()}</span></div>
+                            <div class="divider"></div>
+                            <div style="font-size: 10px; margin-top: 15px;">THANK YOU FOR YOUR VISIT!</div>
+                          </body>
+                        </html>
+                      `);
+                      printWin.document.close();
+                      printWin.focus();
+                      printWin.print();
+                    }
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-sm flex items-center justify-center gap-1.5"
+                >
+                  📄 Print Thermal Receipt
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-full py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
+                >
+                  Close Window
+                </button>
+              </div>
             </div>
           ) : (
             <div className="stack-md">

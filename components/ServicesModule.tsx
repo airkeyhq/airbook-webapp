@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
-import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular } from '@fluentui/react-icons';
+import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
 interface ServiceItem {
   id: string;
@@ -27,6 +27,11 @@ export const ServicesModule: React.FC = () => {
   const [duration, setDuration] = useState('45');
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Smart Dynamic Pricing State
+  const [peakPricingEnabled, setPeakPricingEnabled] = useState(true);
+  const [weekendSurgePercent, setWeekendSurgePercent] = useState('15');
+  const [offPeakDiscountPercent, setOffPeakDiscountPercent] = useState('10');
 
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
   const demoServices = useAirBookStore((s) => s.services);
@@ -109,7 +114,25 @@ export const ServicesModule: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* Quick Service Form */}
+      {/* Smart Dynamic Pricing Control Card - Roadmap Teaser */}
+      <div className="p-4 rounded-3xl glass-panel bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10 border border-blue-500/20 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Money24Regular className="w-5 h-5 text-blue-500" />
+            <div>
+              <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
+                Smart Dynamic Pricing Engine
+              </h3>
+              <p className="text-[11px] text-[var(--text-secondary)]">
+                Automatically adjust service prices based on peak hours, weekend demand, and off-peak times.
+              </p>
+            </div>
+          </div>
+          <span className="px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+            {t('comingSoonV11')}
+          </span>
+        </div>
+      </div>
       {showForm && (
         <motion.form
           initial={{ opacity: 0, y: -10 }}

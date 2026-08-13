@@ -21,7 +21,10 @@ import {
   Link24Regular,
   Alert24Regular,
   LockClosed24Regular,
+  LockClosed16Filled,
   Mail24Regular,
+  Mail24Filled,
+  Add24Regular,
   Add24Filled,
   Dismiss24Filled,
   Globe24Regular,
@@ -35,13 +38,12 @@ import {
   CheckmarkCircle24Filled,
 } from '@fluentui/react-icons';
 
-type SettingsTab = 'profile' | 'workspace' | 'team' | 'addons';
+type SettingsTab = 'profile' | 'workspace' | 'addons';
 
-const TAB_LIST: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
-  { id: 'profile', label: 'My Profile', icon: Person24Filled },
-  { id: 'workspace', label: 'Workspace', icon: Building24Filled },
-  { id: 'team', label: 'Team & Invites', icon: People24Filled },
-  { id: 'addons', label: 'Add-On Modules', icon: Sparkle24Filled },
+const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
+  { id: 'profile', labelKey: 'myProfile', icon: Person24Regular },
+  { id: 'workspace', labelKey: 'workspace', icon: Building24Regular },
+  { id: 'addons', labelKey: 'addOns', icon: Sparkle24Regular },
 ];
 
 /* ─── Toggle Switch ─── */
@@ -49,23 +51,41 @@ function Toggle({
   enabled,
   onToggle,
   color = 'bg-blue-600',
+  disabled = false,
+  locked = false,
 }: {
   enabled: boolean;
   onToggle: () => void;
   color?: string;
+  disabled?: boolean;
+  locked?: boolean;
 }) {
   return (
     <button
       type="button"
-      onClick={onToggle}
-      className={`relative w-11 h-6 rounded-full p-0.5 transition-colors flex items-center ${enabled ? color : 'bg-black/10 dark:bg-white/20'}`}
+      disabled={disabled || locked}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!locked && !disabled) onToggle();
+      }}
+      className={`relative w-11 h-6 rounded-full p-0.5 transition-colors flex items-center ${
+        locked
+          ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed'
+          : enabled
+          ? color
+          : 'bg-black/10 dark:bg-white/20'
+      }`}
       aria-pressed={enabled}
     >
       <motion.div
-        animate={{ x: enabled ? 20 : 0 }}
+        animate={{ x: enabled && !locked ? 20 : 0 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className="w-5 h-5 rounded-full bg-white shadow-sm"
-      />
+        className="w-5 h-5 rounded-full bg-white dark:bg-slate-200 shadow-sm flex items-center justify-center text-[10px]"
+      >
+        {locked ? (
+          <LockClosed16Filled className="w-3 h-3 text-slate-500 dark:text-slate-700" />
+        ) : null}
+      </motion.div>
     </button>
   );
 }
@@ -105,12 +125,14 @@ const INPUT_CLS =
   'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug } = useAirBookStore();
+  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
 
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+  const [isBetaModalOpen, setIsBetaModalOpen] = useState(false);
+  const [betaInputCode, setBetaInputCode] = useState('');
 
   // Profile state - Dynamically initialized from session
   const [profileName, setProfileName] = useState(session?.user?.name || '');
@@ -142,10 +164,7 @@ export const SettingsModule: React.FC = () => {
   const [noShowFee, setNoShowFee] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Team state
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState<'staff' | 'manager'>('staff');
-  const [pendingInvites, setPendingInvites] = useState<{ email: string; role: string }[]>([]);
+
 
   // Add-ons state
   const [hipaa, setHipaa] = useState(false);
@@ -198,17 +217,7 @@ export const SettingsModule: React.FC = () => {
     }
   };
 
-  const sendInvite = () => {
-    if (!inviteEmail.trim()) return;
-    setPendingInvites((prev) => [...prev, { email: inviteEmail.trim(), role: inviteRole }]);
-    setInviteEmail('');
-    addToast(`Invite sent to ${inviteEmail.trim()}`, 'success');
-  };
 
-  const revokeInvite = (email: string) => {
-    setPendingInvites((prev) => prev.filter((i) => i.email !== email));
-    addToast('Invite revoked.', 'info');
-  };
 
   const saveAddons = () => {
     addToast('Add-on modules updated.', 'success');
@@ -218,9 +227,9 @@ export const SettingsModule: React.FC = () => {
     <div className="w-full max-w-3xl mx-auto p-4 sm:p-6 space-y-5 pb-20">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">Settings</h2>
+        <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">{t('settingsTitle')}</h2>
         <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-          Manage your profile, workspace, team, and feature modules.
+          {t('settingsDesc')}
         </p>
       </div>
 
@@ -240,7 +249,7 @@ export const SettingsModule: React.FC = () => {
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
-              <span>{tab.label}</span>
+              <span>{t(tab.labelKey as any)}</span>
             </button>
           );
         })}
@@ -257,7 +266,7 @@ export const SettingsModule: React.FC = () => {
             transition={{ duration: 0.15 }}
             className="space-y-4"
           >
-            <Section title="Personal Info" icon={Person24Regular}>
+            <Section title={t('personalInfo')} icon={Person24Regular}>
               <form onSubmit={saveProfile} className="space-y-4">
                 {/* Avatar */}
                 <div className="flex items-center gap-4">
@@ -405,58 +414,28 @@ export const SettingsModule: React.FC = () => {
               </div>
             </Section>
 
-            {/* Notifications */}
+            {/* Notifications - Roadmap Teaser */}
             <Section title={t('notificationPreferences')} icon={Alert24Regular}>
-              <div className="space-y-3">
-                {[
-                  { label: t('emailNotifs'), desc: t('emailNotifsDesc'), val: notifEmail, set: setNotifEmail },
-                  { label: t('smsNotifs'), desc: t('smsNotifsDesc'), val: notifSMS, set: setNotifSMS },
-                  { label: t('pushNotifs'), desc: t('pushNotifsDesc'), val: notifPush, set: setNotifPush },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-                    <div>
-                      <p className="text-xs font-bold text-[var(--text-primary)]">{item.label}</p>
-                      <p className="text-[11px] text-[var(--text-secondary)]">{item.desc}</p>
-                    </div>
-                    <Toggle enabled={item.val} onToggle={() => item.set(!item.val)} />
-                  </div>
-                ))}
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Push, email, and SMS notifications are coming soon.
+                </p>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+                  {t('comingSoonV11')}
+                </span>
               </div>
             </Section>
 
-            {/* Change password */}
+            {/* Change password - Roadmap Teaser */}
             <Section title={t('changePassword')} icon={LockClosed24Regular}>
-              <form onSubmit={changePassword} className="space-y-3">
-                <Field label={t('currentPassword')}>
-                  <div className="relative">
-                    <input
-                      type={showCurrentPw ? 'text' : 'password'}
-                      value={currentPw}
-                      onChange={(e) => setCurrentPw(e.target.value)}
-                      placeholder="••••••••"
-                      className={INPUT_CLS + ' pr-10'}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrentPw(!showCurrentPw)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    >
-                      {showCurrentPw ? <EyeOff24Filled className="w-4 h-4" /> : <Eye24Filled className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </Field>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label={t('newPassword')}>
-                    <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder={t('min8Chars')} className={INPUT_CLS} />
-                  </Field>
-                  <Field label={t('confirmPassword')}>
-                    <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} placeholder="••••••••" className={INPUT_CLS} />
-                  </Field>
-                </div>
-                <motion.button whileTap={{ scale: 0.97 }} type="submit" className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md">
-                  {t('updatePassword')}
-                </motion.button>
-              </form>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Password management will be available via the unified authentication portal in an upcoming release.
+                </p>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+                  {t('comingSoonV11')}
+                </span>
+              </div>
             </Section>
           </motion.div>
         )}
@@ -573,171 +552,162 @@ export const SettingsModule: React.FC = () => {
           </motion.div>
         )}
 
-        {/* ─── TAB: TEAM ─── */}
-        {activeTab === 'team' && (
-          <motion.div
-            key="team"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            className="space-y-4"
-          >
-            <Section title={t('inviteTeamMembers')} icon={Add24Filled}>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <Mail24Regular className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); sendInvite(); } }}
-                    placeholder="colleague@business.com"
-                    className={INPUT_CLS + ' pl-9'}
-                  />
-                </div>
-                <select
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as 'staff' | 'manager')}
-                  className="px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none"
-                >
-                  <option value="staff">{t('staff')}</option>
-                  <option value="manager">{t('manager')}</option>
-                </select>
-                <motion.button
-                  whileTap={{ scale: 0.93 }}
-                  type="button"
-                  onClick={sendInvite}
-                  className="px-4 py-2.5 rounded-xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs"
-                >
-                  {t('invite')}
-                </motion.button>
-              </div>
 
-              {/* Pending invites */}
-              {pendingInvites.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">{t('pendingInvites')}</p>
-                  {pendingInvites.map((inv) => (
-                    <div key={inv.email} className="flex items-center justify-between p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-xs">
-                      <div>
-                        <span className="font-bold text-[var(--text-primary)]">{inv.email}</span>
-                        <span className="ml-2 px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 text-[10px] font-bold capitalize">{inv.role}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => revokeInvite(inv.email)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        <Dismiss24Filled className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Section>
-
-            <Section title={t('currentTeam')} icon={People24Regular}>
-              <div className="space-y-3">
-                {staffMembers.map((stf) => (
-                  <div key={stf.id} className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{stf.avatar}</span>
-                      <div>
-                        <p className="text-xs font-bold text-[var(--text-primary)]">{stf.name}</p>
-                        <p className="text-[11px] text-[var(--text-secondary)]">{stf.role}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold">{t('owner')}</span>
-                      <button type="button" className="text-gray-400 hover:text-[var(--text-primary)] transition-colors p-1 rounded-lg hover:bg-black/5">
-                        <Dismiss24Filled className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Section>
-          </motion.div>
-        )}
 
         {/* ─── TAB: ADD-ONS ─── */}
-        {activeTab === 'addons' && (
-          <motion.div
-            key="addons"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            className="space-y-4"
-          >
-            <Section title={t('industryAddons')} icon={Sparkle24Regular}>
-              <p className="text-xs text-[var(--text-secondary)]">
-                {t('industryAddonsDesc')}
-              </p>
+        {activeTab === 'addons' && (() => {
+          const isLocalDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+          const canAccessAddons = isLocalDev || isBetaAccess;
 
-              {[
-                {
-                  icon: Shield24Regular,
-                  iconColor: 'text-blue-500',
-                  title: t('hipaaTitle'),
-                  desc: t('hipaaDesc'),
-                  val: hipaa,
-                  set: setHipaa,
-                  color: 'bg-blue-600',
-                },
-                {
-                  icon: DocumentCheckmark24Regular,
-                  iconColor: 'text-purple-500',
-                  title: t('esignTitle'),
-                  desc: t('esignDesc'),
-                  val: esign,
-                  set: setEsign,
-                  color: 'bg-purple-600',
-                },
-                {
-                  icon: Person24Regular,
-                  iconColor: 'text-green-500',
-                  title: t('kycTitle'),
-                  desc: t('kycDesc'),
-                  val: kyc,
-                  set: setKyc,
-                  color: 'bg-green-600',
-                },
-              ].map((mod) => {
-                const Icon = mod.icon;
-                return (
-                  <div
-                    key={mod.title}
-                    className={`flex items-start justify-between p-4 rounded-2xl border transition-colors ${
-                      mod.val
-                        ? 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10'
-                        : 'bg-black/3 dark:bg-white/3 border-black/5 dark:border-white/5'
-                    }`}
+          return (
+            <motion.div
+              key="addons"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-4"
+            >
+              {/* Beta Access Badge Status */}
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs">
+                <div className="flex items-center gap-2">
+                  <LockClosed24Regular className={`w-4 h-4 ${canAccessAddons ? 'text-emerald-500' : 'text-amber-500'}`} />
+                  <span className="font-bold text-[var(--text-primary)]">{t('betaAccessTitle')}</span>
+                </div>
+                {canAccessAddons ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold">
+                    {isLocalDev ? t('localDevActive') : '⚡ Beta Unlocked'}
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsBetaModalOpen(true)}
+                    className="px-3 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[11px] font-bold transition-colors"
                   >
-                    <div className="flex items-start gap-3 flex-1 min-w-0 pr-4">
-                      <Icon className={`w-5 h-5 ${mod.iconColor} mt-0.5 flex-shrink-0`} />
+                    {t('enterBetaCode')}
+                  </button>
+                )}
+              </div>
+
+              <Section title={t('industryAddons')} icon={Sparkle24Regular}>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  {t('industryAddonsDesc')}
+                </p>
+
+                {/* Lock Overlay Banner if not in Beta or Local Dev */}
+                {!canAccessAddons && (
+                  <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-500/20 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex-shrink-0">
+                        <LockClosed24Regular className="w-5 h-5" />
+                      </div>
                       <div>
-                        <h4 className="text-xs font-bold text-[var(--text-primary)]">{mod.title}</h4>
-                        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{mod.desc}</p>
+                        <h4 className="text-xs font-black text-[var(--text-primary)]">{t('betaAccessTitle')}</h4>
+                        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
+                          {t('betaAccessDesc')}
+                        </p>
+                        <p className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 mt-1">
+                          {t('betaAccessRule')}
+                        </p>
                       </div>
                     </div>
-                    <Toggle enabled={mod.val} onToggle={() => mod.set(!mod.val)} color={mod.color} />
+                    <div className="flex items-center gap-2 pt-2 border-t border-amber-500/10">
+                      <button
+                        type="button"
+                        onClick={() => setIsBetaModalOpen(true)}
+                        className="px-4 py-2 rounded-xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-sm hover:opacity-90 transition-opacity"
+                      >
+                        🔑 {t('enterBetaCode')}
+                      </button>
+                    </div>
                   </div>
-                );
-              })}
+                )}
 
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={saveAddons}
-                className="w-full py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-lg"
-              >
-                {t('saveAddons')}
-              </motion.button>
-            </Section>
-          </motion.div>
-        )}
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 'hipaa' as const,
+                      icon: Shield24Regular,
+                      iconColor: 'text-blue-500',
+                      title: t('hipaaTitle'),
+                      desc: t('hipaaDesc'),
+                      val: addons.hipaa,
+                      color: 'bg-blue-600',
+                    },
+                    {
+                      id: 'esign' as const,
+                      icon: DocumentCheckmark24Regular,
+                      iconColor: 'text-purple-500',
+                      title: t('esignTitle'),
+                      desc: t('esignDesc'),
+                      val: addons.esign,
+                      color: 'bg-purple-600',
+                    },
+                    {
+                      id: 'kyc' as const,
+                      icon: Person24Regular,
+                      iconColor: 'text-green-500',
+                      title: t('kycTitle'),
+                      desc: t('kycDesc'),
+                      val: addons.kyc,
+                      color: 'bg-green-600',
+                    },
+                  ].map((mod) => {
+                    const Icon = mod.icon;
+                    return (
+                      <div
+                        key={mod.id}
+                        onClick={() => {
+                          if (!canAccessAddons) {
+                            setIsBetaModalOpen(true);
+                          }
+                        }}
+                        className={`flex items-start justify-between p-4 rounded-2xl border transition-colors ${
+                          !canAccessAddons
+                            ? 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 opacity-75 cursor-pointer hover:border-amber-500/30'
+                            : mod.val
+                            ? 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10'
+                            : 'bg-black/3 dark:bg-white/3 border-black/5 dark:border-white/5'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3 flex-1 min-w-0 pr-4">
+                          <Icon className={`w-5 h-5 ${mod.iconColor} mt-0.5 flex-shrink-0`} />
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <h4 className="text-xs font-bold text-[var(--text-primary)]">{mod.title}</h4>
+                              {!canAccessAddons && (
+                                <span className="px-1.5 py-0.2 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[9px] font-extrabold flex items-center gap-0.5">
+                                  <LockClosed16Filled className="w-2.5 h-2.5" /> Beta
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{mod.desc}</p>
+                          </div>
+                        </div>
+                        <Toggle
+                          enabled={mod.val}
+                          onToggle={() => canAccessAddons && toggleAddon(mod.id)}
+                          color={mod.color}
+                          locked={!canAccessAddons}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  disabled={!canAccessAddons}
+                  onClick={saveAddons}
+                  className="w-full py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t('saveAddons')}
+                </motion.button>
+              </Section>
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Toast notifications */}
@@ -746,17 +716,97 @@ export const SettingsModule: React.FC = () => {
       {/* Confirm delete workspace */}
       <ConfirmDialog
         isOpen={confirmDelete}
-        title="Delete Workspace?"
-        description="This will permanently remove all bookings, clients, staff data, and settings. This action cannot be undone."
-        confirmLabel="Yes, Delete Everything"
-        cancelLabel="Keep Workspace"
+        title={t('deleteWorkspace')}
+        description={t('dangerZoneDesc')}
+        confirmLabel={t('deleteWorkspace')}
+        cancelLabel={t('cancel')}
         variant="danger"
         onConfirm={() => {
           setConfirmDelete(false);
-          addToast('Workspace deletion requested. Redirecting…', 'error');
+          addToast(t('dangerZoneDesc'), 'error');
         }}
         onCancel={() => setConfirmDelete(false)}
       />
+
+      {/* Beta Access Key Modal */}
+      <AnimatePresence>
+        {isBetaModalOpen && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsBetaModalOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-md glass-panel rounded-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border border-white/80 dark:border-white/10 z-10 space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <LockClosed24Regular className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base font-black text-[var(--text-primary)]">{t('enterBetaCode')}</h3>
+                </div>
+                <button
+                  onClick={() => setIsBetaModalOpen(false)}
+                  className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
+                >
+                  <Dismiss24Filled className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                {t('betaAccessRule')}
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const success = unlockBetaWithCode(betaInputCode);
+                  if (success) {
+                    addToast(t('betaUnlockedSuccess'), 'success');
+                    setIsBetaModalOpen(false);
+                    setBetaInputCode('');
+                  } else {
+                    addToast(t('invalidBetaCode'), 'error');
+                  }
+                }}
+                className="space-y-3 pt-2"
+              >
+                <input
+                  type="text"
+                  value={betaInputCode}
+                  onChange={(e) => setBetaInputCode(e.target.value)}
+                  placeholder={t('betaCodePlaceholder')}
+                  className="w-full px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-bold tracking-wider text-[var(--text-primary)] uppercase focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  autoFocus
+                />
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsBetaModalOpen(false)}
+                    className="flex-1 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors"
+                  >
+                    {t('unlockBeta')}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

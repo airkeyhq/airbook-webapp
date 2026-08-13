@@ -37,7 +37,7 @@ interface DesktopSidebarProps {
 }
 
 export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setActiveTab }) => {
-  const { appointments, isSidebarCollapsed, toggleSidebar } = useAirBookStore();
+  const { appointments, isSidebarCollapsed, toggleSidebar, openPricingModal } = useAirBookStore();
   const { t } = useTranslation();
 
   const NAV_ITEMS = [
@@ -45,17 +45,17 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
     { id: 'crm' as DashboardTab, label: t('tabCrm'), icon: Person24Filled },
     { id: 'pos' as DashboardTab, label: t('tabPos'), icon: Payment24Filled },
     { id: 'team' as DashboardTab, label: t('tabTeam'), icon: People24Filled },
-    { id: 'inventory' as DashboardTab, label: t('tabInventory'), icon: Box24Filled },
-    { id: 'marketing' as DashboardTab, label: t('tabMarketing'), icon: Sparkle24Filled },
-    { id: 'memberships' as DashboardTab, label: t('tabPackages'), icon: Tag24Filled },
-    { id: 'marketplace' as DashboardTab, label: t('tabMarketplace'), icon: ShoppingBag24Filled },
+    { id: 'inventory' as DashboardTab, label: t('tabInventory'), icon: Box24Filled, soon: true },
+    { id: 'marketing' as DashboardTab, label: t('tabMarketing'), icon: Sparkle24Filled, soon: true },
+    { id: 'memberships' as DashboardTab, label: t('tabPackages'), icon: Tag24Filled, soon: true },
+    { id: 'marketplace' as DashboardTab, label: t('tabMarketplace'), icon: ShoppingBag24Filled, soon: true },
     { id: 'analytics' as DashboardTab, label: t('tabAnalytics'), icon: DataTrending24Filled },
     { id: 'settings' as DashboardTab, label: t('tabSettings'), icon: Settings24Filled },
   ];
 
   return (
     <aside
-      className={`hidden md:flex flex-col bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[24px] p-3 flex-shrink-0 h-full shadow-md shadow-black/5 dark:shadow-black/30 transition-all duration-300 ease-in-out relative ${
+      className={`hidden md:flex flex-col bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[24px] p-3 flex-shrink-0 h-full shadow-md shadow-black/5 dark:shadow-black/30 transition-all duration-150 ease-out relative ${
         isSidebarCollapsed ? 'w-[72px] overflow-visible z-[99999]' : 'w-64 overflow-y-auto z-20'
       }`}
     >
@@ -115,6 +115,12 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                   {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
 
+                {!isSidebarCollapsed && item.soon && (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-extrabold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex-shrink-0">
+                    {t('comingSoon')}
+                  </span>
+                )}
+
                 {!isSidebarCollapsed && item.badge !== undefined && (
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-mono flex-shrink-0 ${
@@ -137,6 +143,11 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
               {isSidebarCollapsed && (
                 <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] flex items-center gap-2 drop-shadow-2xl">
                   <span>{item.label}</span>
+                  {item.soon && (
+                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-extrabold bg-amber-500/20 text-amber-400">
+                      SOON
+                    </span>
+                  )}
                   {item.badge !== undefined && item.badge > 0 && (
                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500 text-white">
                       {item.badge}
@@ -150,29 +161,44 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
         })}
       </nav>
 
-      {/* Enterprise Promo Card */}
-      {!isSidebarCollapsed ? (
-        <div className="mt-auto p-4 rounded-3xl glass-panel bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-pink-500/10 border border-blue-500/20 text-xs space-y-2">
-          <div className="flex items-center gap-1.5 font-extrabold text-blue-600 dark:text-blue-400">
-            <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">{t('enterpriseTitle')}</span>
+      {/* Sidebar Footer Card: Upgrade to Pro */}
+      <div className="mt-auto pt-2">
+        {!isSidebarCollapsed ? (
+          <div className="p-3.5 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
+            <div className="flex items-center justify-between font-extrabold text-amber-600 dark:text-amber-400">
+              <div className="flex items-center gap-1.5">
+                <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{t('upgradeToPro')}</span>
+              </div>
+              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider">PRO</span>
+            </div>
+            <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
+              {t('upgradeProDesc')}
+            </p>
+            <button
+              type="button"
+              onClick={openPricingModal}
+              className="w-full py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-[11px] shadow-md transition-all active:scale-96"
+            >
+              {t('upgradeNow')}
+            </button>
           </div>
-          <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
-            {t('enterpriseDesc')}
-          </p>
-        </div>
-      ) : (
-        <div className="relative group mt-auto">
-          <div className="mx-auto w-10 h-10 rounded-2xl glass-panel bg-gradient-to-br from-blue-500/10 to-pink-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 cursor-pointer">
-            <Sparkle24Filled className="w-4 h-4" />
+        ) : (
+          <div className="relative group">
+            <button
+              type="button"
+              onClick={openPricingModal}
+              className="mx-auto w-10 h-10 rounded-2xl glass-panel bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 cursor-pointer hover:scale-105 transition-transform"
+            >
+              <Sparkle24Filled className="w-4 h-4" />
+            </button>
+            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] drop-shadow-2xl">
+              <span>{t('upgradeToPro')}</span>
+              <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
+            </div>
           </div>
-
-          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] drop-shadow-2xl">
-            <span>{t('enterpriseTitle')}</span>
-            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 };

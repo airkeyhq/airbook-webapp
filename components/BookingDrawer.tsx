@@ -18,9 +18,13 @@ export const BookingDrawer: React.FC = () => {
   } = useAirBookStore();
   const { t } = useTranslation();
 
+  const storeSelectedStaffId = useAirBookStore((s) => s.selectedStaffId);
+
   const [clientName, setClientName] = useState('');
   const [selectedServiceId, setSelectedServiceId] = useState(services[0]?.id || '');
-  const [selectedStaffId, setSelectedStaffId] = useState(staffMembers[0]?.id || '');
+  const [selectedStaffId, setSelectedStaffId] = useState(
+    storeSelectedStaffId !== 'all' ? storeSelectedStaffId : staffMembers[0]?.id || ''
+  );
   const [startTime, setStartTime] = useState(selectedSlotTime || '14:00');
   const [notes, setNotes] = useState('');
   const [selectedColor, setSelectedColor] = useState('#FF4D8D');

@@ -10,114 +10,91 @@ export const MarketingModule: React.FC = () => {
   const [rebookingDays, setRebookingDays] = useState('21');
   const [googleReviewEnabled, setGoogleReviewEnabled] = useState(true);
   const [isSent, setIsSent] = useState(false);
+  const [lastNotificationLog, setLastNotificationLog] = useState<{ recipient: string; provider: string; timestamp: string } | null>(null);
 
-  const handleTestCampaign = () => {
+  const handleTestCampaign = async () => {
     setIsSent(true);
+    try {
+      const res = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'sms',
+          recipient: '+1 (555) 234-5678',
+          message: t('smsPreviewText').replace('{days}', rebookingDays),
+        }),
+      });
+      const data = await res.json();
+      if (data.log) {
+        setLastNotificationLog({
+          recipient: data.log.recipient,
+          provider: data.provider || 'AirBook Notification Engine',
+          timestamp: new Date(data.log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to call notification API:', e);
+    }
     setTimeout(() => setIsSent(false), 2500);
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
+    <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
-          {t('marketingTitle')}
-        </h2>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-          {t('marketingDesc')}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--border-subtle)]">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+              {t('marketingTitle')}
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase">
+              {t('comingSoonV11')}
+            </span>
+          </div>
+          <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
+            {t('marketingDesc')}
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Campaign 1: 3-Week Re-Booking Automation */}
-        <div className="p-6 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Flash24Regular className="w-5 h-5 text-amber-500" />
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">
-              {t('rebookingTriggerTitle')}
-            </h3>
-          </div>
+      {/* Honest Roadmap Teaser Card */}
+      <div className="p-8 rounded-3xl glass-panel bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-indigo-500/10 border border-purple-500/20 text-center space-y-4 shadow-sm">
+        <div className="w-14 h-14 rounded-3xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
+          <Sparkle24Filled className="w-7 h-7" />
+        </div>
+
+        <div className="max-w-md mx-auto space-y-2">
+          <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+            Marketing IA y Automatizaciones
+          </h3>
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-            {t('rebookingTriggerDesc')}
+            Estamos construyendo un motor de marketing inteligente para enviar automáticamente recordatorios por WhatsApp a clientes frecuentes y gestionar reseñas de Google.
           </p>
+        </div>
 
-          <div className="space-y-3 pt-2">
+        <div className="pt-3 max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-start gap-2.5">
+            <CheckmarkCircle24Regular className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                {t('triggerTiming')}
-              </label>
-              <select
-                value={rebookingDays}
-                onChange={(e) => setRebookingDays(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none"
-              >
-                <option value="14">{t('days14')}</option>
-                <option value="21">{t('days21')}</option>
-                <option value="30">{t('days30')}</option>
-              </select>
+              <p className="text-xs font-bold text-[var(--text-primary)]">Re-Reserva Automática (21 Días)</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">Envío automático por WhatsApp.</p>
             </div>
+          </div>
 
-            {/* Preview Box */}
-            <div className="p-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-500/20 text-xs font-mono space-y-1">
-              <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold block uppercase">
-                {t('smsPreviewHeader')}
-              </span>
-              <p className="text-[11px] text-[var(--text-primary)]">
-                {t('smsPreviewText').replace('{days}', rebookingDays)}
-              </p>
+          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-start gap-2.5">
+            <CheckmarkCircle24Regular className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-bold text-[var(--text-primary)]">Captura de Reseñas en Google</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">Solicitudes tras cada cita completada.</p>
             </div>
           </div>
         </div>
 
-        {/* Campaign 2: Google Review Automation */}
-        <div className="p-6 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Star24Regular className="w-5 h-5 text-amber-500" />
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">
-              {t('googleReviewTitle')}
-            </h3>
-          </div>
-          <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-            {t('googleReviewDesc')}
-          </p>
-
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-              <span className="text-xs font-semibold text-[var(--text-primary)]">
-                {t('autoSendReviews')}
-              </span>
-              <button
-                type="button"
-                onClick={() => setGoogleReviewEnabled(!googleReviewEnabled)}
-                className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                  googleReviewEnabled ? 'bg-green-500' : 'bg-black/10 dark:bg-white/20'
-                }`}
-              >
-                <motion.div
-                  animate={{ x: googleReviewEnabled ? 24 : 0 }}
-                  className="w-4 h-4 rounded-full bg-white shadow-sm"
-                />
-              </button>
-            </div>
-
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              onClick={handleTestCampaign}
-              className="w-full py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md flex items-center justify-center gap-2"
-            >
-              {isSent ? (
-                <>
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-green-500" />
-                  <span>{t('testSmsSent')}</span>
-                </>
-              ) : (
-                <>
-                  <Send24Filled className="w-4 h-4" />
-                  <span>{t('sendTestSms')}</span>
-                </>
-              )}
-            </motion.button>
-          </div>
+        <div className="pt-2">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-purple-500/15 text-purple-700 dark:text-purple-300 text-xs font-extrabold">
+            <Sparkle24Filled className="w-3.5 h-3.5" />
+            <span>Programado para el lanzamiento de AirBook v1.1</span>
+          </span>
         </div>
       </div>
     </div>

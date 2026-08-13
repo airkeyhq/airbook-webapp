@@ -258,7 +258,7 @@ export default function DashboardPage() {
           {/* Module 4: Team, Shifts & Payroll */}
           {activeTab === 'team' && (
             <div className="flex-1 overflow-y-auto p-4">
-              <StaffModule />
+              <StaffModule onNavigateToCalendar={() => setActiveTab('calendar')} />
             </div>
           )}
 

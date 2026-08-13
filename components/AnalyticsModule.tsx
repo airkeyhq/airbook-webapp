@@ -69,7 +69,6 @@ export const AnalyticsModule: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Total Revenue</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">${rev.toLocaleString()}</span>
-                <span className="text-xs font-bold text-green-500 flex items-center">+14% <ArrowUp24Regular className="w-3 h-3" /></span>
               </div>
             </div>
 
@@ -77,7 +76,6 @@ export const AnalyticsModule: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Net Profit</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">${net.toLocaleString()}</span>
-                <span className="text-xs font-bold text-emerald-500 flex items-center">+11% <ArrowUp24Regular className="w-3 h-3" /></span>
               </div>
             </div>
 
@@ -85,7 +83,6 @@ export const AnalyticsModule: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Appointments</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">{apts}</span>
-                <span className="text-xs font-bold text-blue-500 flex items-center">+8% <ArrowUp24Regular className="w-3 h-3" /></span>
               </div>
             </div>
 
@@ -93,24 +90,8 @@ export const AnalyticsModule: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Total Clients</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">{clientsCount}</span>
-                <span className="text-xs font-bold text-green-500 flex items-center">+5% <ArrowUp24Regular className="w-3 h-3" /></span>
               </div>
             </div>
-          </div>
-
-          {/* Merchant Capital Offer */}
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white space-y-3 shadow-xl border border-blue-500/30">
-            <div className="flex items-center gap-2">
-              <Sparkle24Regular className="w-5 h-5 text-amber-300" />
-              <h3 className="text-sm font-extrabold text-white tracking-tight">AirBook Capital — Pre-Approved Merchant Advance</h3>
-            </div>
-            <p className="text-xs text-blue-50 max-w-xl leading-relaxed font-medium">
-              Based on your historical platform booking volume (${rev}), your business qualifies for up to <strong className="text-white font-bold">$15,000</strong> in flexible working capital with automatic percentage-based repayments.
-            </p>
-            <button className="px-5 py-2.5 rounded-2xl bg-white text-blue-900 font-extrabold text-xs shadow-md hover:bg-blue-50 transition-colors flex items-center gap-1.5">
-              <Sparkle24Regular className="w-4 h-4 text-blue-600" />
-              <span>Accept $15,000 Advance</span>
-            </button>
           </div>
         </>
       )}

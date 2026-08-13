@@ -1,10 +1,10 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
-import { Add24Filled, Dismiss24Filled, People24Regular, Person24Regular } from '@fluentui/react-icons';
+import { useToast } from '@/components/Toast';
+import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
+import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled } from '@fluentui/react-icons';
 
 interface StaffItem {
   id: string;
@@ -17,11 +17,25 @@ interface StaffItem {
   isActive?: boolean;
 }
 
-export const StaffModule: React.FC = () => {
+interface StaffModuleProps {
+  onNavigateToCalendar?: () => void;
+}
+
+export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }) => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
+  const [activeTab, setActiveTab] = useState<'roster' | 'invites'>('roster');
   const [staffList, setStaffList] = useState<StaffItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedStaffForEdit, setSelectedStaffForEdit] = useState<StaffItem | null>(null);
+  const [showMoreActions, setShowMoreActions] = useState(false);
+
+  // Invite Team State
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState<'staff' | 'manager' | 'receptionist'>('staff');
+  const [pendingInvitesList, setPendingInvitesList] = useState<any[]>([]);
+  const [sendingInvite, setSendingInvite] = useState(false);
 
   // Form State
   const [name, setName] = useState('');
@@ -32,8 +46,19 @@ export const StaffModule: React.FC = () => {
   const [commissionPercent, setCommissionPercent] = useState(70);
   const [submitting, setSubmitting] = useState(false);
 
+  // Edit Modal Form State
+  const [editName, setEditName] = useState('');
+  const [editRole, setEditRole] = useState('');
+  const [editCommission, setEditCommission] = useState(70);
+  const [editShift, setEditShift] = useState('Mon - Fri (09:00 - 18:00)');
+  const [editChair, setEditChair] = useState('Sillón #1 / Station 1');
+
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
   const demoStaff = useAirBookStore((s) => s.staffMembers);
+  const setSelectedStaffId = useAirBookStore((s) => s.setSelectedStaffId);
+  const setViewMode = useAirBookStore((s) => s.setViewMode);
+  const providerColorMode = useAirBookStore((s) => s.providerColorMode);
+  const setProviderColorMode = useAirBookStore((s) => s.setProviderColorMode);
 
   const fetchStaff = async () => {
     try {
@@ -50,13 +75,107 @@ export const StaffModule: React.FC = () => {
     }
   };
 
+  const fetchInvitations = async () => {
+    try {
+      const res = await fetch('/api/invitations');
+      const data = await res.json();
+      if (data.success) {
+        setPendingInvitesList(data.invitations || []);
+      }
+    } catch (err) {
+      console.error('Failed to load invitations:', err);
+    }
+  };
+
   useEffect(() => {
     if (isDemoMode) {
       setStaffList(demoStaff as any);
     } else {
       fetchStaff();
+      fetchInvitations();
     }
   }, [isDemoMode, demoStaff]);
+
+  const handleSendInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inviteEmail || !inviteEmail.includes('@')) return;
+
+    try {
+      setSendingInvite(true);
+      const res = await fetch('/api/invitations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(t('inviteSentSuccess'), 'success');
+        setInviteEmail('');
+        fetchInvitations();
+      } else {
+        addToast(data.error || 'Failed to send invitation', 'error');
+      }
+    } catch (err) {
+      addToast('Error sending invitation', 'error');
+    } finally {
+      setSendingInvite(false);
+    }
+  };
+
+  const handleRevokeInvite = async (id: string) => {
+    try {
+      const res = await fetch(`/api/invitations?id=${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        addToast(t('inviteRevokedSuccess'), 'success');
+        fetchInvitations();
+      }
+    } catch (err) {
+      addToast('Failed to revoke invitation', 'error');
+    }
+  };
+
+  const handleCardClick = (stf: StaffItem) => {
+    setSelectedStaffForEdit(stf);
+    setEditName(stf.name);
+    setEditRole(stf.role);
+    setEditCommission(stf.commissionPercent ?? 70);
+    setEditShift('Mon - Fri (09:00 - 18:00)');
+    setEditChair('Sillón #1 / Station 1');
+  };
+
+  const handleViewCalendar = (staffId: string) => {
+    setSelectedStaffId(staffId);
+    setViewMode('day');
+    setSelectedStaffForEdit(null);
+    onNavigateToCalendar?.();
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedStaffForEdit) return;
+
+    try {
+      const res = await fetch('/api/staff', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: selectedStaffForEdit.id,
+          name: editName,
+          role: editRole,
+          commissionPercent: editCommission,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSelectedStaffForEdit(null);
+        fetchStaff();
+      }
+    } catch (err) {
+      console.error('Failed to update staff:', err);
+    }
+  };
 
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,87 +217,550 @@ export const StaffModule: React.FC = () => {
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
             {t('staffTitle')}
           </h2>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
             {t('staffDesc')}
           </p>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md hover:opacity-90 transition-opacity"
-        >
-          <Add24Filled className="w-4 h-4" />
-          <span>{t('addStaffMember')}</span>
-        </motion.button>
+        {activeTab === 'roster' && (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity whitespace-nowrap self-start sm:self-auto"
+          >
+            <Add24Filled className="w-4 h-4 flex-shrink-0" />
+            <span>{t('addStaffMember')}</span>
+          </motion.button>
+        )}
       </div>
 
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm animate-pulse"
-            >
-              <div className="flex items-center gap-4 w-full">
-                <div className="w-14 h-14 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
-                <div className="space-y-2 flex-1">
-                  <div className="h-4 w-32 rounded-lg bg-black/10 dark:bg-white/10" />
-                  <div className="h-3 w-24 rounded-lg bg-black/5 dark:bg-white/5" />
-                  <div className="h-4 w-28 rounded-full bg-black/5 dark:bg-white/5 mt-1" />
+      {/* Sub Navigation Tabs */}
+      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] w-fit">
+        <button
+          type="button"
+          onClick={() => setActiveTab('roster')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'roster'
+              ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <People24Regular className="w-4 h-4" />
+          <span>{t('currentTeam')}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('invites')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'invites'
+              ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <Mail24Regular className="w-4 h-4" />
+          <span>{t('pendingInvites')}</span>
+          {pendingInvitesList.length > 0 && (
+            <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[10px] font-extrabold">
+              {pendingInvitesList.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+        {/* Roster Tab View */}
+      {activeTab === 'roster' && (
+        <>
+          {/* Calendar Provider Color Setting Control Banner */}
+          <div className="p-4 sm:p-5 rounded-3xl glass-panel bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-indigo-500/10 border border-purple-500/20">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex-shrink-0">
+                  <Color24Regular className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
+                    Calendar Provider Color Palette
+                  </h3>
+                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                    Control how signature provider colors are assigned to calendar appointment cards.
+                  </p>
                 </div>
               </div>
+
+              <div className="flex items-center gap-1 p-1 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-bold w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setProviderColorMode('auto')}
+                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                    providerColorMode === 'auto'
+                      ? 'bg-purple-600 text-white shadow-sm font-extrabold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Sparkle24Filled className="w-3.5 h-3.5" />
+                  <span>Auto-Balanced</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProviderColorMode('custom')}
+                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                    providerColorMode === 'custom'
+                      ? 'bg-purple-600 text-white shadow-sm font-extrabold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Edit24Filled className="w-3.5 h-3.5" />
+                  <span>Custom Colors</span>
+                </button>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-center gap-4 animate-pulse"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-4 w-1/2 rounded bg-black/10 dark:bg-white/10" />
+                    <div className="h-3 w-1/3 rounded bg-black/5 dark:bg-white/5" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {staffList.length === 0 ? (
+                <div className="col-span-2 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+                  <People24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
+                  <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noStaff')}</p>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">{t('noStaffSub')}</p>
+                </div>
+              ) : (
+                staffList.map((stf, idx) => {
+                  const providerColor = getProviderColor(idx, (stf as any).color, providerColorMode);
+                  const avatarSrc = getAvatarUrl(stf.name, (stf as any).avatarUrl, providerColor);
+                  const isCustomPhoto = (stf as any).avatarUrl && (stf as any).avatarUrl.startsWith('http');
+
+                  return (
+                    <motion.div
+                      key={stf.id}
+                      whileHover={{ y: -2, scale: 1.008 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.08, ease: 'easeOut' }}
+                      onClick={() => handleCardClick(stf)}
+                      className="p-5 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm hover:shadow-md cursor-pointer transition-all duration-100 ease-out group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative p-1 rounded-2xl bg-black/5 dark:bg-white/5 flex-shrink-0 group-hover:scale-105 transition-transform">
+                          <img
+                            src={avatarSrc}
+                            alt={stf.name}
+                            className={`w-14 h-14 rounded-2xl object-cover shadow-sm ${
+                              isCustomPhoto ? 'border-2' : ''
+                            }`}
+                            style={isCustomPhoto ? { borderColor: providerColor } : undefined}
+                          />
+                          <span
+                            className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-[#141720]"
+                            style={{ backgroundColor: providerColor }}
+                          />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-extrabold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {stf.name}
+                          </h3>
+                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{stf.role}</p>
+                          <div className="flex items-center gap-3 mt-2 text-[11px] text-[var(--text-muted)] font-semibold">
+                            <span>{stf.commissionPercent ?? 70}% Commission</span>
+                            <span>•</span>
+                            <span className="text-emerald-600 dark:text-emerald-400">Active</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </motion.div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Invites Tab View */}
+      {activeTab === 'invites' && (
+        <div className="space-y-6">
+          {/* Send Invite Form Card */}
+          <div className="p-5 sm:p-6 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+              <Add24Regular className="w-4 h-4 text-blue-500" />
+              <span>{t('inviteTeamMembers')}</span>
+            </h3>
+            <form onSubmit={handleSendInvite} className="space-y-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
+                    {t('emailAddress')}
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="teammate@salon.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
+                    {t('selectRole')}
+                  </label>
+                  <select
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value as any)}
+                    className="w-full px-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  >
+                    <option value="staff">{t('staff')}</option>
+                    <option value="manager">{t('manager')}</option>
+                    <option value="receptionist">{t('roleReceptionist')}</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end pt-1">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="submit"
+                  disabled={sendingInvite}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md disabled:opacity-50 hover:opacity-90 transition-opacity"
+                >
+                  <Mail24Filled className="w-4 h-4" />
+                  <span>{sendingInvite ? t('saving') : t('invite')}</span>
+                </motion.button>
+              </div>
+            </form>
+          </div>
+
+          {/* Pending Invites List & Empty State */}
+          <div className="p-5 sm:p-6 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+              <Mail24Regular className="w-4 h-4 text-blue-500" />
+              <span>{t('pendingInvites')}</span>
+            </h3>
+
+            {pendingInvitesList.length === 0 ? (
+              <div className="py-12 px-4 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl text-center flex flex-col items-center justify-center">
+                <Mail24Regular className="w-10 h-10 text-[var(--text-muted)] opacity-40 mb-3" />
+                <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noPendingInvites')}</p>
+                <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-sm">
+                  Use the form above to invite team members to your workspace.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {pendingInvitesList.map((inv) => (
+                  <div
+                    key={inv.id}
+                    className="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] hover:border-blue-500/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-extrabold text-xs shadow-xs">
+                        {inv.email.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-[var(--text-primary)]">{inv.email}</p>
+                        <p className="text-[11px] text-[var(--text-secondary)] capitalize mt-0.5">
+                          {inv.role} • {t('statusPending')}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRevokeInvite(inv.id)}
+                      className="px-3.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors flex items-center gap-1.5"
+                    >
+                      <Dismiss24Filled className="w-3.5 h-3.5" />
+                      <span>{t('revokeInvite')}</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {staffList.length === 0 ? (
-            <div className="col-span-2 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
-              <People24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
-              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noStaff')}</p>
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noStaffSub')}</p>
-            </div>
-          ) : (
-            staffList.map((stf) => (
-              <motion.div
-                key={stf.id}
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.1, ease: 'easeOut' }}
-                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm transition-all duration-100 ease-out"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-4xl p-3 rounded-2xl bg-black/5 dark:bg-white/5">{stf.avatarEmoji || '👨🏻‍🎨'}</span>
+      {/* Staff Card Interactive Details & Edit Modal */}
+      <AnimatePresence>
+        {selectedStaffForEdit && (
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedStaffForEdit(null)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden"
+            >
+              <form onSubmit={handleSaveEdit} className="flex flex-col h-full min-h-0 overflow-hidden">
+                {/* Scrollable Drawer Body */}
+                <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
+                  {/* Mobile/Tablet Pull-Down Drag Handle */}
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-1 mb-2 md:hidden" />
+
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+                <div className="flex items-center gap-3">
+                  {(() => {
+                    const editIdx = staffList.findIndex((s) => s.id === selectedStaffForEdit.id);
+                    const editProviderColor = getProviderColor(editIdx >= 0 ? editIdx : 0, (selectedStaffForEdit as any).color, providerColorMode);
+                    const editAvatarSrc = getAvatarUrl(selectedStaffForEdit.name, (selectedStaffForEdit as any).avatarUrl, editProviderColor);
+                    const isCustomPhoto = (selectedStaffForEdit as any).avatarUrl && (selectedStaffForEdit as any).avatarUrl.startsWith('http');
+
+                    return (
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={editAvatarSrc}
+                          alt={selectedStaffForEdit.name}
+                          className={`w-14 h-14 rounded-2xl object-cover shadow-sm ${
+                            isCustomPhoto ? 'border-2' : ''
+                          }`}
+                          style={isCustomPhoto ? { borderColor: editProviderColor } : undefined}
+                        />
+                        <span
+                          className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-[#141720]"
+                          style={{ backgroundColor: editProviderColor }}
+                        />
+                      </div>
+                    );
+                  })()}
                   <div>
-                    <h3 className="text-base font-bold text-[var(--text-primary)]">{stf.name}</h3>
-                    <p className="text-xs text-[var(--text-secondary)]">{stf.role}</p>
-                    <div className="mt-2 flex items-center gap-2 flex-wrap">
-                      <span className="px-2.5 py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold">
-                        {stf.commissionPercent ?? 70}% {t('commissionSplit')}
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                      {selectedStaffForEdit.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs font-medium text-[var(--text-secondary)]">
+                        {selectedStaffForEdit.role}
                       </span>
-                      <span className="text-[10px] font-mono text-[var(--text-muted)]">
-                        Mon - Fri (09:00 - 18:00)
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                        {t('activeOnShift')}
                       </span>
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            ))
-          )}
-        </div>
-      )}
 
-      {/* Add Staff Modal */}
+                <button
+                  onClick={() => setSelectedStaffForEdit(null)}
+                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                >
+                  <Dismiss24Filled className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Form Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
+                      {t('fullName')}
+                    </label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
+                      {t('role')}
+                    </label>
+                    <input
+                      type="text"
+                      value={editRole}
+                      onChange={(e) => setEditRole(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Shifts & Chair Allocation */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
+                      {t('workingShifts')}
+                    </label>
+                    <input
+                      type="text"
+                      value={editShift}
+                      onChange={(e) => setEditShift(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
+                      {t('chairStation')}
+                    </label>
+                    <input
+                      type="text"
+                      value={editChair}
+                      onChange={(e) => setEditChair(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Commission Split & Payout Status */}
+                <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-[var(--text-primary)]">
+                      {t('commissionSplit')}
+                    </span>
+                    <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
+                      {editCommission}% Staff / {100 - editCommission}% House
+                    </span>
+                  </div>
+
+                  <div className="py-2">
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={editCommission}
+                      onChange={(e) => setEditCommission(Number(e.target.value))}
+                      className="w-full cursor-pointer h-2.5 rounded-full"
+                      style={{
+                        background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${editCommission}%, rgba(148, 163, 184, 0.25) ${editCommission}%, rgba(148, 163, 184, 0.25) 100%)`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
+                    <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Stripe Instant Payout Active
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
+              <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] space-y-2.5 z-30 flex-shrink-0">
+                {/* Primary Action */}
+                <button
+                  type="button"
+                  onClick={handleSaveEdit as any}
+                  className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                >
+                  <CheckmarkCircle24Filled className="w-4 h-4" />
+                  <span>{t('saveStaff')}</span>
+                </button>
+
+                {/* Secondary Navigation Shortcut */}
+                <button
+                  type="button"
+                  onClick={() => handleViewCalendar(selectedStaffForEdit.id)}
+                  className="w-full py-3 px-4 rounded-2xl bg-black/5 dark:bg-white/10 text-[var(--text-primary)] text-xs font-bold border border-black/5 dark:border-white/10 hover:bg-black/10 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                >
+                  <Calendar24Filled className="w-4 h-4 text-blue-500" />
+                  <span>{t('viewCalendarSchedule')}</span>
+                </button>
+
+                {/* Tertiary Action: "Más Acciones..." Overflow Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setShowMoreActions(!showMoreActions)}
+                  className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold hover:bg-black/10 dark:hover:bg-white/10 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                >
+                  <MoreHorizontal24Filled className="w-4 h-4" />
+                  <span>{showMoreActions ? t('hideActions') : t('moreActions')}</span>
+                </button>
+
+                {/* Collapsible Extended Overflow Actions */}
+                <AnimatePresence>
+                  {showMoreActions && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden pt-2 space-y-2 border-t border-black/5 dark:border-white/10"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => alert('Generando Ficha en PDF...')}
+                        className="w-full py-2.5 px-4 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
+                      >
+                        <Print24Filled className="w-4 h-4" />
+                        <span>Imprimir Ficha de Miembro</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedStaffForEdit(null);
+                          setShowMoreActions(false);
+                        }}
+                        className="w-full py-2.5 px-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
+                      >
+                        <DismissCircle24Filled className="w-4 h-4" />
+                        <span>Desactivar Temporalmente</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!selectedStaffForEdit) return;
+                          try {
+                            const res = await fetch(`/api/staff?id=${selectedStaffForEdit.id}`, {
+                              method: 'DELETE',
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                              setSelectedStaffForEdit(null);
+                              setShowMoreActions(false);
+                              fetchStaff();
+                            }
+                          } catch (err) {
+                            console.error('Failed to delete staff:', err);
+                          }
+                        }}
+                        className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
+                      >
+                        <Delete24Filled className="w-4 h-4" />
+                        <span>Eliminar Miembro del Equipo</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Add Staff Modal / Drawer */}
       <AnimatePresence>
         {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -187,97 +769,117 @@ export const StaffModule: React.FC = () => {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden"
             >
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                <h3 className="text-base font-bold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
-                <button onClick={() => setIsAddModalOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
+              <form onSubmit={handleAddStaff} className="flex flex-col h-full min-h-0 overflow-hidden">
+                {/* Scrollable Form Body */}
+                <div className="p-5 md:p-6 overflow-y-auto space-y-4 flex-1 scroll-fade-b">
+                  {/* Mobile/Tablet Pull-Down Drag Handle */}
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-1 mb-2 md:hidden" />
 
-              <form onSubmit={handleAddStaff} className="space-y-3">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('fullName')} *</label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Marcus Vance"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+                  {/* Header */}
+                  <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddModalOpen(false)}
+                      className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      <Dismiss24Filled className="w-5 h-5" />
+                    </button>
+                  </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('role')}</label>
-                  <input
-                    type="text"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="e.g. Master Barber / Color Specialist"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('email')}</label>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('fullName')} *</label>
                     <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="staff@business.com"
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Marcus Vance"
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('commissionSplit')}</label>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('role')}</label>
                     <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={commissionPercent}
-                      onChange={(e) => setCommissionPercent(Number(e.target.value))}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      type="text"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      placeholder="e.g. Master Barber / Color Specialist"
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">Avatar Emoji</label>
-                  <div className="flex items-center gap-2">
-                    {EMOJI_OPTIONS.map((emoji) => (
-                      <button
-                        type="button"
-                        key={emoji}
-                        onClick={() => setAvatarEmoji(emoji)}
-                        className={`text-xl p-2 rounded-xl transition-transform ${avatarEmoji === emoji ? 'bg-blue-500/20 scale-110 border border-blue-500' : 'bg-black/5 dark:bg-white/5'}`}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('email')}</label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="staff@business.com"
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('commissionSplit')}</label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={commissionPercent}
+                        onChange={(e) => setCommissionPercent(Number(e.target.value))}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* DiceBear Thumbs Avatar Seed Picker (Zero Emojis System) */}
+                  <div>
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1.5 block">
+                      {t('avatarStyle')}
+                    </label>
+                    <div className="grid grid-cols-6 gap-2">
+                      {['Marcus', 'Elena', 'Diego', 'Sophia', 'Lucas', 'Chloe'].map((seed, idx) => {
+                        const avatarColor = getProviderColor(idx, undefined, providerColorMode);
+                        const avatarSrc = getAvatarUrl(seed, undefined, avatarColor);
+                        const isSelected = avatarEmoji === seed || (avatarEmoji === '👨🏻‍🎨' && idx === 0);
+
+                        return (
+                          <button
+                            type="button"
+                            key={seed}
+                            onClick={() => setAvatarEmoji(seed)}
+                            className={`p-1 rounded-2xl border-2 transition-all duration-100 ease-out ${
+                              isSelected
+                                ? 'border-purple-600 bg-purple-500/10 scale-105 shadow-sm'
+                                : 'border-transparent bg-black/5 dark:bg-white/5 hover:scale-105'
+                            }`}
+                          >
+                            <img src={avatarSrc} alt={seed} className="w-10 h-10 rounded-xl object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-secondary)]"
-                  >
-                    {t('cancel')}
-                  </button>
+                {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
+                <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-4 py-2 rounded-2xl bg-blue-600 text-white text-xs font-bold shadow-md hover:bg-blue-700 disabled:opacity-50"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all duration-100 ease-out flex items-center justify-center gap-2"
                   >
-                    {submitting ? t('saving') : t('saveStaff')}
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <span>{submitting ? t('saving') : t('saveStaff')}</span>
                   </button>
                 </div>
               </form>
