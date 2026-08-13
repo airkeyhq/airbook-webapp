@@ -166,16 +166,21 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
                 </span>
               </div>
 
+              {/* Custom Spring-Animated Switch Toggle */}
               <button
                 type="button"
+                role="switch"
+                aria-checked={day.active}
                 onClick={() => handleToggleDay(idx)}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-colors ${
-                  day.active
-                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
-                    : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
+                className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 ease-in-out flex items-center flex-shrink-0 cursor-pointer ${
+                  day.active ? 'bg-blue-600' : 'bg-black/15 dark:bg-white/20'
                 }`}
               >
-                {day.active ? 'ON' : 'OFF'}
+                <motion.div
+                  animate={{ x: day.active ? 20 : 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="w-5 h-5 rounded-full bg-white shadow-md"
+                />
               </button>
             </div>
 
