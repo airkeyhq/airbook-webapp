@@ -130,9 +130,12 @@ const INPUT_CLS =
 
 export const SettingsModule: React.FC = () => {
   const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
+  const [isAddStationModalOpen, setIsAddStationModalOpen] = useState(false);
   const [newStationName, setNewStationName] = useState('');
+  const [newStationCategory, setNewStationCategory] = useState('Hair & Styling');
   const [editingStationId, setEditingStationId] = useState<string | null>(null);
   const [editingStationName, setEditingStationName] = useState('');
+  const [editingStationCategory, setEditingStationCategory] = useState('Hair & Styling');
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
@@ -511,121 +514,73 @@ export const SettingsModule: React.FC = () => {
               </form>
             </Section>
 
-            {/* Chairs & Workstations Manager */}
-            <Section title={t('chairsAndStations')} icon={Building24Regular}>
-              <div className="space-y-3">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!newStationName.trim()) return;
-                    addStation({ name: newStationName.trim() });
+            {/* Chairs & Workstations Manager - Action -> Trigger UX */}
+            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Building24Regular className="w-4 h-4 text-blue-500" />
+                  <span>{t('chairsAndStations')}</span>
+                  <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                    {stations.length} Active
+                  </span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => {
                     setNewStationName('');
-                    addToast('Station added', 'success');
+                    setNewStationCategory('Hair & Styling');
+                    setIsAddStationModalOpen(true);
                   }}
-                  className="flex flex-col sm:flex-row gap-2"
+                  className="px-3.5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md active:scale-95 transition-all duration-100 ease-out flex items-center gap-1.5 cursor-pointer"
                 >
-                  <input
-                    type="text"
-                    value={newStationName}
-                    onChange={(e) => setNewStationName(e.target.value)}
-                    placeholder={t('stationNamePlaceholder')}
-                    className={INPUT_CLS}
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-1.5 flex-shrink-0 cursor-pointer"
-                  >
-                    <Add24Filled className="w-4 h-4 text-white" />
-                    <span>{t('addStation')}</span>
-                  </button>
-                </form>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  {stations.map((stn) => {
-                    const isEditing = editingStationId === stn.id;
-
-                    return (
-                      <div
-                        key={stn.id}
-                        className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-between gap-2 transition-all"
-                      >
-                        {isEditing ? (
-                          <div className="flex items-center gap-1.5 w-full">
-                            <input
-                              type="text"
-                              autoFocus
-                              value={editingStationName}
-                              onChange={(e) => setEditingStationName(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  if (editingStationName.trim()) {
-                                    updateStation(stn.id, editingStationName.trim());
-                                    setEditingStationId(null);
-                                    addToast('Station updated', 'success');
-                                  }
-                                } else if (e.key === 'Escape') {
-                                  setEditingStationId(null);
-                                }
-                              }}
-                              className="w-full px-2.5 py-1 rounded-xl bg-white dark:bg-gray-800 border border-blue-500 text-xs font-bold text-[var(--text-primary)] focus:outline-none"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (editingStationName.trim()) {
-                                  updateStation(stn.id, editingStationName.trim());
-                                  setEditingStationId(null);
-                                  addToast('Station updated', 'success');
-                                }
-                              }}
-                              className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors flex-shrink-0 cursor-pointer"
-                            >
-                              <Checkmark24Filled className="w-4 h-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setEditingStationId(null)}
-                              className="p-1.5 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-muted)] hover:bg-black/10 transition-colors flex-shrink-0 cursor-pointer"
-                            >
-                              <Dismiss24Filled className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
-                              <span className="text-xs font-bold text-[var(--text-primary)] truncate">{stn.name}</span>
-                            </div>
-                            <div className="flex items-center gap-1 flex-shrink-0">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setEditingStationId(stn.id);
-                                  setEditingStationName(stn.name);
-                                }}
-                                className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
-                              >
-                                <Edit24Filled className="w-4 h-4" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  deleteStation(stn.id);
-                                  addToast('Station deleted', 'info');
-                                }}
-                                className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
-                              >
-                                <Delete24Filled className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                  <Add24Filled className="w-4 h-4 text-white" />
+                  <span>{t('addStation')}</span>
+                </button>
               </div>
-            </Section>
+
+              {/* Stations Grid List */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                {stations.map((stn) => (
+                  <div
+                    key={stn.id}
+                    className="p-3.5 rounded-2xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-black/5 dark:border-white/10 flex items-center justify-between gap-3 shadow-xs hover:shadow-md transition-all group"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <Building24Regular className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">{stn.name}</p>
+                        <p className="text-[10px] text-[var(--text-secondary)] font-medium truncate">{stn.category || 'Workstation'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingStationId(stn.id);
+                          setEditingStationName(stn.name);
+                          setEditingStationCategory(stn.category || 'Hair & Styling');
+                        }}
+                        className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
+                      >
+                        <Edit24Filled className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          deleteStation(stn.id);
+                          addToast('Station deleted', 'info');
+                        }}
+                        className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+                      >
+                        <Delete24Filled className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <Section title={t('bookingPolicies')} icon={Clock24Regular}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -938,6 +893,219 @@ export const SettingsModule: React.FC = () => {
                     className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors"
                   >
                     {t('unlockBeta')}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* ─── ADD STATION MODAL DIALOG ─── */}
+      <AnimatePresence>
+        {isAddStationModalOpen && (
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddStationModalOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col overflow-hidden"
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!newStationName.trim()) return;
+                  addStation({ name: newStationName.trim(), category: newStationCategory });
+                  setIsAddStationModalOpen(false);
+                  setNewStationName('');
+                  addToast('Station added', 'success');
+                }}
+                className="flex flex-col h-full"
+              >
+                {/* Mobile Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
+
+                {/* Header */}
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
+                  <div className="flex items-center gap-2.5">
+                    <Building24Regular className="w-5 h-5 text-blue-500" />
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddStationModalOpen(false)}
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Form Body */}
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
+                      Station / Chair Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      autoFocus
+                      value={newStationName}
+                      onChange={(e) => setNewStationName(e.target.value)}
+                      placeholder={t('stationNamePlaceholder')}
+                      className={INPUT_CLS}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
+                      Category / Specialty
+                    </label>
+                    <CustomSelect
+                      value={newStationCategory}
+                      onChange={setNewStationCategory}
+                      options={[
+                        { value: 'Hair & Styling', label: 'Hair & Styling' },
+                        { value: 'Color & Wash Bar', label: 'Color & Wash Bar' },
+                        { value: 'Spa & Skincare', label: 'Spa & Skincare' },
+                        { value: 'Nails & Pedicure', label: 'Nails & Pedicure' },
+                        { value: 'Barbering', label: 'Barbering' },
+                        { value: 'General / Flex', label: 'General / Flex' },
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                {/* Bottom Action Bar */}
+                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddStationModalOpen(false)}
+                    className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <span>{t('addStation')}</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── EDIT STATION MODAL DIALOG ─── */}
+      <AnimatePresence>
+        {editingStationId && (
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingStationId(null)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col overflow-hidden"
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!editingStationName.trim()) return;
+                  updateStation(editingStationId, editingStationName.trim(), editingStationCategory);
+                  setEditingStationId(null);
+                  addToast('Station updated', 'success');
+                }}
+                className="flex flex-col h-full"
+              >
+                {/* Mobile Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
+
+                {/* Header */}
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
+                  <div className="flex items-center gap-2.5">
+                    <Building24Regular className="w-5 h-5 text-blue-500" />
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">Edit Chair / Station</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingStationId(null)}
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Form Body */}
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
+                      Station Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      autoFocus
+                      value={editingStationName}
+                      onChange={(e) => setEditingStationName(e.target.value)}
+                      className={INPUT_CLS}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
+                      Category / Specialty
+                    </label>
+                    <CustomSelect
+                      value={editingStationCategory}
+                      onChange={setEditingStationCategory}
+                      options={[
+                        { value: 'Hair & Styling', label: 'Hair & Styling' },
+                        { value: 'Color & Wash Bar', label: 'Color & Wash Bar' },
+                        { value: 'Spa & Skincare', label: 'Spa & Skincare' },
+                        { value: 'Nails & Pedicure', label: 'Nails & Pedicure' },
+                        { value: 'Barbering', label: 'Barbering' },
+                        { value: 'General / Flex', label: 'General / Flex' },
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                {/* Bottom Action Bar */}
+                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingStationId(null)}
+                    className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <span>{t('save')}</span>
                   </button>
                 </div>
               </form>
