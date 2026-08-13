@@ -227,12 +227,13 @@ export const ClientsModule: React.FC = () => {
                 </div>
 
                 {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addClient')}</h3>
                   <button type="button" onClick={() => setIsAddModalOpen(false)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors">
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>
+                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
                 {/* Form Body */}
                 <div className="p-6 overflow-y-auto space-y-4 flex-1">

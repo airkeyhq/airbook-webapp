@@ -70,30 +70,36 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           />
 
           {/* Mobile Drag Handle */}
-          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+          <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+          </div>
 
-          <div className="p-6 flex-1 overflow-y-auto space-y-5">
-            {/* Header Title & Close Button */}
-            <div className="flex items-start justify-between pb-3 border-b border-[var(--border-subtle)]">
-              <div>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                  {t('statusConfirmed')}
-                </span>
-                <h3 className="text-xl font-extrabold text-[var(--text-primary)] mt-2 tracking-tight">
-                  {appointment.clientName}
-                </h3>
-                <p className="text-xs font-bold text-[var(--text-secondary)] mt-0.5">
-                  {appointment.serviceName}
-                </p>
-              </div>
-
-              <button
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-              >
-                <Dismiss24Filled className="w-4 h-4" />
-              </button>
+          {/* Header Edge-to-Edge Bar */}
+          <div className="w-full px-6 py-4 flex items-start justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+            <div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                {t('statusConfirmed')}
+              </span>
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)] mt-2 tracking-tight">
+                {appointment.clientName}
+              </h3>
+              <p className="text-xs font-bold text-[var(--text-secondary)] mt-0.5">
+                {appointment.serviceName}
+              </p>
             </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+            >
+              <Dismiss24Filled className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+
+          {/* Scrollable Body */}
+          <div className="p-6 flex-1 overflow-y-auto space-y-5">
 
             {/* Info Grid Card */}
             <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 stack-md">

@@ -527,7 +527,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </div>
 
                 {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
                   <div className="flex items-center gap-3">
                     {(() => {
                       const editIdx = staffList.findIndex((s) => s.id === selectedStaffForEdit.id);
@@ -575,6 +575,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>
+                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
                 {/* Scrollable Drawer Body */}
                 <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
@@ -797,7 +798,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </div>
 
                 {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
                   <button
                     type="button"
@@ -807,6 +808,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>
+                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
                 {/* Scrollable Form Body */}
                 <div className="p-5 md:p-6 overflow-y-auto space-y-4 flex-1 scroll-fade-b">

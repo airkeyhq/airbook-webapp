@@ -89,17 +89,40 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
         >
           {/* Mobile Drag Handle */}
-          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+          <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+          </div>
 
-          <button
-            onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
-          >
-            <Dismiss24Filled className="w-5 h-5" />
-          </button>
+          {/* Header Edge-to-Edge Bar */}
+          <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+            <div>
+              <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-wider">
+                AirBook POS Terminal
+              </span>
+              <h3 className="text-lg font-extrabold text-[var(--text-primary)] mt-1 tracking-tight">
+                {isCompleted ? 'Payment Successful' : `Checkout: ${clientName}`}
+              </h3>
+              {!isCompleted && (
+                <p className="text-xs font-bold text-[var(--text-secondary)] mt-0.5">
+                  {serviceName} with {staffName}
+                </p>
+              )}
+            </div>
 
-          {isCompleted ? (
-            <div className="py-6 text-center flex flex-col items-center gap-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+            >
+              <Dismiss24Filled className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+
+          {/* Modal Body */}
+          <div className="p-6 overflow-y-auto space-y-4 flex-1">
+            {isCompleted ? (
+              <div className="py-6 text-center flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
                 <CheckmarkCircle24Filled className="w-10 h-10" />
               </div>
@@ -168,19 +191,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
               </div>
             </div>
           ) : (
-            <div className="stack-md">
-              {/* Header */}
-              <div>
-                <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-wider">
-                  AirBook POS Terminal
-                </span>
-                <h3 className="text-lg font-bold text-[var(--text-primary)] mt-1">
-                  Checkout: {clientName}
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {serviceName} with {staffName}
-                </p>
-              </div>
+            <div className="space-y-4">
 
               {/* Bill Breakout */}
               <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 space-y-2 text-xs">
@@ -280,19 +291,22 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 </svg>
                 <span>{t('poweredByStripe')}</span>
               </div>
+            </div>
+          )}
+        </div>
 
-              {/* Side-to-Side Bottom Action Banner */}
-              <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 mt-4">
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  disabled={submitting}
-                  onClick={handlePay}
-                  className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                >
-                  <Payment24Filled className="w-4 h-4" />
-                  <span>{submitting ? 'Processing…' : `Process Payment ($${finalTotal})`}</span>
-                </motion.button>
-              </div>
+          {/* Side-to-Side Bottom Action Banner (Only when not completed) */}
+          {!isCompleted && (
+            <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                disabled={submitting}
+                onClick={handlePay}
+                className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              >
+                <Payment24Filled className="w-4 h-4" />
+                <span>{submitting ? 'Processing…' : `Process Payment ($${finalTotal})`}</span>
+              </motion.button>
             </div>
           )}
         </motion.div>

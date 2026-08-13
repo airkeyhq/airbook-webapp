@@ -111,10 +111,12 @@ export const BookingDrawer: React.FC = () => {
         >
           <form onSubmit={handleSubmit} className="flex flex-col h-full min-h-0 overflow-hidden">
             {/* Mobile Drag Handle */}
-            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+            <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+            </div>
 
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 pb-4 border-b border-[var(--border-subtle)]">
+            {/* Header Edge-to-Edge Bar */}
+            <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-pink-500 animate-pulse" />
                 <h2 className="text-base font-extrabold text-[var(--text-primary)]">
@@ -125,11 +127,12 @@ export const BookingDrawer: React.FC = () => {
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={closeBookingDrawer}
-                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
+                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
               >
                 <Dismiss24Filled className="w-5 h-5" />
               </motion.button>
             </div>
+            <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
             {/* Scrollable Form Body */}
             <div className="p-6 overflow-y-auto space-y-4 flex-1">
