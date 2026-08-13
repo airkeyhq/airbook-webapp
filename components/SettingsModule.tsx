@@ -19,6 +19,7 @@ import {
   Sparkle24Filled,
   Sparkle24Regular,
   Shield24Regular,
+  ShieldCheckmark24Regular,
   DocumentCheckmark24Regular,
   Link24Regular,
   Alert24Regular,
@@ -186,22 +187,6 @@ export const SettingsModule: React.FC = () => {
   const saveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     addToast('Profile saved successfully.', 'success');
-  };
-
-  const changePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPw !== confirmPw) {
-      addToast('Passwords do not match.', 'error');
-      return;
-    }
-    if (newPw.length < 8) {
-      addToast('Password must be at least 8 characters.', 'error');
-      return;
-    }
-    setCurrentPw('');
-    setNewPw('');
-    setConfirmPw('');
-    addToast('Password updated successfully.', 'success');
   };
 
   const saveWorkspace = async (e: React.FormEvent) => {
@@ -432,15 +417,16 @@ export const SettingsModule: React.FC = () => {
               </div>
             </Section>
 
-            {/* Change password - Roadmap Teaser */}
-            <Section title={t('changePassword')} icon={LockClosed24Regular}>
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-[var(--text-secondary)]">
-                  Password management will be available via the unified authentication portal in an upcoming release.
+            {/* Passwordless & OAuth Security Section */}
+            <Section title={t('passwordlessSecurity')} icon={Shield24Regular}>
+              <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 space-y-3">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  {t('passwordlessDesc')}
                 </p>
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
-                  {t('comingSoonV11')}
-                </span>
+                <div className="flex items-center gap-2 pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <ShieldCheckmark24Regular className="w-4 h-4 flex-shrink-0" />
+                  <span>{t('passwordlessBadge')}</span>
+                </div>
               </div>
             </Section>
           </motion.div>
