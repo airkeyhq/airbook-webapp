@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { ShoppingBag24Filled, CheckmarkCircle24Regular } from '@fluentui/react-icons';
+import { ShoppingBag24Regular, CheckmarkCircle24Regular } from '@fluentui/react-icons';
 
 export const MarketplaceModule: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ export const MarketplaceModule: React.FC = () => {
       {/* Honest Roadmap Teaser Card */}
       <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-sm">
         <div className="w-14 h-14 rounded-3xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
-          <ShoppingBag24Filled className="w-7 h-7" />
+          <ShoppingBag24Regular className="w-7 h-7" />
         </div>
 
         <div className="max-w-md mx-auto space-y-2">
@@ -61,7 +61,7 @@ export const MarketplaceModule: React.FC = () => {
 
         <div className="pt-2">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-500/15 text-blue-700 dark:text-blue-300 text-xs font-extrabold">
-            <ShoppingBag24Filled className="w-3.5 h-3.5" />
+            <ShoppingBag24Regular className="w-3.5 h-3.5" />
             <span>{t('marketplaceScheduledFor')}</span>
           </span>
         </div>

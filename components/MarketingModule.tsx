@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Send24Filled, Sparkle24Filled, Star24Regular, Comment24Regular, CheckmarkCircle24Regular, Flash24Regular } from '@fluentui/react-icons';
+import { Send24Filled, Sparkle24Regular, Star24Regular, Comment24Regular, CheckmarkCircle24Regular, Flash24Regular } from '@fluentui/react-icons';
 
 export const MarketingModule: React.FC = () => {
   const { t } = useTranslation();
@@ -60,7 +60,7 @@ export const MarketingModule: React.FC = () => {
       {/* Honest Roadmap Teaser Card */}
       <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-sm">
         <div className="w-14 h-14 rounded-3xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
-          <Sparkle24Filled className="w-7 h-7" />
+          <Sparkle24Regular className="w-7 h-7" />
         </div>
 
         <div className="max-w-md mx-auto space-y-2">
@@ -92,7 +92,7 @@ export const MarketingModule: React.FC = () => {
 
         <div className="pt-2">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-purple-500/15 text-purple-700 dark:text-purple-300 text-xs font-extrabold">
-            <Sparkle24Filled className="w-3.5 h-3.5" />
+            <Sparkle24Regular className="w-3.5 h-3.5" />
             <span>{t('marketingScheduledFor')}</span>
           </span>
         </div>

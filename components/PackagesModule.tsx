@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Tag24Filled, CheckmarkCircle24Regular } from '@fluentui/react-icons';
+import { Tag24Regular, CheckmarkCircle24Regular } from '@fluentui/react-icons';
 
 export const PackagesModule: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ export const PackagesModule: React.FC = () => {
       {/* Honest Roadmap Teaser Card */}
       <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-sm">
         <div className="w-14 h-14 rounded-3xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
-          <Tag24Filled className="w-7 h-7" />
+          <Tag24Regular className="w-7 h-7" />
         </div>
 
         <div className="max-w-md mx-auto space-y-2">
@@ -61,7 +61,7 @@ export const PackagesModule: React.FC = () => {
 
         <div className="pt-2">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-purple-500/15 text-purple-700 dark:text-purple-300 text-xs font-extrabold">
-            <Tag24Filled className="w-3.5 h-3.5" />
+            <Tag24Regular className="w-3.5 h-3.5" />
             <span>{t('packagesScheduledFor')}</span>
           </span>
         </div>
