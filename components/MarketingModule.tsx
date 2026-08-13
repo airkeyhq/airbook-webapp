@@ -58,34 +58,34 @@ export const MarketingModule: React.FC = () => {
       </div>
 
       {/* Honest Roadmap Teaser Card */}
-      <div className="p-8 rounded-3xl glass-panel bg-gradient-to-br from-purple-500/10 via-amber-500/5 to-indigo-500/10 border border-purple-500/20 text-center space-y-4 shadow-sm">
+      <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-sm">
         <div className="w-14 h-14 rounded-3xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
           <Sparkle24Filled className="w-7 h-7" />
         </div>
 
         <div className="max-w-md mx-auto space-y-2">
           <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-            Marketing IA y Automatizaciones
+            {t('marketingRoadmapTitle')}
           </h3>
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-            Estamos construyendo un motor de marketing inteligente para enviar automáticamente recordatorios por WhatsApp a clientes frecuentes y gestionar reseñas de Google.
+            {t('marketingRoadmapDesc')}
           </p>
         </div>
 
         <div className="pt-3 max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
-          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-start gap-2.5">
+          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-start gap-2.5">
             <CheckmarkCircle24Regular className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold text-[var(--text-primary)]">Re-Reserva Automática (21 Días)</p>
-              <p className="text-[11px] text-[var(--text-secondary)]">Envío automático por WhatsApp.</p>
+              <p className="text-xs font-bold text-[var(--text-primary)]">{t('marketingFeature1Title')}</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">{t('marketingFeature1Desc')}</p>
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-start gap-2.5">
+          <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-start gap-2.5">
             <CheckmarkCircle24Regular className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold text-[var(--text-primary)]">Captura de Reseñas en Google</p>
-              <p className="text-[11px] text-[var(--text-secondary)]">Solicitudes tras cada cita completada.</p>
+              <p className="text-xs font-bold text-[var(--text-primary)]">{t('marketingFeature2Title')}</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">{t('marketingFeature2Desc')}</p>
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@ export const MarketingModule: React.FC = () => {
         <div className="pt-2">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-purple-500/15 text-purple-700 dark:text-purple-300 text-xs font-extrabold">
             <Sparkle24Filled className="w-3.5 h-3.5" />
-            <span>Programado para el lanzamiento de AirBook v1.1</span>
+            <span>{t('marketingScheduledFor')}</span>
           </span>
         </div>
       </div>
