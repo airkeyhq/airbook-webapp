@@ -165,28 +165,22 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
               </span>
             </div>
 
-            {/* Time Pickers or Off Badge */}
+            {/* Custom Coded Time Pickers or Off Badge */}
             {day.active ? (
-              <div className="flex items-center gap-1.5">
-                <select
+              <div className="flex items-center gap-1.5 min-w-0">
+                <CustomSelect
                   value={day.startTime}
-                  onChange={(e) => handleTimeChange(idx, 'startTime', e.target.value)}
-                  className="px-2 py-1 rounded-xl bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  {TIME_SLOTS.map((tVal) => (
-                    <option key={tVal} value={tVal}>{tVal}</option>
-                  ))}
-                </select>
-                <span className="text-[10px] font-bold text-[var(--text-muted)]">→</span>
-                <select
+                  onChange={(val) => handleTimeChange(idx, 'startTime', val)}
+                  options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
+                  className="w-24 flex-shrink-0"
+                />
+                <span className="text-[10px] font-bold text-[var(--text-muted)] flex-shrink-0">→</span>
+                <CustomSelect
                   value={day.endTime}
-                  onChange={(e) => handleTimeChange(idx, 'endTime', e.target.value)}
-                  className="px-2 py-1 rounded-xl bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  {TIME_SLOTS.map((tVal) => (
-                    <option key={tVal} value={tVal}>{tVal}</option>
-                  ))}
-                </select>
+                  onChange={(val) => handleTimeChange(idx, 'endTime', val)}
+                  options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
+                  className="w-24 flex-shrink-0"
+                />
               </div>
             ) : (
               <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-bold text-[var(--text-muted)] border border-black/5 dark:border-white/10">
