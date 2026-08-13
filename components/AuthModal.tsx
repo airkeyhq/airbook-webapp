@@ -97,7 +97,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="space-y-2 pt-1">
             <button
               type="button"
-              onClick={() => signIn.social({ provider: 'google', callbackURL: '/dashboard' })}
+              onClick={async () => {
+                const res = await signIn.social({ provider: 'google', callbackURL: '/dashboard' });
+                if (res?.data?.url) window.location.href = res.data.url;
+              }}
               className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
             >
               <GoogleColor size={16} />
@@ -106,7 +109,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <button
               type="button"
-              onClick={() => signIn.social({ provider: 'apple', callbackURL: '/dashboard' })}
+              onClick={async () => {
+                const res = await signIn.social({ provider: 'apple', callbackURL: '/dashboard' });
+                if (res?.data?.url) window.location.href = res.data.url;
+              }}
               className="w-full py-2.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer"
             >
               <AppleMono size={16} />
