@@ -141,14 +141,14 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
         {schedule.map((day, idx) => (
           <div
             key={day.key}
-            className={`p-3 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
+            className={`p-3 rounded-2xl border transition-all flex flex-col min-[520px]:flex-row min-[520px]:items-center justify-between gap-2.5 ${
               day.active
                 ? 'bg-white dark:bg-gray-800/80 border-black/10 dark:border-white/10 shadow-sm'
                 : 'bg-black/5 dark:bg-white/5 border-transparent opacity-60'
             }`}
           >
             {/* Day label & Working toggle */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 onClick={() => handleToggleDay(idx)}
@@ -183,21 +183,23 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
               </span>
             </div>
 
-            {/* Custom Coded Time Pickers when active */}
+            {/* Custom Coded Compact Time Pickers when active */}
             {day.active && (
-              <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-black/5 dark:border-white/5">
+              <div className="flex items-center justify-between min-[520px]:justify-end gap-1.5 w-full min-[520px]:w-auto pt-2 min-[520px]:pt-0 border-t min-[520px]:border-t-0 border-black/5 dark:border-white/5">
                 <CustomSelect
                   value={day.startTime}
                   onChange={(val) => handleTimeChange(idx, 'startTime', val)}
                   options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
-                  className="flex-1 sm:w-28"
+                  compact
+                  className="flex-1 min-[520px]:w-24"
                 />
                 <span className="text-xs font-bold text-[var(--text-muted)] flex-shrink-0">→</span>
                 <CustomSelect
                   value={day.endTime}
                   onChange={(val) => handleTimeChange(idx, 'endTime', val)}
                   options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
-                  className="flex-1 sm:w-28"
+                  compact
+                  className="flex-1 min-[520px]:w-24"
                 />
               </div>
             )}

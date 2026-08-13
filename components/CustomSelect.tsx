@@ -15,6 +15,7 @@ interface CustomSelectProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  compact?: boolean;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -23,6 +24,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   onChange,
   placeholder = 'Select option...',
   className = '',
+  compact = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,11 +48,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border ${
+        className={`w-full ${
+          compact ? 'px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold' : 'px-4 py-2.5 rounded-2xl text-xs font-medium'
+        } bg-black/5 dark:bg-white/5 border ${
           isOpen
             ? 'border-blue-500 ring-2 ring-blue-500/20'
             : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
-        } text-xs font-medium text-[var(--text-primary)] flex items-center justify-between gap-2 transition-all duration-100 ease-out cursor-pointer`}
+        } text-[var(--text-primary)] flex items-center justify-between gap-1.5 transition-all duration-100 ease-out cursor-pointer`}
       >
         <span className="truncate">
           {selectedOption ? selectedOption.label : placeholder}
@@ -58,9 +62,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.15 }}
-          className="flex-shrink-0 text-[var(--text-muted)]"
+          className="flex-shrink-0"
         >
-          <ChevronDown24Regular className="w-4 h-4" />
+          <ChevronDown24Regular className={compact ? 'w-3.5 h-3.5 text-[var(--text-secondary)]' : 'w-4 h-4 text-[var(--text-secondary)]'} />
         </motion.span>
       </button>
 
