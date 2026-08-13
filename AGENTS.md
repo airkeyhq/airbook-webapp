@@ -51,10 +51,10 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - Hover transitions MUST be fast (`100ms ease-out` / `duration: 0.08`).
    - Range sliders MUST use custom electric blue pill handles with `< >` vector arrows (`width: 48px`, `height: 26px`) and dynamic `linear-gradient` progress track fill.
 
-7. **Custom Select Dropdown Control Pattern**:
-   - **Zero Native Browser Chevrons**: All `<select>` controls MUST use `appearance-none` to strip default OS arrows that collide with rounded pill edges.
-   - **Right Padding & Relative Wrapper**: `<select>` elements MUST be wrapped in a `relative` container with right padding (`pl-4 pr-10 py-2.5 rounded-2xl`).
-   - **Vector Line Chevron**: Dropdowns MUST feature an absolute-positioned `<ChevronDown24Regular className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />` icon for pixel-perfect spacing.
+7. **Zero Native Control Delegation & Custom Coded UI Controls**:
+   - **Never Delegate to Browser/OS**: NEVER use raw browser-native pickers or un-styled OS controls. Do not delegate component look, feel, or behavior to the device or browser.
+   - **Fully Custom-Coded Components**: All dropdowns, date pickers, selects, modals, toggles, range sliders, and alerts MUST be 100% custom-coded React components.
+   - **Pixel-Perfect Consistency**: Custom controls must feature explicit design tokens (`bg-[var(--bg-primary)]`, `border-[var(--border-subtle)]`), Fluent vector icons, and snappy spring micro-animations so the user experience is 100% uniform across macOS, iOS, Windows, Android, Chrome, and Safari.
 
 # Mandatory UI Integrity & Feature Evaluation System
 
