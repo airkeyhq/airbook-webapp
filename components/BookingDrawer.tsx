@@ -101,33 +101,38 @@ export const BookingDrawer: React.FC = () => {
           className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         />
 
-        {/* Amie Bottom Glass Drawer Container */}
+        {/* Drawer Panel Container */}
         <motion.div
           initial={{ y: '100%', opacity: 0.8 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '100%', opacity: 0 }}
           transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-          className="relative w-full max-w-lg glass-panel rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-3xl border border-white/80 dark:border-white/10 z-10"
+          className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-black/5 dark:border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-pink-500 animate-pulse" />
-              <h2 className="text-base font-bold text-[var(--text-primary)]">
-                {t('bookingDrawerTitle')}
-              </h2>
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={closeBookingDrawer}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-500"
-            >
-              <Dismiss24Filled className="w-5 h-5" />
-            </motion.button>
-          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col h-full min-h-0 overflow-hidden">
+            {/* Mobile Drag Handle */}
+            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="pt-4 flex flex-col gap-4">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pb-4 border-b border-[var(--border-subtle)]">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-pink-500 animate-pulse" />
+                <h2 className="text-base font-extrabold text-[var(--text-primary)]">
+                  {t('bookingDrawerTitle')}
+                </h2>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                onClick={closeBookingDrawer}
+                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
+              >
+                <Dismiss24Filled className="w-5 h-5" />
+              </motion.button>
+            </div>
+
+            {/* Scrollable Form Body */}
+            <div className="p-6 overflow-y-auto space-y-4 flex-1">
             {/* Client Name Field */}
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
@@ -227,16 +232,20 @@ export const BookingDrawer: React.FC = () => {
               </span>
             </div>
 
-            {/* Submit Button (control-lg token) */}
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              whileHover={{ scale: 1.01 }}
-              type="submit"
-              className="control-lg w-full rounded-2xl btn-primary flex items-center justify-center gap-2 transition-all mt-1"
-            >
-              <Sparkle24Filled className="w-4 h-4 text-white" />
-              <span>{t('createAppointment')}</span>
-            </motion.button>
+            </div>
+
+            {/* Side-to-Side Bottom Action Banner */}
+            <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.01 }}
+                type="submit"
+                className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+              >
+                <Sparkle24Filled className="w-4 h-4 text-white dark:text-black" />
+                <span>{t('createAppointment')}</span>
+              </motion.button>
+            </div>
           </form>
         </motion.div>
       </div>

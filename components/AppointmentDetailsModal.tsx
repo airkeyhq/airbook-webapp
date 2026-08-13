@@ -45,23 +45,23 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-black/40 backdrop-blur-md"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         />
 
-        {/* Modal Card */}
+        {/* Modal Card Container */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-          className="relative w-full max-w-md bg-white dark:bg-[#141720] border border-slate-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden z-10"
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 30, scale: 0.98 }}
+          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+          className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh]"
         >
           {/* Top Decorative Header Accent Bar */}
           <div
@@ -69,9 +69,12 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             style={{ backgroundColor: appointment.color || '#2BB5FF' }}
           />
 
-          <div className="p-6 stack-lg">
+          {/* Mobile Drag Handle */}
+          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+
+          <div className="p-6 flex-1 overflow-y-auto space-y-5">
             {/* Header Title & Close Button */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div>
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                   {t('statusConfirmed')}
@@ -86,7 +89,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               >
                 <Dismiss24Filled className="w-4 h-4" />
               </button>
@@ -133,44 +136,43 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Action Buttons Grid (Standardized Component Tokens) */}
-            <div className="stack-sm">
-              {/* Charge POS Button (control-lg token) */}
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenPOS(appointment);
-                }}
-                className="control-lg w-full rounded-2xl btn-primary flex items-center justify-center gap-2 active:scale-98"
-              >
-                <Payment24Filled className="w-4 h-4 flex-shrink-0" />
-                <span>{t('posCheckout')} (${appointment.price})</span>
-              </button>
+          {/* Side-to-Side Bottom Action Banner with Vertical Stacking */}
+          <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 flex flex-col gap-2.5 rounded-none flex-shrink-0 z-30">
+            {/* Charge POS Button */}
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              onClick={() => {
+                onClose();
+                onOpenPOS(appointment);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+            >
+              <Payment24Filled className="w-4 h-4 flex-shrink-0" />
+              <span>{t('posCheckout')} (${appointment.price})</span>
+            </motion.button>
 
-              <div className="grid grid-cols-2 gap-2">
-                {/* Client Notes / Specs (control-md token) */}
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenNotes();
-                  }}
-                  className="control-md w-full rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex items-center justify-center gap-1.5 truncate"
-                >
-                  <DocumentText24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="truncate">{t('clientNotesBtn')}</span>
-                </button>
+            {/* Client Notes & Specs Button */}
+            <button
+              onClick={() => {
+                onClose();
+                onOpenNotes();
+              }}
+              className="w-full py-3 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-primary)] font-bold text-xs flex items-center justify-center gap-2 transition-all"
+            >
+              <DocumentText24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <span>{t('clientNotesBtn')}</span>
+            </button>
 
-                {/* Cancel / Delete Appointment (control-md token) */}
-                <button
-                  onClick={handleDelete}
-                  className="control-md w-full rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors text-xs font-extrabold flex items-center justify-center gap-1.5 truncate"
-                >
-                  <Delete24Filled className="w-4 h-4 flex-shrink-0" />
-                  <span className="truncate">{t('delete')}</span>
-                </button>
-              </div>
-            </div>
+            {/* Delete Appointment Button */}
+            <button
+              onClick={handleDelete}
+              className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+            >
+              <Delete24Filled className="w-4 h-4 flex-shrink-0" />
+              <span>{t('delete')}</span>
+            </button>
           </div>
         </motion.div>
       </div>

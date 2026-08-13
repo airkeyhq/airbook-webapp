@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Payment24Filled, CheckmarkCircle24Regular, Dismiss24Filled } from '@fluentui/react-icons';
+import { Payment24Filled, CheckmarkCircle24Filled, Dismiss24Filled, Print24Filled } from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface POSCheckoutModalProps {
@@ -70,27 +70,30 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/50 backdrop-blur-md"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         />
 
-        {/* POS Card */}
+        {/* POS Card Container */}
         <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="relative w-full max-w-md glass-panel rounded-[36px] p-6 shadow-2xl bg-white/95 dark:bg-gray-900/95 border border-white/80 dark:border-white/10 z-10 overflow-hidden"
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 30, scale: 0.98 }}
+          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+          className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
         >
+          {/* Mobile Drag Handle */}
+          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
+            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
           >
             <Dismiss24Filled className="w-5 h-5" />
           </button>
@@ -98,7 +101,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           {isCompleted ? (
             <div className="py-6 text-center flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
-                <CheckmarkCircle24Regular className="w-10 h-10 stroke-[2.5]" />
+                <CheckmarkCircle24Filled className="w-10 h-10" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-[var(--text-primary)]">Payment Successful!</h3>
@@ -108,7 +111,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
               </div>
 
               {/* Action Buttons: Print Thermal Receipt & Close */}
-              <div className="flex flex-col sm:flex-row items-center gap-2 w-full pt-2">
+              <div className="flex flex-col gap-2.5 w-full pt-2">
                 <button
                   type="button"
                   onClick={() => {
@@ -149,15 +152,16 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       printWin.print();
                     }
                   }}
-                  className="w-full py-2.5 rounded-xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-sm flex items-center justify-center gap-1.5"
+                  className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2"
                 >
-                  📄 Print Thermal Receipt
+                  <Print24Filled className="w-4 h-4" />
+                  <span>Print Thermal Receipt</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
+                  className="w-full py-3 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)]"
                 >
                   Close Window
                 </button>
@@ -277,16 +281,18 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 <span>{t('poweredByStripe')}</span>
               </div>
 
-              {/* Pay Button (control-lg token) */}
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                disabled={submitting}
-                onClick={handlePay}
-                className="control-lg w-full rounded-2xl btn-primary flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50"
-              >
-                <Payment24Filled className="w-4 h-4" />
-                <span>{submitting ? 'Processing…' : `Process Payment ($${finalTotal})`}</span>
-              </motion.button>
+              {/* Side-to-Side Bottom Action Banner */}
+              <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 mt-4">
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  disabled={submitting}
+                  onClick={handlePay}
+                  className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                >
+                  <Payment24Filled className="w-4 h-4" />
+                  <span>{submitting ? 'Processing…' : `Process Payment ($${finalTotal})`}</span>
+                </motion.button>
+              </div>
             </div>
           )}
         </motion.div>

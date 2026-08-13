@@ -41,28 +41,31 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-md"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         />
 
-        {/* Amie Glass Modal Container */}
+        {/* Modal Panel Container */}
         <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="relative w-full max-w-2xl glass-panel rounded-[36px] p-6 sm:p-8 shadow-2xl bg-white/95 dark:bg-gray-900/95 border border-white/80 dark:border-white/10 z-10 overflow-hidden"
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 30, scale: 0.98 }}
+          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+          className="relative w-full max-w-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden p-6 sm:p-8"
         >
+          {/* Mobile Drag Handle */}
+          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-4 sm:hidden" />
+
           {/* Close Trigger */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
+            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
           >
             <Dismiss24Filled className="w-5 h-5" />
           </button>

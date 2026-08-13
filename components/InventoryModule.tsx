@@ -268,7 +268,7 @@ export const InventoryModule: React.FC = () => {
       {/* Add Product Modal */}
       <AnimatePresence>
         {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -277,19 +277,26 @@ export const InventoryModule: React.FC = () => {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             >
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                <h3 className="text-base font-bold text-[var(--text-primary)]">{t('addProduct')}</h3>
-                <button onClick={() => setIsAddModalOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
+              <form onSubmit={handleAddProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
+                {/* Mobile Drag Handle */}
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
 
-              <form onSubmit={handleAddProduct} className="space-y-3">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 pb-4 border-b border-[var(--border-subtle)]">
+                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addProduct')}</h3>
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]">
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Form Body */}
+                <div className="p-6 overflow-y-auto space-y-4 flex-1">
                 <div>
                   <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('productName')} *</label>
                   <input
@@ -361,21 +368,18 @@ export const InventoryModule: React.FC = () => {
                   </label>
                 </div>
 
-                <div className="pt-2 flex items-center justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-secondary)]"
-                  >
-                    {t('cancel')}
-                  </button>
-                  <button
+                </div>
+
+                {/* Side-to-Side Bottom Action Banner */}
+                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
+                  <motion.button
+                    whileTap={{ scale: 0.96 }}
                     type="submit"
                     disabled={submitting}
-                    className="px-4 py-2 rounded-2xl bg-blue-600 text-white text-xs font-bold shadow-md hover:bg-blue-700 disabled:opacity-50"
+                    className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                   >
-                    {submitting ? t('saving') : t('saveProduct')}
-                  </button>
+                    <span>{submitting ? t('saving') : t('saveProduct')}</span>
+                  </motion.button>
                 </div>
               </form>
             </motion.div>
@@ -386,7 +390,7 @@ export const InventoryModule: React.FC = () => {
       {/* Edit Product / Stock Adjustment Modal */}
       <AnimatePresence>
         {editingProduct && (
-          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -395,19 +399,26 @@ export const InventoryModule: React.FC = () => {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             >
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                <h3 className="text-base font-bold text-[var(--text-primary)]">{t('editProduct')}</h3>
-                <button onClick={() => setEditingProduct(null)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
+              <form onSubmit={handleUpdateProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
+                {/* Mobile Drag Handle */}
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
 
-              <form onSubmit={handleUpdateProduct} className="space-y-3">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 pb-4 border-b border-[var(--border-subtle)]">
+                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editProduct')}</h3>
+                  <button type="button" onClick={() => setEditingProduct(null)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]">
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Form Body */}
+                <div className="p-6 overflow-y-auto space-y-4 flex-1">
                 <div>
                   <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('productName')} *</label>
                   <input
@@ -493,32 +504,26 @@ export const InventoryModule: React.FC = () => {
                   </label>
                 </div>
 
-                <div className="pt-3 flex items-center justify-between border-t border-[var(--border-subtle)]">
+                </div>
+
+                {/* Side-to-Side Bottom Action Banner with Vertical Stacking */}
+                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 flex flex-col gap-2.5 rounded-none flex-shrink-0 z-30">
+                  <motion.button
+                    whileTap={{ scale: 0.96 }}
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    <span>{submitting ? t('saving') : t('saveProduct')}</span>
+                  </motion.button>
                   <button
                     type="button"
                     onClick={handleDeleteProduct}
                     disabled={submitting}
-                    className="px-3 py-1.5 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-500/20 transition-colors"
+                    className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors"
                   >
                     {t('deleteProduct')}
                   </button>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setEditingProduct(null)}
-                      className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-secondary)]"
-                    >
-                      {t('cancel')}
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className="px-4 py-2 rounded-2xl bg-blue-600 text-white text-xs font-bold shadow-md hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      {submitting ? t('saving') : t('saveProduct')}
-                    </button>
-                  </div>
                 </div>
               </form>
             </motion.div>
