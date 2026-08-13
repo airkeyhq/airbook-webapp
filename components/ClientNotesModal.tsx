@@ -55,6 +55,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   const [phone, setPhone] = useState(clientPhone);
   const [isSaved, setIsSaved] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     setName(clientName);
@@ -103,8 +104,6 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
       onClose();
     }, 1000);
   };
-
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const handleDeleteClient = async () => {
     if (!clientId) return;
