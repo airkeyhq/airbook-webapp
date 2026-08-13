@@ -222,12 +222,14 @@ export const ClientsModule: React.FC = () => {
             >
               <form onSubmit={handleAddClient} className="flex flex-col h-full min-h-0 overflow-hidden">
                 {/* Mobile Drag Handle */}
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto my-2.5 sm:hidden" />
+                <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
 
-                {/* Header */}
-                <div className="flex items-center justify-between px-6 pb-4 border-b border-[var(--border-subtle)]">
+                {/* Header Edge-to-Edge Bar */}
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addClient')}</h3>
-                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]">
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors">
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>

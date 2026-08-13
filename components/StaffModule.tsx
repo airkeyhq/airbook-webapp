@@ -521,59 +521,63 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
               className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleSaveEdit} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Scrollable Drawer Body */}
-                <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
-                  {/* Mobile/Tablet Pull-Down Drag Handle */}
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-1 mb-2 md:hidden" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
-                <div className="flex items-center gap-3">
-                  {(() => {
-                    const editIdx = staffList.findIndex((s) => s.id === selectedStaffForEdit.id);
-                    const editProviderColor = getProviderColor(editIdx >= 0 ? editIdx : 0, (selectedStaffForEdit as any).color, providerColorMode);
-                    const editAvatarSrc = getAvatarUrl(selectedStaffForEdit.name, (selectedStaffForEdit as any).avatarUrl, editProviderColor);
-                    const isCustomPhoto = (selectedStaffForEdit as any).avatarUrl && (selectedStaffForEdit as any).avatarUrl.startsWith('http');
-
-                    return (
-                      <div className="relative flex-shrink-0">
-                        <img
-                          src={editAvatarSrc}
-                          alt={selectedStaffForEdit.name}
-                          className={`w-14 h-14 rounded-2xl object-cover shadow-sm ${
-                            isCustomPhoto ? 'border-2' : ''
-                          }`}
-                          style={isCustomPhoto ? { borderColor: editProviderColor } : undefined}
-                        />
-                        <span
-                          className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-[#141720]"
-                          style={{ backgroundColor: editProviderColor }}
-                        />
-                      </div>
-                    );
-                  })()}
-                  <div>
-                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                      {selectedStaffForEdit.name}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs font-medium text-[var(--text-secondary)]">
-                        {selectedStaffForEdit.role}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                        {t('activeOnShift')}
-                      </span>
-                    </div>
-                  </div>
+                {/* Mobile Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
-                <button
-                  onClick={() => setSelectedStaffForEdit(null)}
-                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
+                {/* Header Edge-to-Edge Bar */}
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
+                  <div className="flex items-center gap-3">
+                    {(() => {
+                      const editIdx = staffList.findIndex((s) => s.id === selectedStaffForEdit.id);
+                      const editProviderColor = getProviderColor(editIdx >= 0 ? editIdx : 0, (selectedStaffForEdit as any).color, providerColorMode);
+                      const editAvatarSrc = getAvatarUrl(selectedStaffForEdit.name, (selectedStaffForEdit as any).avatarUrl, editProviderColor);
+                      const isCustomPhoto = (selectedStaffForEdit as any).avatarUrl && (selectedStaffForEdit as any).avatarUrl.startsWith('http');
+
+                      return (
+                        <div className="relative flex-shrink-0">
+                          <img
+                            src={editAvatarSrc}
+                            alt={selectedStaffForEdit.name}
+                            className={`w-14 h-14 rounded-2xl object-cover shadow-sm ${
+                              isCustomPhoto ? 'border-2' : ''
+                            }`}
+                            style={isCustomPhoto ? { borderColor: editProviderColor } : undefined}
+                          />
+                          <span
+                            className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-[#141720]"
+                            style={{ backgroundColor: editProviderColor }}
+                          />
+                        </div>
+                      );
+                    })()}
+                    <div>
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                        {selectedStaffForEdit.name}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs font-medium text-[var(--text-secondary)]">
+                          {selectedStaffForEdit.role}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                          {t('activeOnShift')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStaffForEdit(null)}
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Scrollable Drawer Body */}
+                <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
 
               {/* Form Content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -787,22 +791,25 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
               className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleAddStaff} className="flex flex-col h-full min-h-0 overflow-hidden">
+                {/* Mobile Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
+
+                {/* Header Edge-to-Edge Bar */}
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-primary)]">
+                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
                 {/* Scrollable Form Body */}
                 <div className="p-5 md:p-6 overflow-y-auto space-y-4 flex-1 scroll-fade-b">
-                  {/* Mobile/Tablet Pull-Down Drag Handle */}
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-1 mb-2 md:hidden" />
-
-                  {/* Header */}
-                  <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
-                    <button
-                      type="button"
-                      onClick={() => setIsAddModalOpen(false)}
-                      className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-                    >
-                      <Dismiss24Filled className="w-5 h-5" />
-                    </button>
-                  </div>
 
                   <div>
                     <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('fullName')} *</label>
