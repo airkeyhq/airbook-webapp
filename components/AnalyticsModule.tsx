@@ -56,8 +56,16 @@ export const AnalyticsModule: React.FC = () => {
       </div>
 
       {loading && (
-        <div className="p-8 text-center text-xs text-[var(--text-muted)] animate-pulse">
-          Aggregating financial metrics from database…
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-2.5 animate-pulse"
+            >
+              <div className="h-3 w-24 rounded-full bg-black/10 dark:bg-white/10" />
+              <div className="h-7 w-28 rounded-xl bg-black/15 dark:bg-white/15" />
+            </div>
+          ))}
         </div>
       )}
 
