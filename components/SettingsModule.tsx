@@ -37,7 +37,9 @@ import {
   Eye24Filled,
   EyeOff24Filled,
   Checkmark24Regular,
+  Checkmark24Filled,
   CheckmarkCircle24Filled,
+  Edit24Filled,
 } from '@fluentui/react-icons';
 
 type SettingsTab = 'profile' | 'workspace' | 'addons';
@@ -127,8 +129,10 @@ const INPUT_CLS =
   'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, deleteStation } = useAirBookStore();
+  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
   const [newStationName, setNewStationName] = useState('');
+  const [editingStationId, setEditingStationId] = useState<string | null>(null);
+  const [editingStationName, setEditingStationName] = useState('');
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
@@ -510,7 +514,16 @@ export const SettingsModule: React.FC = () => {
             {/* Chairs & Workstations Manager */}
             <Section title={t('chairsAndStations')} icon={Building24Regular}>
               <div className="space-y-3">
-                <div className="flex gap-2">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newStationName.trim()) return;
+                    addStation({ name: newStationName.trim() });
+                    setNewStationName('');
+                    addToast('Station added', 'success');
+                  }}
+                  className="flex flex-col sm:flex-row gap-2"
+                >
                   <input
                     type="text"
                     value={newStationName}
@@ -519,42 +532,97 @@ export const SettingsModule: React.FC = () => {
                     className={INPUT_CLS}
                   />
                   <button
-                    type="button"
-                    onClick={() => {
-                      if (!newStationName.trim()) return;
-                      addStation({ name: newStationName.trim() });
-                      setNewStationName('');
-                      addToast('Station added', 'success');
-                    }}
-                    className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 transition-all active:scale-95 flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                    type="submit"
+                    className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-1.5 flex-shrink-0 cursor-pointer"
                   >
-                    <Add24Filled className="w-4 h-4" />
+                    <Add24Filled className="w-4 h-4 text-white" />
                     <span>{t('addStation')}</span>
                   </button>
-                </div>
+                </form>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  {stations.map((stn) => (
-                    <div
-                      key={stn.id}
-                      className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-between gap-2"
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
-                        <span className="text-xs font-bold text-[var(--text-primary)] truncate">{stn.name}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          deleteStation(stn.id);
-                          addToast('Station deleted', 'info');
-                        }}
-                        className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors flex-shrink-0 cursor-pointer"
+                  {stations.map((stn) => {
+                    const isEditing = editingStationId === stn.id;
+
+                    return (
+                      <div
+                        key={stn.id}
+                        className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-between gap-2 transition-all"
                       >
-                        <Delete24Filled className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+                        {isEditing ? (
+                          <div className="flex items-center gap-1.5 w-full">
+                            <input
+                              type="text"
+                              autoFocus
+                              value={editingStationName}
+                              onChange={(e) => setEditingStationName(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  if (editingStationName.trim()) {
+                                    updateStation(stn.id, editingStationName.trim());
+                                    setEditingStationId(null);
+                                    addToast('Station updated', 'success');
+                                  }
+                                } else if (e.key === 'Escape') {
+                                  setEditingStationId(null);
+                                }
+                              }}
+                              className="w-full px-2.5 py-1 rounded-xl bg-white dark:bg-gray-800 border border-blue-500 text-xs font-bold text-[var(--text-primary)] focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (editingStationName.trim()) {
+                                  updateStation(stn.id, editingStationName.trim());
+                                  setEditingStationId(null);
+                                  addToast('Station updated', 'success');
+                                }
+                              }}
+                              className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors flex-shrink-0 cursor-pointer"
+                            >
+                              <Checkmark24Filled className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingStationId(null)}
+                              className="p-1.5 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-muted)] hover:bg-black/10 transition-colors flex-shrink-0 cursor-pointer"
+                            >
+                              <Dismiss24Filled className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+                              <span className="text-xs font-bold text-[var(--text-primary)] truncate">{stn.name}</span>
+                            </div>
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingStationId(stn.id);
+                                  setEditingStationName(stn.name);
+                                }}
+                                className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
+                              >
+                                <Edit24Filled className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  deleteStation(stn.id);
+                                  addToast('Station deleted', 'info');
+                                }}
+                                className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+                              >
+                                <Delete24Filled className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </Section>
