@@ -137,53 +137,67 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
       </div>
 
       {/* 7-Day Schedule List */}
-      <div className="space-y-2 pt-1">
+      <div className="space-y-2.5 pt-1">
         {schedule.map((day, idx) => (
           <div
             key={day.key}
-            className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between gap-2 ${
+            className={`p-3 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
               day.active
                 ? 'bg-white dark:bg-gray-800/80 border-black/10 dark:border-white/10 shadow-sm'
                 : 'bg-black/5 dark:bg-white/5 border-transparent opacity-60'
             }`}
           >
             {/* Day label & Working toggle */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-auto">
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleToggleDay(idx)}
+                  className={`w-9 h-7 rounded-xl font-mono text-xs font-black flex items-center justify-center transition-all ${
+                    day.active
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
+                  }`}
+                >
+                  {t(day.labelKey as any)}
+                </button>
+                <span className={`text-xs font-extrabold ${day.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
+                  {day.active ? t('workingDay') : t('offDay')}
+                </span>
+              </div>
+
               <button
                 type="button"
                 onClick={() => handleToggleDay(idx)}
-                className={`w-9 h-7 rounded-xl font-mono text-xs font-black flex items-center justify-center transition-all ${
+                className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-colors ${
                   day.active
-                    ? 'bg-blue-600 text-white shadow-sm'
+                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
                     : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
                 }`}
               >
-                {t(day.labelKey as any)}
+                {day.active ? 'ON' : 'OFF'}
               </button>
-              <span className={`text-xs font-extrabold ${day.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
-                {day.active ? t('workingDay') : t('offDay')}
-              </span>
             </div>
 
             {/* Custom Coded Time Pickers or Off Badge */}
             {day.active ? (
-              <div className="flex items-center gap-1.5 min-w-0">
+              <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-black/5 dark:border-white/5">
                 <CustomSelect
                   value={day.startTime}
                   onChange={(val) => handleTimeChange(idx, 'startTime', val)}
                   options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
-                  className="w-24 flex-shrink-0"
+                  className="flex-1 sm:w-28"
                 />
-                <span className="text-[10px] font-bold text-[var(--text-muted)] flex-shrink-0">→</span>
+                <span className="text-xs font-bold text-[var(--text-muted)] flex-shrink-0">→</span>
                 <CustomSelect
                   value={day.endTime}
                   onChange={(val) => handleTimeChange(idx, 'endTime', val)}
                   options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
-                  className="w-24 flex-shrink-0"
+                  className="flex-1 sm:w-28"
                 />
               </div>
             ) : (
-              <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-bold text-[var(--text-muted)] border border-black/5 dark:border-white/10">
+              <span className="px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-bold text-[var(--text-muted)] border border-black/5 dark:border-white/10 self-start sm:self-auto">
                 {t('offDay')}
               </span>
             )}
