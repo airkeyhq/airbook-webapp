@@ -89,3 +89,21 @@ All UI styling MUST rely on CSS custom properties (design tokens) for structural
 
 1. **Zero Hardcoded Colors for Structure**: NEVER use hardcoded Tailwind structural colors (e.g., `bg-white dark:bg-gray-900`, `text-gray-800 dark:text-gray-100`, `border-gray-200`) for primary containers, text, or borders.
 2. **Always Use Tokens**: MUST use established CSS variables (e.g., `bg-[var(--bg-primary)]`, `bg-[var(--bg-secondary)]`, `text-[var(--text-primary)]`, `text-[var(--text-secondary)]`, `border-[var(--border-subtle)]`) to ensure perfect theming and dark mode support.
+
+# Mandatory Passwordless & Zero-Password Identity Rule
+
+All authentication and profile security flows in this application MUST be 100% passwordless without exception.
+
+1. **Zero Password Storage or Inputs**: NEVER render password input fields, password-confirmation inputs, or "Forgot Password" links in sign-in, sign-up, or settings forms.
+2. **Approved Auth Methods**: Authentication MUST strictly use:
+   - **Passwordless Magic Links** (`signIn.magicLink`)
+   - **Social OAuth SSO** (Google SSO, Apple SSO)
+3. **Security Messaging**: Settings and login pages MUST display the green status security guarantee: *"AirBook is 100% Passwordless. Zero passwords are stored in our database, protecting your organization from credential leaks."*
+
+# Mandatory LobeHub Icons Standalone Import Rule
+
+When using `@lobehub/icons` for brand vector logos, NEVER import from the top-level package (`import { Google } from '@lobehub/icons'`), which pulls in `@lobehub/ui` dependencies and breaks Next.js/Turbopack builds.
+
+1. **Standalone Entrypoint Imports**: ALWAYS import SVG React icon components directly from standalone component paths:
+   - **Google**: `import GoogleColor from '@lobehub/icons/es/Google/components/Color';`
+   - **Apple**: `import AppleMono from '@lobehub/icons/es/Apple/components/Mono';`
