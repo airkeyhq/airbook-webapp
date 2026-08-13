@@ -5,7 +5,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
-import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular } from '@fluentui/react-icons';
+import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
   id: string;
@@ -17,6 +17,188 @@ interface StaffItem {
   phone?: string;
   isActive?: boolean;
 }
+
+export interface ShiftDayConfig {
+  key: string;
+  labelKey: string;
+  active: boolean;
+  startTime: string;
+  endTime: string;
+}
+
+const INITIAL_SCHEDULE: ShiftDayConfig[] = [
+  { key: 'mon', labelKey: 'monShort', active: true, startTime: '09:00', endTime: '18:00' },
+  { key: 'tue', labelKey: 'tueShort', active: true, startTime: '09:00', endTime: '18:00' },
+  { key: 'wed', labelKey: 'wedShort', active: true, startTime: '09:00', endTime: '18:00' },
+  { key: 'thu', labelKey: 'thuShort', active: true, startTime: '09:00', endTime: '18:00' },
+  { key: 'fri', labelKey: 'friShort', active: true, startTime: '09:00', endTime: '18:00' },
+  { key: 'sat', labelKey: 'satShort', active: false, startTime: '10:00', endTime: '16:00' },
+  { key: 'sun', labelKey: 'sunShort', active: false, startTime: '10:00', endTime: '16:00' },
+];
+
+const TIME_SLOTS = [
+  '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+  '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
+  '19:00', '19:30', '20:00', '20:30', '21:00'
+];
+
+interface StaffScheduleConfiguratorProps {
+  schedule: ShiftDayConfig[];
+  onChange: (newSchedule: ShiftDayConfig[]) => void;
+}
+
+const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ schedule, onChange }) => {
+  const { t } = useTranslation();
+
+  const handleToggleDay = (index: number) => {
+    const next = [...schedule];
+    next[index] = { ...next[index], active: !next[index].active };
+    onChange(next);
+  };
+
+  const handleTimeChange = (index: number, field: 'startTime' | 'endTime', val: string) => {
+    const next = [...schedule];
+    next[index] = { ...next[index], [field]: val };
+    onChange(next);
+  };
+
+  const applyDefaultWeekdays = () => {
+    const next = schedule.map((d, idx) => {
+      if (idx < 5) return { ...d, active: true, startTime: '09:00', endTime: '18:00' };
+      return { ...d, active: false };
+    });
+    onChange(next);
+  };
+
+  const copyMonToWeekdays = () => {
+    const mon = schedule[0];
+    const next = schedule.map((d, idx) => {
+      if (idx < 5) return { ...d, active: mon.active, startTime: mon.startTime, endTime: mon.endTime };
+      return d;
+    });
+    onChange(next);
+  };
+
+  const markWeekendsOff = () => {
+    const next = schedule.map((d, idx) => {
+      if (idx >= 5) return { ...d, active: false };
+      return d;
+    });
+    onChange(next);
+  };
+
+  const activeDays = schedule.filter((d) => d.active);
+  const totalHours = schedule.reduce((acc, d) => {
+    if (!d.active) return acc;
+    const [startH, startM] = d.startTime.split(':').map(Number);
+    const [endH, endM] = d.endTime.split(':').map(Number);
+    const diff = (endH + endM / 60) - (startH + startM / 60);
+    return acc + (diff > 0 ? diff : 0);
+  }, 0);
+
+  return (
+    <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 space-y-3.5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <label className="text-xs font-extrabold text-[var(--text-primary)] flex items-center gap-1.5">
+          <Clock24Regular className="w-4 h-4 text-blue-500" />
+          <span>{t('workingShiftsAndHours')}</span>
+        </label>
+        <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+          {t('weeklySummary')
+            .replace('{workingDays}', String(activeDays.length))
+            .replace('{totalHours}', totalHours.toFixed(1))}
+        </span>
+      </div>
+
+      {/* Quick Action Presets */}
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <button
+          type="button"
+          onClick={applyDefaultWeekdays}
+          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
+        >
+          ⚡ {t('applyDefaultWeekdays')}
+        </button>
+        <button
+          type="button"
+          onClick={copyMonToWeekdays}
+          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] hover:bg-black/10 transition-colors"
+        >
+          {t('copyMonToWeekdays')}
+        </button>
+        <button
+          type="button"
+          onClick={markWeekendsOff}
+          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] hover:bg-black/10 transition-colors"
+        >
+          {t('markWeekendsOff')}
+        </button>
+      </div>
+
+      {/* 7-Day Schedule List */}
+      <div className="space-y-2 pt-1">
+        {schedule.map((day, idx) => (
+          <div
+            key={day.key}
+            className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between gap-2 ${
+              day.active
+                ? 'bg-white dark:bg-gray-800/80 border-black/10 dark:border-white/10 shadow-sm'
+                : 'bg-black/5 dark:bg-white/5 border-transparent opacity-60'
+            }`}
+          >
+            {/* Day label & Working toggle */}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleToggleDay(idx)}
+                className={`w-9 h-7 rounded-xl font-mono text-xs font-black flex items-center justify-center transition-all ${
+                  day.active
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
+                }`}
+              >
+                {t(day.labelKey as any)}
+              </button>
+              <span className={`text-xs font-extrabold ${day.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
+                {day.active ? t('workingDay') : t('offDay')}
+              </span>
+            </div>
+
+            {/* Time Pickers or Off Badge */}
+            {day.active ? (
+              <div className="flex items-center gap-1.5">
+                <select
+                  value={day.startTime}
+                  onChange={(e) => handleTimeChange(idx, 'startTime', e.target.value)}
+                  className="px-2 py-1 rounded-xl bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  {TIME_SLOTS.map((tVal) => (
+                    <option key={tVal} value={tVal}>{tVal}</option>
+                  ))}
+                </select>
+                <span className="text-[10px] font-bold text-[var(--text-muted)]">→</span>
+                <select
+                  value={day.endTime}
+                  onChange={(e) => handleTimeChange(idx, 'endTime', e.target.value)}
+                  className="px-2 py-1 rounded-xl bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  {TIME_SLOTS.map((tVal) => (
+                    <option key={tVal} value={tVal}>{tVal}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-bold text-[var(--text-muted)] border border-black/5 dark:border-white/10">
+                {t('offDay')}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 interface StaffModuleProps {
   onNavigateToCalendar?: () => void;
@@ -38,20 +220,21 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const [pendingInvitesList, setPendingInvitesList] = useState<any[]>([]);
   const [sendingInvite, setSendingInvite] = useState(false);
 
-  // Form State
+  // Add Staff Form State
   const [name, setName] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('Hair Stylist');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [avatarEmoji, setAvatarEmoji] = useState('👨🏻‍🎨');
   const [commissionPercent, setCommissionPercent] = useState(70);
+  const [addSchedule, setAddSchedule] = useState<ShiftDayConfig[]>(INITIAL_SCHEDULE);
   const [submitting, setSubmitting] = useState(false);
 
   // Edit Modal Form State
   const [editName, setEditName] = useState('');
   const [editRole, setEditRole] = useState('');
   const [editCommission, setEditCommission] = useState(70);
-  const [editShift, setEditShift] = useState('Mon - Fri (09:00 - 18:00)');
+  const [editSchedule, setEditSchedule] = useState<ShiftDayConfig[]>(INITIAL_SCHEDULE);
   const [editChair, setEditChair] = useState('Sillón #1 / Station 1');
 
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
@@ -141,7 +324,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     setEditName(stf.name);
     setEditRole(stf.role);
     setEditCommission(stf.commissionPercent ?? 70);
-    setEditShift('Mon - Fri (09:00 - 18:00)');
+    setEditSchedule(INITIAL_SCHEDULE);
     setEditChair('Sillón #1 / Station 1');
   };
 
@@ -607,41 +790,24 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   </div>
                 </div>
 
-                {/* Shifts & Chair Allocation */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('workingShifts')}
-                    </label>
-                    <CustomSelect
-                      value={editShift}
-                      onChange={(val) => setEditShift(val)}
-                      options={[
-                        { value: 'Mon - Fri (09:00 - 18:00)', label: 'Mon - Fri (09:00 - 18:00)' },
-                        { value: 'Tue - Sat (10:00 - 19:00)', label: 'Tue - Sat (10:00 - 19:00)' },
-                        { value: 'Morning Shift (08:00 - 15:00)', label: 'Morning Shift (08:00 - 15:00)' },
-                        { value: 'Afternoon Shift (14:00 - 21:00)', label: 'Afternoon Shift (14:00 - 21:00)' },
-                        { value: 'Flexible / Part-Time', label: 'Flexible / Part-Time' },
-                      ]}
-                    />
-                  </div>
+                {/* Detailed Working Shifts & Hours Configurator */}
+                <StaffScheduleConfigurator schedule={editSchedule} onChange={setEditSchedule} />
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('chairStation')}
-                    </label>
-                    <CustomSelect
-                      value={editChair}
-                      onChange={(val) => setEditChair(val)}
-                      options={[
-                        { value: 'Station 1 (Hair & Styling)', label: 'Station 1 (Hair & Styling)' },
-                        { value: 'Station 2 (Color & Wash Bar)', label: 'Station 2 (Color & Wash Bar)' },
-                        { value: 'Station 3 (Spa & Facial Suite)', label: 'Station 3 (Spa & Facial Suite)' },
-                        { value: 'Station 4 (Nails & Pedicure)', label: 'Station 4 (Nails & Pedicure)' },
-                        { value: 'Unassigned / Floating', label: 'Unassigned / Floating' },
-                      ]}
-                    />
-                  </div>
+                <div>
+                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
+                    {t('chairStation')}
+                  </label>
+                  <CustomSelect
+                    value={editChair}
+                    onChange={(val) => setEditChair(val)}
+                    options={[
+                      { value: 'Station 1 (Hair & Styling)', label: 'Station 1 (Hair & Styling)' },
+                      { value: 'Station 2 (Color & Wash Bar)', label: 'Station 2 (Color & Wash Bar)' },
+                      { value: 'Station 3 (Spa & Facial Suite)', label: 'Station 3 (Spa & Facial Suite)' },
+                      { value: 'Station 4 (Nails & Pedicure)', label: 'Station 4 (Nails & Pedicure)' },
+                      { value: 'Unassigned / Floating', label: 'Unassigned / Floating' },
+                    ]}
+                  />
                 </div>
 
                 {/* Commission Split & Payout Status */}
@@ -848,6 +1014,9 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       />
                     </div>
                   </div>
+
+                  {/* Detailed Working Shifts & Hours Configurator */}
+                  <StaffScheduleConfigurator schedule={addSchedule} onChange={setAddSchedule} />
 
                   {/* Commission Split Slider Container */}
                   <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
