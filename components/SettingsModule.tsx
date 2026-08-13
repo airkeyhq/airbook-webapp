@@ -7,6 +7,7 @@ import { useSession } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { CustomSelect } from '@/components/CustomSelect';
 import {
   Person24Filled,
   Person24Regular,
@@ -478,17 +479,18 @@ export const SettingsModule: React.FC = () => {
                     </div>
                   </Field>
                   <Field label={t('timezone')}>
-                    <div className="relative">
-                      <Globe24Regular className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className={INPUT_CLS + ' pl-9'}>
-                        <option value="America/New_York">Eastern Time (ET)</option>
-                        <option value="America/Chicago">Central Time (CT)</option>
-                        <option value="America/Denver">Mountain Time (MT)</option>
-                        <option value="America/Los_Angeles">Pacific Time (PT)</option>
-                        <option value="Europe/London">London (GMT)</option>
-                        <option value="Europe/Berlin">Central Europe (CET)</option>
-                      </select>
-                    </div>
+                    <CustomSelect
+                      value={timezone}
+                      onChange={setTimezone}
+                      options={[
+                        { value: 'America/New_York', label: 'Eastern Time (ET)' },
+                        { value: 'America/Chicago', label: 'Central Time (CT)' },
+                        { value: 'America/Denver', label: 'Mountain Time (MT)' },
+                        { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
+                        { value: 'Europe/London', label: 'London (GMT)' },
+                        { value: 'Europe/Berlin', label: 'Central Europe (CET)' },
+                      ]}
+                    />
                   </Field>
                 </div>
                 <motion.button whileTap={{ scale: 0.97 }} type="submit" className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md">
@@ -500,19 +502,27 @@ export const SettingsModule: React.FC = () => {
             <Section title={t('bookingPolicies')} icon={Clock24Regular}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field label={t('cancellationNotice')}>
-                  <select value={cancellation} onChange={(e) => setCancellation(e.target.value)} className={INPUT_CLS}>
-                    <option value="12">12 Hours</option>
-                    <option value="24">24 Hours</option>
-                    <option value="48">48 Hours</option>
-                  </select>
+                  <CustomSelect
+                    value={cancellation}
+                    onChange={setCancellation}
+                    options={[
+                      { value: '12', label: '12 Hours' },
+                      { value: '24', label: '24 Hours' },
+                      { value: '48', label: '48 Hours' },
+                    ]}
+                  />
                 </Field>
                 <Field label={t('depositPercent')}>
-                  <select value={deposit} onChange={(e) => setDeposit(e.target.value)} className={INPUT_CLS}>
-                    <option value="0">0%</option>
-                    <option value="20">20%</option>
-                    <option value="50">50%</option>
-                    <option value="100">100%</option>
-                  </select>
+                  <CustomSelect
+                    value={deposit}
+                    onChange={setDeposit}
+                    options={[
+                      { value: '0', label: '0%' },
+                      { value: '20', label: '20%' },
+                      { value: '50', label: '50%' },
+                      { value: '100', label: '100%' },
+                    ]}
+                  />
                 </Field>
               </div>
               <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">

@@ -716,7 +716,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     >
                       <button
                         type="button"
-                        onClick={() => alert('Generando Ficha en PDF...')}
+                        onClick={() => addToast('Generando Ficha en PDF...', 'info')}
                         className="w-full py-2.5 px-4 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <Print24Filled className="w-4 h-4" />

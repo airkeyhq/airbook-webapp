@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AIRBOOK_PLANS } from '@/lib/stripe';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useToast } from '@/components/Toast';
 import { Dismiss24Filled, Sparkle24Filled, Checkmark24Regular } from '@fluentui/react-icons';
 
 interface PricingModalProps {
@@ -13,6 +14,7 @@ interface PricingModalProps {
 
 export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
@@ -31,7 +33,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
         window.location.href = data.url;
       }
     } catch (e) {
-      alert('Redirecting to Stripe Checkout...');
+      addToast('Redirecting to Stripe Checkout...', 'info');
     } finally {
       setLoadingPlan(null);
     }

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dismiss24Filled, Sparkle24Filled } from '@fluentui/react-icons';
+import { CustomSelect } from '@/components/CustomSelect';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
@@ -187,17 +188,15 @@ export const BookingDrawer: React.FC = () => {
                 <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
                   {t('selectStaff')}
                 </label>
-                <select
+                <CustomSelect
                   value={selectedStaffId}
-                  onChange={(e) => setSelectedStaffId(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none"
-                >
-                  {staffMembers.map((stf) => (
-                    <option key={stf.id} value={stf.id}>
-                      {stf.avatar} {stf.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedStaffId}
+                  options={staffMembers.map((stf) => ({
+                    value: stf.id,
+                    label: stf.name,
+                    sublabel: stf.role,
+                  }))}
+                />
               </div>
 
               {/* Start Time */}

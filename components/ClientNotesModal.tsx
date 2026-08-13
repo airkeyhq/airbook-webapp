@@ -103,9 +103,15 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     }, 1000);
   };
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   const handleDeleteClient = async () => {
     if (!clientId) return;
-    if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 4000);
+      return;
+    }
     setIsDeleting(true);
     try {
       await fetch(`/api/clients?id=${clientId}`, { method: 'DELETE' });
@@ -352,10 +358,14 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   type="button"
                   onClick={handleDeleteClient}
                   disabled={isDeleting}
-                  className="px-4 py-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                  className={`px-4 py-3 rounded-2xl font-bold text-xs flex items-center gap-1.5 transition-all ${
+                    confirmDelete
+                      ? 'bg-red-600 text-white shadow-md animate-pulse'
+                      : 'bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400'
+                  }`}
                 >
                   <Delete24Filled className="w-4 h-4" />
-                  <span>Delete Client</span>
+                  <span>{confirmDelete ? 'Click to Confirm Delete' : 'Delete Client'}</span>
                 </button>
 
                 <motion.button
