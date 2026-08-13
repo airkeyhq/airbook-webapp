@@ -930,12 +930,12 @@ export const SettingsModule: React.FC = () => {
                 className="flex flex-col h-full"
               >
                 {/* Mobile Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
                 {/* Header */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                   <div className="flex items-center gap-2.5">
                     <Building24Regular className="w-5 h-5 text-blue-500" />
                     <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
@@ -986,7 +986,7 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Bottom Action Bar */}
-                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2">
+                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
                   <button
                     type="button"
                     onClick={() => setIsAddStationModalOpen(false)}
@@ -1037,12 +1037,12 @@ export const SettingsModule: React.FC = () => {
                 className="flex flex-col h-full"
               >
                 {/* Mobile Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
                 {/* Header */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
+                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                   <div className="flex items-center gap-2.5">
                     <Building24Regular className="w-5 h-5 text-blue-500" />
                     <h3 className="text-base font-extrabold text-[var(--text-primary)]">Edit Chair / Station</h3>
@@ -1092,7 +1092,7 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Bottom Action Bar */}
-                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2">
+                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
                   <button
                     type="button"
                     onClick={() => setEditingStationId(null)}
