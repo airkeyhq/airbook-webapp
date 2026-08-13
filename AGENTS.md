@@ -56,6 +56,14 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - **Fully Custom-Coded Components**: All dropdowns, date pickers, selects, modals, toggles, range sliders, and alerts MUST be 100% custom-coded React components.
    - **Pixel-Perfect Consistency**: Custom controls must feature explicit design tokens (`bg-[var(--bg-primary)]`, `border-[var(--border-subtle)]`), Fluent vector icons, and snappy spring micro-animations so the user experience is 100% uniform across macOS, iOS, Windows, Android, Chrome, and Safari.
 
+8. **Action -> Modal Trigger Pattern for Item Creation**:
+   - **No Search Bar Lookalikes**: NEVER place static, full-width form input fields sitting permanently directly above list views for creating items (which users misinterpret as search or filter inputs).
+   - **Header Action Trigger**: ALWAYS place an explicit primary action CTA button in the section header (e.g., `<Add24Filled />` `+ Add New Station`) that triggers a dedicated, custom-coded Modal Dialog or Bottom Sheet (`AnimatePresence`) for record creation.
+
+9. **Popover Dropdown Container Isolation & Z-Index Invariants**:
+   - **Popover Overflow**: Modal containers hosting `CustomSelect` dropdown popovers must use `overflow-visible` and `z-[100]` on popover menus so dropdowns float over dialog boundaries cleanly.
+   - **Explicit Inner Corner Radius**: Inner header (`rounded-t-[32px] md:rounded-t-3xl`) and footer (`rounded-b-none md:rounded-b-3xl`) elements MUST have explicit matching rounded corners to prevent background color bleeding when `overflow-visible` is enabled on the modal container.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
