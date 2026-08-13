@@ -148,23 +148,18 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
             }`}
           >
             {/* Day label & Working toggle */}
-            <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-auto">
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleToggleDay(idx)}
-                  className={`w-9 h-7 rounded-xl font-mono text-xs font-black flex items-center justify-center transition-all ${
-                    day.active
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
-                  }`}
-                >
-                  {t(day.labelKey as any)}
-                </button>
-                <span className={`text-xs font-extrabold ${day.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
-                  {day.active ? t('workingDay') : t('offDay')}
-                </span>
-              </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => handleToggleDay(idx)}
+                className={`w-9 h-7 rounded-xl font-mono text-xs font-black flex items-center justify-center transition-all ${
+                  day.active
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-black/10 dark:bg-white/10 text-[var(--text-muted)]'
+                }`}
+              >
+                {t(day.labelKey as any)}
+              </button>
 
               {/* Custom Spring-Animated Switch Toggle */}
               <button
@@ -182,10 +177,14 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
                   className="w-5 h-5 rounded-full bg-white shadow-md"
                 />
               </button>
+
+              <span className={`text-xs font-extrabold ${day.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
+                {day.active ? t('workingDay') : t('offDay')}
+              </span>
             </div>
 
-            {/* Custom Coded Time Pickers or Off Badge */}
-            {day.active ? (
+            {/* Custom Coded Time Pickers when active */}
+            {day.active && (
               <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-black/5 dark:border-white/5">
                 <CustomSelect
                   value={day.startTime}
@@ -201,10 +200,6 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
                   className="flex-1 sm:w-28"
                 />
               </div>
-            ) : (
-              <span className="px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-bold text-[var(--text-muted)] border border-black/5 dark:border-white/10 self-start sm:self-auto">
-                {t('offDay')}
-              </span>
             )}
           </div>
         ))}
