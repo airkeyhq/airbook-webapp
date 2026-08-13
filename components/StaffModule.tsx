@@ -4,7 +4,8 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
-import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled } from '@fluentui/react-icons';
+import { CustomSelect } from '@/components/CustomSelect';
+import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
   id: string;
@@ -427,15 +428,15 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
                     {t('selectRole')}
                   </label>
-                  <select
+                  <CustomSelect
                     value={inviteRole}
-                    onChange={(e) => setInviteRole(e.target.value as any)}
-                    className="w-full px-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  >
-                    <option value="staff">{t('staff')}</option>
-                    <option value="manager">{t('manager')}</option>
-                    <option value="receptionist">{t('roleReceptionist')}</option>
-                  </select>
+                    onChange={(val) => setInviteRole(val as any)}
+                    options={[
+                      { value: 'staff', label: t('staff') },
+                      { value: 'manager', label: t('manager') },
+                      { value: 'receptionist', label: t('roleReceptionist') },
+                    ]}
+                  />
                 </div>
               </div>
               <div className="flex justify-end pt-1">
@@ -607,11 +608,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
                       {t('workingShifts')}
                     </label>
-                    <input
-                      type="text"
+                    <CustomSelect
                       value={editShift}
-                      onChange={(e) => setEditShift(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(val) => setEditShift(val)}
+                      options={[
+                        { value: 'Mon - Fri (09:00 - 18:00)', label: 'Mon - Fri (09:00 - 18:00)' },
+                        { value: 'Tue - Sat (10:00 - 19:00)', label: 'Tue - Sat (10:00 - 19:00)' },
+                        { value: 'Morning Shift (08:00 - 15:00)', label: 'Morning Shift (08:00 - 15:00)' },
+                        { value: 'Afternoon Shift (14:00 - 21:00)', label: 'Afternoon Shift (14:00 - 21:00)' },
+                        { value: 'Flexible / Part-Time', label: 'Flexible / Part-Time' },
+                      ]}
                     />
                   </div>
 
@@ -619,11 +625,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
                       {t('chairStation')}
                     </label>
-                    <input
-                      type="text"
+                    <CustomSelect
                       value={editChair}
-                      onChange={(e) => setEditChair(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(val) => setEditChair(val)}
+                      options={[
+                        { value: 'Station 1 (Hair & Styling)', label: 'Station 1 (Hair & Styling)' },
+                        { value: 'Station 2 (Color & Wash Bar)', label: 'Station 2 (Color & Wash Bar)' },
+                        { value: 'Station 3 (Spa & Facial Suite)', label: 'Station 3 (Spa & Facial Suite)' },
+                        { value: 'Station 4 (Nails & Pedicure)', label: 'Station 4 (Nails & Pedicure)' },
+                        { value: 'Unassigned / Floating', label: 'Unassigned / Floating' },
+                      ]}
                     />
                   </div>
                 </div>
