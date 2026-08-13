@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, addDays, isSameDay } from 'date-fns';
 import { useAirBookStore } from '@/lib/store';
+import { signIn } from '@/lib/auth-client';
+import GoogleColor from '@lobehub/icons/es/Google/components/Color';
 import {
   Cut24Regular,
   Clock24Regular,
@@ -396,9 +398,19 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
             {/* Step 4: Contact & Deposit Confirmation */}
             {step === 4 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                  Your Information & Booking Deposit
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                    Your Information & Booking Deposit
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => signIn.social({ provider: 'google', callbackURL: typeof window !== 'undefined' ? window.location.href : '/dashboard' })}
+                    className="py-1.5 px-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-[11px] font-bold text-[var(--text-primary)] flex items-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <GoogleColor size={14} />
+                    <span>Autofill with Google</span>
+                  </button>
+                </div>
 
                 <div className="space-y-3">
                   <div>
