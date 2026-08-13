@@ -270,6 +270,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const setViewMode = useAirBookStore((s) => s.setViewMode);
   const providerColorMode = useAirBookStore((s) => s.providerColorMode);
   const setProviderColorMode = useAirBookStore((s) => s.setProviderColorMode);
+  const stations = useAirBookStore((s) => s.stations);
 
   const fetchStaff = async () => {
     try {
@@ -828,11 +829,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     value={editChair}
                     onChange={(val) => setEditChair(val)}
                     options={[
-                      { value: 'Station 1 (Hair & Styling)', label: 'Station 1 (Hair & Styling)' },
-                      { value: 'Station 2 (Color & Wash Bar)', label: 'Station 2 (Color & Wash Bar)' },
-                      { value: 'Station 3 (Spa & Facial Suite)', label: 'Station 3 (Spa & Facial Suite)' },
-                      { value: 'Station 4 (Nails & Pedicure)', label: 'Station 4 (Nails & Pedicure)' },
-                      { value: 'Unassigned / Floating', label: 'Unassigned / Floating' },
+                      ...stations.map((stn) => ({ value: stn.name, label: stn.name })),
+                      { value: 'Unassigned / Floating', label: t('unassignedFloating') },
                     ]}
                   />
                 </div>

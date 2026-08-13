@@ -40,6 +40,12 @@ export interface AddOnSettings {
   kyc: boolean;
 }
 
+export interface StationItem {
+  id: string;
+  name: string;
+  category?: string;
+}
+
 export interface AirBookState {
   // Theme & Workspace
   theme: 'light' | 'dark';
@@ -104,6 +110,7 @@ export interface AirBookState {
   services: Service[];
   staffMembers: Staff[];
   appointments: Appointment[];
+  stations: StationItem[];
 
   // Actions
   addAppointment: (appointment: Omit<Appointment, 'id'>) => void;
@@ -111,6 +118,9 @@ export interface AirBookState {
   deleteAppointment: (id: string) => void;
   setServices: (services: Service[]) => void;
   setStaffMembers: (staff: Staff[]) => void;
+  addStation: (station: Omit<StationItem, 'id'>) => void;
+  updateStation: (id: string, name: string, category?: string) => void;
+  deleteStation: (id: string) => void;
 }
 
 const getTodayDateStr = (offsetDays = 0) => {
@@ -339,5 +349,23 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   deleteAppointment: (id) =>
     set((state) => ({
       appointments: state.appointments.filter((a) => a.id !== id),
+    })),
+  stations: [
+    { id: 'stn-1', name: 'Station 1 (Hair & Styling)', category: 'Hair' },
+    { id: 'stn-2', name: 'Station 2 (Color & Wash Bar)', category: 'Color' },
+    { id: 'stn-3', name: 'Station 3 (Spa & Facial Suite)', category: 'Spa' },
+    { id: 'stn-4', name: 'Station 4 (Nails & Pedicure)', category: 'Nails' },
+  ],
+  addStation: (station) =>
+    set((state) => ({
+      stations: [...state.stations, { ...station, id: `stn-${Date.now()}` }],
+    })),
+  updateStation: (id, name, category) =>
+    set((state) => ({
+      stations: state.stations.map((st) => (st.id === id ? { ...st, name, category } : st)),
+    })),
+  deleteStation: (id) =>
+    set((state) => ({
+      stations: state.stations.filter((st) => st.id !== id),
     })),
 }));

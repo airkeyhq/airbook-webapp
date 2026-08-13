@@ -127,7 +127,8 @@ const INPUT_CLS =
   'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat } = useAirBookStore();
+  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, deleteStation } = useAirBookStore();
+  const [newStationName, setNewStationName] = useState('');
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
@@ -504,6 +505,58 @@ export const SettingsModule: React.FC = () => {
                   {t('saveWorkspace')}
                 </motion.button>
               </form>
+            </Section>
+
+            {/* Chairs & Workstations Manager */}
+            <Section title={t('chairsAndStations')} icon={Building24Regular}>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newStationName}
+                    onChange={(e) => setNewStationName(e.target.value)}
+                    placeholder={t('stationNamePlaceholder')}
+                    className={INPUT_CLS}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!newStationName.trim()) return;
+                      addStation({ name: newStationName.trim() });
+                      setNewStationName('');
+                      addToast('Station added', 'success');
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 transition-all active:scale-95 flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                  >
+                    <Add24Filled className="w-4 h-4" />
+                    <span>{t('addStation')}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {stations.map((stn) => (
+                    <div
+                      key={stn.id}
+                      className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-between gap-2"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+                        <span className="text-xs font-bold text-[var(--text-primary)] truncate">{stn.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          deleteStation(stn.id);
+                          addToast('Station deleted', 'info');
+                        }}
+                        className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors flex-shrink-0 cursor-pointer"
+                      >
+                        <Delete24Filled className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Section>
 
             <Section title={t('bookingPolicies')} icon={Clock24Regular}>
