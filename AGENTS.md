@@ -30,7 +30,7 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
 
 1. **Iconography System (`*Filled` vs `*Regular`) & Zero Emojis**:
    - **Interactive Actions / CTAs**: MUST strictly use `*Filled` vector icons (e.g. `CheckmarkCircle24Filled`, `Calendar24Filled`, `Add24Filled`, `Sparkle24Filled`).
-   - **Display Labels / Metadata**: MUST strictly use `*Regular` vector icons (e.g. `People24Regular`, `Clock24Regular`, `Money24Regular`, `Color24Regular`).
+   - **Display Labels / Metadata / Illustration Headers**: MUST strictly use `*Regular` vector icons (e.g. `Sparkle24Regular`, `Tag24Regular`, `ShoppingBag24Regular`, `People24Regular`, `Clock24Regular`). `*Filled` icons are strictly reserved for clickable interactive actions.
    - **Zero Emojis**: Emojis are strictly prohibited in buttons, headers, titles, or status tags.
 
 2. **Vertical Button Stacking & Overflow Trigger**:
@@ -67,9 +67,9 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
      - **YES** -> MUST be built with full production functionality.
      - **NO** -> MUST be roadmapped for future releases with zero fake controls.
 
-3. **"Próximamente" / "SOON" Badging System**:
-   - Non-essential roadmapped navigation items MUST display a `Próximamente` / `SOON` badge (`soon: true`).
-   - Roadmapped module pages MUST render an honest Roadmap Teaser Card (e.g. *Próximamente en v1.1*) detailing planned capabilities without fake interactive inputs.
+3. **Concise Single-Word "SOON" Badging System**:
+   - Non-essential roadmapped navigation items MUST display a concise single-word `SOON` badge (`SOON`, `PRONTO`, `BALD`, `BIENTÔT`). Avoid long phrases like "Coming Soon" or "Próximamente".
+   - Roadmapped module pages MUST render an honest Roadmap Teaser Card (e.g. *SOON v1.1*) detailing planned capabilities without fake interactive inputs.
 
 # Mandatory Design Tokens & Theming Rule
 
