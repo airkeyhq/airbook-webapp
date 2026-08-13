@@ -380,7 +380,7 @@ export const SettingsModule: React.FC = () => {
             </Section>
 
             {/* Stripe Connect Direct Payouts Card */}
-            <Section title={t('stripeConnectTitle')} icon={Payment24Filled}>
+            <Section title={t('stripeConnectTitle')} icon={Payment24Regular}>
               <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 border border-indigo-500/20 stack-md">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
