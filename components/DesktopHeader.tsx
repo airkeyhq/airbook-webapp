@@ -7,6 +7,7 @@ import { AuthModal } from './AuthModal';
 import { NotificationCenterPopover } from './NotificationCenterPopover';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { getAvatarUrl } from '@/lib/avatars';
 import { ChevronDown24Filled, Share24Filled, Sparkle24Filled, SignOut24Filled, Person24Filled } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
 
@@ -206,9 +207,11 @@ export const DesktopHeader: React.FC = () => {
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
               className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
             >
-              <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0">
-                {userName ? userName.charAt(0).toUpperCase() : 'U'}
-              </div>
+              <img
+                src={getAvatarUrl(userName || 'Operator', session?.user?.image)}
+                alt={userName || 'User'}
+                className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+              />
               <span className="hidden md:inline">{userName}</span>
             </button>
 

@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CustomSelect } from '@/components/CustomSelect';
+import { getAvatarUrl } from '@/lib/avatars';
 import {
   Person24Filled,
   Person24Regular,
@@ -287,12 +288,8 @@ export const SettingsModule: React.FC = () => {
                       }
                     }}
                   />
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-500 to-violet-500 flex items-center justify-center text-white font-extrabold text-xl shadow-md overflow-hidden relative">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      profileName.charAt(0)
-                    )}
+                  <div className="w-14 h-14 rounded-2xl border border-[var(--border-subtle)] bg-black/5 dark:bg-white/5 flex items-center justify-center shadow-md overflow-hidden relative flex-shrink-0">
+                    <img src={getAvatarUrl(profileName || 'Operator', avatarUrl)} alt={profileName} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex items-center gap-2">
                     <button
