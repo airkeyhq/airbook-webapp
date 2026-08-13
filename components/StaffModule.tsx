@@ -827,7 +827,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-1 gap-3.5">
                     <div>
                       <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('email')}</label>
                       <input
@@ -838,46 +838,38 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('commissionSplit')}</label>
+                  {/* Commission Split Slider Container */}
+                  <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[var(--text-primary)]">
+                        {t('commissionSplit')} (%)
+                      </span>
+                      <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
+                        {commissionPercent}% Staff / {100 - commissionPercent}% House
+                      </span>
+                    </div>
+
+                    <div className="py-2">
                       <input
-                        type="number"
+                        type="range"
                         min={0}
                         max={100}
                         value={commissionPercent}
                         onChange={(e) => setCommissionPercent(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full cursor-pointer h-2.5 rounded-full"
+                        style={{
+                          background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${commissionPercent}%, rgba(148, 163, 184, 0.25) ${commissionPercent}%, rgba(148, 163, 184, 0.25) 100%)`,
+                        }}
                       />
                     </div>
-                  </div>
 
-                  {/* DiceBear Thumbs Avatar Seed Picker (Zero Emojis System) */}
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1.5 block">
-                      {t('avatarStyle')}
-                    </label>
-                    <div className="grid grid-cols-6 gap-2">
-                      {['Marcus', 'Elena', 'Diego', 'Sophia', 'Lucas', 'Chloe'].map((seed, idx) => {
-                        const avatarColor = getProviderColor(idx, undefined, providerColorMode);
-                        const avatarSrc = getAvatarUrl(seed, undefined, avatarColor);
-                        const isSelected = avatarEmoji === seed || (avatarEmoji === '👨🏻‍🎨' && idx === 0);
-
-                        return (
-                          <button
-                            type="button"
-                            key={seed}
-                            onClick={() => setAvatarEmoji(seed)}
-                            className={`p-1 rounded-2xl border-2 transition-all duration-100 ease-out ${
-                              isSelected
-                                ? 'border-purple-600 bg-purple-500/10 scale-105 shadow-sm'
-                                : 'border-transparent bg-black/5 dark:bg-white/5 hover:scale-105'
-                            }`}
-                          >
-                            <img src={avatarSrc} alt={seed} className="w-10 h-10 rounded-xl object-cover" />
-                          </button>
-                        );
-                      })}
+                    <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
+                      <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Stripe Instant Payout Active
+                      </span>
                     </div>
                   </div>
                 </div>
