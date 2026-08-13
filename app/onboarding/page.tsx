@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Logo, CircleCloudIcon } from '@/components/Logo';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -167,9 +168,7 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-6 pb-2">
           {/* Brand logo */}
-          <div className="w-10 h-10 rounded-2xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-extrabold text-base shadow-md">
-            A
-          </div>
+          <CircleCloudIcon size={38} />
 
           {/* Step dots */}
           <div className="flex items-center gap-2">

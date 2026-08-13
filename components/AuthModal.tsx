@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
+import { CircleCloudIcon } from './Logo';
 import { signIn, signUp } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Dismiss24Filled, ArrowRight24Filled, Sparkle24Filled, Mail24Regular, LockClosed24Regular, Building24Regular, ShieldCheckmark24Regular } from '@fluentui/react-icons';
@@ -78,9 +79,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-xs">
-                A
-              </div>
+              <CircleCloudIcon size={26} />
               <h2 className="text-base font-bold text-[var(--text-primary)]">
                 {mode === 'signup' ? t('signUp') : t('signIn')}
               </h2>

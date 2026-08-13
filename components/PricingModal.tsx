@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AIRBOOK_PLANS } from '@/lib/stripe';
+import { CircleCloudIcon } from './Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { Dismiss24Filled, Sparkle24Filled, Checkmark24Regular } from '@fluentui/react-icons';
@@ -72,8 +73,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
 
           {/* Logo & Header */}
           <div className="text-center max-w-md mx-auto mb-6">
-            <div className="w-10 h-10 rounded-2xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-sm shadow-md mx-auto mb-3">
-              A
+            <div className="flex justify-center mb-3">
+              <CircleCloudIcon size={42} />
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
               {t('upgradePlan')}

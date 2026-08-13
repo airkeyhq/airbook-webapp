@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { Logo } from '@/components/Logo';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -94,13 +95,9 @@ export default function LoginPage() {
       >
         {/* Brand logo */}
         <div className="text-center">
-          <motion.div
-            whileHover={{ scale: 1.07, rotate: 4 }}
-            whileTap={{ scale: 0.93 }}
-            className="w-12 h-12 rounded-3xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-extrabold text-xl shadow-xl mx-auto mb-2 cursor-pointer select-none"
-          >
-            A
-          </motion.div>
+          <div className="flex justify-center mb-3">
+            <Logo size={48} animated />
+          </div>
           <h1 className="text-xl font-extrabold tracking-tight text-[var(--text-primary)]">
             {mode === 'signin' ? 'Welcome back' : 'Create account'}
           </h1>

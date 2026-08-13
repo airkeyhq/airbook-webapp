@@ -29,6 +29,7 @@ export type DashboardTab =
   | 'memberships'
   | 'marketplace'
   | 'analytics'
+  | 'brand'
   | 'settings';
 
 interface DesktopSidebarProps {
@@ -50,6 +51,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
     { id: 'memberships' as DashboardTab, label: t('tabPackages'), icon: Tag24Filled, soon: true },
     { id: 'marketplace' as DashboardTab, label: t('tabMarketplace'), icon: ShoppingBag24Filled, soon: true },
     { id: 'analytics' as DashboardTab, label: t('tabAnalytics'), icon: DataTrending24Filled },
+    { id: 'brand' as DashboardTab, label: 'Brand & DAM', icon: Sparkle24Filled },
     { id: 'settings' as DashboardTab, label: t('tabSettings'), icon: Settings24Filled },
   ];
 

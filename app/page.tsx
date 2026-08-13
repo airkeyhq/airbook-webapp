@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { Logo, CircleCloudIcon } from '@/components/Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import {
   Sparkle24Regular,
@@ -31,17 +32,8 @@ export default function AmieMarketingWebsite() {
       <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-white/80 dark:bg-[#0C0D12]/80 border-b border-slate-200 dark:border-white/10 transition-all">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <motion.div
-              whileHover={{ rotate: 12, scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
-              className="w-9 h-9 rounded-2xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-base shadow-lg"
-            >
-              A
-            </motion.div>
-            <span className="font-extrabold text-lg tracking-tight text-[#0F172A] dark:text-white group-hover:opacity-80 transition-opacity">
-              AirBook
-            </span>
+          <Link href="/" className="flex items-center gap-2 group">
+            <Logo size={34} showText animated />
           </Link>
 
           {/* Center Links */}
@@ -349,9 +341,7 @@ export default function AmieMarketingWebsite() {
       {/* FOOTER */}
       <footer className="w-full max-w-6xl mx-auto px-6 py-8 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-[10px]">
-            A
-          </div>
+          <CircleCloudIcon size={22} />
           <span className="font-bold text-[#0F172A] dark:text-white">AirBook</span>
           <span>© 2026 AirBook</span>
         </div>

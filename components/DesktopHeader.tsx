@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAirBookStore } from '@/lib/store';
 import { PricingModal } from './PricingModal';
+import { CircleCloudIcon } from './Logo';
 import { AuthModal } from './AuthModal';
 import { NotificationCenterPopover } from './NotificationCenterPopover';
 import { useSession, signOut } from '@/lib/auth-client';
@@ -81,9 +82,7 @@ export const DesktopHeader: React.FC = () => {
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
             className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
           >
-            <div className="w-5 h-5 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-[10px] flex-shrink-0">
-              {workspaceName.charAt(0)}
-            </div>
+            <CircleCloudIcon size={20} className="flex-shrink-0" />
             <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
             <ChevronDown24Filled className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           </button>
@@ -113,13 +112,13 @@ export const DesktopHeader: React.FC = () => {
                 ))}
               </div>
 
-              <div className="pt-1 mt-1 border-t border-[var(--border-subtle)]">
+              <div className="pt-1 mt-1 border-t border-[var(--border-subtle)] space-y-0.5">
                 <button
                   onClick={() => {
                     setIsWorkspaceMenuOpen(false);
                     setIsAuthOpen(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 >
                   <Sparkle24Filled className="w-4 h-4" />
                   <span>{t('createNewWorkspace')}</span>
@@ -256,6 +255,7 @@ export const DesktopHeader: React.FC = () => {
         </div>
       </header>
 
+      {/* Modal Dialogs */}
       <PricingModal isOpen={isPricingOpen || isPricingModalOpen} onClose={() => { setIsPricingOpen(false); closePricingModal(); }} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>

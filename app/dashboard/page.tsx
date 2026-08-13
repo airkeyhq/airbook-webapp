@@ -16,6 +16,7 @@ import { PackagesModule } from '@/components/PackagesModule';
 import { MarketplaceModule } from '@/components/MarketplaceModule';
 import { AnalyticsModule } from '@/components/AnalyticsModule';
 import { SettingsModule } from '@/components/SettingsModule';
+import { BrandDAMModule } from '@/components/BrandDAMModule';
 import { FloatingDock } from '@/components/FloatingDock';
 import { BookingDrawer } from '@/components/BookingDrawer';
 import { CommandPalette } from '@/components/CommandPalette';
@@ -297,7 +298,14 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Module 10: Settings */}
+          {/* Module 10: Brand & DAM Asset Management */}
+          {activeTab === 'brand' && (
+            <div className="flex-1 overflow-y-auto p-4">
+              <BrandDAMModule />
+            </div>
+          )}
+
+          {/* Module 11: Settings */}
           {activeTab === 'settings' && (
             <div className="flex-1 overflow-y-auto p-4">
               <SettingsModule />
