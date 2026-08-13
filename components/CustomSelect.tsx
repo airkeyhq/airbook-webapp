@@ -76,7 +76,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
             animate={{ opacity: 1, y: 4, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.1, ease: 'easeOut' }}
-            className="absolute left-0 right-0 top-full z-50 p-1.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl backdrop-blur-md max-h-60 overflow-y-auto space-y-0.5"
+            className="absolute left-0 right-0 top-full z-[100] p-1.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl backdrop-blur-md max-h-60 overflow-y-auto space-y-0.5"
           >
             {options.map((opt) => {
               const isSelected = opt.value === value;
