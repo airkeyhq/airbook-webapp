@@ -206,10 +206,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
         ) : (
           <div className="space-y-3">
             {sortedApts.map((apt) => {
-              const styleClass = getPastelColor(apt.color || '#007AFF');
               const staffIdx = activeStaffList.findIndex((s: Staff) => s.id === apt.staffId || s.name === apt.staffName);
-              const providerColor = getProviderColor(staffIdx >= 0 ? staffIdx : 0, undefined, providerColorMode);
-              const avatarSrc = getAvatarUrl(apt.staffName, undefined, providerColor);
+              const staffObj = staffIdx >= 0 ? activeStaffList[staffIdx] : null;
+              const providerColor = getProviderColor(staffIdx >= 0 ? staffIdx : 0, staffObj?.color, providerColorMode);
+              const styleClass = getPastelColor(providerColor);
+              const avatarSrc = getAvatarUrl(apt.staffName, (staffObj as any)?.avatarUrl, providerColor);
 
               return (
                 <motion.div
@@ -409,7 +410,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
 
             {/* DAY VIEW: Staff Member Columns */}
             {viewMode === 'day' ? (
-              staffToRender.map((staff: Staff) => {
+              staffToRender.map((staff: Staff, idx: number) => {
                 const staffApts = appointments.filter(
                   (a) => a.dateStr === selectedDateStr && (a.staffId === staff.id || a.staffName === staff.name)
                 );
@@ -442,7 +443,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                         const minuteNum = parseInt(apt.startTime.split(':')[1], 10);
                         const topOffset = (hourNum + minuteNum / 60) * 80;
                         const height = (apt.durationMinutes / 60) * 80;
-                        const styleClass = getPastelColor(apt.color || '#007AFF');
+                        const staffIdx = activeStaffList.findIndex((s) => s.id === staff.id);
+                        const staffColor = getProviderColor(staffIdx >= 0 ? staffIdx : idx, staff.color, providerColorMode);
+                        const styleClass = getPastelColor(staffColor);
 
                         return (
                           <motion.div
@@ -528,7 +531,10 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                         
                         const topOffset = (hourNum + (minuteNum / 60)) * 80;
                         const height = (apt.durationMinutes / 60) * 80;
-                        const styleClass = getPastelColor(apt.color || '#007AFF');
+                        const staffIdx = activeStaffList.findIndex((s: Staff) => s.id === apt.staffId || s.name === apt.staffName);
+                        const staffObj = staffIdx >= 0 ? activeStaffList[staffIdx] : null;
+                        const staffColor = getProviderColor(staffIdx >= 0 ? staffIdx : 0, staffObj?.color, providerColorMode);
+                        const styleClass = getPastelColor(staffColor);
 
                         return (
                           <motion.div
