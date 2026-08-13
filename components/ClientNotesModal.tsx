@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { getAvatarUrl } from '@/lib/avatars';
 import { useAirBookStore } from '@/lib/store';
 import {
   Save24Filled,
@@ -152,43 +153,50 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           </button>
 
           {/* Client Profile Header */}
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xl flex-shrink-0">
-              {name.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <h3 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
-                {name}
-              </h3>
-              <div className="flex flex-wrap items-center gap-2 mt-1">
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold">
-                  {totalVisits} {t('visits')}
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-muted)] text-xs font-mono">
-                  {t('noShows')}: <strong className={noShowCount > 0 ? 'text-red-500' : 'text-green-500'}>{noShowCount}</strong>
-                </span>
+          {(() => {
+            const avatarSrc = getAvatarUrl(name);
+            return (
+              <div className="flex items-center gap-4">
+                <img
+                  src={avatarSrc}
+                  alt={name}
+                  className="w-14 h-14 rounded-2xl object-cover shadow-sm flex-shrink-0"
+                />
+                <div>
+                  <h3 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+                    {name}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold">
+                      {totalVisits} {t('visits')}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-muted)] text-xs font-mono">
+                      {t('noShows')}: <strong className={noShowCount > 0 ? 'text-red-500' : 'text-green-500'}>{noShowCount}</strong>
+                    </span>
 
-                {addons.esign && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-extrabold flex items-center gap-1">
-                    <DocumentCheckmark24Filled className="w-3 h-3" />
-                    <span>eSign Active</span>
-                  </span>
-                )}
-                {addons.hipaa && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-blue-600/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold flex items-center gap-1">
-                    <Shield24Filled className="w-3 h-3" />
-                    <span>HIPAA Encrypted</span>
-                  </span>
-                )}
-                {addons.kyc && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold flex items-center gap-1">
-                    <CheckmarkCircle24Filled className="w-3 h-3" />
-                    <span>KYC Verified</span>
-                  </span>
-                )}
+                    {addons.esign && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-extrabold flex items-center gap-1">
+                        <DocumentCheckmark24Filled className="w-3 h-3" />
+                        <span>eSign Active</span>
+                      </span>
+                    )}
+                    {addons.hipaa && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-blue-600/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold flex items-center gap-1">
+                        <Shield24Filled className="w-3 h-3" />
+                        <span>HIPAA Encrypted</span>
+                      </span>
+                    )}
+                    {addons.kyc && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold flex items-center gap-1">
+                        <CheckmarkCircle24Filled className="w-3 h-3" />
+                        <span>KYC Verified</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Modal Navigation Tabs */}
           <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
