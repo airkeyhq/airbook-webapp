@@ -50,6 +50,22 @@ interface StaffScheduleConfiguratorProps {
 
 const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ schedule, onChange }) => {
   const { t } = useTranslation();
+  const timeFormat = useAirBookStore((s) => s.timeFormat);
+
+  const formatTimeLabel = (tVal: string) => {
+    if (timeFormat === '24h') return tVal;
+    const [hStr, mStr] = tVal.split(':');
+    let h = parseInt(hStr, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return `${h}:${mStr} ${ampm}`;
+  };
+
+  const timeOptions = TIME_SLOTS.map((tVal) => ({
+    value: tVal,
+    label: formatTimeLabel(tVal),
+  }));
 
   const handleToggleDay = (index: number) => {
     const next = [...schedule];
@@ -190,17 +206,17 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
                 <CustomSelect
                   value={day.startTime}
                   onChange={(val) => handleTimeChange(idx, 'startTime', val)}
-                  options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
+                  options={timeOptions}
                   compact
-                  className="flex-1 min-[520px]:w-24"
+                  className="flex-1 min-[520px]:w-[105px]"
                 />
                 <span className="text-xs font-bold text-[var(--text-muted)] flex-shrink-0">→</span>
                 <CustomSelect
                   value={day.endTime}
                   onChange={(val) => handleTimeChange(idx, 'endTime', val)}
-                  options={TIME_SLOTS.map((tVal) => ({ value: tVal, label: tVal }))}
+                  options={timeOptions}
                   compact
-                  className="flex-1 min-[520px]:w-24"
+                  className="flex-1 min-[520px]:w-[105px]"
                 />
               </div>
             )}

@@ -73,6 +73,10 @@ export interface AirBookState {
   providerColorMode: 'auto' | 'custom';
   setProviderColorMode: (mode: 'auto' | 'custom') => void;
 
+  // Time & Hour Format Setting ('12h' = 12-hour AM/PM, '24h' = 24-hour military)
+  timeFormat: '12h' | '24h';
+  setTimeFormat: (format: '12h' | '24h') => void;
+
   // Add-On Modules & Beta Program
   addons: AddOnSettings;
   setAddons: (addons: Partial<AddOnSettings>) => void;
@@ -280,6 +284,9 @@ export const useAirBookStore = create<AirBookState>((set) => ({
 
   providerColorMode: 'auto',
   setProviderColorMode: (mode) => set({ providerColorMode: mode }),
+
+  timeFormat: '12h',
+  setTimeFormat: (format) => set({ timeFormat: format }),
 
   addons: { hipaa: false, esign: true, kyc: false },
   setAddons: (newAddons) => set((state) => ({ addons: { ...state.addons, ...newAddons } })),

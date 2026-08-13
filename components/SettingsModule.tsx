@@ -127,7 +127,7 @@ const INPUT_CLS =
   'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode } = useAirBookStore();
+  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const { toasts, addToast, dismiss } = useToast();
@@ -486,6 +486,16 @@ export const SettingsModule: React.FC = () => {
                         { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
                         { value: 'Europe/London', label: 'London (GMT)' },
                         { value: 'Europe/Berlin', label: 'Central Europe (CET)' },
+                      ]}
+                    />
+                  </Field>
+                  <Field label={t('hourFormat')}>
+                    <CustomSelect
+                      value={timeFormat}
+                      onChange={(val) => setTimeFormat(val as '12h' | '24h')}
+                      options={[
+                        { value: '12h', label: t('timeFormat12h') },
+                        { value: '24h', label: t('timeFormat24h') },
                       ]}
                     />
                   </Field>
