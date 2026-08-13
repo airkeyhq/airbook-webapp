@@ -116,9 +116,10 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
         <button
           type="button"
           onClick={applyDefaultWeekdays}
-          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
+          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors flex items-center gap-1"
         >
-          ⚡ {t('applyDefaultWeekdays')}
+          <Sparkle24Filled className="w-3 h-3 text-blue-500" />
+          <span>{t('applyDefaultWeekdays')}</span>
         </button>
         <button
           type="button"
