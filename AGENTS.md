@@ -51,6 +51,11 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - Hover transitions MUST be fast (`100ms ease-out` / `duration: 0.08`).
    - Range sliders MUST use custom electric blue pill handles with `< >` vector arrows (`width: 48px`, `height: 26px`) and dynamic `linear-gradient` progress track fill.
 
+7. **Custom Select Dropdown Control Pattern**:
+   - **Zero Native Browser Chevrons**: All `<select>` controls MUST use `appearance-none` to strip default OS arrows that collide with rounded pill edges.
+   - **Right Padding & Relative Wrapper**: `<select>` elements MUST be wrapped in a `relative` container with right padding (`pl-4 pr-10 py-2.5 rounded-2xl`).
+   - **Vector Line Chevron**: Dropdowns MUST feature an absolute-positioned `<ChevronDown24Regular className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />` icon for pixel-perfect spacing.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
