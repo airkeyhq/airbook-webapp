@@ -64,6 +64,10 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - **Popover Overflow**: Modal containers hosting `CustomSelect` dropdown popovers must use `overflow-visible` and `z-[100]` on popover menus so dropdowns float over dialog boundaries cleanly.
    - **Explicit Inner Corner Radius**: Inner header (`rounded-t-[32px] md:rounded-t-3xl`) and footer (`rounded-b-none md:rounded-b-3xl`) elements MUST have explicit matching rounded corners to prevent background color bleeding when `overflow-visible` is enabled on the modal container.
 
+10. **Structured List Items vs. Action-Stuffed Cards**:
+   - **No False Affordances**: NEVER place individual action buttons (e.g. edit, delete) inside a grid of non-clickable floating cards, which creates false affordance where users expect clicking the card itself to do something.
+   - **Structured Interactive List Pattern**: Display data items with actions as a unified, divided list container (`divide-y divide-[var(--border-subtle)] border rounded-2xl`). Clicking anywhere on the row opens the detail/edit drawer, with explicit action buttons aligned to the right edge.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

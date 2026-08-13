@@ -538,23 +538,33 @@ export const SettingsModule: React.FC = () => {
                 </button>
               </div>
 
-              {/* Stations Grid List */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              {/* Structured Interactive List */}
+              <div className="divide-y divide-black/5 dark:divide-white/5 border border-black/5 dark:border-white/10 rounded-2xl overflow-hidden bg-black/[0.02] dark:bg-white/[0.02]">
                 {stations.map((stn) => (
                   <div
                     key={stn.id}
-                    className="p-3.5 rounded-2xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-black/5 dark:border-white/10 flex items-center justify-between gap-3 shadow-xs hover:shadow-md transition-all group"
+                    onClick={() => {
+                      setEditingStationId(stn.id);
+                      setEditingStationName(stn.name);
+                      setEditingStationCategory(stn.category || 'Hair & Styling');
+                    }}
+                    className="px-4 py-3 flex items-center justify-between gap-3 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                         <Building24Regular className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">{stn.name}</p>
-                        <p className="text-[10px] text-[var(--text-secondary)] font-medium truncate">{stn.category || 'Workstation'}</p>
+                        <p className="text-xs font-bold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors truncate">
+                          {stn.name}
+                        </p>
+                        <p className="text-[10px] text-[var(--text-secondary)] font-medium truncate">
+                          {stn.category || 'Workstation'}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
+
+                    <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => {
@@ -563,6 +573,7 @@ export const SettingsModule: React.FC = () => {
                           setEditingStationCategory(stn.category || 'Hair & Styling');
                         }}
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
+                        title="Edit Station"
                       >
                         <Edit24Filled className="w-4 h-4" />
                       </button>
@@ -573,6 +584,7 @@ export const SettingsModule: React.FC = () => {
                           addToast('Station deleted', 'info');
                         }}
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+                        title="Delete Station"
                       >
                         <Delete24Filled className="w-4 h-4" />
                       </button>
