@@ -17,6 +17,8 @@ import {
   Sparkle24Filled,
 } from '@fluentui/react-icons';
 
+import { Google, Apple } from '@lobehub/icons';
+
 type AuthMode = 'signin' | 'signup';
 
 export default function LoginPage() {
@@ -132,7 +134,7 @@ export default function LoginPage() {
             onClick={() => signIn.social({ provider: 'google', callbackURL: '/dashboard' })}
             className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
           >
-            <img src="https://cdn.jsdelivr.net/gh/lobehub/lobe-icons/packages/static-svg/icons/google.svg" alt="Google" className="w-4 h-4 flex-shrink-0" />
+            <Google.Color size={16} />
             <span>Continue with Google</span>
           </button>
 
@@ -141,7 +143,7 @@ export default function LoginPage() {
             onClick={() => signIn.social({ provider: 'apple', callbackURL: '/dashboard' })}
             className="w-full py-2.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer"
           >
-            <img src="https://cdn.jsdelivr.net/gh/lobehub/lobe-icons/packages/static-svg/icons/apple.svg" alt="Apple" className="w-4 h-4 flex-shrink-0 dark:invert" />
+            <Apple size={16} />
             <span>Continue with Apple</span>
           </button>
         </div>
