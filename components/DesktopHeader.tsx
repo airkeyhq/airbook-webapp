@@ -191,14 +191,6 @@ export const DesktopHeader: React.FC = () => {
             </button>
           )}
 
-          {/* Upgrade Plan Pill */}
-          <button
-            onClick={() => setIsPricingOpen(true)}
-            className="h-9 hidden md:flex items-center gap-1.5 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all text-xs font-extrabold"
-          >
-            <Sparkle24Filled className="w-3.5 h-3.5" />
-            <span>{t('upgradePlan')}</span>
-          </button>
 
           {/* User Profile Pill / Dropdown */}
           <div ref={userDropdownRef} className="relative z-[99999]">

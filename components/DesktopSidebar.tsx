@@ -167,12 +167,10 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
       <div className="mt-auto pt-2">
         {!isSidebarCollapsed ? (
           <div className="p-3.5 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
-            <div className="flex items-center justify-between font-extrabold text-amber-600 dark:text-amber-400">
-              <div className="flex items-center gap-1.5">
-                <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
-                <span className="truncate">{t('upgradeToPro')}</span>
-              </div>
-              <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider">PRO</span>
+            <div className="flex items-center gap-1.5 font-extrabold text-amber-600 dark:text-amber-400">
+              <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
+              <span>{t('upgradeTo')}</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider leading-none">PRO</span>
             </div>
             <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
               {t('upgradeProDesc')}

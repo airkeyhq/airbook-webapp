@@ -3,6 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { organization, magicLink } from 'better-auth/plugins';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import { sendMagicLinkEmail } from '@/lib/notifications';
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
@@ -51,8 +52,7 @@ export const auth = betterAuth({
     }),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        // Send email via Novu / Resend
-        console.log(`Sending magic link to ${email}: ${url}`);
+        await sendMagicLinkEmail({ email, url });
       },
     }),
   ],

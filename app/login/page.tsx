@@ -62,7 +62,7 @@ export default function LoginPage() {
         setSuccessMessage('✨ Passwordless Magic Link sent! Check your inbox to enter AirBook.');
       }
     } catch (err) {
-      setSuccessMessage('✨ Passwordless Magic Link sent! Check your inbox to enter AirBook.');
+      setError(err instanceof Error ? err.message : 'Could not send magic link.');
     } finally {
       setLoading(false);
     }
