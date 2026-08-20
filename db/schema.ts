@@ -94,6 +94,10 @@ export const workspaces = pgTable('workspaces', {
   logoUrl: text('logo_url'),
   cancellationNoticeHours: integer('cancellation_notice_hours').default(24).notNull(),
   depositRequiredPercent: integer('deposit_required_percent').default(20).notNull(),
+  plan: varchar('plan', { length: 20 }).default('free').notNull(),
+  subscriptionStatus: varchar('subscription_status', { length: 20 }),
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

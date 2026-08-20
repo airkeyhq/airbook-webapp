@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { db } from '@/db';
-import { appointments } from '@/db/schema';
+import { appointments, workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
@@ -34,6 +34,18 @@ export async function POST(req: NextRequest) {
             .set({ status: 'confirmed' })
             .where(eq(appointments.id, appointmentId));
         }
+
+        const workspaceId = session.metadata?.workspaceId;
+        if (session.mode === 'subscription' && workspaceId && session.metadata?.plan) {
+          await db.update(workspaces)
+            .set({
+              plan: session.metadata.plan,
+              subscriptionStatus: 'active',
+              stripeCustomerId: session.customer as string,
+              stripeSubscriptionId: session.subscription as string,
+            })
+            .where(eq(workspaces.id, workspaceId));
+        }
         break;
       }
 
@@ -45,6 +57,19 @@ export async function POST(req: NextRequest) {
             .set({ status: 'completed' })
             .where(eq(appointments.id, appointmentId));
         }
+        break;
+      }
+
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object;
+        const isActive = subscription.status === 'active' || subscription.status === 'trialing';
+        await db.update(workspaces)
+          .set({
+            subscriptionStatus: subscription.status,
+            plan: isActive ? undefined : 'free',
+          })
+          .where(eq(workspaces.stripeSubscriptionId, subscription.id));
         break;
       }
 

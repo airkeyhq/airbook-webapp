@@ -32,9 +32,11 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
       const data = await res.json();
       if (data?.url) {
         window.location.href = data.url;
+        return;
       }
+      addToast(data?.error || 'Could not start checkout. Please try again.', 'error');
     } catch (e) {
-      addToast('Redirecting to Stripe Checkout...', 'info');
+      addToast('Could not start checkout. Please try again.', 'error');
     } finally {
       setLoadingPlan(null);
     }
