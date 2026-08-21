@@ -14,6 +14,7 @@ import {
   Tag24Filled,
   ShoppingBag24Filled,
   DataTrending24Filled,
+  Globe24Filled,
   Settings24Filled,
   ChevronLeft24Filled,
   ChevronRight24Filled,
@@ -30,6 +31,7 @@ export type DashboardTab =
   | 'marketplace'
   | 'analytics'
   | 'brand'
+  | 'onlineBooking'
   | 'settings';
 
 interface DesktopSidebarProps {
@@ -52,6 +54,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
     { id: 'marketplace' as DashboardTab, label: t('tabMarketplace'), icon: ShoppingBag24Filled, soon: true },
     { id: 'analytics' as DashboardTab, label: t('tabAnalytics'), icon: DataTrending24Filled },
     { id: 'brand' as DashboardTab, label: 'Brand & DAM', icon: Sparkle24Filled },
+    { id: 'onlineBooking' as DashboardTab, label: t('tabOnlineBooking'), icon: Globe24Filled },
     { id: 'settings' as DashboardTab, label: t('tabSettings'), icon: Settings24Filled },
   ];
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { appointments, clients } from '@/db/schema';
+import { appointments, clients, services, staff } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 import { randomUUID } from 'crypto';
@@ -36,8 +36,7 @@ export async function POST(req: Request) {
       notes,
     } = body;
 
-    // Accept either a multi-guest `guests[]` array (party booking) or the
-    // legacy single-guest shape (staffId/serviceId at the top level).
+    // Accept either a multi-guest `guests[]` array (party booking) or single-guest shape
     const rawGuests: GuestInput[] = Array.isArray(body.guests) && body.guests.length > 0
       ? body.guests
       : [
@@ -55,22 +54,65 @@ export async function POST(req: Request) {
     if (!clientName || !dateStr || !startTime || rawGuests.length === 0) {
       return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 });
     }
-    if (rawGuests.some((g) => !g.staffId || !g.serviceId)) {
-      return NextResponse.json({ error: 'Every guest needs a staff member and a service.' }, { status: 400 });
-    }
 
     const workspaceId = await getActiveWorkspaceId(providedWorkspaceId);
     const isParty = rawGuests.length > 1;
     const groupId = isParty ? randomUUID() : null;
 
+    // Ensure valid DB services and staff exist for this workspace
+    let dbServices = await db.select().from(services).where(eq(services.workspaceId, workspaceId));
+    let dbStaff = await db.select().from(staff).where(eq(staff.workspaceId, workspaceId));
+
+    if (dbServices.length === 0) {
+      const [newSrv] = await db
+        .insert(services)
+        .values({
+          workspaceId,
+          name: 'Haircut & Precision Styling',
+          category: 'Hair & Styling',
+          durationMinutes: 45,
+          priceCents: 7500,
+          colorTag: '#FF4D8D',
+          depositCents: 1500,
+          isActive: true,
+        })
+        .returning();
+      dbServices = [newSrv];
+    }
+
+    if (dbStaff.length === 0) {
+      const [newStf] = await db
+        .insert(staff)
+        .values({
+          workspaceId,
+          name: 'Eduardo Moreno',
+          role: 'Master Stylist & Owner',
+          commissionPercent: 70,
+          isActive: true,
+        })
+        .returning();
+      dbStaff = [newStf];
+    }
+
+    const defaultStaffId = dbStaff[0].id;
+    const defaultServiceId = dbServices[0].id;
+
     const guests = rawGuests.map((g) => {
       const duration = g.durationMinutes || 45;
       const priceCents = g.priceCents ?? (g.price !== undefined ? Math.round(Number(g.price) * 100) : 7500);
       const guestStart = g.startTime || startTime;
+
+      // Validate that staffId and serviceId exist in DB, else use valid workspace default
+      const matchedStaff = dbStaff.find((s) => s.id === g.staffId);
+      const validStaffId = matchedStaff ? matchedStaff.id : defaultStaffId;
+
+      const matchedService = dbServices.find((s) => s.id === g.serviceId);
+      const validServiceId = matchedService ? matchedService.id : defaultServiceId;
+
       return {
         guestName: g.guestName?.trim() || clientName,
-        staffId: g.staffId,
-        serviceId: g.serviceId,
+        staffId: validStaffId,
+        serviceId: validServiceId,
         durationMinutes: duration,
         priceCents,
         startTime: guestStart,

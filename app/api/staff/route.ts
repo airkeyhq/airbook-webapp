@@ -9,11 +9,35 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const workspaceId = searchParams.get('workspaceId');
 
-    const staffList = await db
+    let staffList = await db
       .select()
       .from(staff)
       .where(workspaceId ? eq(staff.workspaceId, workspaceId) : undefined)
       .orderBy(desc(staff.createdAt));
+
+    if (staffList.length === 0 && workspaceId && process.env.NODE_ENV !== 'production') {
+      const defaultStaff = [
+        { name: 'Eduardo Moreno', role: 'Master Stylist & Owner', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Dennis Müller', role: 'Senior Aesthetician', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Ivo Silva', role: 'Therapy Specialist', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Agnes K.', role: 'Spa Director', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80' },
+      ];
+
+      for (const stf of defaultStaff) {
+        const [created] = await db
+          .insert(staff)
+          .values({
+            workspaceId,
+            name: stf.name,
+            role: stf.role,
+            avatarUrl: stf.avatarUrl,
+            commissionPercent: 70,
+            isActive: true,
+          })
+          .returning();
+        staffList.push(created);
+      }
+    }
 
     return NextResponse.json({ success: true, staff: staffList });
   } catch (err: any) {

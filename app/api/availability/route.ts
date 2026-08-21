@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { appointments, schedules } from '@/db/schema';
+import { appointments, schedules, staff } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 const DEFAULT_OPEN = '09:00';
@@ -22,56 +22,87 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const staffId = searchParams.get('staffId');
+    const workspaceId = searchParams.get('workspaceId');
     const dateStr = searchParams.get('dateStr');
     const durationMinutes = Number(searchParams.get('durationMinutes') || 45);
 
-    if (!staffId || !dateStr) {
-      return NextResponse.json({ error: 'staffId and dateStr are required.' }, { status: 400 });
+    if (!dateStr || (!staffId && !workspaceId)) {
+      return NextResponse.json({ error: 'dateStr and either staffId or workspaceId are required.' }, { status: 400 });
     }
 
     const dayOfWeek = new Date(`${dateStr}T00:00:00`).getDay();
-
-    const [schedule] = await db
-      .select()
-      .from(schedules)
-      .where(and(eq(schedules.staffId, staffId), eq(schedules.dayOfWeek, dayOfWeek)));
-
-    if (schedule && !schedule.isWorkingDay) {
-      return NextResponse.json({ success: true, slots: [] });
-    }
-
-    const openMinutes = toMinutes(schedule?.startTime || DEFAULT_OPEN);
-    const closeMinutes = toMinutes(schedule?.endTime || DEFAULT_CLOSE);
-
-    const existing = await db
-      .select({ startTime: appointments.startTime, endTime: appointments.endTime })
-      .from(appointments)
-      .where(
-        and(
-          eq(appointments.staffId, staffId),
-          eq(appointments.dateStr, dateStr),
-          eq(appointments.status, 'confirmed')
-        )
-      );
-
-    const busyRanges = existing.map((a) => ({
-      start: toMinutes(a.startTime),
-      end: toMinutes(a.endTime || a.startTime),
-    }));
-
     const now = new Date();
     const isToday = dateStr === now.toISOString().slice(0, 10);
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
-    const slots: string[] = [];
-    for (let start = openMinutes; start + durationMinutes <= closeMinutes; start += SLOT_STEP_MINUTES) {
-      const end = start + durationMinutes;
-      if (isToday && start <= nowMinutes) continue;
-      const overlaps = busyRanges.some((b) => start < b.end && end > b.start);
-      if (!overlaps) slots.push(toHHMM(start));
+    // Helper to compute slots for a single staff member
+    async function getStaffSlots(targetStaffId: string) {
+      const [schedule] = await db
+        .select()
+        .from(schedules)
+        .where(and(eq(schedules.staffId, targetStaffId), eq(schedules.dayOfWeek, dayOfWeek)));
+
+      if (schedule && !schedule.isWorkingDay) {
+        return [];
+      }
+
+      const openMinutes = toMinutes(schedule?.startTime || DEFAULT_OPEN);
+      const closeMinutes = toMinutes(schedule?.endTime || DEFAULT_CLOSE);
+
+      const existing = await db
+        .select({ startTime: appointments.startTime, endTime: appointments.endTime })
+        .from(appointments)
+        .where(
+          and(
+            eq(appointments.staffId, targetStaffId),
+            eq(appointments.dateStr, dateStr!),
+            eq(appointments.status, 'confirmed')
+          )
+        );
+
+      const busyRanges = existing.map((a) => ({
+        start: toMinutes(a.startTime),
+        end: toMinutes(a.endTime || a.startTime),
+      }));
+
+      const slots: string[] = [];
+      for (let start = openMinutes; start + durationMinutes <= closeMinutes; start += SLOT_STEP_MINUTES) {
+        const end = start + durationMinutes;
+        if (isToday && start <= nowMinutes) continue;
+        const overlaps = busyRanges.some((b) => start < b.end && end > b.start);
+        if (!overlaps) slots.push(toHHMM(start));
+      }
+      return slots;
     }
 
-    return NextResponse.json({ success: true, slots });
+    if (staffId && staffId !== 'anyone') {
+      const slots = await getStaffSlots(staffId);
+      return NextResponse.json({ success: true, slots });
+    }
+
+    // "Anyone available" - compute union across active staff
+    let targetStaffList: { id: string }[] = [];
+    if (workspaceId) {
+      targetStaffList = await db
+        .select({ id: staff.id })
+        .from(staff)
+        .where(and(eq(staff.workspaceId, workspaceId as any), eq(staff.isActive, true)));
+    } else {
+      targetStaffList = await db
+        .select({ id: staff.id })
+        .from(staff)
+        .where(eq(staff.isActive, true))
+        .limit(20);
+    }
+
+    if (targetStaffList.length === 0) {
+      return NextResponse.json({ success: true, slots: [] });
+    }
+
+    const allStaffSlots = await Promise.all(targetStaffList.map((s) => getStaffSlots(s.id)));
+    const unionSlots = Array.from(new Set(allStaffSlots.flat())).sort((a, b) => toMinutes(a) - toMinutes(b));
+
+    return NextResponse.json({ success: true, slots: unionSlots });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to compute availability.' }, { status: 500 });
   }

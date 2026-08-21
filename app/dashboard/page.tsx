@@ -17,6 +17,7 @@ import { MarketplaceModule } from '@/components/MarketplaceModule';
 import { AnalyticsModule } from '@/components/AnalyticsModule';
 import { SettingsModule } from '@/components/SettingsModule';
 import { BrandDAMModule } from '@/components/BrandDAMModule';
+import { OnlineBookingModule } from '@/components/OnlineBookingModule';
 import { FloatingDock } from '@/components/FloatingDock';
 import { BookingDrawer } from '@/components/BookingDrawer';
 import { CommandPalette } from '@/components/CommandPalette';
@@ -318,7 +319,14 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Module 11: Settings */}
+          {/* Module 11: Dedicated Online Booking Studio */}
+          {activeTab === 'onlineBooking' && (
+            <div className="flex-1 overflow-y-auto p-4">
+              <OnlineBookingModule />
+            </div>
+          )}
+
+          {/* Module 12: Settings */}
           {activeTab === 'settings' && (
             <div className="flex-1 overflow-y-auto p-4">
               <SettingsModule />

@@ -55,6 +55,8 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 
 | Feature Module | Current Status | Beta Locked? | Next Milestone |
 | :--- | :--- | :--- | :--- |
+| **Public Booking Engine** | ✅ Released (v1.2) | ❌ Public | Custom booking themes & branding |
+| **Online Booking Studio** | ✅ Released (v1.2) | ❌ Public | Embeddable JS booking widget |
 | **Multi-Staff Day View** | ✅ Released (v1.2) | ❌ Public | Multi-location staff schedule sync |
 | **Google Review Automation** | ✅ Released (v1.2) | ❌ Public | WhatsApp Review Requests |
 | **eSign Waiver Pad** | 🟡 Beta Preview (v1.3) | 🔒 Yes (Beta/Dev) | HTML5 Signature Canvas + PDF Export |

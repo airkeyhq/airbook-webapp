@@ -9,11 +9,38 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const workspaceId = searchParams.get('workspaceId');
 
-    const serviceList = await db
+    let serviceList = await db
       .select()
       .from(services)
       .where(workspaceId ? eq(services.workspaceId, workspaceId) : undefined)
       .orderBy(desc(services.createdAt));
+
+    if (serviceList.length === 0 && workspaceId && process.env.NODE_ENV !== 'production') {
+      const defaultServices = [
+        { name: 'Haircut & Precision Styling', category: 'Hair & Styling', durationMinutes: 45, priceCents: 7500, colorTag: '#FF4D8D' },
+        { name: 'Beard Sculpting & Hot Towel', category: 'Beard & Grooming', durationMinutes: 30, priceCents: 4500, colorTag: '#00C7BE' },
+        { name: 'HydraFacial Glow Treatment', category: 'Spa & Facial', durationMinutes: 60, priceCents: 16000, colorTag: '#9D50BB' },
+        { name: 'Deep Tissue Body Therapy', category: 'Body Wellness', durationMinutes: 60, priceCents: 13000, colorTag: '#34C759' },
+        { name: 'Botox & Aesthetic Consultation', category: 'Aesthetics', durationMinutes: 30, priceCents: 22000, colorTag: '#FF9500' },
+      ];
+
+      for (const srv of defaultServices) {
+        const [created] = await db
+          .insert(services)
+          .values({
+            workspaceId,
+            name: srv.name,
+            category: srv.category,
+            durationMinutes: srv.durationMinutes,
+            priceCents: srv.priceCents,
+            colorTag: srv.colorTag,
+            depositCents: Math.round(srv.priceCents * 0.2),
+            isActive: true,
+          })
+          .returning();
+        serviceList.push(created);
+      }
+    }
 
     return NextResponse.json({ success: true, services: serviceList });
   } catch (err: any) {
