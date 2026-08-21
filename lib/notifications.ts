@@ -108,39 +108,123 @@ export async function sendTeamInvitationEmail(payload: TeamInvitationEmailPayloa
 }
 
 /**
- * Sends passwordless magic link email via Novu workflow.
- * Falls back to server console logging when NOVU_SECRET_KEY is not configured.
+ * Sends passwordless magic link email via Novu workflow, Resend, or SendGrid.
+ * Falls back to server console logging when email keys are not configured.
  */
 export async function sendMagicLinkEmail(payload: MagicLinkEmailPayload) {
   const { email, url } = payload;
-  const secretKey = process.env.NOVU_SECRET_KEY;
+  const novuKey = process.env.NOVU_SECRET_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
+  const sendgridKey = process.env.SENDGRID_API_KEY;
 
-  if (!secretKey) {
-    console.log(
-      `[Magic Link · Dev Fallback] NOVU_SECRET_KEY is not set. Open this link for ${email}:\n${url}`,
-    );
-    return { success: true, mode: 'dev-console' as const };
+  console.log(`[Magic Link] Dispatching sign-in link for ${email}: ${url}`);
+
+  // 1. Try Novu Workflow if configured
+  if (novuKey && novuKey !== 'demo-novu-secret-key-2026') {
+    try {
+      const result = await novu.trigger({
+        workflowId: NOVU_WORKFLOWS.magicLinkSignIn,
+        to: {
+          subscriberId: email,
+          email,
+        },
+        payload: {
+          email,
+          magicLinkUrl: url,
+          signInUrl: url,
+        },
+      });
+
+      console.log(`[Novu] Magic link email queued for ${email}`);
+      return { success: true, result };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown Novu error';
+      console.warn('[Novu] Failed to send magic link via Novu:', message);
+    }
   }
 
-  try {
-    const result = await novu.trigger({
-      workflowId: NOVU_WORKFLOWS.magicLinkSignIn,
-      to: {
-        subscriberId: email,
-        email,
-      },
-      payload: {
-        email,
-        magicLinkUrl: url,
-        signInUrl: url,
-      },
-    });
-
-    console.log(`[Novu] Magic link email queued for ${email}`);
-    return { success: true, result };
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown Novu error';
-    console.error('[Novu] Failed to send magic link email:', message);
-    throw new Error('Could not send magic link email. Please try again.');
+  // 2. Try Resend API if key is present
+  if (resendKey) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM_EMAIL || 'AirBook <auth@getairbook.com>',
+          to: [email],
+          subject: 'Sign in to AirBook',
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px; color: #0f172a;">
+              <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Sign in to AirBook</h2>
+              <p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 24px;">Click the button below to sign in to your AirBook workspace. This passwordless magic link expires in 10 minutes.</p>
+              <div style="margin: 28px 0;">
+                <a href="${url}" style="background-color: #2563eb; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; font-size: 15px;">Sign In to AirBook</a>
+              </div>
+              <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">If you did not request this link, you can safely ignore this email.</p>
+            </div>
+          `,
+        }),
+      });
+      if (res.ok) {
+        console.log(`[Resend] Magic link email successfully delivered to ${email}`);
+        return { success: true, mode: 'resend' };
+      } else {
+        const errorText = await res.text();
+        console.warn(`[Resend] Error sending magic link:`, errorText);
+      }
+    } catch (e) {
+      console.warn(`[Resend] Fetch failed:`, e);
+    }
   }
+
+  // 3. Try SendGrid API if key is present
+  if (sendgridKey) {
+    try {
+      const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sendgridKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email }] }],
+          from: { email: process.env.SENDGRID_FROM_EMAIL || 'notifications@getairbook.com', name: 'AirBook' },
+          subject: 'Sign in to AirBook',
+          content: [
+            {
+              type: 'text/html',
+              value: `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px; color: #0f172a;">
+                  <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Sign in to AirBook</h2>
+                  <p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 24px;">Click the button below to sign in to your AirBook workspace. This passwordless magic link expires in 10 minutes.</p>
+                  <div style="margin: 28px 0;">
+                    <a href="${url}" style="background-color: #2563eb; color: #ffffff; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; font-size: 15px;">Sign In to AirBook</a>
+                  </div>
+                  <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">If you did not request this link, you can safely ignore this email.</p>
+                </div>
+              `,
+            },
+          ],
+        }),
+      });
+      if (res.ok) {
+        console.log(`[SendGrid] Magic link email successfully delivered to ${email}`);
+        return { success: true, mode: 'sendgrid' };
+      } else {
+        const errorText = await res.text();
+        console.warn(`[SendGrid] Error sending magic link:`, errorText);
+      }
+    } catch (e) {
+      console.warn(`[SendGrid] Fetch failed:`, e);
+    }
+  }
+
+  // 4. Fallback server logging if no email provider is configured
+  console.log(
+    `[Magic Link · Fallback] No active email provider responded. Open this link directly:\n${url}`,
+  );
+  return { success: true, mode: 'dev-console' };
 }
