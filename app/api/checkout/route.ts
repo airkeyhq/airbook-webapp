@@ -128,7 +128,7 @@ export async function POST(req: Request) {
             await tx
               .update(products)
               .set({
-                stockQuantity: sql`${products.stockQuantity} - ${item.quantity || 1}`,
+                stockQuantity: sql`GREATEST(0, ${products.stockQuantity} - ${item.quantity || 1})`,
               })
               .where(eq(products.id, item.productId));
           }

@@ -1,11 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Add24Filled, Dismiss24Filled, VehicleTruck24Filled, Box24Regular, Warning24Regular } from '@fluentui/react-icons';
+import { useToast } from '@/components/Toast';
+import { CustomSelect } from '@/components/CustomSelect';
+import {
+  Add24Filled,
+  Dismiss24Filled,
+  Box24Regular,
+  Warning24Regular,
+  Search24Regular,
+  CheckmarkCircle24Filled,
+  Delete24Filled,
+  ShoppingBag24Regular,
+  Money24Regular,
+  ArrowTrending24Regular,
+} from '@fluentui/react-icons';
 
-interface ProductItem {
+export interface ProductItem {
   id: string;
   name: string;
   sku?: string;
@@ -15,91 +28,53 @@ interface ProductItem {
   stockQuantity: number;
   lowStockAlertThreshold?: number;
   isRetail?: boolean;
+  imageUrl?: string;
+  createdAt?: string;
 }
+
+const CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'Haircare', label: 'Haircare' },
+  { value: 'Skincare', label: 'Skincare' },
+  { value: 'Styling', label: 'Styling & Pomades' },
+  { value: 'Supplies', label: 'Professional Supplies' },
+  { value: 'Wellness', label: 'Wellness & Body' },
+  { value: 'General', label: 'General Retail' },
+];
 
 export const InventoryModule: React.FC = () => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
+
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Form State
+  // Add Product Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [name, setName] = useState('');
   const [sku, setSku] = useState('');
   const [category, setCategory] = useState('Haircare');
-  const [price, setPrice] = useState('28');
-  const [stock, setStock] = useState('20');
+  const [retailPrice, setRetailPrice] = useState('35');
+  const [costPrice, setCostPrice] = useState('15');
+  const [stockQuantity, setStockQuantity] = useState('15');
+  const [lowStockThreshold, setLowStockThreshold] = useState('5');
   const [isRetail, setIsRetail] = useState(true);
+  const [imageUrl, setImageUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  // Edit / Stock Adjustment Modal State
+
+  // Edit / Product Detail Drawer State
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [editName, setEditName] = useState('');
   const [editSku, setEditSku] = useState('');
   const [editCategory, setEditCategory] = useState('');
-  const [editPrice, setEditPrice] = useState('');
-  const [editStock, setEditStock] = useState(0);
+  const [editRetailPrice, setEditRetailPrice] = useState('');
+  const [editCostPrice, setEditCostPrice] = useState('');
+  const [editStockQuantity, setEditStockQuantity] = useState(0);
+  const [editLowStockThreshold, setEditLowStockThreshold] = useState(5);
   const [editIsRetail, setEditIsRetail] = useState(true);
-
-  const openEditModal = (prod: ProductItem) => {
-    setEditingProduct(prod);
-    setEditName(prod.name);
-    setEditSku(prod.sku || '');
-    setEditCategory(prod.category);
-    setEditPrice(((prod.retailPriceCents || 0) / 100).toString());
-    setEditStock(prod.stockQuantity);
-    setEditIsRetail(prod.isRetail ?? true);
-  };
-
-  const handleUpdateProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingProduct || !editName.trim()) return;
-
-    try {
-      setSubmitting(true);
-      const res = await fetch('/api/products', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: editingProduct.id,
-          name: editName.trim(),
-          sku: editSku.trim() || undefined,
-          category: editCategory.trim() || 'General',
-          retailPriceCents: Math.round((Number(editPrice) || 0) * 100),
-          stockQuantity: Number(editStock),
-          isRetail: editIsRetail,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setEditingProduct(null);
-        fetchProducts();
-      }
-    } catch (err) {
-      console.error('Failed to update product:', err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleDeleteProduct = async () => {
-    if (!editingProduct) return;
-    try {
-      setSubmitting(true);
-      const res = await fetch(`/api/products?id=${editingProduct.id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (data.success) {
-        setEditingProduct(null);
-        fetchProducts();
-      }
-    } catch (err) {
-      console.error('Failed to delete product:', err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const [editImageUrl, setEditImageUrl] = useState('');
 
   const fetchProducts = async () => {
     try {
@@ -120,6 +95,18 @@ export const InventoryModule: React.FC = () => {
     fetchProducts();
   }, []);
 
+  const openEditDrawer = (prod: ProductItem) => {
+    setEditingProduct(prod);
+    setEditName(prod.name);
+    setEditSku(prod.sku || '');
+    setEditCategory(prod.category || 'General');
+    setEditRetailPrice(((prod.retailPriceCents || 0) / 100).toString());
+    setEditCostPrice(((prod.costPriceCents || 0) / 100).toString());
+    setEditStockQuantity(prod.stockQuantity);
+    setEditLowStockThreshold(prod.lowStockAlertThreshold ?? 5);
+    setEditIsRetail(prod.isRetail ?? true);
+    setEditImageUrl(prod.imageUrl || '');
+  };
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,9 +121,12 @@ export const InventoryModule: React.FC = () => {
           name: name.trim(),
           sku: sku.trim() || undefined,
           category: category.trim() || 'General',
-          retailPriceCents: Math.round((Number(price) || 28) * 100),
-          stockQuantity: Number(stock) || 10,
+          retailPriceCents: Math.round((Number(retailPrice) || 0) * 100),
+          costPriceCents: Math.round((Number(costPrice) || 0) * 100),
+          stockQuantity: Math.max(0, Number(stockQuantity) || 0),
+          lowStockAlertThreshold: Number(lowStockThreshold) || 5,
           isRetail,
+          imageUrl: imageUrl.trim() || undefined,
         }),
       });
 
@@ -145,127 +135,379 @@ export const InventoryModule: React.FC = () => {
         setIsAddModalOpen(false);
         setName('');
         setSku('');
+        setImageUrl('');
+        addToast(t('productSaved') || 'Product saved successfully.', 'success');
         fetchProducts();
+      } else {
+        addToast(data.error || 'Failed to create product.', 'error');
       }
     } catch (err) {
       console.error('Failed to create product:', err);
+      addToast('Error creating product.', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const lowStockItems = products.filter(
-    (p) => p.stockQuantity <= (p.lowStockAlertThreshold ?? 5)
-  );
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct || !editName.trim()) return;
+
+    try {
+      setSubmitting(true);
+      const res = await fetch('/api/products', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingProduct.id,
+          name: editName.trim(),
+          sku: editSku.trim() || undefined,
+          category: editCategory.trim() || 'General',
+          retailPriceCents: Math.round((Number(editRetailPrice) || 0) * 100),
+          costPriceCents: Math.round((Number(editCostPrice) || 0) * 100),
+          stockQuantity: Math.max(0, Number(editStockQuantity) || 0),
+          lowStockAlertThreshold: Number(editLowStockThreshold) || 5,
+          isRetail: editIsRetail,
+          imageUrl: editImageUrl.trim() || undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setEditingProduct(null);
+        addToast(t('productSaved') || 'Product updated.', 'success');
+        fetchProducts();
+      } else {
+        addToast(data.error || 'Failed to update product.', 'error');
+      }
+    } catch (err) {
+      console.error('Failed to update product:', err);
+      addToast('Error updating product.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleQuickStockDelta = async (prodId: string, delta: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === prodId ? { ...p, stockQuantity: Math.max(0, p.stockQuantity + delta) } : p))
+      );
+
+      const res = await fetch('/api/products', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: prodId,
+          deltaQuantity: delta,
+        }),
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        fetchProducts();
+      }
+    } catch (err) {
+      fetchProducts();
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!editingProduct) return;
+    try {
+      setSubmitting(true);
+      const res = await fetch(`/api/products?id=${editingProduct.id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingProduct(null);
+        addToast(t('productDeleted') || 'Product removed from catalog.', 'success');
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchesCat = selectedCategory === 'all' || p.category.toLowerCase() === selectedCategory.toLowerCase();
+      const matchesSearch =
+        searchQuery === '' ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCat && matchesSearch;
+    });
+  }, [products, selectedCategory, searchQuery]);
+
+  const metrics = useMemo(() => {
+    const totalUnits = products.reduce((acc, p) => acc + (p.stockQuantity || 0), 0);
+    const lowStockCount = products.filter((p) => p.stockQuantity <= (p.lowStockAlertThreshold ?? 5)).length;
+    const inventoryValuation = products.reduce(
+      (acc, p) => acc + ((p.costPriceCents || p.retailPriceCents * 0.4) * (p.stockQuantity || 0)) / 100,
+      0
+    );
+    const retailRevenuePotential = products.reduce(
+      (acc, p) => acc + (p.retailPriceCents * (p.stockQuantity || 0)) / 100,
+      0
+    );
+    return { totalUnits, lowStockCount, inventoryValuation, retailRevenuePotential };
+  }, [products]);
+
+  const addMargin = useMemo(() => {
+    const r = Number(retailPrice) || 0;
+    const c = Number(costPrice) || 0;
+    if (r <= 0) return 0;
+    return Math.round(((r - c) / r) * 100);
+  }, [retailPrice, costPrice]);
+
+  const editMargin = useMemo(() => {
+    const r = Number(editRetailPrice) || 0;
+    const c = Number(editCostPrice) || 0;
+    if (r <= 0) return 0;
+    return Math.round(((r - c) / r) * 100);
+  }, [editRetailPrice, editCostPrice]);
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
             {t('inventoryTitle')}
           </h2>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
             {t('inventoryDesc')}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md hover:opacity-90 transition-opacity"
-          >
-            <Add24Filled className="w-4 h-4" />
-            <span>{t('addProduct')}</span>
-          </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsAddModalOpen(true)}
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity whitespace-nowrap self-start sm:self-auto"
+        >
+          <Add24Filled className="w-4 h-4 flex-shrink-0" />
+          <span>{t('addProduct')}</span>
+        </motion.button>
+      </div>
 
-          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
-            Auto POs {t('comingSoonV12')}
-          </span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+            <Box24Regular className="w-4 h-4 text-blue-500" />
+            <span>{t('totalStockUnits')}</span>
+          </div>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{metrics.totalUnits}</p>
+        </div>
+
+        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+            <Warning24Regular className="w-4 h-4 text-amber-500" />
+            <span>{t('lowStock')}</span>
+          </div>
+          <p className={`text-xl font-black font-mono ${metrics.lowStockCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[var(--text-primary)]'}`}>
+            {metrics.lowStockCount}
+          </p>
+        </div>
+
+        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+            <Money24Regular className="w-4 h-4 text-emerald-500" />
+            <span>{t('inventoryValuation')}</span>
+          </div>
+          <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+            ${Math.round(metrics.inventoryValuation).toLocaleString()}
+          </p>
+        </div>
+
+        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+            <ArrowTrending24Regular className="w-4 h-4 text-purple-500" />
+            <span>Retail Potential</span>
+          </div>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+            ${Math.round(metrics.retailRevenuePotential).toLocaleString()}
+          </p>
         </div>
       </div>
 
-      {/* Stock Alerts */}
-      {lowStockItems.length > 0 && (
-        <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs flex items-center justify-between">
+      {metrics.lowStockCount > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Warning24Regular className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <Warning24Regular className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <span>
-              <strong>{lowStockItems.length} {t('lowStock')}:</strong>{' '}
-              {lowStockItems.map((i) => `${i.name} (${i.stockQuantity})`).join(', ')}.
+              <strong>{metrics.lowStockCount} {t('lowStock')}:</strong>{' '}
+              {products
+                .filter((p) => p.stockQuantity <= (p.lowStockAlertThreshold ?? 5))
+                .slice(0, 3)
+                .map((p) => `${p.name} (${p.stockQuantity} left)`)
+                .join(', ')}
+              {metrics.lowStockCount > 3 ? ` + ${metrics.lowStockCount - 3} more` : ''}
             </span>
           </div>
         </div>
       )}
 
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 animate-pulse"
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          {['all', 'Haircare', 'Skincare', 'Styling', 'Supplies'].map((catKey) => (
+            <button
+              key={catKey}
+              type="button"
+              onClick={() => setSelectedCategory(catKey)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold whitespace-nowrap transition-all duration-100 ${
+                selectedCategory === catKey
+                  ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
+                  : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
+              }`}
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="h-4 w-16 rounded-full bg-black/10 dark:bg-white/10" />
-                  <div className="h-3 w-12 rounded-full bg-black/5 dark:bg-white/5" />
-                </div>
-                <div className="h-4 w-3/4 rounded-lg bg-black/10 dark:bg-white/10" />
-              </div>
-
-              <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/10">
-                <div className="h-5 w-12 rounded-md bg-black/10 dark:bg-white/10" />
-                <div className="h-4 w-16 rounded-full bg-black/5 dark:bg-white/5" />
-              </div>
-            </div>
+              {catKey === 'all' ? t('allCategories') : catKey}
+            </button>
           ))}
         </div>
-      )}
 
-      {/* Products Grid */}
-      {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {products.length === 0 ? (
-            <div className="col-span-4 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
-              <Box24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
-              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noProducts')}</p>
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noProductsSub')}</p>
-            </div>
-          ) : (
-            products.map((prod) => (
-              <motion.div
-                key={prod.id}
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.1, ease: 'easeOut' }}
-                onClick={() => openEditModal(prod)}
-                className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-3 cursor-pointer hover:border-blue-500/40 hover:shadow-md transition-all duration-100 ease-out group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                      prod.isRetail ? 'bg-blue-500/10 text-blue-600' : 'bg-purple-500/10 text-purple-600'
-                    }`}>
-                      {prod.isRetail ? t('retailSale') : t('backBarUse')}
-                    </span>
-                    {prod.sku && <span className="text-[10px] font-mono text-[var(--text-muted)]">{prod.sku}</span>}
-                  </div>
-                  <h3 className="text-xs font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{prod.name}</h3>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-black/5 dark:border-white/10">
-                  <span className="text-sm font-bold text-[var(--text-primary)]">${(prod.retailPriceCents || 0) / 100}</span>
-                  <span className={`text-xs font-mono font-bold ${prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) ? 'text-amber-500' : 'text-green-600'}`}>
-                    {prod.stockQuantity} {t('inStock')}
-                  </span>
-                </div>
-              </motion.div>
-            ))
+        <div className="relative w-full sm:w-72">
+          <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('searchInventoryPlaceholder')}
+            className="w-full pl-9 pr-8 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            >
+              <Dismiss24Filled className="w-3.5 h-3.5" />
+            </button>
           )}
         </div>
-      )}
+      </div>
 
-      {/* Add Product Modal */}
+      <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden shadow-xs">
+        {loading && (
+          <div className="p-8 space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-16 rounded-2xl bg-black/5 dark:bg-white/5 animate-pulse" />
+            ))}
+          </div>
+        )}
+
+        {!loading && filteredProducts.length === 0 && (
+          <div className="min-h-[340px] p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+            <Box24Regular className="w-12 h-12 text-[var(--text-muted)] opacity-40 mb-3" />
+            <p className="text-sm font-extrabold text-[var(--text-secondary)]">{t('noProducts')}</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-sm">{t('noProductsSub')}</p>
+          </div>
+        )}
+
+        {!loading && filteredProducts.length > 0 && (
+          <div className="divide-y divide-[var(--border-subtle)]">
+            {filteredProducts.map((prod) => {
+              const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
+              const isOutOfStock = prod.stockQuantity === 0;
+              const margin =
+                prod.retailPriceCents > 0
+                  ? Math.round(
+                      ((prod.retailPriceCents - (prod.costPriceCents || 0)) / prod.retailPriceCents) * 100
+                    )
+                  : 0;
+
+              return (
+                <div
+                  key={prod.id}
+                  onClick={() => openEditDrawer(prod)}
+                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {prod.imageUrl ? (
+                        <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <ShoppingBag24Regular className="w-6 h-6 text-blue-500/70" />
+                      )}
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {prod.name}
+                        </h3>
+                        {prod.sku && (
+                          <span className="hidden sm:inline px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-[10px] font-mono text-[var(--text-muted)]">
+                            {prod.sku}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
+                        <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px]">
+                          {prod.category}
+                        </span>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="text-[var(--text-muted)] font-mono">
+                          Cost: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
+                        </span>
+                        <span>•</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                          {margin}% Margin
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-4">
+                    <div className="text-left sm:text-right">
+                      <p className="text-sm sm:text-base font-black text-[var(--text-primary)] font-mono">
+                        ${((prod.retailPriceCents || 0) / 100).toFixed(2)}
+                      </p>
+                      <span
+                        className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                          isOutOfStock
+                            ? 'text-red-600 dark:text-red-400'
+                            : isLowStock
+                            ? 'text-amber-600 dark:text-amber-400'
+                            : 'text-emerald-600 dark:text-emerald-400'
+                        }`}
+                      >
+                        {isOutOfStock ? t('outOfStock') : isLowStock ? t('lowStock') : t('inStock')}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickStockDelta(prod.id, -1, e)}
+                        className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center text-xs font-black font-mono text-[var(--text-primary)]">
+                        {prod.stockQuantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickStockDelta(prod.id, 1, e)}
+                        className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <AnimatePresence>
         {isAddModalOpen && (
           <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -281,108 +523,163 @@ export const InventoryModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleAddProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile Drag Handle */}
                 <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
-                {/* Header Edge-to-Edge Bar */}
                 <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addProduct')}</h3>
-                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+                  >
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                {/* Form Body */}
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('productName')} *</label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Matte Clay Pomade (100ml)"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('skuCode')}</label>
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                      {t('productName')}
+                    </label>
                     <input
                       type="text"
-                      value={sku}
-                      onChange={(e) => setSku(e.target.value)}
-                      placeholder="POM-001"
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                      placeholder="e.g. Argan Nourishing Hair Oil"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('category')}</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('category')}
+                      </label>
+                      <CustomSelect
+                        value={category}
+                        onChange={(val) => setCategory(val)}
+                        options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('skuCode')}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. OIL-ARG-100"
+                        value={sku}
+                        onChange={(e) => setSku(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('retailPrice')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        required
+                        value={retailPrice}
+                        onChange={(e) => setRetailPrice(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('costPrice')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={costPrice}
+                        onChange={(e) => setCostPrice(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+                    <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
+                    <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
+                      {addMargin}% Profit Margin
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('initialStock')}
+                      </label>
+                      <input
+                        type="number"
+                        value={stockQuantity}
+                        onChange={(e) => setStockQuantity(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('lowStockThreshold')}
+                      </label>
+                      <input
+                        type="number"
+                        value={lowStockThreshold}
+                        onChange={(e) => setLowStockThreshold(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                      {t('productImageUrl')}
+                    </label>
                     <input
-                      type="text"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      placeholder="Haircare"
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('retailPrice')}</label>
-                    <input
-                      type="number"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      type="url"
+                      placeholder="https://..."
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('initialStock')}</label>
-                    <input
-                      type="number"
-                      value={stock}
-                      onChange={(e) => setStock(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                  <div className="pt-2">
+                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">
+                      <input
+                        type="checkbox"
+                        checked={isRetail}
+                        onChange={(e) => setIsRetail(e.target.checked)}
+                        className="w-4 h-4 rounded text-blue-600 border-black/10 focus:ring-blue-500"
+                      />
+                      <span>{t('availableRetail')}</span>
+                    </label>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="checkbox"
-                    id="isRetail"
-                    checked={isRetail}
-                    onChange={(e) => setIsRetail(e.target.checked)}
-                    className="w-4 h-4 rounded text-blue-600"
-                  />
-                  <label htmlFor="isRetail" className="text-xs font-semibold text-[var(--text-secondary)]">
-                    {t('availableRetail')}
-                  </label>
-                </div>
-
-                </div>
-
-                {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
-                  <motion.button
-                    whileTap={{ scale: 0.96 }}
+                <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
+                  <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2 disabled:opacity-50"
                   >
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveProduct')}</span>
-                  </motion.button>
+                  </button>
                 </div>
               </form>
             </motion.div>
@@ -390,7 +687,6 @@ export const InventoryModule: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Edit Product / Stock Adjustment Modal */}
       <AnimatePresence>
         {editingProduct && (
           <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -406,129 +702,182 @@ export const InventoryModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleUpdateProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile Drag Handle */}
                 <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
-                {/* Header Edge-to-Edge Bar */}
                 <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editProduct')}</h3>
-                  <button type="button" onClick={() => setEditingProduct(null)} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {editImageUrl ? (
+                        <img src={editImageUrl} alt={editName} className="w-full h-full object-cover" />
+                      ) : (
+                        <ShoppingBag24Regular className="w-5 h-5 text-blue-500" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{editName}</h3>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{editCategory}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingProduct(null)}
+                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+                  >
                     <Dismiss24Filled className="w-5 h-5" />
                   </button>
                 </div>
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                {/* Form Body */}
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('productName')} *</label>
-                  <input
-                    type="text"
-                    required
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('skuCode')}</label>
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                      {t('productName')}
+                    </label>
                     <input
                       type="text"
-                      value={editSku}
-                      onChange={(e) => setEditSku(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('category')}</label>
-                    <input
-                      type="text"
-                      value={editCategory}
-                      onChange={(e) => setEditCategory(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('retailPrice')}</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={editPrice}
-                      onChange={(e) => setEditPrice(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('stockLevel')}</label>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setEditStock((prev) => Math.max(0, prev - 1))}
-                        className="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center font-bold text-base hover:bg-black/10 text-[var(--text-primary)]"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        value={editStock}
-                        onChange={(e) => setEditStock(Number(e.target.value))}
-                        className="w-full text-center py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('category')}
+                      </label>
+                      <CustomSelect
+                        value={editCategory}
+                        onChange={(val) => setEditCategory(val)}
+                        options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
                       />
-                      <button
-                        type="button"
-                        onClick={() => setEditStock((prev) => prev + 1)}
-                        className="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center font-bold text-base hover:bg-black/10 text-[var(--text-primary)]"
-                      >
-                        +
-                      </button>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('skuCode')}
+                      </label>
+                      <input
+                        type="text"
+                        value={editSku}
+                        onChange={(e) => setEditSku(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('retailPrice')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        required
+                        value={editRetailPrice}
+                        onChange={(e) => setEditRetailPrice(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('costPrice')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={editCostPrice}
+                        onChange={(e) => setEditCostPrice(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+                    <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
+                    <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
+                      {editMargin}% Profit Margin
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('initialStock')}
+                      </label>
+                      <input
+                        type="number"
+                        value={editStockQuantity}
+                        onChange={(e) => setEditStockQuantity(Number(e.target.value))}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                        {t('lowStockThreshold')}
+                      </label>
+                      <input
+                        type="number"
+                        value={editLowStockThreshold}
+                        onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
+                      {t('productImageUrl')}
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://..."
+                      value={editImageUrl}
+                      onChange={(e) => setEditImageUrl(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="pt-2">
+                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">
+                      <input
+                        type="checkbox"
+                        checked={editIsRetail}
+                        onChange={(e) => setEditIsRetail(e.target.checked)}
+                        className="w-4 h-4 rounded text-blue-600 border-black/10 focus:ring-blue-500"
+                      />
+                      <span>{t('availableRetail')}</span>
+                    </label>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="checkbox"
-                    id="editIsRetail"
-                    checked={editIsRetail}
-                    onChange={(e) => setEditIsRetail(e.target.checked)}
-                    className="w-4 h-4 rounded text-blue-600"
-                  />
-                  <label htmlFor="editIsRetail" className="text-xs font-semibold text-[var(--text-secondary)]">
-                    {t('availableRetail')}
-                  </label>
-                </div>
-
-                </div>
-
-                {/* Side-to-Side Bottom Action Banner with Vertical Stacking */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 flex flex-col gap-2.5 rounded-none flex-shrink-0 z-30">
-                  <motion.button
-                    whileTap={{ scale: 0.96 }}
+                <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] space-y-2.5 z-30 flex-shrink-0">
+                  <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2 disabled:opacity-50"
                   >
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveProduct')}</span>
-                  </motion.button>
+                  </button>
+
                   <button
                     type="button"
                     onClick={handleDeleteProduct}
                     disabled={submitting}
-                    className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors"
+                    className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-500/20 active:scale-98 transition-all flex items-center justify-center gap-2"
                   >
-                    {t('deleteProduct')}
+                    <Delete24Filled className="w-4 h-4" />
+                    <span>{t('deleteProduct')}</span>
                   </button>
                 </div>
               </form>

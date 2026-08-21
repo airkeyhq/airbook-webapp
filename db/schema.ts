@@ -267,6 +267,7 @@ export const products = pgTable('products', {
   stockQuantity: integer('stock_quantity').default(0).notNull(),
   lowStockAlertThreshold: integer('low_stock_alert_threshold').default(5).notNull(),
   isRetail: boolean('is_retail').default(true).notNull(), // true = store front, false = back-bar internal use
+  imageUrl: text('image_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

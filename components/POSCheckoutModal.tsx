@@ -71,6 +71,24 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const [completedReceiptNumber, setCompletedReceiptNumber] = useState<string>('');
   const [emailSent, setEmailSent] = useState(false);
 
+  // Retail Products in Cart
+  const [catalogProducts, setCatalogProducts] = useState<any[]>([]);
+  const [cartProducts, setCartProducts] = useState<{ id: string; name: string; retailPriceCents: number; qty: number }[]>([]);
+  const [showProductPicker, setShowProductPicker] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/products')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.products)) {
+            setCatalogProducts(data.products.filter((p: any) => p.isRetail && p.stockQuantity > 0));
+          }
+        })
+        .catch((err) => console.warn('Failed to load products for POS:', err));
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     setEditablePrice(totalPrice > 0 ? totalPrice : 50);
     setEditableClientName(clientName);
@@ -79,6 +97,8 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
     setCustomTip('');
     setCashTendered('');
     setSplitCardAmount('');
+    setCartProducts([]);
+    setShowProductPicker(false);
     setIsCompleted(false);
     setEmailSent(false);
     setCompletedReceiptNumber('');
@@ -87,7 +107,8 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   if (!isOpen) return null;
 
   // Math Calculations
-  const subtotal = Number(editablePrice) || 0;
+  const retailItemsTotal = cartProducts.reduce((acc, p) => acc + (p.retailPriceCents * p.qty) / 100, 0);
+  const subtotal = (Number(editablePrice) || 0) + retailItemsTotal;
   const depositCredit = Number(depositPaid) || 0;
   const taxableSubtotal = Math.max(0, subtotal - depositCredit);
   const estimatedTax = Math.round(taxableSubtotal * 0.0825 * 100) / 100; // 8.25% standard
@@ -118,6 +139,10 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           appointmentId: appointmentId || undefined,
           clientId: clientId || undefined,
           clientName: editableClientName.trim() || undefined,
+          items: [
+            { name: serviceName, priceCents: Math.round((Number(editablePrice) || 0) * 100), quantity: 1 },
+            ...cartProducts.map((p) => ({ productId: p.id, name: p.name, priceCents: p.retailPriceCents, quantity: p.qty })),
+          ],
           subtotalCents: Math.round(subtotal * 100),
           tipCents: Math.round(tipAmount * 100),
           taxCents: Math.round(estimatedTax * 100),
@@ -340,7 +365,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 {/* Itemized Bill Breakdown */}
                 <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] space-y-2 text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-[var(--text-secondary)] font-semibold">{t('subtotalLabel')}</span>
+                    <span className="text-[var(--text-secondary)] font-semibold">{serviceName}</span>
                     <div className="flex items-center gap-1">
                       <span className="text-xs font-bold text-[var(--text-primary)]">$</span>
                       <input
@@ -353,6 +378,73 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       />
                     </div>
                   </div>
+
+                  {/* Cart Retail Products */}
+                  {cartProducts.map((cp, idx) => (
+                    <div key={cp.id} className="flex justify-between items-center text-xs py-1 border-t border-black/5 dark:border-white/5">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setCartProducts((prev) => prev.filter((_, i) => i !== idx))}
+                          className="text-red-500 hover:text-red-700 text-xs font-bold"
+                        >
+                          ✕
+                        </button>
+                        <span className="text-[var(--text-primary)] font-medium">{cp.name}</span>
+                        <span className="text-[10px] text-[var(--text-muted)] font-mono">x{cp.qty}</span>
+                      </div>
+                      <span className="font-bold text-[var(--text-primary)] font-mono">
+                        ${((cp.retailPriceCents * cp.qty) / 100).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Add Retail Product Button & Dropdown */}
+                  {catalogProducts.length > 0 && (
+                    <div className="pt-1">
+                      {!showProductPicker ? (
+                        <button
+                          type="button"
+                          onClick={() => setShowProductPicker(true)}
+                          className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                        >
+                          + Add Retail Product
+                        </button>
+                      ) : (
+                        <div className="p-2 rounded-xl bg-black/5 dark:bg-white/5 space-y-1.5">
+                          <p className="text-[10px] font-bold uppercase text-[var(--text-secondary)]">Select Product to Add:</p>
+                          <div className="max-h-28 overflow-y-auto space-y-1">
+                            {catalogProducts.map((prod) => (
+                              <div
+                                key={prod.id}
+                                onClick={() => {
+                                  setCartProducts((prev) => {
+                                    const existing = prev.find((p) => p.id === prod.id);
+                                    if (existing) {
+                                      return prev.map((p) => (p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
+                                    }
+                                    return [...prev, { id: prod.id, name: prod.name, retailPriceCents: prod.retailPriceCents, qty: 1 }];
+                                  });
+                                  setShowProductPicker(false);
+                                }}
+                                className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex justify-between items-center cursor-pointer text-xs"
+                              >
+                                <span className="font-medium text-[var(--text-primary)]">{prod.name}</span>
+                                <span className="font-bold text-blue-600 font-mono">${(prod.retailPriceCents / 100).toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowProductPicker(false)}
+                            className="text-[10px] text-[var(--text-muted)] hover:underline block text-right"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {depositCredit > 0 && (
                     <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
