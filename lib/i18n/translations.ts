@@ -528,6 +528,12 @@ export const translations = {
     mobileSimulatorSubtitle: 'Real-time interactive preview of what your clients see',
     saveStudioChanges: 'Save Booking Settings',
     studioSavedToast: 'Online booking settings saved to database.',
+    stripePayoutsActive: 'Direct Bank Payouts Active',
+    stripePayoutsDesc: 'Customer deposits are automatically transferred to your bank account via Stripe Express.',
+    connectStripeBtn: 'Connect Bank via Stripe Express',
+    stripeConnecting: 'Connecting Stripe…',
+    payDepositAndConfirm: 'Pay Deposit ({amount}) & Confirm',
+    depositPaymentRedirect: 'Redirecting to Secure Card Checkout…',
   },
   es: {
     // Days of week
@@ -1049,6 +1055,12 @@ export const translations = {
     mobileSimulatorSubtitle: 'Vista previa interactiva en tiempo real de lo que ven tus clientes',
     saveStudioChanges: 'Guardar Ajustes de Reserva',
     studioSavedToast: 'Ajustes de reserva online guardados en la base de datos.',
+    stripePayoutsActive: 'Transferencias Bancarias Directas Activas',
+    stripePayoutsDesc: 'Los depósitos de clientes se transfieren automáticamente a tu cuenta bancaria mediante Stripe Express.',
+    connectStripeBtn: 'Conectar Banco con Stripe Express',
+    stripeConnecting: 'Conectando Stripe…',
+    payDepositAndConfirm: 'Pagar Depósito ({amount}) y Confirmar',
+    depositPaymentRedirect: 'Redirigiendo a Pasarela Segura de Tarjeta…',
   },
   de: {
     // Days of week
@@ -1570,6 +1582,12 @@ export const translations = {
     mobileSimulatorSubtitle: 'Interaktive Echtzeit-Vorschau für deine Kunden',
     saveStudioChanges: 'Buchungseinstellungen Speichern',
     studioSavedToast: 'Online-Buchungseinstellungen in Datenbank gespeichert.',
+    stripePayoutsActive: 'Direkte Bankauszahlungen Aktiv',
+    stripePayoutsDesc: 'Kundenzahlungen werden automatisch per Stripe Express auf dein Bankkonto überwiesen.',
+    connectStripeBtn: 'Bank über Stripe Express Verbinden',
+    stripeConnecting: 'Verbinde mit Stripe…',
+    payDepositAndConfirm: 'Anzahlung ({amount}) Zahlen & Bestätigen',
+    depositPaymentRedirect: 'Weiterleitung zur Sicheren Kartenzahlung…',
   },
   fr: {
     // Days of week
@@ -2091,5 +2109,11 @@ export const translations = {
     mobileSimulatorSubtitle: 'Aperçu interactif en temps réel de l’expérience client',
     saveStudioChanges: 'Enregistrer les Paramètres',
     studioSavedToast: 'Paramètres de réservation enregistrés dans la base de données.',
+    stripePayoutsActive: 'Virements Bancaires Directs Actifs',
+    stripePayoutsDesc: 'Les acomptes des clients sont automatiquement versés sur votre compte bancaire via Stripe Express.',
+    connectStripeBtn: 'Connecter la Banque via Stripe Express',
+    stripeConnecting: 'Connexion à Stripe…',
+    payDepositAndConfirm: 'Payer l’Acompte ({amount}) et Confirmer',
+    depositPaymentRedirect: 'Redirection vers le Paiement Sécurisé…',
   },
 };

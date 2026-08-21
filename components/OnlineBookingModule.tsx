@@ -32,6 +32,8 @@ import {
   Phone24Regular,
   Location24Regular,
   ArrowRight24Filled,
+  Payment24Filled,
+  Payment24Regular,
 } from '@fluentui/react-icons';
 
 /* ─── Toggle Switch ─── */
@@ -148,22 +150,34 @@ export const OnlineBookingModule: React.FC = () => {
   const [editingStationName, setEditingStationName] = useState('');
   const [editingStationCategory, setEditingStationCategory] = useState('Hair & Styling');
 
-  // Load initial settings from database on mount
+  // Stripe Connect State
+  const [stripeConnected, setStripeConnected] = useState(false);
+  const [isConnectingStripe, setIsConnectingStripe] = useState(false);
+
+  // Load initial settings and Stripe Connect status on mount
   useEffect(() => {
     async function loadWorkspaceSettings() {
       try {
-        const res = await fetch('/api/settings').then((r) => r.json()).catch(() => ({}));
-        if (res.workspace) {
-          if (res.workspace.slug) {
-            setSlugInput(res.workspace.slug);
-            setWorkspaceSlug(res.workspace.slug);
+        const [settingsRes, stripeRes] = await Promise.all([
+          fetch('/api/settings').then((r) => r.json()).catch(() => ({})),
+          fetch('/api/stripe/connect/status').then((r) => r.json()).catch(() => ({})),
+        ]);
+
+        if (settingsRes.workspace) {
+          if (settingsRes.workspace.slug) {
+            setSlugInput(settingsRes.workspace.slug);
+            setWorkspaceSlug(settingsRes.workspace.slug);
           }
-          if (res.workspace.cancellationNoticeHours) {
-            setCancellationNotice(String(res.workspace.cancellationNoticeHours));
+          if (settingsRes.workspace.cancellationNoticeHours) {
+            setCancellationNotice(String(settingsRes.workspace.cancellationNoticeHours));
           }
-          if (res.workspace.depositRequiredPercent !== undefined) {
-            setDepositPercent(String(res.workspace.depositRequiredPercent));
+          if (settingsRes.workspace.depositRequiredPercent !== undefined) {
+            setDepositPercent(String(settingsRes.workspace.depositRequiredPercent));
           }
+        }
+
+        if (stripeRes.connected) {
+          setStripeConnected(true);
         }
       } catch (err) {
         console.warn('Failed to load workspace settings:', err);
@@ -171,6 +185,25 @@ export const OnlineBookingModule: React.FC = () => {
     }
     loadWorkspaceSettings();
   }, [setWorkspaceSlug]);
+
+  const handleConnectStripe = async () => {
+    setIsConnectingStripe(true);
+    try {
+      const res = await fetch('/api/stripe/connect/onboard', { method: 'POST' }).then((r) => r.json());
+      if (res.url) {
+        if (res.simulated) {
+          setStripeConnected(true);
+          addToast(res.message || 'Stripe Connect linked (Simulated).', 'success');
+        } else {
+          window.location.href = res.url;
+        }
+      }
+    } catch {
+      addToast('Failed to initiate Stripe onboarding.', 'error');
+    } finally {
+      setIsConnectingStripe(false);
+    }
+  };
 
   const publicUrl = typeof window !== 'undefined' ? `${window.location.origin}/book/${slugInput}` : `https://airbook.app/book/${slugInput}`;
 
@@ -379,6 +412,35 @@ export const OnlineBookingModule: React.FC = () => {
                 <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('noShowNoticeDesc')}</p>
               </div>
               <Toggle enabled={noShowFee} onToggle={() => setNoShowFee(!noShowFee)} color="bg-orange-500" />
+            </div>
+
+            {/* Stripe Connect Direct Payouts Card */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10 border border-blue-500/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                    <Payment24Filled className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('stripePayoutsActive')}</p>
+                </div>
+                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${stripeConnected ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'}`}>
+                  {stripeConnected ? 'Connected (Express)' : 'Setup Required'}
+                </span>
+              </div>
+              <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                {t('stripePayoutsDesc')}
+              </p>
+              {!stripeConnected && (
+                <button
+                  type="button"
+                  disabled={isConnectingStripe}
+                  onClick={handleConnectStripe}
+                  className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                >
+                  <Payment24Filled className="w-3.5 h-3.5" />
+                  <span>{isConnectingStripe ? t('stripeConnecting') : t('connectStripeBtn')}</span>
+                </button>
+              )}
             </div>
           </StudioSection>
 

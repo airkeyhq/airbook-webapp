@@ -29,9 +29,15 @@ export async function POST(req: NextRequest) {
       case 'checkout.session.completed': {
         const session = event.data.object;
         const appointmentId = session.metadata?.appointmentId;
+        const depositAmount = session.amount_total;
+
         if (appointmentId) {
           await db.update(appointments)
-            .set({ status: 'confirmed' })
+            .set({
+              status: 'confirmed',
+              paymentStatus: 'paid',
+              depositPaidCents: depositAmount || undefined,
+            })
             .where(eq(appointments.id, appointmentId));
         }
 
@@ -54,7 +60,7 @@ export async function POST(req: NextRequest) {
         const appointmentId = paymentIntent.metadata?.appointmentId;
         if (appointmentId) {
           await db.update(appointments)
-            .set({ status: 'completed' })
+            .set({ status: 'completed', paymentStatus: 'paid' })
             .where(eq(appointments.id, appointmentId));
         }
         break;
@@ -75,7 +81,13 @@ export async function POST(req: NextRequest) {
 
       case 'account.updated': {
         const account = event.data.object;
-        console.log(`Stripe Connect Account Updated: ${account.id}, Payouts Enabled: ${account.payouts_enabled}`);
+        await db.update(workspaces)
+          .set({
+            stripeChargesEnabled: Boolean(account.charges_enabled),
+            stripePayoutsEnabled: Boolean(account.payouts_enabled),
+            stripeDetailsSubmitted: Boolean(account.details_submitted),
+          })
+          .where(eq(workspaces.stripeAccountId, account.id));
         break;
       }
 

@@ -98,6 +98,10 @@ export const workspaces = pgTable('workspaces', {
   subscriptionStatus: varchar('subscription_status', { length: 20 }),
   stripeCustomerId: text('stripe_customer_id'),
   stripeSubscriptionId: text('stripe_subscription_id'),
+  stripeAccountId: text('stripe_account_id'),
+  stripeChargesEnabled: boolean('stripe_charges_enabled').default(false).notNull(),
+  stripePayoutsEnabled: boolean('stripe_payouts_enabled').default(false).notNull(),
+  stripeDetailsSubmitted: boolean('stripe_details_submitted').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

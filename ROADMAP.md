@@ -55,6 +55,7 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 
 | Feature Module | Current Status | Beta Locked? | Next Milestone |
 | :--- | :--- | :--- | :--- |
+| **Stripe Connect & Payouts** | ✅ Released (v1.2) | ❌ Public | Stripe Terminal WisePad 3 POS reader |
 | **Public Booking Engine** | ✅ Released (v1.2) | ❌ Public | Custom booking themes & branding |
 | **Online Booking Studio** | ✅ Released (v1.2) | ❌ Public | Embeddable JS booking widget |
 | **Multi-Staff Day View** | ✅ Released (v1.2) | ❌ Public | Multi-location staff schedule sync |

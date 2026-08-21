@@ -336,8 +336,38 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.success) {
-        const bookingRef = data.groupId || `BK-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        const bookingRef = data.groupId || data.booking?.id || `BK-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
         setLastBookingId(bookingRef);
+
+        // If deposit required, request Stripe Checkout session
+        if (depositAmount > 0) {
+          try {
+            const checkoutRes = await fetch('/api/stripe/connect/deposit-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                workspaceId: workspace.id,
+                appointmentId: data.booking?.id,
+                groupId: data.groupId,
+                depositCents: Math.round(depositAmount * 100),
+                totalDueCents: Math.round(partyTotal * 100),
+                serviceName: isParty ? `Party of ${guests.length} Appointments` : (serviceById(guests[0]?.serviceId)?.name || 'Salon Service'),
+                clientName: clientName.trim(),
+                clientEmail: clientEmail.trim(),
+                dateStr: format(selectedDate, 'yyyy-MM-dd'),
+                startTime: selectedSlotTime,
+                slug,
+              }),
+            }).then((r) => r.json());
+
+            if (checkoutRes.url && !checkoutRes.simulated) {
+              window.location.href = checkoutRes.url;
+              return;
+            }
+          } catch (err) {
+            console.warn('Deposit checkout error:', err);
+          }
+        }
 
         for (const g of guests) {
           const srv = serviceById(g.serviceId);
@@ -1144,7 +1174,9 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   <ShieldCheckmark24Regular className="w-4 h-4" />
                   <span>
                     {submitting
-                      ? t('confirmingBooking')
+                      ? (depositAmount > 0 ? t('depositPaymentRedirect') : t('confirmingBooking'))
+                      : depositAmount > 0
+                      ? t('payDepositAndConfirm', { amount: `$${depositAmount}` })
                       : isParty
                       ? t('confirmPartyBtn', { count: guests.length })
                       : t('confirmBookingBtn')}
