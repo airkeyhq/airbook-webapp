@@ -16,6 +16,7 @@ export const BookingDrawer: React.FC = () => {
     services,
     staffMembers,
     addAppointment,
+    workspaceId,
   } = useAirBookStore();
   const { t } = useTranslation();
 
@@ -65,7 +66,7 @@ export const BookingDrawer: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          workspaceId: '00000000-0000-0000-0000-000000000001',
+          workspaceId,
           clientName: clientName.trim(),
           serviceId: currentService.id,
           serviceName: currentService.name,
@@ -219,20 +220,6 @@ export const BookingDrawer: React.FC = () => {
                   className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-medium text-[var(--text-primary)] focus:outline-none"
                 />
               </div>
-            </div>
-
-            {/* Stripe Card Deposit Badge */}
-            <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                <div>
-                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('requireDeposit')}</p>
-                  <p className="text-[10px] text-[var(--text-secondary)]">{t('poweredByStripe')}</p>
-                </div>
-              </div>
-              <span className="text-xs font-mono font-black text-blue-600 dark:text-blue-400">
-                $25.00
-              </span>
             </div>
 
             </div>

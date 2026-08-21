@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { invitations, organizations, users, staff } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { sendTeamInvitationEmail } from '@/lib/notifications';
 
 async function getOrCreateDefaultOrgAndUser() {
   let [user] = await db.select().from(users).limit(1);
@@ -97,7 +98,16 @@ export async function POST(req: Request) {
       })
       .returning();
 
-    return NextResponse.json({ success: true, invitation: newInvite });
+    const origin = new URL(req.url).origin;
+    const emailResult = await sendTeamInvitationEmail({
+      email: newInvite.email,
+      inviterName: user.name || 'Your team',
+      organizationName: org.name,
+      role: newInvite.role,
+      signInUrl: `${origin}/login`,
+    });
+
+    return NextResponse.json({ success: true, invitation: newInvite, emailSent: emailResult.success });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to send invitation.' }, { status: 500 });
   }

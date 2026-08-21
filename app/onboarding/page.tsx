@@ -47,7 +47,7 @@ const slideVariants = {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { setWorkspaceName, setBusinessType, setWorkspaceSlug } = useAirBookStore();
+  const { setWorkspaceName, setBusinessType, setWorkspaceSlug, setWorkspaceId } = useAirBookStore();
   const { data: session } = useSession();
   const { t } = useTranslation();
   const userFirstName = session?.user?.name ? session.user.name.split(' ')[0] : '';
@@ -119,6 +119,9 @@ export default function OnboardingPage() {
         setWorkspaceSlug(data.workspace.slug);
       } else {
         setWorkspaceSlug(slugValue);
+      }
+      if (data?.workspace?.id) {
+        setWorkspaceId(data.workspace.id);
       }
     } catch (err) {
       console.error('Failed to create workspace in DB:', err);

@@ -32,6 +32,8 @@ export interface Appointment {
   color: string;
   status: 'confirmed' | 'pending' | 'completed';
   notes?: string;
+  groupId?: string | null; // Links sibling appointments booked together as one party
+  partySize?: number; // Total guests in this party, when part of a group booking
 }
 
 export interface AddOnSettings {
@@ -50,6 +52,8 @@ export interface AirBookState {
   // Theme & Workspace
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  workspaceId: string;
+  setWorkspaceId: (id: string) => void;
   workspaceName: string;
   setWorkspaceName: (name: string) => void;
   workspaceSlug: string;
@@ -248,6 +252,8 @@ export const DEMO_APPOINTMENTS: Appointment[] = [
 export const useAirBookStore = create<AirBookState>((set) => ({
   theme: 'light',
   toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+  workspaceId: '',
+  setWorkspaceId: (id) => set({ workspaceId: id }),
   workspaceName: "AirBook Business Workspace",
   setWorkspaceName: (name) => set({ workspaceName: name }),
   workspaceSlug: '',

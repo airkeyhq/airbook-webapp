@@ -10,11 +10,15 @@ export async function GET(req: Request) {
     const dateStr = searchParams.get('dateStr');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
+    const groupId = searchParams.get('groupId');
 
     const conditions = [];
 
     if (workspaceId) {
       conditions.push(eq(appointments.workspaceId, workspaceId));
+    }
+    if (groupId) {
+      conditions.push(eq(appointments.groupId, groupId));
     }
     if (dateStr) {
       conditions.push(eq(appointments.dateStr, dateStr));
@@ -27,6 +31,7 @@ export async function GET(req: Request) {
       .select({
         id: appointments.id,
         workspaceId: appointments.workspaceId,
+        groupId: appointments.groupId,
         dateStr: appointments.dateStr,
         startTime: appointments.startTime,
         endTime: appointments.endTime,

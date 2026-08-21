@@ -170,7 +170,7 @@ function POSPanel({ onOpenModal }: { onOpenModal: (apt: Appointment) => void }) 
 }
 
 export default function DashboardPage() {
-  const { theme } = useAirBookStore();
+  const { theme, workspaceId, setWorkspaceId } = useAirBookStore();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<DashboardTab>('calendar');
 
@@ -187,6 +187,19 @@ export default function DashboardPage() {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Bootstrap workspace context for sessions that skipped onboarding (e.g. demo data)
+  useEffect(() => {
+    if (workspaceId) return;
+    fetch('/api/workspaces')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && Array.isArray(data.workspaces) && data.workspaces[0]?.id) {
+          setWorkspaceId(data.workspaces[0].id);
+        }
+      })
+      .catch((e) => console.warn('Failed to bootstrap workspace context:', e));
+  }, [workspaceId, setWorkspaceId]);
 
   return (
     <main className="app-shell bg-[var(--canvas-bg)] text-[var(--canvas-fg)] flex flex-col h-screen w-screen overflow-hidden p-2.5 sm:p-3.5 gap-2.5 sm:gap-3.5">

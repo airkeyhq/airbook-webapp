@@ -6,11 +6,20 @@ export const novu = new Novu({ secretKey: novuSecretKey });
 export const NOVU_WORKFLOWS = {
   appointmentBooked: 'appointment-booked',
   magicLinkSignIn: process.env.NOVU_MAGIC_LINK_WORKFLOW_ID || 'magic-link-sign-in',
+  teamInvitation: process.env.NOVU_TEAM_INVITATION_WORKFLOW_ID || 'team-invitation',
 } as const;
 
 export interface MagicLinkEmailPayload {
   email: string;
   url: string;
+}
+
+export interface TeamInvitationEmailPayload {
+  email: string;
+  inviterName: string;
+  organizationName: string;
+  role: string;
+  signInUrl: string;
 }
 
 export interface NotificationPayload {
@@ -55,6 +64,46 @@ export async function sendBookingNotifications(payload: NotificationPayload) {
   } catch (error: any) {
     console.warn('[Novu Engine] Fallback trigger mode active:', error?.message || error);
     return { success: true, mode: 'demo-fallback' };
+  }
+}
+
+/**
+ * Sends a team invitation email so the invitee actually finds out they were invited.
+ * Falls back to server console logging when NOVU_SECRET_KEY is not configured.
+ */
+export async function sendTeamInvitationEmail(payload: TeamInvitationEmailPayload) {
+  const { email, inviterName, organizationName, role, signInUrl } = payload;
+  const secretKey = process.env.NOVU_SECRET_KEY;
+
+  if (!secretKey) {
+    console.log(
+      `[Team Invitation · Dev Fallback] NOVU_SECRET_KEY is not set. ${inviterName} invited ${email} to join ${organizationName} as ${role}. Sign-in link: ${signInUrl}`,
+    );
+    return { success: true, mode: 'dev-console' as const };
+  }
+
+  try {
+    const result = await novu.trigger({
+      workflowId: NOVU_WORKFLOWS.teamInvitation,
+      to: {
+        subscriberId: email,
+        email,
+      },
+      payload: {
+        email,
+        inviterName,
+        organizationName,
+        role,
+        signInUrl,
+      },
+    });
+
+    console.log(`[Novu] Team invitation email queued for ${email}`);
+    return { success: true, result };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown Novu error';
+    console.warn('[Novu] Failed to send team invitation email:', message);
+    return { success: false, error: message };
   }
 }
 

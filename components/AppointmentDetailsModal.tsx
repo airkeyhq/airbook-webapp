@@ -11,7 +11,16 @@ import {
   Payment24Filled,
   DocumentText24Filled,
   Delete24Filled,
+  PeopleTeam24Regular,
 } from '@fluentui/react-icons';
+
+interface PartyGuestRow {
+  id: string;
+  startTime: string;
+  client?: { name?: string | null } | null;
+  service?: { name?: string | null; colorTag?: string | null } | null;
+  staff?: { name?: string | null } | null;
+}
 
 interface AppointmentDetailsModalProps {
   appointment: Appointment | null;
@@ -30,6 +39,26 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 }) => {
   const { deleteAppointment } = useAirBookStore();
   const { t } = useTranslation();
+  const [partyGuests, setPartyGuests] = React.useState<PartyGuestRow[]>([]);
+
+  React.useEffect(() => {
+    if (!appointment?.groupId) {
+      setPartyGuests([]);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/appointments?groupId=${appointment.groupId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data.success && Array.isArray(data.appointments)) {
+          setPartyGuests(data.appointments);
+        }
+      })
+      .catch((e) => console.warn('Failed to load party guests:', e));
+    return () => {
+      cancelled = true;
+    };
+  }, [appointment?.groupId]);
 
   if (!isOpen || !appointment) return null;
 
@@ -77,9 +106,17 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           {/* Header Edge-to-Edge Bar */}
           <div className="w-full px-6 py-4 flex items-start justify-between flex-shrink-0 bg-[var(--bg-primary)]">
             <div>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                {t('statusConfirmed')}
-              </span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                  {t('statusConfirmed')}
+                </span>
+                {partyGuests.length > 1 && (
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center gap-1">
+                    <PeopleTeam24Regular className="w-3 h-3" />
+                    {t('partyOf')} {partyGuests.length}
+                  </span>
+                )}
+              </div>
               <h3 className="text-xl font-extrabold text-[var(--text-primary)] mt-2 tracking-tight">
                 {appointment.clientName}
               </h3>
@@ -142,6 +179,31 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 </div>
               </div>
             </div>
+
+            {/* Party Guest List */}
+            {partyGuests.length > 1 && (
+              <div className="rounded-2xl border border-black/5 dark:border-white/10 divide-y divide-[var(--border-subtle)] overflow-hidden">
+                <div className="px-4 py-2.5 bg-purple-500/5 flex items-center gap-2">
+                  <PeopleTeam24Regular className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                    {t('guestParty')}
+                  </p>
+                </div>
+                {partyGuests.map((g) => (
+                  <div key={g.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--text-primary)]">{g.client?.name || '—'}</p>
+                      <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">
+                        {g.service?.name} · {g.staff?.name}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] flex-shrink-0">
+                      {g.startTime}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Side-to-Side Bottom Action Banner with Vertical Stacking */}
