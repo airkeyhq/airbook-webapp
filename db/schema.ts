@@ -297,10 +297,27 @@ export const promotions = pgTable('promotions', {
 export const memberships = pgTable('memberships', {
   id: uuid('id').primaryKey().defaultRandom(),
   workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
-  name: text('name').notNull(), // e.g., "VIP Glow Monthly Pass"
+  name: text('name').notNull(), // e.g., "VIP All-Access Monthly Pass"
   monthlyPriceCents: integer('monthly_price_cents').notNull(),
-  includedServicesCount: integer('included_services_count').notNull(),
-  discountPercentRetail: integer('discount_percent_retail').default(10).notNull(),
+  includedServicesCount: integer('included_services_count').default(2).notNull(),
+  discountPercentRetail: integer('discount_percent_retail').default(15).notNull(),
+  perks: text('perks'),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const packages = pgTable('packages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(), // e.g. "5x Precision Haircut & Styling Bundle"
+  serviceId: uuid('service_id').references(() => services.id, { onDelete: 'set null' }),
+  serviceName: text('service_name'),
+  totalSessions: integer('total_sessions').default(5).notNull(),
+  priceCents: integer('price_cents').notNull(),
+  discountPercent: integer('discount_percent').default(15).notNull(),
+  validityDays: integer('validity_days').default(365).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const gift_cards = pgTable('gift_cards', {
@@ -309,8 +326,13 @@ export const gift_cards = pgTable('gift_cards', {
   code: varchar('code', { length: 50 }).notNull().unique(),
   initialBalanceCents: integer('initial_balance_cents').notNull(),
   currentBalanceCents: integer('current_balance_cents').notNull(),
+  recipientName: text('recipient_name'),
   recipientEmail: varchar('recipient_email', { length: 255 }),
+  senderName: text('sender_name'),
+  notes: text('notes'),
+  status: varchar('status', { length: 20 }).default('active').notNull(), // 'active' | 'redeemed' | 'expired'
   expiresAt: timestamp('expires_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 // =============================================================================

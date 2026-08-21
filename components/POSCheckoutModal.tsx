@@ -13,6 +13,8 @@ import {
   Person24Regular,
   Sparkle24Filled,
   Sparkle24Regular,
+  GiftCard24Filled,
+  GiftCard24Regular,
 } from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -76,6 +78,11 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const [cartProducts, setCartProducts] = useState<{ id: string; name: string; retailPriceCents: number; qty: number }[]>([]);
   const [showProductPicker, setShowProductPicker] = useState(false);
 
+  // Gift Card Tender State
+  const [giftCardCodeInput, setGiftCardCodeInput] = useState('');
+  const [verifiedGiftCard, setVerifiedGiftCard] = useState<any | null>(null);
+  const [checkingCard, setCheckingCard] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       fetch('/api/products')
@@ -97,6 +104,8 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
     setCustomTip('');
     setCashTendered('');
     setSplitCardAmount('');
+    setGiftCardCodeInput('');
+    setVerifiedGiftCard(null);
     setCartProducts([]);
     setShowProductPicker(false);
     setIsCompleted(false);
@@ -105,6 +114,31 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   }, [totalPrice, clientName, clientEmail, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleVerifyGiftCard = async () => {
+    if (!giftCardCodeInput.trim()) return;
+    try {
+      setCheckingCard(true);
+      const res = await fetch(`/api/gift-cards?code=${encodeURIComponent(giftCardCodeInput.trim())}`);
+      const data = await res.json();
+      if (data.success && data.giftCard) {
+        if (data.giftCard.currentBalanceCents <= 0) {
+          addToast('This gift card has a $0.00 balance.', 'error');
+          setVerifiedGiftCard(null);
+        } else {
+          setVerifiedGiftCard(data.giftCard);
+          addToast(`Gift card verified: $${(data.giftCard.currentBalanceCents / 100).toFixed(2)} available.`, 'success');
+        }
+      } else {
+        addToast(data.error || 'Gift card code not found.', 'error');
+        setVerifiedGiftCard(null);
+      }
+    } catch {
+      addToast('Error verifying gift card.', 'error');
+    } finally {
+      setCheckingCard(false);
+    }
+  };
 
   // Math Calculations
   const retailItemsTotal = cartProducts.reduce((acc, p) => acc + (p.retailPriceCents * p.qty) / 100, 0);
@@ -132,6 +166,20 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const handleProcessPayment = async () => {
     try {
       setSubmitting(true);
+
+      // Deduct from gift card if paid via gift card
+      if (paymentMethod === 'gift_card' && verifiedGiftCard) {
+        const deductCents = Math.min(verifiedGiftCard.currentBalanceCents, Math.round(finalTotal * 100));
+        await fetch('/api/gift-cards', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: verifiedGiftCard.id,
+            redeemAmountCents: deductCents,
+          }),
+        });
+      }
+
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -614,8 +662,61 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       <span>{t('splitPayment')}</span>
                       <span className="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400">Card + Cash</span>
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('gift_card')}
+                      className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
+                        paymentMethod === 'gift_card'
+                          ? 'border-pink-500 bg-pink-500/10 text-[var(--text-primary)] shadow-sm'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <GiftCard24Filled className="w-4 h-4 text-pink-500" />
+                        <span>{t('tabGiftCards')}</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-pink-600 dark:text-pink-400">
+                        {verifiedGiftCard ? `$${(verifiedGiftCard.currentBalanceCents / 100).toFixed(2)} Applied` : 'Redeem Code'}
+                      </span>
+                    </button>
                   </div>
                 </div>
+
+                {/* Gift Card Code Input & Verification Box */}
+                {paymentMethod === 'gift_card' && (
+                  <div className="p-4 rounded-2xl bg-pink-500/5 border border-pink-500/20 space-y-3">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] block">
+                      {t('giftCardCode')}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. GC-VIP-150"
+                        value={giftCardCodeInput}
+                        onChange={(e) => setGiftCardCodeInput(e.target.value.toUpperCase())}
+                        className="flex-1 px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-pink-500/30 text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none uppercase"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleVerifyGiftCard}
+                        disabled={checkingCard || !giftCardCodeInput.trim()}
+                        className="px-3.5 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 disabled:opacity-50 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                      >
+                        {checkingCard ? 'Checking…' : 'Verify'}
+                      </button>
+                    </div>
+
+                    {verifiedGiftCard && (
+                      <div className="pt-2 border-t border-pink-500/20 flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[var(--text-secondary)]">Available on Card:</span>
+                        <span className="font-black text-pink-600 dark:text-pink-400 font-mono">
+                          ${(verifiedGiftCard.currentBalanceCents / 100).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Cash Tendered Calculator (when cash selected) */}
                 {paymentMethod === 'cash' && (
