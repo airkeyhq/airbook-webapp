@@ -228,7 +228,13 @@ export const invoices = pgTable('invoices', {
   workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
   clientId: uuid('client_id').references(() => clients.id).notNull(),
   appointmentId: uuid('appointment_id').references(() => appointments.id),
+  subtotalCents: integer('subtotal_cents').default(0).notNull(),
+  tipCents: integer('tip_cents').default(0).notNull(),
+  taxCents: integer('tax_cents').default(0).notNull(),
+  discountCents: integer('discount_cents').default(0).notNull(),
   totalCents: integer('total_cents').notNull(),
+  paymentMethod: varchar('payment_method', { length: 30 }).default('card').notNull(),
+  receiptNumber: varchar('receipt_number', { length: 50 }),
   status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' | 'paid' | 'overdue'
   pdfUrl: text('pdf_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),

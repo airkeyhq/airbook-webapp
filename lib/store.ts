@@ -29,6 +29,8 @@ export interface Appointment {
   startTime: string; // HH:mm
   durationMinutes: number;
   price: number;
+  depositPaidCents?: number;
+  paymentStatus?: 'paid' | 'unpaid' | 'deposit_paid' | string;
   color: string;
   status: 'confirmed' | 'pending' | 'completed';
   notes?: string;
@@ -119,6 +121,7 @@ export interface AirBookState {
   // Actions
   addAppointment: (appointment: Omit<Appointment, 'id'>) => void;
   setAppointments: (appointments: Appointment[]) => void;
+  updateAppointmentStatus: (id: string, status: 'confirmed' | 'pending' | 'completed') => void;
   deleteAppointment: (id: string) => void;
   setServices: (services: Service[]) => void;
   setStaffMembers: (staff: Staff[]) => void;
@@ -349,6 +352,12 @@ export const useAirBookStore = create<AirBookState>((set) => ({
     })),
 
   setAppointments: (apts) => set({ appointments: apts }),
+  updateAppointmentStatus: (id, status) =>
+    set((state) => ({
+      appointments: state.appointments.map((a) =>
+        a.id === id ? { ...a, status, paymentStatus: status === 'completed' ? 'paid' : a.paymentStatus } : a
+      ),
+    })),
   setServices: (srvs) => set({ services: srvs }),
   setStaffMembers: (stf) => set({ staffMembers: stf }),
 
