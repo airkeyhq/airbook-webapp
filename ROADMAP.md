@@ -60,7 +60,7 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 | **Stripe Connect & Payouts** | ✅ Released (v1.2) | ❌ Public | Stripe Terminal WisePad 3 POS reader |
 | **Public Booking Engine** | ✅ Released (v1.2) | ❌ Public | Custom booking themes & branding |
 | **Online Booking Studio** | ✅ Released (v1.2) | ❌ Public | Embeddable JS booking widget |
-| **Multi-Staff Day View** | ✅ Released (v1.2) | ❌ Public | Multi-location staff schedule sync |
+| **Team Shifts & Stations** | ✅ Released (v1.2) | ❌ Public | Multi-location staff schedule sync |
 | **Google Review Automation** | ✅ Released (v1.2) | ❌ Public | WhatsApp Review Requests |
 | **eSign Waiver Pad** | 🟡 Beta Preview (v1.3) | 🔒 Yes (Beta/Dev) | HTML5 Signature Canvas + PDF Export |
 | **HIPAA Compliance Log** | 🟡 Beta Preview (v1.3) | 🔒 Yes (Beta/Dev) | KMS Encryption & Immutable Audit Log |

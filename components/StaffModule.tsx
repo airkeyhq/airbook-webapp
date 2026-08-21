@@ -11,8 +11,13 @@ interface StaffItem {
   id: string;
   name: string;
   role: string;
+  color?: string;
   avatarEmoji?: string;
+  avatarUrl?: string;
+  stationName?: string;
+  stationId?: string;
   commissionPercent?: number;
+  workingHours?: Record<string, { enabled: boolean; start: string; end: string }>;
   email?: string;
   phone?: string;
   isActive?: boolean;
@@ -26,7 +31,7 @@ export interface ShiftDayConfig {
   endTime: string;
 }
 
-const INITIAL_SCHEDULE: ShiftDayConfig[] = [
+export const INITIAL_SCHEDULE: ShiftDayConfig[] = [
   { key: 'mon', labelKey: 'monShort', active: true, startTime: '09:00', endTime: '18:00' },
   { key: 'tue', labelKey: 'tueShort', active: true, startTime: '09:00', endTime: '18:00' },
   { key: 'wed', labelKey: 'wedShort', active: true, startTime: '09:00', endTime: '18:00' },
@@ -35,6 +40,39 @@ const INITIAL_SCHEDULE: ShiftDayConfig[] = [
   { key: 'sat', labelKey: 'satShort', active: false, startTime: '10:00', endTime: '16:00' },
   { key: 'sun', labelKey: 'sunShort', active: false, startTime: '10:00', endTime: '16:00' },
 ];
+
+export const scheduleToWorkingHours = (sched: ShiftDayConfig[]) => {
+  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const obj: Record<string, { enabled: boolean; start: string; end: string }> = {};
+  sched.forEach((item, idx) => {
+    const dayKey = days[idx] || item.key;
+    obj[dayKey] = { enabled: item.active, start: item.startTime, end: item.endTime };
+  });
+  return obj;
+};
+
+export const workingHoursToSchedule = (wh?: Record<string, { enabled: boolean; start: string; end: string }>): ShiftDayConfig[] => {
+  if (!wh) return INITIAL_SCHEDULE;
+  const days = [
+    { key: 'mon', full: 'monday', labelKey: 'monShort' },
+    { key: 'tue', full: 'tuesday', labelKey: 'tueShort' },
+    { key: 'wed', full: 'wednesday', labelKey: 'wedShort' },
+    { key: 'thu', full: 'thursday', labelKey: 'thuShort' },
+    { key: 'fri', full: 'friday', labelKey: 'friShort' },
+    { key: 'sat', full: 'saturday', labelKey: 'satShort' },
+    { key: 'sun', full: 'sunday', labelKey: 'sunShort' },
+  ];
+  return days.map((d) => {
+    const conf = wh[d.full] || { enabled: d.key !== 'sat' && d.key !== 'sun', start: '09:00', end: '18:00' };
+    return {
+      key: d.key,
+      labelKey: d.labelKey,
+      active: conf.enabled ?? true,
+      startTime: conf.start || '09:00',
+      endTime: conf.end || '18:00',
+    };
+  });
+};
 
 const TIME_SLOTS = [
   '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
@@ -352,8 +390,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     setEditName(stf.name);
     setEditRole(stf.role);
     setEditCommission(stf.commissionPercent ?? 70);
-    setEditSchedule(INITIAL_SCHEDULE);
-    setEditChair('Sillón #1 / Station 1');
+    setEditSchedule(workingHoursToSchedule(stf.workingHours));
+    setEditChair(stf.stationName || 'Station 1 (Master Suite)');
   };
 
   const handleViewCalendar = (staffId: string) => {
@@ -376,12 +414,15 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           name: editName,
           role: editRole,
           commissionPercent: editCommission,
+          stationName: editChair,
+          workingHours: scheduleToWorkingHours(editSchedule),
         }),
       });
 
       const data = await res.json();
       if (data.success) {
         setSelectedStaffForEdit(null);
+        addToast('Staff schedule & station updated.', 'success');
         fetchStaff();
       }
     } catch (err) {
@@ -400,11 +441,12 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
-          role: role.trim() || 'Stylist & Specialist',
+          role: role.trim() || 'Specialist',
           email: email.trim() || undefined,
           phone: phone.trim() || undefined,
           avatarEmoji: avatarEmoji || '👨🏻‍🎨',
           commissionPercent: Number(commissionPercent) || 70,
+          workingHours: scheduleToWorkingHours(addSchedule),
         }),
       });
 
@@ -415,6 +457,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setRole('');
         setEmail('');
         setPhone('');
+        addToast('Staff specialist added.', 'success');
         fetchStaff();
       }
     } catch (err) {
@@ -594,10 +637,15 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                             {stf.name}
                           </h3>
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">{stf.role}</p>
-                          <div className="flex items-center gap-3 mt-2 text-[11px] text-[var(--text-muted)] font-semibold">
+                          <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-[var(--text-secondary)] font-semibold">
+                            {stf.stationName && (
+                              <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px]">
+                                {stf.stationName}
+                              </span>
+                            )}
                             <span>{stf.commissionPercent ?? 70}% Commission</span>
                             <span>•</span>
-                            <span className="text-emerald-600 dark:text-emerald-400">Active</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">On Shift</span>
                           </div>
                         </div>
                       </div>

@@ -129,6 +129,14 @@ export const services = pgTable('services', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const stations = pgTable('stations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(),
+  category: varchar('category', { length: 50 }).default('General').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const staff = pgTable('staff', {
   id: uuid('id').primaryKey().defaultRandom(),
   workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
@@ -136,10 +144,14 @@ export const staff = pgTable('staff', {
   name: text('name').notNull(),
   email: varchar('email', { length: 255 }),
   phone: varchar('phone', { length: 30 }),
-  role: varchar('role', { length: 50 }).default('Stylist').notNull(),
+  role: varchar('role', { length: 50 }).default('Specialist').notNull(),
+  color: varchar('color', { length: 20 }).default('#007AFF').notNull(),
   avatarEmoji: varchar('avatar_emoji', { length: 10 }).default('👨🏻‍🎨').notNull(),
   avatarUrl: text('avatar_url'),
+  stationId: uuid('station_id').references(() => stations.id, { onDelete: 'set null' }),
+  stationName: varchar('station_name', { length: 100 }),
   commissionPercent: integer('commission_percent').default(70).notNull(),
+  workingHours: jsonb('working_hours').$type<Record<string, { enabled: boolean; start: string; end: string }>>(),
   isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
