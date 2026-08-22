@@ -422,7 +422,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       const data = await res.json();
       if (data.success) {
         setSelectedStaffForEdit(null);
-        addToast('Staff schedule & station updated.', 'success');
+        addToast(t('staffScheduleUpdated'), 'success');
         fetchStaff();
       }
     } catch (err) {
@@ -457,7 +457,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setRole('');
         setEmail('');
         setPhone('');
-        addToast('Staff specialist added.', 'success');
+        addToast(t('staffSpecialistAdded'), 'success');
         fetchStaff();
       }
     } catch (err) {
@@ -539,10 +539,10 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </div>
                 <div>
                   <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
-                    Calendar Provider Color Palette
+                    {t('calendarColorPaletteTitle')}
                   </h3>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-                    Control how signature provider colors are assigned to calendar appointment cards.
+                    {t('calendarColorPaletteDesc')}
                   </p>
                 </div>
               </div>
@@ -558,7 +558,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   }`}
                 >
                   <Sparkle24Filled className="w-3.5 h-3.5" />
-                  <span>Auto-Balanced</span>
+                  <span>{t('colorModeAutoBalanced')}</span>
                 </button>
                 <button
                   type="button"
@@ -570,7 +570,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   }`}
                 >
                   <Edit24Filled className="w-3.5 h-3.5" />
-                  <span>Custom Colors</span>
+                  <span>{t('colorModeCustom')}</span>
                 </button>
               </div>
             </div>
@@ -643,9 +643,9 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                                 {stf.stationName}
                               </span>
                             )}
-                            <span>{stf.commissionPercent ?? 70}% Commission</span>
+                            <span>{stf.commissionPercent ?? 70}{t('commissionSuffix')}</span>
                             <span>•</span>
-                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">On Shift</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('onShift')}</span>
                           </div>
                         </div>
                       </div>
@@ -724,7 +724,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <Mail24Regular className="w-10 h-10 text-[var(--text-muted)] opacity-40 mb-3" />
                 <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noPendingInvites')}</p>
                 <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-sm">
-                  Use the form above to invite team members to your workspace.
+                  {t('inviteFormHint')}
                 </p>
               </div>
             ) : (
@@ -890,7 +890,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       {t('commissionSplit')}
                     </span>
                     <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
-                      {editCommission}% Staff / {100 - editCommission}% House
+                      {t('commissionSplitDisplay').replace('{staffPercent}', String(editCommission)).replace('{housePercent}', String(100 - editCommission))}
                     </span>
                   </div>
 
@@ -911,7 +911,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
                     <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
                     <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Stripe Instant Payout Active
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
                     </span>
                   </div>
                 </div>
@@ -960,11 +960,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     >
                       <button
                         type="button"
-                        onClick={() => addToast('Generando Ficha en PDF...', 'info')}
+                        onClick={() => addToast(t('generatingPdf'), 'info')}
                         className="w-full py-2.5 px-4 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <Print24Filled className="w-4 h-4" />
-                        <span>Imprimir Ficha de Miembro</span>
+                        <span>{t('printMemberProfile')}</span>
                       </button>
 
                       <button
@@ -976,7 +976,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         className="w-full py-2.5 px-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <DismissCircle24Filled className="w-4 h-4" />
-                        <span>Desactivar Temporalmente</span>
+                        <span>{t('temporarilyDeactivate')}</span>
                       </button>
 
                       <button
@@ -1000,7 +1000,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <Delete24Filled className="w-4 h-4" />
-                        <span>Eliminar Miembro del Equipo</span>
+                        <span>{t('removeTeamMember')}</span>
                       </button>
                     </motion.div>
                   )}
@@ -1098,7 +1098,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         {t('commissionSplit')} (%)
                       </span>
                       <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
-                        {commissionPercent}% Staff / {100 - commissionPercent}% House
+                        {t('commissionSplitDisplay').replace('{staffPercent}', String(commissionPercent)).replace('{housePercent}', String(100 - commissionPercent))}
                       </span>
                     </div>
 
@@ -1119,7 +1119,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
                       <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
                       <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Stripe Instant Payout Active
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
                       </span>
                     </div>
                   </div>

@@ -150,7 +150,7 @@ export const POSModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <Tag24Regular className="w-4 h-4 text-amber-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">Avg Ticket</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
           </div>
           <p className="text-lg font-black text-amber-600 dark:text-amber-400">${avgTicket}</p>
         </div>
@@ -163,7 +163,7 @@ export const POSModule: React.FC = () => {
             {t('posQueueTitle')}
           </h3>
           <span className="text-xs font-semibold text-[var(--text-secondary)]">
-            {todayApts.length} Scheduled
+            {t('scheduledCount').replace('{n}', String(todayApts.length))}
           </span>
         </div>
 
@@ -173,7 +173,7 @@ export const POSModule: React.FC = () => {
             <div>
               <p className="text-xs font-bold text-[var(--text-primary)]">{t('noAppointmentsToday')}</p>
               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-                Process a walk-in transaction or schedule a new appointment.
+                {t('processWalkinPrompt')}
               </p>
             </div>
             <button
@@ -207,11 +207,11 @@ export const POSModule: React.FC = () => {
                         {isPaid ? (
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
                             <CheckmarkCircle24Filled className="w-3 h-3" />
-                            <span>Paid</span>
+                            <span>{t('statusPaid')}</span>
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold uppercase tracking-wider">
-                            Ready for Checkout
+                            {t('statusReadyForCheckout')}
                           </span>
                         )}
                       </div>
@@ -237,7 +237,7 @@ export const POSModule: React.FC = () => {
                         onClick={() => handleOpenAppointmentCheckout(apt)}
                         className="px-3.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-xs transition-colors cursor-pointer"
                       >
-                        View Receipt
+                        {t('viewReceipt')}
                       </button>
                     ) : (
                       <button
@@ -245,7 +245,7 @@ export const POSModule: React.FC = () => {
                         onClick={() => handleOpenAppointmentCheckout(apt)}
                         className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
                       >
-                        Charge Client
+                        {t('chargeClient')}
                       </button>
                     )}
                   </div>
@@ -269,11 +269,11 @@ export const POSModule: React.FC = () => {
 
         {loadingInvoices ? (
           <div className="p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center text-xs text-[var(--text-secondary)] animate-pulse">
-            Loading recent transaction ledger…
+            {t('loadingLedger')}
           </div>
         ) : invoices.length === 0 ? (
           <div className="p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center text-xs text-[var(--text-secondary)] italic">
-            No completed invoices logged yet. Check out an appointment above to generate the first receipt.
+            {t('noInvoicesYet')}
           </div>
         ) : (
           <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
@@ -288,7 +288,7 @@ export const POSModule: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-[var(--text-primary)] truncate">
-                      {inv.clientName || 'Walk-in Client'}
+                      {inv.clientName || t('walkInClientFallback')}
                     </p>
                     <p className="text-[10px] font-mono text-[var(--text-secondary)] mt-0.5">
                       {inv.receiptNumber || `REC-${inv.id.slice(0, 6)}`} · {new Date(inv.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -318,10 +318,10 @@ export const POSModule: React.FC = () => {
           setCheckoutAppointment(null);
         }}
         appointmentId={checkoutAppointment?.id}
-        clientName={checkoutAppointment?.clientName || 'Walk-in Guest'}
-        serviceName={checkoutAppointment?.serviceName || 'Custom Service'}
+        clientName={checkoutAppointment?.clientName || t('walkInGuestFallback')}
+        serviceName={checkoutAppointment?.serviceName || t('customServiceFallback')}
         totalPrice={checkoutAppointment?.price || 50}
-        staffName={checkoutAppointment?.staffName || 'Staff Specialist'}
+        staffName={checkoutAppointment?.staffName || t('staffSpecialistFallback')}
         onCheckoutComplete={() => {
           fetchRecentInvoices();
         }}
@@ -332,7 +332,7 @@ export const POSModule: React.FC = () => {
         isOpen={isTerminalOpen}
         onClose={() => setIsTerminalOpen(false)}
         amountCents={terminalAmountCents}
-        description="AirBook In-Person Service Payment"
+        description={t('terminalPaymentDescription')}
         onPaymentCollected={() => {
           setIsTerminalOpen(false);
           fetchRecentInvoices();

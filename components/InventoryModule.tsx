@@ -32,19 +32,20 @@ export interface ProductItem {
   createdAt?: string;
 }
 
-const CATEGORY_OPTIONS = [
-  { value: 'all', label: 'All Categories' },
-  { value: 'Haircare', label: 'Haircare' },
-  { value: 'Skincare', label: 'Skincare' },
-  { value: 'Styling', label: 'Styling & Pomades' },
-  { value: 'Supplies', label: 'Professional Supplies' },
-  { value: 'Wellness', label: 'Wellness & Body' },
-  { value: 'General', label: 'General Retail' },
+const getCategoryOptions = (t: (key: any) => string) => [
+  { value: 'all', label: t('catAll') },
+  { value: 'Haircare', label: t('catHaircare') },
+  { value: 'Skincare', label: t('catSkincare') },
+  { value: 'Styling', label: t('catStyling') },
+  { value: 'Supplies', label: t('catSupplies') },
+  { value: 'Wellness', label: t('catWellness') },
+  { value: 'General', label: t('catGeneral') },
 ];
 
 export const InventoryModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const CATEGORY_OPTIONS = useMemo(() => getCategoryOptions(t), [t]);
 
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +121,7 @@ export const InventoryModule: React.FC = () => {
         body: JSON.stringify({
           name: name.trim(),
           sku: sku.trim() || undefined,
-          category: category.trim() || 'General',
+          category,
           retailPriceCents: Math.round((Number(retailPrice) || 0) * 100),
           costPriceCents: Math.round((Number(costPrice) || 0) * 100),
           stockQuantity: Math.max(0, Number(stockQuantity) || 0),
@@ -139,11 +140,11 @@ export const InventoryModule: React.FC = () => {
         addToast(t('productSaved') || 'Product saved successfully.', 'success');
         fetchProducts();
       } else {
-        addToast(data.error || 'Failed to create product.', 'error');
+        addToast(data.error || t('errorCreatingProduct'), 'error');
       }
     } catch (err) {
       console.error('Failed to create product:', err);
-      addToast('Error creating product.', 'error');
+      addToast(t('errorCreatingProduct'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -178,11 +179,11 @@ export const InventoryModule: React.FC = () => {
         addToast(t('productSaved') || 'Product updated.', 'success');
         fetchProducts();
       } else {
-        addToast(data.error || 'Failed to update product.', 'error');
+        addToast(data.error || t('errorUpdatingProduct'), 'error');
       }
     } catch (err) {
       console.error('Failed to update product:', err);
-      addToast('Error updating product.', 'error');
+      addToast(t('errorUpdatingProduct'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -327,7 +328,7 @@ export const InventoryModule: React.FC = () => {
         <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
             <ArrowTrending24Regular className="w-4 h-4 text-purple-500" />
-            <span>Retail Potential</span>
+            <span>{t('metricRetailPotential')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">
             ${Math.round(metrics.retailRevenuePotential).toLocaleString()}
@@ -344,9 +345,9 @@ export const InventoryModule: React.FC = () => {
               {products
                 .filter((p) => p.stockQuantity <= (p.lowStockAlertThreshold ?? 5))
                 .slice(0, 3)
-                .map((p) => `${p.name} (${p.stockQuantity} left)`)
+                .map((p) => `${p.name} (${t('stockLeft').replace('{n}', String(p.stockQuantity))})`)
                 .join(', ')}
-              {metrics.lowStockCount > 3 ? ` + ${metrics.lowStockCount - 3} more` : ''}
+              {metrics.lowStockCount > 3 ? ` + ${t('andMoreItems').replace('{n}', String(metrics.lowStockCount - 3))}` : ''}
             </span>
           </div>
         </div>
@@ -354,18 +355,18 @@ export const InventoryModule: React.FC = () => {
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-          {['all', 'Haircare', 'Skincare', 'Styling', 'Supplies'].map((catKey) => (
+          {CATEGORY_OPTIONS.slice(0, 5).map(({ value, label }) => (
             <button
-              key={catKey}
+              key={value}
               type="button"
-              onClick={() => setSelectedCategory(catKey)}
+              onClick={() => setSelectedCategory(value)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold whitespace-nowrap transition-all duration-100 ${
-                selectedCategory === catKey
+                selectedCategory === value
                   ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
                   : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
               }`}
             >
-              {catKey === 'all' ? t('allCategories') : catKey}
+              {label}
             </button>
           ))}
         </div>
@@ -453,11 +454,11 @@ export const InventoryModule: React.FC = () => {
                         </span>
                         <span className="hidden sm:inline">•</span>
                         <span className="text-[var(--text-muted)] font-mono">
-                          Cost: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
+                          {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
                         </span>
                         <span>•</span>
                         <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                          {margin}% Margin
+                          {t('marginPercent').replace('{margin}', String(margin))}
                         </span>
                       </div>
                     </div>
@@ -550,7 +551,7 @@ export const InventoryModule: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Argan Nourishing Hair Oil"
+                      placeholder={t('productNamePlaceholder')}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -575,7 +576,7 @@ export const InventoryModule: React.FC = () => {
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. OIL-ARG-100"
+                        placeholder={t('skuPlaceholder')}
                         value={sku}
                         onChange={(e) => setSku(e.target.value)}
                         className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -615,7 +616,7 @@ export const InventoryModule: React.FC = () => {
                   <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
                     <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
                     <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
-                      {addMargin}% Profit Margin
+                      {t('profitMarginPercent').replace('{margin}', String(addMargin))}
                     </span>
                   </div>
 
@@ -804,7 +805,7 @@ export const InventoryModule: React.FC = () => {
                   <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
                     <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
                     <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
-                      {editMargin}% Profit Margin
+                      {t('profitMarginPercent').replace('{margin}', String(editMargin))}
                     </span>
                   </div>
 

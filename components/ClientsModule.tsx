@@ -175,7 +175,7 @@ export const ClientsModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <People24Regular className="w-4 h-4 text-blue-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">Total Clients</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalClients')}</span>
           </div>
           <p className="text-lg font-black text-[var(--text-primary)]">{totalClientsCount}</p>
         </div>
@@ -183,7 +183,7 @@ export const ClientsModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <Sparkle24Regular className="w-4 h-4 text-amber-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">VIP Members</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricVipMembers')}</span>
           </div>
           <p className="text-lg font-black text-amber-600 dark:text-amber-400">{vipCount}</p>
         </div>
@@ -191,7 +191,7 @@ export const ClientsModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <Money24Regular className="w-4 h-4 text-emerald-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">Total Revenue</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalRevenue')}</span>
           </div>
           <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">${totalLifetimeRevenue.toFixed(0)}</p>
         </div>
@@ -199,7 +199,7 @@ export const ClientsModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <Tag24Regular className="w-4 h-4 text-purple-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">Avg Lifetime Value</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgLifetimeValue')}</span>
           </div>
           <p className="text-lg font-black text-purple-600 dark:text-purple-400">${avgSpendPerClient.toFixed(0)}</p>
         </div>
@@ -318,7 +318,7 @@ export const ClientsModule: React.FC = () => {
                           {specsCount > 0 && (
                             <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-bold flex items-center gap-1">
                               <Note24Regular className="w-3 h-3" />
-                              <span>{specsCount} specs</span>
+                              <span>{specsCount} {t('specs')}</span>
                             </span>
                           )}
 
@@ -467,7 +467,7 @@ export const ClientsModule: React.FC = () => {
 
                     <div>
                       <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                        Phone Number
+                        {t('phoneNumber')}
                       </label>
                       <input
                         type="tel"

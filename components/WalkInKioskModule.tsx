@@ -247,7 +247,7 @@ export const WalkInKioskModule: React.FC = () => {
               <span>{t('waiting')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-bold">
-              Queue Length
+              {t('metricQueueLength')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -255,7 +255,7 @@ export const WalkInKioskModule: React.FC = () => {
               {waitingGuests.length}
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">
-              guests waiting
+              {t('metricGuestsWaiting')}
             </span>
           </div>
         </div>
@@ -267,7 +267,7 @@ export const WalkInKioskModule: React.FC = () => {
               <span>{t('inChair')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
-              Active In-Service
+              {t('metricActiveInService')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -275,7 +275,7 @@ export const WalkInKioskModule: React.FC = () => {
               {inChairGuests.length}
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">
-              stations active
+              {t('metricStationsActive')}
             </span>
           </div>
         </div>
@@ -287,7 +287,7 @@ export const WalkInKioskModule: React.FC = () => {
               <span>{t('estWait')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 text-[10px] font-bold">
-              Real-Time Estimate
+              {t('metricRealTimeEst')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -295,7 +295,7 @@ export const WalkInKioskModule: React.FC = () => {
               ~{avgWait} min
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">
-              next open slot
+              {t('metricNextOpenSlot')}
             </span>
           </div>
         </div>
@@ -315,8 +315,8 @@ export const WalkInKioskModule: React.FC = () => {
           {inChairGuests.length === 0 ? (
             <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-2">
               <Sparkle24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
-              <p className="text-xs font-bold text-[var(--text-secondary)]">No guests currently in chair.</p>
-              <p className="text-[11px] text-[var(--text-muted)]">Seat the next waiting guest when ready.</p>
+              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noGuestsInChair')}</p>
+              <p className="text-[11px] text-[var(--text-muted)]">{t('noGuestsInChairSub')}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -337,12 +337,12 @@ export const WalkInKioskModule: React.FC = () => {
                     </div>
 
                     <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase">
-                      In Chair
+                      {t('statusInChair')}
                     </span>
                   </div>
 
                   <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between text-xs font-medium">
-                    <span className="text-[var(--text-secondary)]">Specialist:</span>
+                    <span className="text-[var(--text-secondary)]">{t('specialistLabel')}:</span>
                     <span className="font-bold text-[var(--text-primary)]">{guest.staffName}</span>
                   </div>
 
@@ -372,8 +372,8 @@ export const WalkInKioskModule: React.FC = () => {
           {waitingGuests.length === 0 ? (
             <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-2">
               <CheckmarkCircle24Regular className="w-8 h-8 text-emerald-500 mx-auto" />
-              <p className="text-xs font-bold text-[var(--text-primary)]">Waitlist queue is clear!</p>
-              <p className="text-[11px] text-[var(--text-secondary)]">All walk-ins have been served.</p>
+              <p className="text-xs font-bold text-[var(--text-primary)]">{t('waitlistClear')}</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">{t('waitlistClearSub')}</p>
             </div>
           ) : (
             <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
@@ -408,7 +408,7 @@ export const WalkInKioskModule: React.FC = () => {
                       className="px-2.5 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <Phone24Filled className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">SMS Ready</span>
+                      <span className="hidden sm:inline">{t('smsCta')}</span>
                     </button>
 
                     <button
@@ -466,7 +466,7 @@ export const WalkInKioskModule: React.FC = () => {
                     {t('walkInCheckIn')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Add a walk-in client to the real-time queue.
+                    {t('addToQueueDrawerDesc')}
                   </p>
                 </div>
                 <button
@@ -517,7 +517,7 @@ export const WalkInKioskModule: React.FC = () => {
                       onChange={(e) => setSelectedServiceId(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value="">General Walk-In Consultation</option>
+                      <option value="">{t('generalWalkInConsultation')}</option>
                       {services.map((svc) => (
                         <option key={svc.id} value={svc.id}>
                           {svc.name} (${svc.price} · {svc.durationMinutes}m)
@@ -553,7 +553,7 @@ export const WalkInKioskModule: React.FC = () => {
                     className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <Add24Filled className="w-4 h-4" />
-                    <span>{submitting ? 'Adding…' : 'Add to Queue'}</span>
+                    <span>{submitting ? t('addingToQueue') : t('addToQueue')}</span>
                   </button>
                 </div>
               </form>
@@ -574,7 +574,7 @@ export const WalkInKioskModule: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-base font-black text-[var(--text-primary)]">{workspaceName || 'AirBook Studio'}</h2>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium">Self-Service Walk-In Check-In</p>
+                  <p className="text-xs text-[var(--text-secondary)] font-medium">{t('kioskSelfServiceSubtitle')}</p>
                 </div>
               </div>
 
@@ -596,13 +596,13 @@ export const WalkInKioskModule: React.FC = () => {
                   className="p-8 rounded-[36px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-2xl space-y-6"
                 >
                   <div className="text-center space-y-1">
-                    <h3 className="text-2xl font-black text-[var(--text-primary)]">Welcome! Check In Here</h3>
-                    <p className="text-xs text-[var(--text-secondary)]">Enter your details to join the live waitlist.</p>
+                    <h3 className="text-2xl font-black text-[var(--text-primary)]">{t('kioskWelcomeTitle')}</h3>
+                    <p className="text-xs text-[var(--text-secondary)]">{t('kioskWelcomeDesc')}</p>
                   </div>
 
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-[var(--text-secondary)] block">Your Name *</label>
+                      <label className="text-xs font-bold text-[var(--text-secondary)] block">{t('kioskYourName')} *</label>
                       <input
                         type="text"
                         placeholder="Alex Rivera"
@@ -613,7 +613,7 @@ export const WalkInKioskModule: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-[var(--text-secondary)] block">Phone Number for SMS Alert</label>
+                      <label className="text-xs font-bold text-[var(--text-secondary)] block">{t('kioskPhoneLabel')}</label>
                       <input
                         type="tel"
                         placeholder="(555) 234-5678"
@@ -629,7 +629,7 @@ export const WalkInKioskModule: React.FC = () => {
                       onClick={() => setKioskStep(2)}
                       className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black text-sm shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
-                      <span>Choose Service</span>
+                      <span>{t('kioskChooseService')}</span>
                       <ArrowRight24Filled className="w-4 h-4" />
                     </button>
                   </div>
@@ -643,8 +643,8 @@ export const WalkInKioskModule: React.FC = () => {
                   className="p-8 rounded-[36px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-2xl space-y-6"
                 >
                   <div className="text-center space-y-1">
-                    <h3 className="text-2xl font-black text-[var(--text-primary)]">Select a Service</h3>
-                    <p className="text-xs text-[var(--text-secondary)]">Pick what you would like done today.</p>
+                    <h3 className="text-2xl font-black text-[var(--text-primary)]">{t('kioskSelectServiceTitle')}</h3>
+                    <p className="text-xs text-[var(--text-secondary)]">{t('kioskSelectServiceDesc')}</p>
                   </div>
 
                   <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
@@ -674,7 +674,7 @@ export const WalkInKioskModule: React.FC = () => {
                       onClick={() => setKioskStep(1)}
                       className="w-1/3 py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-extrabold text-[var(--text-secondary)]"
                     >
-                      Back
+                      {t('kioskBack')}
                     </button>
                     <button
                       type="button"
@@ -699,18 +699,18 @@ export const WalkInKioskModule: React.FC = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-black text-[var(--text-primary)]">You&apos;re on the list!</h3>
-                    <p className="text-xs text-[var(--text-secondary)]">Please take a seat. We will call you or text your phone.</p>
+                    <h3 className="text-2xl font-black text-[var(--text-primary)]">{t('kioskOnListTitle')}</h3>
+                    <p className="text-xs text-[var(--text-secondary)]">{t('kioskOnListDesc')}</p>
                   </div>
 
                   <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-around">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">Queue Position</span>
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">{t('kioskQueuePosition')}</span>
                       <p className="text-2xl font-black text-blue-600 font-mono">#{kioskTicket.position}</p>
                     </div>
                     <div className="w-px h-8 bg-[var(--border-subtle)]" />
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">Est. Wait</span>
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">{t('kioskEstWait')}</span>
                       <p className="text-2xl font-black text-emerald-600 font-mono">~{kioskTicket.estimatedWaitMinutes}m</p>
                     </div>
                   </div>
@@ -725,14 +725,14 @@ export const WalkInKioskModule: React.FC = () => {
                     }}
                     className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl"
                   >
-                    Done (Next Guest)
+                    {t('kioskDoneNextGuest')}
                   </button>
                 </motion.div>
               )}
             </div>
 
             <div className="text-center text-[11px] text-[var(--text-muted)] font-mono">
-              Powered by AirBook Kiosk Engine · Real-time Waitlist Display
+              {t('kioskPoweredBy')}
             </div>
           </div>
         )}
