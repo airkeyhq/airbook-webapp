@@ -121,10 +121,10 @@ export const ServicesModule: React.FC = () => {
             <Money24Regular className="w-5 h-5 text-blue-500" />
             <div>
               <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
-                Smart Dynamic Pricing Engine
+                {t('smartDynamicPricingTitle')}
               </h3>
               <p className="text-[11px] text-[var(--text-secondary)]">
-                Automatically adjust service prices based on peak hours, weekend demand, and off-peak times.
+                {t('smartDynamicPricingDesc')}
               </p>
             </div>
           </div>
@@ -248,7 +248,7 @@ export const ServicesModule: React.FC = () => {
                       </span>
                       <span className="text-xs font-mono font-bold text-[var(--text-muted)] flex items-center gap-1">
                         <Clock24Regular className="w-3 h-3" />
-                        {srv.durationMinutes} mins
+                        {srv.durationMinutes} {t('minsSuffix')}
                       </span>
                     </div>
                     <h3 className="text-sm font-bold text-[var(--text-primary)]">{srv.name}</h3>
@@ -256,12 +256,12 @@ export const ServicesModule: React.FC = () => {
 
                   <div className="flex items-center justify-between border-t border-black/5 dark:border-white/10 pt-3">
                     <div>
-                      <span className="text-xs text-[var(--text-secondary)]">Price: </span>
+                      <span className="text-xs text-[var(--text-secondary)]">{t('priceLabel')}: </span>
                       <span className="text-sm font-bold text-[var(--text-primary)]">${priceDollars}</span>
                     </div>
                     <div className="text-right">
                       <span className="text-[11px] text-green-600 dark:text-green-400 font-semibold">
-                        Deposit (${depositDollars})
+                        {t('depositLabel')} (${depositDollars})
                       </span>
                     </div>
                   </div>

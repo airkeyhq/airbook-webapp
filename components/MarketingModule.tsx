@@ -271,7 +271,7 @@ export const MarketingModule: React.FC = () => {
               {t('marketingTitle')}
             </h2>
             <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold uppercase">
-              Retention & Reviews
+              {t('retentionAndReviews')}
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-2xl">
@@ -309,7 +309,7 @@ export const MarketingModule: React.FC = () => {
               <span>{t('smsCreditsBalance')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-bold">
-              Prepaid Ledger
+              {t('prepaidLedger')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -321,7 +321,7 @@ export const MarketingModule: React.FC = () => {
               onClick={() => setIsTopUpOpen(true)}
               className="text-[11px] font-extrabold text-blue-600 hover:underline cursor-pointer"
             >
-              + Top Up
+              {t('topUpBtn')}
             </button>
           </div>
         </div>
@@ -330,18 +330,18 @@ export const MarketingModule: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
               <Mail24Regular className="w-4 h-4 text-purple-500" />
-              <span>Email Marketing</span>
+              <span>{t('emailMarketing')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 text-[10px] font-bold">
-              Resend Engine
+              {t('resendEngine')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
             <p className="text-lg font-black text-purple-600 dark:text-purple-400">
-              Unlimited
+              {t('unlimited')}
             </p>
             <span className="text-[10px] font-bold text-[var(--text-muted)]">
-              $0.00 / message
+              {t('zeroPerMessage')}
             </span>
           </div>
         </div>
@@ -350,14 +350,14 @@ export const MarketingModule: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
               <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
-              <span>Platform Protection</span>
+              <span>{t('platformProtection')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
-              Zero-Debt Guarantee
+              {t('zeroDebtGuarantee')}
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] pt-1">
-            Prepaid credit validation prevents unexpected carrier debt or out-of-pocket billing.
+            {t('platformProtectionDesc')}
           </p>
         </div>
       </div>
@@ -373,7 +373,7 @@ export const MarketingModule: React.FC = () => {
             disabled={savingSettings}
             className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-xs transition-colors cursor-pointer"
           >
-            {savingSettings ? 'Saving…' : t('saveSettings')}
+            {savingSettings ? t('savingState') : t('saveSettings')}
           </button>
         </div>
 
@@ -426,7 +426,7 @@ export const MarketingModule: React.FC = () => {
                 disabled={testSmsSending}
                 className="text-xs font-extrabold text-blue-600 hover:underline cursor-pointer"
               >
-                {testSmsSending ? 'Sending Test…' : t('sendTestSms')}
+                {testSmsSending ? t('sendingTestState') : t('sendTestSms')}
               </button>
             </div>
           </div>
@@ -477,7 +477,7 @@ export const MarketingModule: React.FC = () => {
                 {autoReengagementEnabled ? t('triggerActive') : t('triggerDisabled')}
               </span>
               <span className="text-[11px] text-[var(--text-secondary)]">
-                Includes booking short-link
+                {t('includesBookingShortlink')}
               </span>
             </div>
           </div>
@@ -491,7 +491,7 @@ export const MarketingModule: React.FC = () => {
             {t('sentCampaigns')}
           </h3>
           <span className="text-xs text-[var(--text-secondary)]">
-            {campaignsList.length} Total Dispatches
+            {t('totalDispatches').replace('{count}', String(campaignsList.length))}
           </span>
         </div>
 
@@ -534,7 +534,7 @@ export const MarketingModule: React.FC = () => {
                         {camp.channel.toUpperCase()}
                       </span>
                       <span className="px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
-                        Delivered
+                        {t('deliveredStatus')}
                       </span>
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-1">
@@ -546,10 +546,10 @@ export const MarketingModule: React.FC = () => {
                 <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t sm:border-t-0 border-[var(--border-subtle)] pt-2.5 sm:pt-0 text-left sm:text-right">
                   <div>
                     <p className="text-xs font-black text-[var(--text-primary)]">
-                      {camp.recipientCount} Recipients
+                      {t('recipientsCountLabel').replace('{count}', String(camp.recipientCount))}
                     </p>
                     <p className="text-[10px] text-[var(--text-muted)] font-mono">
-                      {camp.creditsUsed} Credits · {new Date(camp.sentAt || camp.createdAt).toLocaleDateString()}
+                      {t('creditsUsedCount').replace('{count}', String(camp.creditsUsed))} · {new Date(camp.sentAt || camp.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -590,7 +590,7 @@ export const MarketingModule: React.FC = () => {
                     {t('newBroadcastCampaign')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Blast promotional offers or announcements to your clients.
+                    {t('blastPromotionsDesc')}
                   </p>
                 </div>
                 <button
@@ -612,7 +612,7 @@ export const MarketingModule: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. VIP Weekend Refresh 20% Off"
+                      placeholder={t('vipCampaignPlaceholder')}
                       value={campName}
                       onChange={(e) => setCampName(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -646,7 +646,7 @@ export const MarketingModule: React.FC = () => {
                         className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="sms">{t('channelSms')}</option>
-                        <option value="email">{t('channelEmail')} (Free)</option>
+                        <option value="email">{t('channelEmail')} ({t('freeLabel')})</option>
                         <option value="both">{t('channelBoth')}</option>
                       </select>
                     </div>
@@ -690,7 +690,7 @@ export const MarketingModule: React.FC = () => {
                     </p>
                     <div className="p-3.5 rounded-2xl bg-blue-600 text-white text-xs font-medium max-w-sm shadow-sm space-y-1">
                       <p className="leading-relaxed">{previewText}</p>
-                      <p className="text-[9px] text-blue-200 text-right">Delivered via AirBook Engine</p>
+                      <p className="text-[9px] text-blue-200 text-right">{t('deliveredViaAirbookEngine')}</p>
                     </div>
                   </div>
                 </div>
@@ -699,10 +699,10 @@ export const MarketingModule: React.FC = () => {
                 <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-extrabold text-[var(--text-primary)]">
-                      {requiredCredits > 0 ? t('creditsRequired', { count: requiredCredits }) : 'Free Email Dispatch'}
+                      {requiredCredits > 0 ? t('creditsRequired', { count: requiredCredits }) : t('freeEmailDispatch')}
                     </p>
                     <p className="text-[10px] text-[var(--text-secondary)] font-mono">
-                      Current balance: {smsCreditsRemaining} credits
+                      {t('currentBalanceCredits').replace('{count}', String(smsCreditsRemaining))}
                     </p>
                   </div>
 
@@ -712,7 +712,7 @@ export const MarketingModule: React.FC = () => {
                     className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer"
                   >
                     <Send24Filled className="w-4 h-4" />
-                    <span>{sendingCampaign ? 'Dispatching…' : t('launchCampaign')}</span>
+                    <span>{sendingCampaign ? t('dispatchingState') : t('launchCampaign')}</span>
                   </button>
                 </div>
               </form>
@@ -745,7 +745,7 @@ export const MarketingModule: React.FC = () => {
                     {t('topUpCredits')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Prepaid credit packs with 100% platform debt protection.
+                    {t('prepaidDebtProtectionDesc')}
                   </p>
                 </div>
                 <button
@@ -759,9 +759,9 @@ export const MarketingModule: React.FC = () => {
 
               <div className="space-y-2.5 pt-1">
                 {[
-                  { credits: 250, price: 5, label: t('pack250'), badge: 'Starter' },
-                  { credits: 1000, price: 18, label: t('pack1000'), badge: 'Most Popular' },
-                  { credits: 5000, price: 75, label: t('pack5000'), badge: 'Best Value' },
+                  { credits: 250, price: 5, label: t('pack250'), badge: t('packStarter') },
+                  { credits: 1000, price: 18, label: t('pack1000'), badge: t('packMostPopular') },
+                  { credits: 5000, price: 75, label: t('pack5000'), badge: t('packBestValue') },
                 ].map((pack) => (
                   <button
                     key={pack.credits}
@@ -773,7 +773,7 @@ export const MarketingModule: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-extrabold text-[var(--text-primary)] group-hover:text-blue-600">
-                          {pack.credits.toLocaleString()} SMS Credits
+                          {t('smsCreditsLabel').replace('{count}', pack.credits.toLocaleString())}
                         </span>
                         <span className="px-2 py-0.2 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-bold">
                           {pack.badge}
@@ -785,14 +785,14 @@ export const MarketingModule: React.FC = () => {
                     </div>
 
                     <div className="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-black shadow-xs">
-                      Buy
+                      {t('buyButton')}
                     </div>
                   </button>
                 ))}
               </div>
 
               <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300">
-                <strong>Zero Platform Debt:</strong> All marketing blasts are prepaid, keeping your business cash-flow positive with zero unpaid provider overages.
+                <strong>{t('zeroDebtGuarantee')}:</strong> {t('zeroPlatformDebtNotice')}
               </div>
             </motion.div>
           </div>

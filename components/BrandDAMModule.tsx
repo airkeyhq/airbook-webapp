@@ -216,10 +216,10 @@ export const BrandDAMModule: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
             <Link href="/dashboard" className="hover:text-blue-500 flex items-center gap-1 transition-colors">
-              <ArrowLeft24Filled className="w-3.5 h-3.5" /> Dashboard
+              <ArrowLeft24Filled className="w-3.5 h-3.5" /> {t('dashboard')}
             </Link>
             <span>/</span>
-            <span>Digital Asset Management (DAM) & Brand Studio</span>
+            <span>{t('brandDamBreadcrumb')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--text-primary)] flex items-center gap-3">
             <Logo variant="3d" size={36} />
@@ -238,7 +238,7 @@ export const BrandDAMModule: React.FC = () => {
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors cursor-pointer"
           >
             <ArrowDownload24Filled className="w-4 h-4" />
-            <span>Download SVG</span>
+            <span>{t('downloadSvg')}</span>
           </button>
 
           <button
@@ -248,7 +248,7 @@ export const BrandDAMModule: React.FC = () => {
             className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg transition-all cursor-pointer"
           >
             <Save24Filled className="w-4 h-4" />
-            <span>{isSaving ? 'Saving…' : t('saveBrandKit')}</span>
+            <span>{isSaving ? t('savingState') : t('saveBrandKit')}</span>
           </button>
         </div>
       </div>
@@ -291,7 +291,7 @@ export const BrandDAMModule: React.FC = () => {
             <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
               <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
                 <Sparkle24Filled className="w-4 h-4 text-blue-500" />
-                <span>Identity & Bio</span>
+                <span>{t('identityBio')}</span>
               </h3>
 
               <div className="space-y-1.5">
@@ -540,8 +540,8 @@ export const BrandDAMModule: React.FC = () => {
               {/* Storefront Services Showcase */}
               <div className="p-4 space-y-3 flex-1">
                 <div className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)]">
-                  <span>Popular Services</span>
-                  <span className="text-[10px] text-blue-500 font-bold">View All</span>
+                  <span>{t('popularServices')}</span>
+                  <span className="text-[10px] text-blue-500 font-bold">{t('viewAll')}</span>
                 </div>
 
                 {[
@@ -552,7 +552,7 @@ export const BrandDAMModule: React.FC = () => {
                   <div key={idx} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-[var(--text-primary)]">{s.name}</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">{s.time} · Instant Confirmation</p>
+                      <p className="text-[10px] text-[var(--text-secondary)]">{s.time} · {t('instantConfirmation') || 'Instant Confirmation'}</p>
                     </div>
                     <div className="text-right">
                       <span className="text-xs font-extrabold text-[var(--text-primary)]">{s.price}</span>
@@ -561,7 +561,7 @@ export const BrandDAMModule: React.FC = () => {
                         className="mt-1 px-3 py-1 rounded-lg text-white text-[10px] font-black block cursor-pointer"
                         style={{ backgroundColor: primaryColor }}
                       >
-                        Book
+                        {t('bookNow') || 'Book'}
                       </button>
                     </div>
                   </div>
@@ -576,7 +576,7 @@ export const BrandDAMModule: React.FC = () => {
                   style={{ backgroundColor: primaryColor }}
                 >
                   <Calendar24Filled className="w-4 h-4" />
-                  <span>Book Appointment Now</span>
+                  <span>{t('bookAppointmentNow')}</span>
                 </button>
               </div>
             </div>
@@ -647,12 +647,12 @@ export const BrandDAMModule: React.FC = () => {
                     {copiedId === badge.id ? (
                       <>
                         <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>Copied React Code</span>
+                        <span>{t('copiedReactCode')}</span>
                       </>
                     ) : (
                       <>
                         <Copy24Filled className="w-3.5 h-3.5" />
-                        <span>Copy React Code</span>
+                        <span>{t('copyReactCode')}</span>
                       </>
                     )}
                   </button>
@@ -797,11 +797,11 @@ export const BrandDAMModule: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={() => handleDownloadSVG('airbook-brand-logo.svg', RAW_SVG_CODE)}
-                  className="flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+                  onClick={() => handleDownloadSVG('airbook-logo-raw.svg', RAW_SVG_CODE)}
+                  className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
-                  <ArrowDownload24Filled className="w-4 h-4" />
-                  <span>Download File</span>
+                  <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                  <span>{t('downloadFile')}</span>
                 </button>
               </div>
             </div>

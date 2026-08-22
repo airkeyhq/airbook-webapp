@@ -74,28 +74,28 @@ export const AnalyticsModule: React.FC = () => {
           {/* Metrics Row */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Total Revenue</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('metricTotalRevenue')}</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">${rev.toLocaleString()}</span>
               </div>
             </div>
 
             <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Net Profit</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('netProfit')}</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">${net.toLocaleString()}</span>
               </div>
             </div>
 
             <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Appointments</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('appointments')}</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">{apts}</span>
               </div>
             </div>
 
             <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Total Clients</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('metricTotalClients')}</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-black">{clientsCount}</span>
               </div>

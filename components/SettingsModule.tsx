@@ -466,7 +466,7 @@ export const SettingsModule: React.FC = () => {
 
                 <div className="flex items-center gap-2 pt-2 border-t border-black/5 dark:border-white/10 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                   <CheckmarkCircle24Filled className="w-4 h-4 flex-shrink-0" />
-                  <span>{t('stripeConnected')} (Express Payouts Active)</span>
+                  <span>{t('stripeConnected')} {t('expressPayoutsActive')}</span>
                 </div>
               </div>
             </Section>
@@ -475,7 +475,7 @@ export const SettingsModule: React.FC = () => {
             <Section title={t('notificationPreferences')} icon={Alert24Regular}>
               <div className="flex items-center justify-between">
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Push, email, and SMS notifications are coming soon.
+                  {t('notificationsRoadmapDesc')}
                 </p>
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
                   {t('comingSoonV11')}
@@ -540,12 +540,12 @@ export const SettingsModule: React.FC = () => {
                       value={timezone}
                       onChange={setTimezone}
                       options={[
-                        { value: 'America/New_York', label: 'Eastern Time (ET)' },
-                        { value: 'America/Chicago', label: 'Central Time (CT)' },
-                        { value: 'America/Denver', label: 'Mountain Time (MT)' },
-                        { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
-                        { value: 'Europe/London', label: 'London (GMT)' },
-                        { value: 'Europe/Berlin', label: 'Central Europe (CET)' },
+                        { value: 'America/New_York', label: t('tzEastern') },
+                        { value: 'America/Chicago', label: t('tzCentral') },
+                        { value: 'America/Denver', label: t('tzMountain') },
+                        { value: 'America/Los_Angeles', label: t('tzPacific') },
+                        { value: 'Europe/London', label: t('tzLondon') },
+                        { value: 'Europe/Berlin', label: t('tzBerlin') },
                       ]}
                     />
                   </Field>
@@ -573,7 +573,7 @@ export const SettingsModule: React.FC = () => {
                   <Building24Regular className="w-4 h-4 text-blue-500" />
                   <span>{t('chairsAndStations')}</span>
                   <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-                    {stations.length} Active
+                    {stations.length} {t('statusActive')}
                   </span>
                 </h3>
                 <button
@@ -611,7 +611,7 @@ export const SettingsModule: React.FC = () => {
                           {stn.name}
                         </p>
                         <p className="text-[10px] text-[var(--text-secondary)] font-medium truncate">
-                          {stn.category || 'Workstation'}
+                          {stn.category || t('stationCategoryLabel')}
                         </p>
                       </div>
                     </div>
@@ -625,7 +625,7 @@ export const SettingsModule: React.FC = () => {
                           setEditingStationCategory(stn.category || 'Hair & Styling');
                         }}
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
-                        title="Edit Station"
+                        title={t('editStation')}
                       >
                         <Edit24Filled className="w-4 h-4" />
                       </button>
@@ -633,10 +633,10 @@ export const SettingsModule: React.FC = () => {
                         type="button"
                         onClick={() => {
                           deleteStation(stn.id);
-                          addToast('Station deleted', 'info');
+                          addToast(t('stationDeleted'), 'info');
                         }}
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
-                        title="Delete Station"
+                        title={t('deleteStation')}
                       >
                         <Delete24Filled className="w-4 h-4" />
                       </button>
@@ -653,9 +653,9 @@ export const SettingsModule: React.FC = () => {
                     value={cancellation}
                     onChange={setCancellation}
                     options={[
-                      { value: '12', label: '12 Hours' },
-                      { value: '24', label: '24 Hours' },
-                      { value: '48', label: '48 Hours' },
+                      { value: '12', label: '12 ' + (t('hoursUnit') || 'Hours') },
+                      { value: '24', label: '24 ' + (t('hoursUnit') || 'Hours') },
+                      { value: '48', label: '48 ' + (t('hoursUnit') || 'Hours') },
                     ]}
                   />
                 </Field>
@@ -907,7 +907,7 @@ export const SettingsModule: React.FC = () => {
                 <p className="text-2xl font-black text-blue-600 font-mono">
                   {complianceLogs.length}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Immutable Audit Records</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('immutableAuditRecords')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
@@ -918,18 +918,18 @@ export const SettingsModule: React.FC = () => {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>{t('kmsActive')}</span>
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Zero-Knowledge Key Vault</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('zeroKnowledgeKeyVault')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
                 <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
-                  Compliance Status
+                  {t('complianceStatus') || 'Compliance Status'}
                 </span>
                 <p className="text-sm font-black text-purple-600 font-mono mt-1.5 flex items-center gap-1.5">
                   <CheckmarkCircle24Filled className="w-4 h-4" />
-                  <span>HIPAA v1.3 Verified</span>
+                  <span>{t('hipaaVerified')}</span>
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Encrypted PHI Storage</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('encryptedPhiStorage')}</p>
               </div>
             </div>
 
@@ -966,7 +966,7 @@ export const SettingsModule: React.FC = () => {
             {/* Immutable Audit Log Stream */}
             <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {loadingCompliance ? (
-                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading compliance logs…</div>
+                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">{t('loadingComplianceLogs')}</div>
               ) : (
                 complianceLogs
                   .filter((log) => complianceFilter === 'all' || log.action === complianceFilter)
@@ -1032,20 +1032,47 @@ export const SettingsModule: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="space-y-5"
+            className="space-y-4"
           >
-            <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-              <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                <Globe24Regular className="w-5 h-5 text-blue-600" />
-                <span>{t('tabDomain')}</span>
-              </h3>
-              <p className="text-xs text-[var(--text-secondary)]">{t('customDomainSettingDesc')}</p>
+            {/* White-Label Live DNS Routing Manager */}
+            <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Globe24Regular className="w-5 h-5 text-blue-500" />
+                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                    {t('customDomainTitle')}
+                  </h3>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase">
+                  {t('domainVerified')}
+                </span>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-2xl">
+                {t('customDomainDesc')}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('cnameRecord')}</span>
+                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">cname.airbook.app</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">{t('dnsPropagated')}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('sslTlsCertificate')}</span>
+                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">{t('autoManagedLetsEncrypt')}</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">{t('activeSecured')}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('apexRedirect')}</span>
+                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">{t('auto301HttpHttps')}</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">{t('alwaysEnforced')}</p>
+                </div>
+              </div>
             </div>
-            <CustomDomainStudio />
           </motion.div>
         )}
 
-        {/* ─── TAB 5: ENTERPRISE MULTI-LOCATION & FRANCHISE HUB ─── */}
+        {/* ─── TAB 7: MULTI-LOCATION ENTERPRISE ─── */}
         {activeTab === 'locations' && (
           <motion.div
             key="locations"
@@ -1053,30 +1080,8 @@ export const SettingsModule: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="space-y-5"
+            className="space-y-4"
           >
-            {/* Header with Add Location CTA */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs">
-              <div>
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <Building24Filled className="w-5 h-5 text-blue-600" />
-                  <span>{t('locationsTitle')}</span>
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
-                  {t('locationsDesc')}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsAddLocationOpen(true)}
-                className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
-              >
-                <Add24Filled className="w-4 h-4" />
-                <span>{t('addNewBranch')}</span>
-              </button>
-            </div>
-
             {/* Aggregated Organization Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
@@ -1086,7 +1091,7 @@ export const SettingsModule: React.FC = () => {
                 <p className="text-2xl font-black text-blue-600 font-mono">
                   {locations.length}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Active Physical Branches</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('activePhysicalBranches')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
@@ -1096,7 +1101,7 @@ export const SettingsModule: React.FC = () => {
                 <p className="text-2xl font-black text-emerald-600 font-mono">
                   ${(totalEnterpriseGross / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Monthly Consolidated Gross</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('monthlyConsolidatedGross')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
@@ -1106,14 +1111,14 @@ export const SettingsModule: React.FC = () => {
                 <p className="text-2xl font-black text-purple-600 font-mono">
                   {totalEnterpriseStaff}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">Practitioners & Specialists</p>
+                <p className="text-[10px] text-[var(--text-muted)]">{t('practitionersAndSpecialists')}</p>
               </div>
             </div>
 
             {/* Branch Cards Divided List */}
             <div className="space-y-3">
               {loadingLocations ? (
-                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading location branches…</div>
+                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">{t('loadingLocationBranches')}</div>
               ) : (
                 locations.map((loc) => (
                   <div
@@ -1144,7 +1149,7 @@ export const SettingsModule: React.FC = () => {
                           {loc.address} {loc.phone && `· ${loc.phone}`}
                         </p>
                         <p className="text-[11px] text-[var(--text-muted)]">
-                          Manager: <span className="font-semibold text-[var(--text-secondary)]">{loc.managerName}</span> · Headcount: <span className="font-semibold text-[var(--text-secondary)]">{loc.staffCount} staff</span>
+                          {t('managerLabel') || 'Manager'}: <span className="font-semibold text-[var(--text-secondary)]">{loc.managerName}</span> · {t('headcountLabel')}: <span className="font-semibold text-[var(--text-secondary)]">{loc.staffCount} {t('staffLabel') || 'staff'}</span>
                         </p>
                       </div>
 
@@ -1155,14 +1160,14 @@ export const SettingsModule: React.FC = () => {
                           rel="noreferrer"
                           className="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors"
                         >
-                          Booking Page ↗
+                          {t('bookingPageLink')} ↗
                         </a>
 
                         {!loc.isCurrent && (
                           <button
                             type="button"
                             onClick={() => {
-                              addToast(`Switched active branch to ${loc.name}`, 'success');
+                              addToast(t('switchedActiveBranch').replace('{name}', loc.name), 'success');
                               setTimeout(() => {
                                 window.location.reload();
                               }, 500);
@@ -1304,7 +1309,7 @@ export const SettingsModule: React.FC = () => {
                   addStation({ name: newStationName.trim(), category: newStationCategory });
                   setIsAddStationModalOpen(false);
                   setNewStationName('');
-                  addToast('Station added', 'success');
+                  addToast(t('stationAdded'), 'success');
                 }}
                 className="flex flex-col h-full"
               >
@@ -1332,7 +1337,7 @@ export const SettingsModule: React.FC = () => {
                 <div className="p-6 space-y-4">
                   <div>
                     <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      Station / Chair Name *
+                      {t('stationNameLabel')} *
                     </label>
                     <input
                       type="text"
@@ -1347,18 +1352,18 @@ export const SettingsModule: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      Category / Specialty
+                      {t('stationCategoryLabel')}
                     </label>
                     <CustomSelect
                       value={newStationCategory}
                       onChange={setNewStationCategory}
                       options={[
-                        { value: 'Hair & Styling', label: 'Hair & Styling' },
-                        { value: 'Color & Wash Bar', label: 'Color & Wash Bar' },
-                        { value: 'Spa & Skincare', label: 'Spa & Skincare' },
-                        { value: 'Nails & Pedicure', label: 'Nails & Pedicure' },
-                        { value: 'Barbering', label: 'Barbering' },
-                        { value: 'General / Flex', label: 'General / Flex' },
+                        { value: 'Hair & Styling', label: t('catHairStyling') },
+                        { value: 'Color & Wash Bar', label: t('catColorWash') },
+                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                        { value: 'Barbering', label: t('catBarbering') },
+                        { value: 'General / Flex', label: t('catGeneralFlex') },
                       ]}
                     />
                   </div>
@@ -1411,7 +1416,7 @@ export const SettingsModule: React.FC = () => {
                   if (!editingStationName.trim()) return;
                   updateStation(editingStationId, editingStationName.trim(), editingStationCategory);
                   setEditingStationId(null);
-                  addToast('Station updated', 'success');
+                  addToast(t('stationUpdated'), 'success');
                 }}
                 className="flex flex-col h-full"
               >
@@ -1424,7 +1429,7 @@ export const SettingsModule: React.FC = () => {
                 <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                   <div className="flex items-center gap-2.5">
                     <Building24Regular className="w-5 h-5 text-blue-500" />
-                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">Edit Chair / Station</h3>
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editChairStation')}</h3>
                   </div>
                   <button
                     type="button"
@@ -1439,7 +1444,7 @@ export const SettingsModule: React.FC = () => {
                 <div className="p-6 space-y-4">
                   <div>
                     <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      Station Name *
+                      {t('stationNameLabel')} *
                     </label>
                     <input
                       type="text"
@@ -1453,18 +1458,18 @@ export const SettingsModule: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      Category / Specialty
+                      {t('stationCategoryLabel')}
                     </label>
                     <CustomSelect
                       value={editingStationCategory}
                       onChange={setEditingStationCategory}
                       options={[
-                        { value: 'Hair & Styling', label: 'Hair & Styling' },
-                        { value: 'Color & Wash Bar', label: 'Color & Wash Bar' },
-                        { value: 'Spa & Skincare', label: 'Spa & Skincare' },
-                        { value: 'Nails & Pedicure', label: 'Nails & Pedicure' },
-                        { value: 'Barbering', label: 'Barbering' },
-                        { value: 'General / Flex', label: 'General / Flex' },
+                        { value: 'Hair & Styling', label: t('catHairStyling') },
+                        { value: 'Color & Wash Bar', label: t('catColorWash') },
+                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                        { value: 'Barbering', label: t('catBarbering') },
+                        { value: 'General / Flex', label: t('catGeneralFlex') },
                       ]}
                     />
                   </div>

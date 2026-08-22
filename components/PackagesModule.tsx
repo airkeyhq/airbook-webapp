@@ -393,7 +393,7 @@ export const PackagesModule: React.FC = () => {
               {t('packagesTitle')}
             </h2>
             <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold uppercase">
-              Monetization
+              {t('badgeMonetization')}
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-2xl">
@@ -491,7 +491,7 @@ export const PackagesModule: React.FC = () => {
               {activePackagesCount}
             </p>
             <span className="text-[11px] font-bold text-[var(--text-muted)]">
-              {packagesList.length} Total Bundles
+              {t('totalBundlesCount').replace('{count}', String(packagesList.length))}
             </span>
           </div>
         </div>
@@ -503,7 +503,7 @@ export const PackagesModule: React.FC = () => {
           </div>
           <div className="flex items-baseline justify-between">
             <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
-              ${Math.round(estimatedMRR).toLocaleString()} / mo
+              ${Math.round(estimatedMRR).toLocaleString()} {t('perMonthShort')}
             </p>
             <span className="text-[11px] font-bold text-[var(--text-muted)]">
               {activeMembershipsCount} {t('activeMemberships')}
@@ -600,7 +600,7 @@ export const PackagesModule: React.FC = () => {
                             type="button"
                             onClick={() => handleCopyCode(card.code)}
                             className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-mono font-black text-[var(--text-primary)] transition-colors cursor-pointer"
-                            title="Click to copy code"
+                            title={t('clickToCopyCode')}
                           >
                             <span>{card.code}</span>
                             {copiedCode === card.code ? (
@@ -628,7 +628,7 @@ export const PackagesModule: React.FC = () => {
                         </div>
 
                         <p className="text-xs font-bold text-[var(--text-primary)]">
-                          {card.recipientName ? `To: ${card.recipientName}` : 'Digital Gift Certificate'}
+                          {card.recipientName ? `To: ${card.recipientName}` : t('digitalGiftCertificate')}
                           {card.recipientEmail ? ` (${card.recipientEmail})` : ''}
                         </p>
                         {card.notes && (
@@ -645,7 +645,7 @@ export const PackagesModule: React.FC = () => {
                           ${(card.currentBalanceCents / 100).toFixed(2)}
                         </p>
                         <p className="text-[10px] text-[var(--text-muted)] font-semibold">
-                          of ${(card.initialBalanceCents / 100).toFixed(2)} initial
+                          {t('ofInitialBalance').replace('{amount}', (card.initialBalanceCents / 100).toFixed(2))}
                         </p>
                       </div>
 
@@ -709,13 +709,13 @@ export const PackagesModule: React.FC = () => {
                         </span>
                         {pkg.discountPercent > 0 && (
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold">
-                            Save {pkg.discountPercent}%
+                            {t('savePercent').replace('{percent}', String(pkg.discountPercent))}
                           </span>
                         )}
                       </div>
 
                       <p className="text-xs text-[var(--text-secondary)]">
-                        {pkg.serviceName || 'Standard Service'} · Valid {pkg.validityDays} Days
+                        {pkg.serviceName || t('standardService')} · {t('validDaysCount').replace('{days}', String(pkg.validityDays))}
                       </p>
                     </div>
                   </div>
@@ -726,7 +726,7 @@ export const PackagesModule: React.FC = () => {
                         ${(pkg.priceCents / 100).toFixed(2)}
                       </p>
                       <p className="text-[10px] text-[var(--text-muted)] font-semibold">
-                        ${(pkg.priceCents / (100 * pkg.totalSessions)).toFixed(2)} / session
+                        ${(pkg.priceCents / (100 * pkg.totalSessions)).toFixed(2)} {t('perSession')}
                       </p>
                     </div>
 
@@ -778,10 +778,10 @@ export const PackagesModule: React.FC = () => {
                       <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{mem.name}</h4>
                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
-                          {mem.includedServicesCount} Services/Mo
+                          {t('servicesPerMonthBadge').replace('{count}', String(mem.includedServicesCount))}
                         </span>
                         <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold">
-                          {mem.discountPercentRetail}% Retail Discount
+                          {t('retailDiscountBadge').replace('{percent}', String(mem.discountPercentRetail))}
                         </span>
                       </div>
 
@@ -799,7 +799,7 @@ export const PackagesModule: React.FC = () => {
                         ${(mem.monthlyPriceCents / 100).toFixed(2)}
                       </p>
                       <p className="text-[10px] text-[var(--text-muted)] font-semibold">
-                        per month
+                        {t('perMonth')}
                       </p>
                     </div>
 
@@ -848,7 +848,7 @@ export const PackagesModule: React.FC = () => {
                     {t('issueGiftCard')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Generate instant digital certificate with redemption code.
+                    {t('issueGiftCardDesc')}
                   </p>
                 </div>
                 <button
@@ -890,7 +890,7 @@ export const PackagesModule: React.FC = () => {
                     <div className="pt-1">
                       <input
                         type="number"
-                        placeholder="Or enter custom amount ($)"
+                        placeholder={t('customAmountPlaceholder')}
                         value={gcCustomAmount}
                         onChange={(e) => setGcCustomAmount(e.target.value)}
                         className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -906,7 +906,7 @@ export const PackagesModule: React.FC = () => {
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. Jessica Alba"
+                        placeholder={t('recipientNamePlaceholder')}
                         value={gcRecipientName}
                         onChange={(e) => setGcRecipientName(e.target.value)}
                         className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -919,7 +919,7 @@ export const PackagesModule: React.FC = () => {
                       </label>
                       <input
                         type="email"
-                        placeholder="jessica@example.com"
+                        placeholder={t('recipientEmailPlaceholder')}
                         value={gcRecipientEmail}
                         onChange={(e) => setGcRecipientEmail(e.target.value)}
                         className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -934,7 +934,7 @@ export const PackagesModule: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. Michael Scott"
+                      placeholder={t('senderNamePlaceholder')}
                       value={gcSenderName}
                       onChange={(e) => setGcSenderName(e.target.value)}
                       className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -947,7 +947,7 @@ export const PackagesModule: React.FC = () => {
                     </label>
                     <textarea
                       rows={2}
-                      placeholder="e.g. Happy Birthday! Enjoy your VIP session."
+                      placeholder={t('personalGreetingPlaceholder')}
                       value={gcNotes}
                       onChange={(e) => setGcNotes(e.target.value)}
                       className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
@@ -962,8 +962,8 @@ export const PackagesModule: React.FC = () => {
                     disabled={saving}
                     className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
-                    <Add24Filled className="w-4 h-4" />
-                    <span>{saving ? 'Issuing Gift Certificate…' : t('issueGiftCard')}</span>
+                    <GiftCard24Filled className="w-4 h-4" />
+                    <span>{saving ? t('issuingGiftCard') : t('issueGiftCard')}</span>
                   </button>
                 </div>
               </form>
@@ -972,7 +972,7 @@ export const PackagesModule: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ─── MODAL: REDEEM GIFT CARD BALANCE ─── */}
+      {/* ─── MODAL 1: REDEEM GIFT CARD MODAL ─── */}
       <AnimatePresence>
         {redeemingCard && (
           <div className="fixed inset-0 z-[220] flex items-center justify-center p-4">
@@ -990,32 +990,19 @@ export const PackagesModule: React.FC = () => {
               exit={{ opacity: 0, scale: 0.95 }}
               className="relative w-full max-w-sm bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
-              <div className="flex items-center justify-between">
+              <div className="space-y-1">
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">
                   {t('redeemGiftCard')}
                 </h3>
-                <button
-                  type="button"
-                  onClick={() => setRedeemingCard(null)}
-                  className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 space-y-1">
-                <span className="font-mono text-xs font-black text-blue-600 dark:text-blue-400">
-                  {redeemingCard.code}
-                </span>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Available Balance: ${(redeemingCard.currentBalanceCents / 100).toFixed(2)}
+                  {t('availableBalance').replace('{amount}', (redeemingCard.currentBalanceCents / 100).toFixed(2))}
                 </p>
               </div>
 
               <form onSubmit={handleRedeemGiftCard} className="space-y-4">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                    Amount to Deduct ($)
+                    {t('amountToDeduct')}
                   </label>
                   <input
                     type="number"
@@ -1034,14 +1021,14 @@ export const PackagesModule: React.FC = () => {
                     disabled={saving}
                     className="w-full py-3 rounded-2xl bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-xs shadow-md transition-colors cursor-pointer"
                   >
-                    {saving ? 'Redeeming…' : t('redeemGiftCard')}
+                    {saving ? t('redeeming') : t('redeemGiftCard')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setRedeemingCard(null)}
                     className="w-full py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-xs font-bold hover:bg-black/10 transition-colors cursor-pointer"
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                 </div>
               </form>
@@ -1078,10 +1065,10 @@ export const PackagesModule: React.FC = () => {
               <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
                 <div>
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {editingPackage ? 'Edit Service Package' : t('createPackage')}
+                    {editingPackage ? t('editPackage') : t('createPackage')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Prepaid multi-session service bundle.
+                    {t('packageDrawerDesc')}
                   </p>
                 </div>
                 <button
@@ -1103,7 +1090,7 @@ export const PackagesModule: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. 5x Precision Haircut Bundle"
+                      placeholder={t('packageNamePlaceholder')}
                       value={pkgName}
                       onChange={(e) => setPkgName(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -1126,7 +1113,7 @@ export const PackagesModule: React.FC = () => {
                           </option>
                         ))
                       ) : (
-                        <option value="Haircut & Styling">Haircut & Styling</option>
+                        <option value="Haircut & Styling">{t('haircutStyling') || 'Haircut & Styling'}</option>
                       )}
                     </select>
                   </div>
@@ -1186,10 +1173,10 @@ export const PackagesModule: React.FC = () => {
                         onChange={(e) => setPkgValidityDays(Number(e.target.value))}
                         className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value={90}>90 Days (3 Months)</option>
-                        <option value={180}>180 Days (6 Months)</option>
-                        <option value={365}>365 Days (1 Year)</option>
-                        <option value={730}>730 Days (2 Years)</option>
+                        <option value={90}>{t('validity90Days')}</option>
+                        <option value={180}>{t('validity180Days')}</option>
+                        <option value={365}>{t('validity365Days')}</option>
+                        <option value={730}>{t('validity730Days')}</option>
                       </select>
                     </div>
                   </div>
@@ -1203,7 +1190,7 @@ export const PackagesModule: React.FC = () => {
                     className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <Tag24Filled className="w-4 h-4" />
-                    <span>{saving ? 'Saving…' : editingPackage ? 'Update Package' : t('createPackage')}</span>
+                    <span>{saving ? t('savingState') : editingPackage ? t('updatePackage') : t('createPackage')}</span>
                   </button>
 
                   {editingPackage && (
@@ -1212,7 +1199,7 @@ export const PackagesModule: React.FC = () => {
                       onClick={() => handleDeletePackage(editingPackage.id)}
                       className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Delete Package
+                      {t('deletePackage')}
                     </button>
                   )}
                 </div>
@@ -1250,10 +1237,10 @@ export const PackagesModule: React.FC = () => {
               <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
                 <div>
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {editingMembership ? 'Edit Membership Tier' : t('createMembership')}
+                    {editingMembership ? t('editMembership') : t('createMembership')}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    Recurring monthly VIP pass tier.
+                    {t('membershipDrawerDesc')}
                   </p>
                 </div>
                 <button
@@ -1275,7 +1262,7 @@ export const PackagesModule: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. VIP Platinum Pass"
+                      placeholder={t('tierNamePlaceholder')}
                       value={memName}
                       onChange={(e) => setMemName(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -1332,7 +1319,7 @@ export const PackagesModule: React.FC = () => {
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="e.g. Priority Weekend Booking · 15% Off All Retail · Free Scalp Massage"
+                      placeholder={t('tierPerksPlaceholder')}
                       value={memPerks}
                       onChange={(e) => setMemPerks(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
@@ -1348,7 +1335,7 @@ export const PackagesModule: React.FC = () => {
                     className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <Sparkle24Filled className="w-4 h-4" />
-                    <span>{saving ? 'Saving…' : editingMembership ? 'Update Tier' : t('createMembership')}</span>
+                    <span>{saving ? t('savingState') : editingMembership ? t('updateTier') : t('createMembership')}</span>
                   </button>
 
                   {editingMembership && (
@@ -1357,7 +1344,7 @@ export const PackagesModule: React.FC = () => {
                       onClick={() => handleDeleteMembership(editingMembership.id)}
                       className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Delete Tier
+                      {t('deleteTier')}
                     </button>
                   )}
                 </div>
