@@ -5,6 +5,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
+import { EmptyState } from '@/components/EmptyState';
 import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -594,15 +595,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           )}
 
           {!loading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
               {staffList.length === 0 ? (
-                <div className="col-span-2 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
-                  <People24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
-                  <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noStaff')}</p>
-                  <p className="text-xs text-[var(--text-muted)] mt-1">{t('noStaffSub')}</p>
-                </div>
+                <EmptyState
+                  icon={People24Regular}
+                  title={t('noStaff')}
+                  description={t('noStaffSub')}
+                />
               ) : (
-                staffList.map((stf, idx) => {
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {staffList.map((stf, idx) => {
                   const providerColor = getProviderColor(idx, (stf as any).color, providerColorMode);
                   const avatarSrc = getAvatarUrl(stf.name, (stf as any).avatarUrl, providerColor);
                   const isCustomPhoto = (stf as any).avatarUrl && (stf as any).avatarUrl.startsWith('http');
@@ -652,12 +654,13 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
                     </motion.div>
                   );
-                })
-              )}
-            </div>
-          )}
-        </>
-      )}
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </>
+    )}
 
       {/* Invites Tab View */}
       {activeTab === 'invites' && (
@@ -720,13 +723,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
             </h3>
 
             {pendingInvitesList.length === 0 ? (
-              <div className="py-12 px-4 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl text-center flex flex-col items-center justify-center">
-                <Mail24Regular className="w-10 h-10 text-[var(--text-muted)] opacity-40 mb-3" />
-                <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noPendingInvites')}</p>
-                <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-sm">
-                  {t('inviteFormHint')}
-                </p>
-              </div>
+              <EmptyState
+                icon={Mail24Regular}
+                title={t('noPendingInvites')}
+                description={t('inviteFormHint')}
+              />
             ) : (
               <div className="space-y-2.5">
                 {pendingInvitesList.map((inv) => (

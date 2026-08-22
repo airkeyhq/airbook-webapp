@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -402,11 +403,11 @@ export const InventoryModule: React.FC = () => {
         )}
 
         {!loading && filteredProducts.length === 0 && (
-          <div className="min-h-[340px] p-8 sm:p-12 flex flex-col items-center justify-center text-center">
-            <Box24Regular className="w-12 h-12 text-[var(--text-muted)] opacity-40 mb-3" />
-            <p className="text-sm font-extrabold text-[var(--text-secondary)]">{t('noProducts')}</p>
-            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-sm">{t('noProductsSub')}</p>
-          </div>
+          <EmptyState
+            icon={Box24Regular}
+            title={t('noProducts')}
+            description={t('noProductsSub')}
+          />
         )}
 
         {!loading && filteredProducts.length > 0 && (

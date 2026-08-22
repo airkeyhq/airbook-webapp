@@ -68,6 +68,15 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - **No False Affordances**: NEVER place individual action buttons (e.g. edit, delete) inside a grid of non-clickable floating cards, which creates false affordance where users expect clicking the card itself to do something.
    - **Structured Interactive List Pattern**: Display data items with actions as a unified, divided list container (`divide-y divide-[var(--border-subtle)] border rounded-2xl`). Clicking anywhere on the row opens the detail/edit drawer, with explicit action buttons aligned to the right edge.
 
+11. **Mandatory Standard Empty State Pattern**:
+   - **Visual Container Invariants**: Empty states MUST use a dedicated centered container with a dashed border (`min-h-[300px] sm:min-h-[340px] p-8 sm:p-14 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-center space-y-2 bg-[var(--bg-primary)]/40`).
+   - **Iconography & Hierarchy**:
+     1. Centered `*Regular` vector icon (`w-10 h-10 text-[var(--text-muted)] opacity-60 mb-1`).
+     2. Clear, bold title (`text-sm font-extrabold text-[var(--text-primary)] tracking-tight max-w-sm`).
+     3. Helpful descriptive subtitle (`text-xs text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed`).
+     4. Optional primary action trigger button (`px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md`).
+   - **Standard Component Usage**: ALWAYS use the reusable `<EmptyState icon={...} title={...} description={...} action={...} />` component from `@/components/EmptyState`.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

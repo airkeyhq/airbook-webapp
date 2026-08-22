@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -278,11 +279,11 @@ export const ClientsModule: React.FC = () => {
       {!loading && (
         <>
           {filteredClients.length === 0 ? (
-            <div className="min-h-[320px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-center">
-              <Person24Regular className="w-10 h-10 text-[var(--text-secondary)] mx-auto mb-3 opacity-50" />
-              <p className="text-sm font-bold text-[var(--text-primary)]">{t('noClients')}</p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('noClientsSub')}</p>
-            </div>
+            <EmptyState
+              icon={Person24Regular}
+              title={t('noClients')}
+              description={t('noClientsSub')}
+            />
           ) : (
             <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
               {filteredClients.map((cli) => {

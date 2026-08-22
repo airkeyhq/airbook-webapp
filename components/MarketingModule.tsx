@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { CustomSelect } from './CustomSelect';
+import { EmptyState } from './EmptyState';
 import {
   Send24Filled,
   Send24Regular,
@@ -496,11 +499,11 @@ export const MarketingModule: React.FC = () => {
         </div>
 
         {campaignsList.length === 0 ? (
-          <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-3">
-            <Send24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto" />
-            <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('noCampaignsFound')}</h4>
-            <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">{t('noCampaignsSub')}</p>
-          </div>
+          <EmptyState
+            icon={Send24Regular}
+            title={t('noCampaignsFound')}
+            description={t('noCampaignsSub')}
+          />
         ) : (
           <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
             {campaignsList.map((camp) => (

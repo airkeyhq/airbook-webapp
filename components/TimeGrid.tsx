@@ -4,7 +4,8 @@ import { useAirBookStore, Appointment, DEMO_STAFF, Staff } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { format, addDays, startOfWeek, isSameDay, parseISO } from 'date-fns';
-import { Clock24Regular, Add24Filled, Person24Regular, Money24Regular, CheckmarkCircle24Regular, Eye24Filled, Payment24Filled, Calendar24Filled, Sparkle24Filled, CheckmarkCircle24Filled } from '@fluentui/react-icons';
+import { EmptyState } from './EmptyState';
+import { Clock24Regular, Add24Filled, Person24Regular, Money24Regular, CheckmarkCircle24Regular, Eye24Filled, Payment24Filled, Calendar24Filled, Sparkle24Filled, CheckmarkCircle24Filled, Calendar24Regular } from '@fluentui/react-icons';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i); // 0:00 to 23:00
 
@@ -193,16 +194,15 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
 
         {/* List of Appointments or Empty State */}
         {sortedApts.length === 0 ? (
-          <div className="min-h-[300px] p-8 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center space-y-3 bg-black/5 dark:bg-white/5">
-            <Calendar24Filled className="w-10 h-10 text-[var(--text-muted)] opacity-40" />
-            <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noAppointmentsToday')}</p>
-            <button
-              onClick={() => openBookingDrawer()}
-              className="px-4 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md"
-            >
-              {t('newAppointment')}
-            </button>
-          </div>
+          <EmptyState
+            icon={Calendar24Regular}
+            title={t('noAppointmentsToday')}
+            action={{
+              label: t('newAppointment'),
+              onClick: () => openBookingDrawer(),
+              icon: Add24Filled,
+            }}
+          />
         ) : (
           <div className="space-y-3">
             {sortedApts.map((apt) => {

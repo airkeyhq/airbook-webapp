@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore, Appointment } from '@/lib/store';
 import { POSCheckoutModal } from '@/components/POSCheckoutModal';
 import { POSTerminalModal } from '@/components/POSTerminalModal';
+import { EmptyState } from '@/components/EmptyState';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Payment24Filled,
@@ -168,22 +169,16 @@ export const POSModule: React.FC = () => {
         </div>
 
         {todayApts.length === 0 ? (
-          <div className="min-h-[220px] p-8 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-center space-y-3">
-            <Calendar24Regular className="w-8 h-8 text-[var(--text-secondary)] opacity-50" />
-            <div>
-              <p className="text-xs font-bold text-[var(--text-primary)]">{t('noAppointmentsToday')}</p>
-              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-                {t('processWalkinPrompt')}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleOpenWalkinCheckout}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 cursor-pointer"
-            >
-              {t('quickWalkinSale')}
-            </button>
-          </div>
+          <EmptyState
+            icon={Calendar24Regular}
+            title={t('noAppointmentsToday')}
+            description={t('processWalkinPrompt')}
+            action={{
+              label: t('quickWalkinSale'),
+              onClick: handleOpenWalkinCheckout,
+              icon: Add24Filled,
+            }}
+          />
         ) : (
           <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
             {todayApts.map((apt) => {
@@ -272,9 +267,10 @@ export const POSModule: React.FC = () => {
             {t('loadingLedger')}
           </div>
         ) : invoices.length === 0 ? (
-          <div className="p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center text-xs text-[var(--text-secondary)] italic">
-            {t('noInvoicesYet')}
-          </div>
+          <EmptyState
+            icon={Receipt24Regular}
+            title={t('noInvoicesYet')}
+          />
         ) : (
           <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
             {invoices.slice(0, 8).map((inv) => (

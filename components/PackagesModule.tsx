@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { EmptyState } from './EmptyState';
 import {
   Tag24Filled,
   Tag24Regular,
@@ -567,11 +568,11 @@ export const PackagesModule: React.FC = () => {
       {activeTab === 'gift_cards' && (
         <div className="space-y-4">
           {giftCards.length === 0 ? (
-            <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-3">
-              <GiftCard24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto" />
-              <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('noGiftCardsFound')}</h4>
-              <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">{t('noGiftCardsSub')}</p>
-            </div>
+            <EmptyState
+              icon={GiftCard24Regular}
+              title={t('noGiftCardsFound')}
+              description={t('noGiftCardsSub')}
+            />
           ) : (
             <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {giftCards.map((card) => {
@@ -674,11 +675,11 @@ export const PackagesModule: React.FC = () => {
       {activeTab === 'packages' && (
         <div className="space-y-4">
           {packagesList.length === 0 ? (
-            <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-3">
-              <Tag24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto" />
-              <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('noPackagesFound')}</h4>
-              <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">{t('noPackagesSub')}</p>
-            </div>
+            <EmptyState
+              icon={Tag24Regular}
+              title={t('noPackagesFound')}
+              description={t('noPackagesSub')}
+            />
           ) : (
             <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {packagesList.map((pkg) => (
@@ -748,11 +749,11 @@ export const PackagesModule: React.FC = () => {
       {activeTab === 'memberships' && (
         <div className="space-y-4">
           {membershipsList.length === 0 ? (
-            <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-3">
-              <Sparkle24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto" />
-              <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('noMembershipsFound')}</h4>
-              <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">{t('noMembershipsSub')}</p>
-            </div>
+            <EmptyState
+              icon={Sparkle24Regular}
+              title={t('noMembershipsFound')}
+              description={t('noMembershipsSub')}
+            />
           ) : (
             <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {membershipsList.map((mem) => (

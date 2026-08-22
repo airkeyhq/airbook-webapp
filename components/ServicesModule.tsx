@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { EmptyState } from './EmptyState';
 import { useAirBookStore } from '@/lib/store';
 import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
@@ -219,15 +220,16 @@ export const ServicesModule: React.FC = () => {
 
       {/* Services Grid */}
       {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
           {serviceList.length === 0 ? (
-            <div className="col-span-3 min-h-[380px] sm:min-h-[480px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-black/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
-              <Tag24Regular className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3 opacity-50" />
-              <p className="text-sm font-bold text-[var(--text-secondary)]">{t('noServices')}</p>
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('noServicesSub')}</p>
-            </div>
+            <EmptyState
+              icon={Tag24Regular}
+              title={t('noServices')}
+              description={t('noServicesSub')}
+            />
           ) : (
-            serviceList.map((srv) => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {serviceList.map((srv) => {
               const priceDollars = (srv.priceCents || 0) / 100;
               const depositDollars = srv.depositCents ? srv.depositCents / 100 : Math.round(priceDollars * 0.2);
 
@@ -267,10 +269,11 @@ export const ServicesModule: React.FC = () => {
                   </div>
                 </motion.div>
               );
-            })
-          )}
-        </div>
-      )}
-    </div>
+            })}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
   );
 };
