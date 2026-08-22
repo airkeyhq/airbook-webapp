@@ -23,13 +23,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm ci --ignore-scripts
 
       - name: Run i18n Auditor
-        run: npm run audit:i18n
+        run: node scripts/audit-i18n.mjs
 
       - name: Upload Audit Report
         if: always()
