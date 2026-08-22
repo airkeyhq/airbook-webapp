@@ -18,12 +18,14 @@ import {
   Settings24Filled,
   ChevronLeft24Filled,
   ChevronRight24Filled,
+  Clock24Filled,
 } from '@fluentui/react-icons';
 
 export type DashboardTab =
   | 'calendar'
   | 'crm'
   | 'pos'
+  | 'kiosk'
   | 'team'
   | 'inventory'
   | 'marketing'
@@ -47,10 +49,11 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
     { id: 'calendar' as DashboardTab, label: t('tabCalendar'), icon: Calendar24Filled, badge: appointments.length },
     { id: 'crm' as DashboardTab, label: t('tabCrm'), icon: Person24Filled },
     { id: 'pos' as DashboardTab, label: t('tabPos'), icon: Payment24Filled },
+    { id: 'kiosk' as DashboardTab, label: t('tabKiosk'), icon: Clock24Filled },
     { id: 'team' as DashboardTab, label: t('tabTeam'), icon: People24Filled },
     { id: 'inventory' as DashboardTab, label: t('tabInventory'), icon: Box24Filled },
     { id: 'marketing' as DashboardTab, label: t('tabMarketing'), icon: Sparkle24Filled },
-    { id: 'memberships' as DashboardTab, label: t('tabPackages'), icon: Tag24Filled, soon: true },
+    { id: 'memberships' as DashboardTab, label: t('tabPackages'), icon: Tag24Filled },
     { id: 'marketplace' as DashboardTab, label: t('tabMarketplace'), icon: ShoppingBag24Filled, soon: true },
     { id: 'analytics' as DashboardTab, label: t('tabAnalytics'), icon: DataTrending24Filled },
     { id: 'brand' as DashboardTab, label: 'Brand & DAM', icon: Sparkle24Filled },

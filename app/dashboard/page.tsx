@@ -42,6 +42,7 @@ import {
   Settings24Filled,
   CheckmarkCircle24Regular,
   Clock24Regular,
+  Clock24Filled,
   Money24Regular,
 } from '@fluentui/react-icons';
 import type { Appointment } from '@/lib/store';
@@ -98,6 +99,7 @@ export default function DashboardPage() {
               { id: 'calendar', label: t('tabCalendar'), icon: Calendar24Filled },
               { id: 'crm', label: t('tabCrm'), icon: Person24Filled },
               { id: 'pos', label: t('tabPos'), icon: Payment24Filled },
+              { id: 'kiosk', label: t('tabKiosk'), icon: Clock24Filled },
               { id: 'team', label: t('tabTeam'), icon: People24Filled },
               { id: 'inventory', label: t('tabInventory'), icon: Box24Filled },
               { id: 'marketing', label: t('tabMarketing'), icon: Sparkle24Filled },
@@ -144,6 +146,13 @@ export default function DashboardPage() {
           {activeTab === 'pos' && (
             <div className="flex-1 overflow-y-auto p-4">
               <POSModule />
+            </div>
+          )}
+
+          {/* Module: Walk-in Reception Kiosk & Live Queue */}
+          {activeTab === 'kiosk' && (
+            <div className="flex-1 overflow-y-auto p-4">
+              <WalkInKioskModule />
             </div>
           )}
 

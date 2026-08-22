@@ -180,11 +180,18 @@ export const waitlists = pgTable('waitlists', {
   id: uuid('id').primaryKey().defaultRandom(),
   workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
   clientName: text('client_name').notNull(),
-  clientEmail: text('client_email').notNull(),
+  clientEmail: text('client_email'),
   clientPhone: text('client_phone'),
-  serviceId: uuid('service_id').references(() => services.id).notNull(),
-  preferredDateStr: varchar('preferred_date_str', { length: 10 }).notNull(),
-  status: varchar('status', { length: 20 }).default('waiting').notNull(), // 'waiting' | 'notified' | 'booked'
+  serviceId: uuid('service_id').references(() => services.id, { onDelete: 'set null' }),
+  serviceName: text('service_name'),
+  staffId: uuid('staff_id').references(() => staff.id, { onDelete: 'set null' }),
+  staffName: text('staff_name'),
+  preferredDateStr: varchar('preferred_date_str', { length: 10 }),
+  estimatedWaitMinutes: integer('estimated_wait_minutes').default(15).notNull(),
+  position: integer('position').default(1).notNull(),
+  notes: text('notes'),
+  status: varchar('status', { length: 20 }).default('waiting').notNull(), // 'waiting' | 'in_chair' | 'completed' | 'cancelled'
+  servedAt: timestamp('served_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
