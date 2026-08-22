@@ -16,6 +16,7 @@ import {
   People24Regular,
   Money24Regular,
   Sparkle24Regular,
+  ShieldCheckmark24Filled,
 } from '@fluentui/react-icons';
 import { getAvatarUrl } from '@/lib/avatars';
 import { ClientNotesModal, CustomSpecItem } from '@/components/ClientNotesModal';
@@ -35,6 +36,7 @@ interface ClientItem {
   allergies?: string;
   tags?: string[];
   customSpecs?: CustomSpecItem[];
+  isKycVerified?: boolean;
 }
 
 export const ClientsModule: React.FC = () => {
@@ -319,6 +321,13 @@ export const ClientsModule: React.FC = () => {
                               <span>{specsCount} specs</span>
                             </span>
                           )}
+
+                          {cli.isKycVerified && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
+                              <ShieldCheckmark24Filled className="w-3 h-3 text-emerald-500" />
+                              <span>{t('idVerified')}</span>
+                            </span>
+                          )}
                         </div>
 
                         <p className="text-xs text-[var(--text-secondary)] flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -385,6 +394,7 @@ export const ClientsModule: React.FC = () => {
         allergies={selectedClient?.allergies || ''}
         tags={selectedClient?.tags || []}
         customSpecs={selectedClient?.customSpecs || []}
+        isKycVerified={selectedClient?.isKycVerified}
         onClientUpdated={fetchClients}
       />
 

@@ -749,6 +749,24 @@ export const translations = {
     timestampLabel: 'Timestamp',
     allActions: 'All Actions',
     hipaaGuarantee: 'AirBook HIPAA Compliance Engine enforces immutable audit records and KMS encryption for all confidential client formulas and medical disclosures.',
+
+    // KYC Biometric Identity Verification
+    kycModalTitle: 'KYC Biometric Identity Verification',
+    kycModalDesc: 'Government photo ID scan and 3D biometric liveness verification for high-value consultations.',
+    verifyIdentity: 'Verify Identity',
+    verifiedId: 'Verified ID',
+    idVerified: 'ID Verified',
+    kycVerifiedSuccess: 'Identity verified successfully with 99% biometric match!',
+    selectIdType: 'Select Government ID Type',
+    passport: 'Passport',
+    drivingLicense: 'Driver’s License',
+    nationalId: 'National Identity Card',
+    scanDocumentFront: 'Scan / Upload Front of ID',
+    livenessSelfieCheck: '3D Biometric Liveness Check',
+    livenessInstruction: 'Position face inside oval frame and hold steady for biometric scan',
+    biometricMatchScore: 'Biometric Match: 99.4% Confidence',
+    startVerification: 'Start Identity Scan',
+    verifyingIdentity: 'Verifying Biometric Liveness…',
   },
   es: {
     // Days of week
@@ -1491,6 +1509,24 @@ export const translations = {
     timestampLabel: 'Marca de Tiempo',
     allActions: 'Todas las Acciones',
     hipaaGuarantee: 'El Motor de Cumplimiento HIPAA de AirBook garantiza registros de auditoría inmutables y cifrado KMS para todas las fórmulas confidenciales y datos médicos.',
+
+    // KYC Biometric Identity Verification
+    kycModalTitle: 'Verificación de Identidad Biométrica (KYC)',
+    kycModalDesc: 'Escaneo de documento oficial con foto y prueba biométrica 3D para citas de alto valor.',
+    verifyIdentity: 'Verificar Identidad',
+    verifiedId: 'Identidad Verificada',
+    idVerified: 'ID Verificado',
+    kycVerifiedSuccess: '¡Identidad verificada con éxito con 99% de coincidencia biométrica!',
+    selectIdType: 'Seleccionar Tipo de Documento',
+    passport: 'Pasaporte',
+    drivingLicense: 'Licencia de Conducir',
+    nationalId: 'Documento Nacional de Identidad',
+    scanDocumentFront: 'Escanear / Subir Frente del Documento',
+    livenessSelfieCheck: 'Prueba de Vida Biométrica 3D',
+    livenessInstruction: 'Posiciona tu rostro dentro del óvalo y mantén la posición para el escaneo biométrico',
+    biometricMatchScore: 'Coincidencia Biométrica: 99.4% de Confianza',
+    startVerification: 'Iniciar Escaneo de Identidad',
+    verifyingIdentity: 'Verificando Prueba de Vida Biométrica…',
   },
   de: {
     // Days of week
@@ -2233,6 +2269,24 @@ export const translations = {
     timestampLabel: 'Zeitstempel',
     allActions: 'Alle Aktionen',
     hipaaGuarantee: 'Die AirBook HIPAA-Compliance-Engine erzwingt unveränderliche Prüfprotokolle und KMS-Verschlüsselung für alle vertraulichen Kundenrezepturen und medizinischen Angaben.',
+
+    // KYC Biometric Identity Verification
+    kycModalTitle: 'Biometrische Identitätsprüfung (KYC)',
+    kycModalDesc: 'Amtlicher Ausweisscan und 3D-Biometrie-Lebendprüfung für hochkarätige Behandlungen & Beratungen.',
+    verifyIdentity: 'Identität Prüfen',
+    verifiedId: 'Verifizierte Identität',
+    idVerified: 'ID Verifiziert',
+    kycVerifiedSuccess: 'Identität mit 99% biometrischer Übereinstimmung erfolgreich verifiziert!',
+    selectIdType: 'Ausweisdokument Wählen',
+    passport: 'Reisepass',
+    drivingLicense: 'Führerschein',
+    nationalId: 'Personalausweis',
+    scanDocumentFront: 'Vorderseite des Ausweises Scannen / Hochladen',
+    livenessSelfieCheck: '3D-Biometrie-Lebendprüfung',
+    livenessInstruction: 'Gesicht im Oval positionieren und für den Scan ruhig halten',
+    biometricMatchScore: 'Biometrischer Abgleich: 99,4% Übereinstimmung',
+    startVerification: 'Identitätsprüfung Starten',
+    verifyingIdentity: 'Biometrische Lebendprüfung Läuft…',
   },
   fr: {
     // Days of week
@@ -2976,5 +3030,23 @@ export const translations = {
     timestampLabel: 'Horodatage',
     allActions: 'Toutes les Actions',
     hipaaGuarantee: 'Le Moteur de Conformité HIPAA d’AirBook garantit des journaux d’audit immuables et un chiffrement KMS pour l’ensemble des formules et données médicales confidentielles.',
+
+    // KYC Biometric Identity Verification
+    kycModalTitle: 'Vérification d’Identité Biométrique (KYC)',
+    kycModalDesc: 'Numérisation de pièce d’identité officielle et vérification 3D de liveness biométrique pour consultations de prestige.',
+    verifyIdentity: 'Vérifier l’Identité',
+    verifiedId: 'Identité Vérifiée',
+    idVerified: 'ID Vérifié',
+    kycVerifiedSuccess: 'Identité vérifiée avec succès avec 99 % de correspondance biométrique !',
+    selectIdType: 'Sélectionner le Type de Pièce',
+    passport: 'Passeport',
+    drivingLicense: 'Permis de Conduire',
+    nationalId: 'Carte Nationale d’Identité',
+    scanDocumentFront: 'Scanner / Importer le Recto de la Pièce',
+    livenessSelfieCheck: 'Test de Détection du Vivant (3D Liveness)',
+    livenessInstruction: 'Positionnez votre visage au centre du cadre ovale pour l’analyse biométrique',
+    biometricMatchScore: 'Correspondance Biométrique : 99,4 % de Confiance',
+    startVerification: 'Lancer l’Analyse d’Identité',
+    verifyingIdentity: 'Vérification Biométrique en Cours…',
   },
 };

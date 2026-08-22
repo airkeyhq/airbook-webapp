@@ -22,8 +22,10 @@ import {
   Warning24Regular,
   Clock24Regular,
   ShieldCheckmark24Regular,
+  ShieldCheckmark24Filled,
 } from '@fluentui/react-icons';
 import { WaiverPadModal } from '@/components/WaiverPadModal';
+import { KYCVerificationModal } from '@/components/KYCVerificationModal';
 
 export interface CustomSpecItem {
   id: string;
@@ -48,6 +50,7 @@ interface ClientNotesModalProps {
   allergies?: string;
   tags?: string[];
   customSpecs?: CustomSpecItem[];
+  isKycVerified?: boolean;
   onClientUpdated?: () => void;
 }
 
@@ -78,6 +81,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   allergies: initialAllergies = '',
   tags: initialTags = [],
   customSpecs: initialSpecs = [],
+  isKycVerified = false,
   onClientUpdated,
 }) => {
   const { t } = useTranslation();
@@ -96,6 +100,8 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
   const [signedWaivers, setSignedWaivers] = useState<any[]>([]);
   const [isWaiverModalOpen, setIsWaiverModalOpen] = useState(false);
+  const [isKycVerifiedState, setIsKycVerifiedState] = useState(!!isKycVerified);
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
 
   const [newSpecLabel, setNewSpecLabel] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
@@ -301,6 +307,23 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       <Shield24Filled className="w-3 h-3" />
                       <span>HIPAA</span>
                     </span>
+                  )}
+
+                  {/* KYC Verification Status */}
+                  {isKycVerifiedState ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1">
+                      <ShieldCheckmark24Filled className="w-3 h-3 text-emerald-500" />
+                      <span>{t('idVerified')}</span>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setIsKycModalOpen(true)}
+                      className="px-2 py-0.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <ShieldCheckmark24Filled className="w-3 h-3" />
+                      <span>{t('verifyIdentity')}</span>
+                    </button>
                   )}
                 </div>
               </div>
@@ -799,6 +822,23 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           setSignedWaivers((prev) => [newWaiver, ...prev]);
         }}
       />
+
+      {/* KYC Biometric Identity Verification Modal */}
+      {clientId && (
+        <KYCVerificationModal
+          isOpen={isKycModalOpen}
+          onClose={() => setIsKycModalOpen(false)}
+          clientId={clientId}
+          clientName={name}
+          clientEmail={email}
+          onVerificationComplete={() => {
+            setIsKycVerifiedState(true);
+            if (onClientUpdated) {
+              onClientUpdated();
+            }
+          }}
+        />
+      )}
     </AnimatePresence>
   );
 };

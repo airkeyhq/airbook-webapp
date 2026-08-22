@@ -67,4 +67,4 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 | **Google Review Automation** | ✅ Released (v1.2) | ❌ Public | WhatsApp Review Requests |
 | **eSign Waiver Pad** | ✅ Released (v1.3) | ❌ Public | Digital Vector Signature & Audit Logs |
 | **HIPAA Compliance Log** | ✅ Released (v1.3) | ❌ Public | KMS Encryption & Immutable Audit Log |
-| **KYC Identity Verification** | 🟡 Beta Preview (v1.3) | 🔒 Yes (Beta/Dev) | Stripe Identity API Verification |
+| **KYC Identity Verification** | ✅ Released (v1.3) | ❌ Public | Biometric 3D Liveness & ID Verification |

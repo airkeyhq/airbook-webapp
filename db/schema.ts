@@ -217,6 +217,8 @@ export const clients = pgTable('clients', {
   customSpecs: jsonb('custom_specs').$type<Array<{ id: string; label: string; value: string; date?: string }>>().default([]).notNull(),
   medicalWaiversSigned: boolean('medical_waivers_signed').default(false).notNull(),
   patchTestResults: text('patch_test_results'),
+  isKycVerified: boolean('is_kyc_verified').default(false).notNull(),
+  kycVerifiedAt: timestamp('kyc_verified_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -440,5 +442,27 @@ export const compliance_logs = pgTable('compliance_logs', {
   userAgent: text('user_agent'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// =============================================================================
+// MODULE 12: KYC BIOMETRIC IDENTITY VERIFICATION
+// =============================================================================
+
+export const kyc_verifications = pgTable('kyc_verifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'cascade' }).notNull(),
+  clientName: text('client_name').notNull(),
+  clientEmail: varchar('client_email', { length: 255 }),
+  idType: varchar('id_type', { length: 50 }).default('passport').notNull(), // 'passport' | 'driving_license' | 'id_card'
+  documentNumberMasked: varchar('document_number_masked', { length: 50 }),
+  issuingCountry: varchar('issuing_country', { length: 10 }).default('US').notNull(),
+  documentFrontUrl: text('document_front_url'),
+  selfieUrl: text('selfie_url'),
+  livenessConfidenceScore: integer('liveness_confidence_score').default(99).notNull(), // 0-100%
+  status: varchar('status', { length: 30 }).default('verified').notNull(), // 'verified' | 'pending' | 'rejected'
+  verifiedAt: timestamp('verified_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 
 
