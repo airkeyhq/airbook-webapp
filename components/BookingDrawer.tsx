@@ -145,7 +145,7 @@ export const BookingDrawer: React.FC = () => {
               <input
                 type="text"
                 required
-                placeholder="e.g. Alex Rivera"
+                placeholder={t('clientNamePlaceholder')}
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 className="w-full px-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-sm font-medium text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -89,14 +89,14 @@ export const DateStrip: React.FC = () => {
           <div className="h-8 sm:h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-0.5 sm:p-1 gap-0.5">
             <button
               onClick={handlePrev}
-              aria-label="Previous"
+              aria-label={t('previous')}
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <ArrowLeft24Filled className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleNext}
-              aria-label="Next"
+              aria-label={t('next')}
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <ArrowRight24Filled className="w-3.5 h-3.5" />
@@ -148,7 +148,7 @@ export const DateStrip: React.FC = () => {
           {/* Team Staff Member Selector Pill Track */}
           <div className="w-full flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-0.5">
             <span className="text-[10px] font-mono font-bold uppercase text-[var(--text-muted)] tracking-wider px-1 hidden sm:inline-block">
-              Team:
+              {t('teamLabel')}:
             </span>
 
             <button
@@ -160,7 +160,7 @@ export const DateStrip: React.FC = () => {
               }`}
             >
               <People24Filled className="w-3.5 h-3.5" />
-              <span>All Staff ({activeStaff.length})</span>
+              <span>{t('allStaff')} ({activeStaff.length})</span>
             </button>
 
             {activeStaff.map((staff, idx) => {

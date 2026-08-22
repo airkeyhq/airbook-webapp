@@ -186,7 +186,7 @@ export const DesktopHeader: React.FC = () => {
               }`}
             >
               <span className={`w-2 h-2 rounded-full ${isDemoMode ? 'bg-amber-500 animate-pulse' : 'bg-gray-400'}`} />
-              <span className="hidden sm:inline">{isDemoMode ? '⚡ Demo Mode: ON' : 'Demo Mode'}</span>
+              <span className="hidden sm:inline">{isDemoMode ? t('demoModeOn') : t('demoMode')}</span>
               <span className="sm:hidden text-[10px]">{isDemoMode ? '⚡ Demo' : 'Demo'}</span>
             </button>
           )}

@@ -64,10 +64,10 @@ export const CommandPalette: React.FC = () => {
 
             <Command.List className="max-h-72 overflow-y-auto pt-2 space-y-1">
               <Command.Empty className="text-center py-6 text-xs text-[var(--text-muted)]">
-                No matching bookings or commands found.
+                {t('noCommandsFound')}
               </Command.Empty>
 
-              <Command.Group heading="Quick Actions" className="px-2 text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-1">
+              <Command.Group heading={t('quickActions')} className="px-2 text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-1">
                 <Command.Item
                   onSelect={() => {
                     openBookingDrawer();
@@ -76,7 +76,7 @@ export const CommandPalette: React.FC = () => {
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[var(--text-primary)] hover:bg-blue-500 hover:text-white cursor-pointer transition-colors"
                 >
                   <Add24Filled className="w-4 h-4" />
-                  <span>Create New Booking Slot</span>
+                  <span>{t('createNewBookingSlot')}</span>
                 </Command.Item>
                 <Command.Item
                   onSelect={() => {
@@ -86,11 +86,11 @@ export const CommandPalette: React.FC = () => {
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[var(--text-primary)] hover:bg-blue-500 hover:text-white cursor-pointer transition-colors"
                 >
                   <WeatherMoon24Regular className="w-4 h-4" />
-                  <span>Toggle Dark / Light Theme</span>
+                  <span>{t('toggleTheme')}</span>
                 </Command.Item>
               </Command.Group>
 
-              <Command.Group heading="Existing Bookings" className="px-2 text-[10px] uppercase tracking-wider text-gray-400 font-semibold my-1">
+              <Command.Group heading={t('existingBookings')} className="px-2 text-[10px] uppercase tracking-wider text-gray-400 font-semibold my-1">
                 {appointments.map((apt) => (
                   <Command.Item
                     key={apt.id}

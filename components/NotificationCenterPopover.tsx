@@ -122,10 +122,10 @@ export const NotificationCenterPopover: React.FC = () => {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="relative control-md gap-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
-        aria-label="Notifications Inbox"
+        aria-label={t('notificationsInbox')}
       >
         <Alert24Regular className="w-4 h-4 text-[var(--text-primary)]" />
-        <span className="hidden sm:inline">Inbox</span>
+        <span className="hidden sm:inline">{t('inboxLabel')}</span>
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto px-1.5 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center min-w-[18px] h-[18px] shadow-sm">
             {unreadCount}

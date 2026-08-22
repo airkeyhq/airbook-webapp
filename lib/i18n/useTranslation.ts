@@ -23,7 +23,7 @@ export function useTranslation() {
   const { language, setLanguage } = useLanguageStore();
 
   const t = (key: keyof typeof translations.en, params?: Record<string, string | number>): string => {
-    const dict = translations[language] || translations.en;
+    const dict = (translations[language] || translations.en) as Record<string, string>;
     let text = dict[key] || translations.en[key] || key;
     if (params) {
       Object.entries(params).forEach(([paramKey, val]) => {

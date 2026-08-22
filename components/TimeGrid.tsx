@@ -431,7 +431,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                             className="group h-20 w-full border-b border-[var(--border-subtle)] relative cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center"
                           >
                             <span className="opacity-0 group-hover:opacity-100 transition-opacity absolute px-2 py-1 rounded-md bg-black/80 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm z-20">
-                              <Add24Filled className="w-3 h-3" /> Book {staff.name.split(' ')[0]}
+                              <Add24Filled className="w-3 h-3" /> {t('bookSlot')} {staff.name.split(' ')[0]}
                             </span>
                           </div>
                         );
@@ -518,7 +518,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                             className="group h-20 w-full border-b border-[var(--border-subtle)] relative cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center"
                           >
                             <span className="opacity-0 group-hover:opacity-100 transition-opacity absolute px-2 py-1 rounded-md bg-black/80 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm z-20">
-                              <Add24Filled className="w-3 h-3" /> New
+                              <Add24Filled className="w-3 h-3" /> {t('new')}
                             </span>
                           </div>
                         );
