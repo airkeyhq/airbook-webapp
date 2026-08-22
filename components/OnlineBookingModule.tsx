@@ -16,8 +16,8 @@ import {
   QrCode24Regular,
   Clock24Regular,
   Money24Regular,
-  PeopleTeam24Regular,
   Sparkle24Regular,
+  Sparkle24Filled,
   Building24Regular,
   Building24Filled,
   Cut24Regular,
@@ -34,6 +34,11 @@ import {
   ArrowRight24Filled,
   Payment24Filled,
   Payment24Regular,
+  Color24Regular,
+  Image24Regular,
+  Share24Regular,
+  Code24Regular,
+  Link24Regular,
 } from '@fluentui/react-icons';
 
 /* ─── Toggle Switch ─── */
@@ -109,6 +114,15 @@ function StudioField({ label, children }: { label: string; children: React.React
   );
 }
 
+const BRAND_PALETTES = [
+  { name: 'Electric Blue', hex: '#007AFF', bg: 'bg-[#007AFF]' },
+  { name: 'Obsidian Dark', hex: '#18181B', bg: 'bg-[#18181B]' },
+  { name: 'Emerald Luxe', hex: '#059669', bg: 'bg-[#059669]' },
+  { name: 'Rose Gold', hex: '#E11D48', bg: 'bg-[#E11D48]' },
+  { name: 'Sunset Amber', hex: '#D97706', bg: 'bg-[#D97706]' },
+  { name: 'Violet Prestige', hex: '#7C3AED', bg: 'bg-[#7C3AED]' },
+];
+
 export const OnlineBookingModule: React.FC = () => {
   const {
     workspaceName,
@@ -124,7 +138,10 @@ export const OnlineBookingModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
 
-  // Settings State
+  // Navigation Tab State
+  const [activeTab, setActiveTab] = useState<'policies' | 'branding' | 'widgets'>('policies');
+
+  // Policy Settings State
   const [slugInput, setSlugInput] = useState(workspaceSlug || 'my-salon');
   const [cancellationNotice, setCancellationNotice] = useState('24');
   const [depositPercent, setDepositPercent] = useState('20');
@@ -132,7 +149,25 @@ export const OnlineBookingModule: React.FC = () => {
   const [minNoticeHours, setMinNoticeHours] = useState('2');
   const [allowAnyoneSpecialist, setAllowAnyoneSpecialist] = useState(true);
   const [allowPartyBooking, setAllowPartyBooking] = useState(true);
-  const [noShowFee, setNoShowFee] = useState(false);
+
+  // Branding Settings State
+  const [brandColor, setBrandColor] = useState('#007AFF');
+  const [coverImageUrl, setCoverImageUrl] = useState(
+    'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1600&q=80'
+  );
+  const [bio, setBio] = useState('Premium booking experience powered by AirBook. Reserve appointments with top-rated professionals.');
+  const [instagramUrl, setInstagramUrl] = useState('https://instagram.com/airbook');
+  const [websiteUrl, setWebsiteUrl] = useState('https://airbook.me');
+  const [bookingNotice, setBookingNotice] = useState(
+    'Please arrive 5 minutes prior to your appointment. 24-hour advance notice is required for cancellations.'
+  );
+
+  // Widget & Deep-Link State
+  const [widgetType, setWidgetType] = useState<'iframe' | 'button' | 'modal'>('iframe');
+  const [selectedDeepService, setSelectedDeepService] = useState<string>('');
+  const [selectedDeepStaff, setSelectedDeepStaff] = useState<string>('');
+  const [isCopiedSnippet, setIsCopiedSnippet] = useState(false);
+  const [isCopiedDeepLink, setIsCopiedDeepLink] = useState(false);
 
   // Hidden Services (services toggled off from public booking)
   const [hiddenServiceIds, setHiddenServiceIds] = useState<string[]>([]);
@@ -154,36 +189,43 @@ export const OnlineBookingModule: React.FC = () => {
   const [stripeConnected, setStripeConnected] = useState(false);
   const [isConnectingStripe, setIsConnectingStripe] = useState(false);
 
-  // Load initial settings and Stripe Connect status on mount
+  // Load initial settings from API
   useEffect(() => {
-    async function loadWorkspaceSettings() {
+    async function loadWorkspaceStudio() {
       try {
-        const [settingsRes, stripeRes] = await Promise.all([
-          fetch('/api/settings').then((r) => r.json()).catch(() => ({})),
+        const [studioRes, stripeRes] = await Promise.all([
+          fetch('/api/booking-studio').then((r) => r.json()).catch(() => ({})),
           fetch('/api/stripe/connect/status').then((r) => r.json()).catch(() => ({})),
         ]);
 
-        if (settingsRes.workspace) {
-          if (settingsRes.workspace.slug) {
-            setSlugInput(settingsRes.workspace.slug);
-            setWorkspaceSlug(settingsRes.workspace.slug);
+        if (studioRes.workspace) {
+          const ws = studioRes.workspace;
+          if (ws.slug) {
+            setSlugInput(ws.slug);
+            setWorkspaceSlug(ws.slug);
           }
-          if (settingsRes.workspace.cancellationNoticeHours) {
-            setCancellationNotice(String(settingsRes.workspace.cancellationNoticeHours));
+          if (ws.cancellationNoticeHours) {
+            setCancellationNotice(String(ws.cancellationNoticeHours));
           }
-          if (settingsRes.workspace.depositRequiredPercent !== undefined) {
-            setDepositPercent(String(settingsRes.workspace.depositRequiredPercent));
+          if (ws.depositRequiredPercent !== undefined) {
+            setDepositPercent(String(ws.depositRequiredPercent));
           }
+          if (ws.brandColor) setBrandColor(ws.brandColor);
+          if (ws.coverImageUrl) setCoverImageUrl(ws.coverImageUrl);
+          if (ws.bio) setBio(ws.bio);
+          if (ws.instagramUrl) setInstagramUrl(ws.instagramUrl);
+          if (ws.websiteUrl) setWebsiteUrl(ws.websiteUrl);
+          if (ws.bookingNotice) setBookingNotice(ws.bookingNotice);
         }
 
         if (stripeRes.connected) {
           setStripeConnected(true);
         }
       } catch (err) {
-        console.warn('Failed to load workspace settings:', err);
+        console.warn('Failed to load workspace booking studio:', err);
       }
     }
-    loadWorkspaceSettings();
+    loadWorkspaceStudio();
   }, [setWorkspaceSlug]);
 
   const handleConnectStripe = async () => {
@@ -205,7 +247,47 @@ export const OnlineBookingModule: React.FC = () => {
     }
   };
 
-  const publicUrl = typeof window !== 'undefined' ? `${window.location.origin}/book/${slugInput}` : `https://airbook.app/book/${slugInput}`;
+  const originUrl = typeof window !== 'undefined' ? window.location.origin : 'https://airbook.app';
+  const publicUrl = `${originUrl}/book/${slugInput}`;
+
+  // Deep Link Calculation
+  let deepLinkUrl = publicUrl;
+  const deepParams = new URLSearchParams();
+  if (selectedDeepService) deepParams.append('service', selectedDeepService);
+  if (selectedDeepStaff) deepParams.append('staff', selectedDeepStaff);
+  const paramStr = deepParams.toString();
+  if (paramStr) deepLinkUrl += `?${paramStr}`;
+
+  // Embed Snippet Calculation
+  const getWidgetSnippet = () => {
+    if (widgetType === 'iframe') {
+      return `<!-- AirBook Embeddable Booking Widget -->
+<iframe
+  src="${publicUrl}"
+  width="100%"
+  height="750px"
+  style="border: none; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);"
+  title="AirBook Online Booking"
+></iframe>`;
+    }
+    if (widgetType === 'button') {
+      return `<!-- AirBook Floating Action Button -->
+<script
+  src="${originUrl}/widget.js"
+  data-slug="${slugInput}"
+  data-color="${brandColor}"
+  data-position="bottom-right"
+  async
+></script>`;
+    }
+    return `<!-- AirBook Modal Trigger Button -->
+<button
+  onclick="window.open('${publicUrl}', 'AirBookModal', 'width=520,height=750')"
+  style="background-color: ${brandColor}; color: #ffffff; padding: 14px 28px; border-radius: 9999px; font-weight: bold; border: none; cursor: pointer;"
+>
+  Book Online
+</button>`;
+  };
 
   const handleCopyLink = async () => {
     try {
@@ -215,6 +297,28 @@ export const OnlineBookingModule: React.FC = () => {
       setTimeout(() => setIsCopied(false), 2000);
     } catch {
       addToast('Failed to copy link', 'error');
+    }
+  };
+
+  const handleCopySnippet = async () => {
+    try {
+      await navigator.clipboard.writeText(getWidgetSnippet());
+      setIsCopiedSnippet(true);
+      addToast(t('snippetCopied'), 'success');
+      setTimeout(() => setIsCopiedSnippet(false), 2000);
+    } catch {
+      addToast('Failed to copy snippet', 'error');
+    }
+  };
+
+  const handleCopyDeepLink = async () => {
+    try {
+      await navigator.clipboard.writeText(deepLinkUrl);
+      setIsCopiedDeepLink(true);
+      addToast(t('linkCopied'), 'success');
+      setTimeout(() => setIsCopiedDeepLink(false), 2000);
+    } catch {
+      addToast('Failed to copy deep link', 'error');
     }
   };
 
@@ -229,16 +333,28 @@ export const OnlineBookingModule: React.FC = () => {
     setWorkspaceSlug(slugInput.trim());
 
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/booking-studio', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           slug: slugInput.trim(),
           cancellationNoticeHours: parseInt(cancellationNotice, 10),
           depositRequiredPercent: parseInt(depositPercent, 10),
+          brandColor,
+          coverImageUrl,
+          bio,
+          instagramUrl,
+          websiteUrl,
+          bookingNotice,
         }),
       });
-      addToast(t('studioSavedToast'), 'success');
+
+      const data = await res.json();
+      if (data.success) {
+        addToast(t('studioSavedToast'), 'success');
+      } else {
+        addToast(data.error || 'Failed to save settings.', 'error');
+      }
     } catch {
       addToast('Saved locally, error syncing to database.', 'error');
     } finally {
@@ -308,236 +424,360 @@ export const OnlineBookingModule: React.FC = () => {
         </div>
       </div>
 
+      {/* Sub-Tab Navigation Bar */}
+      <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2 overflow-x-auto scrollbar-none">
+        <button
+          type="button"
+          onClick={() => setActiveTab('policies')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
+            activeTab === 'policies'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
+          }`}
+        >
+          <Clock24Regular className="w-4 h-4" />
+          <span>{t('tabStudioPolicies')}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('branding')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
+            activeTab === 'branding'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
+          }`}
+        >
+          <Color24Regular className="w-4 h-4" />
+          <span>{t('tabStudioBranding')}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('widgets')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
+            activeTab === 'widgets'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
+          }`}
+        >
+          <Code24Regular className="w-4 h-4" />
+          <span>{t('tabStudioWidgets')}</span>
+        </button>
+      </div>
+
       {/* Main Studio Grid: Left Configuration & Right Live Mobile Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Rules & Policies */}
+        {/* Left Column: Studio Form Panels */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Section 1: URL & Slug Manager */}
-          <StudioSection title="Custom Booking Slug" icon={Globe24Regular}>
-            <StudioField label={t('bookingSlug')}>
-              <div className="flex items-center bg-black/5 dark:bg-white/5 px-3.5 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-mono">
-                <span className="text-[var(--text-secondary)] opacity-70">airbook.app/book/</span>
-                <input
-                  type="text"
-                  value={slugInput}
-                  onChange={(e) => setSlugInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
-                  className="bg-transparent font-extrabold text-[var(--text-primary)] focus:outline-none w-full ml-0.5"
-                />
-              </div>
-            </StudioField>
-          </StudioSection>
-
-          {/* Section 2: Scheduling & Buffer Rules */}
-          <StudioSection title={t('bookingRulesTitle')} icon={Clock24Regular}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <StudioField label={t('advanceBookingWindow')}>
-                <CustomSelect
-                  value={bookingWindowDays}
-                  onChange={setBookingWindowDays}
-                  options={[
-                    { value: '30', label: '30 Days in advance' },
-                    { value: '60', label: '60 Days in advance' },
-                    { value: '90', label: '90 Days in advance' },
-                    { value: '180', label: '6 Months in advance' },
-                  ]}
-                />
-              </StudioField>
-
-              <StudioField label={t('minNoticeRequired')}>
-                <CustomSelect
-                  value={minNoticeHours}
-                  onChange={setMinNoticeHours}
-                  options={[
-                    { value: '1', label: '1 Hour before slot' },
-                    { value: '2', label: '2 Hours before slot' },
-                    { value: '4', label: '4 Hours before slot' },
-                    { value: '24', label: '24 Hours (Next day only)' },
-                  ]}
-                />
-              </StudioField>
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-                <div className="pr-3">
-                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowAnyoneToggle')}</p>
-                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('allowAnyoneToggleDesc')}</p>
-                </div>
-                <Toggle enabled={allowAnyoneSpecialist} onToggle={() => setAllowAnyoneSpecialist(!allowAnyoneSpecialist)} />
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-                <div className="pr-3">
-                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowPartyToggle')}</p>
-                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('allowPartyToggleDesc')}</p>
-                </div>
-                <Toggle enabled={allowPartyBooking} onToggle={() => setAllowPartyBooking(!allowPartyBooking)} />
-              </div>
-            </div>
-          </StudioSection>
-
-          {/* Section 3: Financial & Cancellation Policies */}
-          <StudioSection title={t('financialPoliciesTitle')} icon={Money24Regular}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <StudioField label={t('depositPercent')}>
-                <CustomSelect
-                  value={depositPercent}
-                  onChange={setDepositPercent}
-                  options={[
-                    { value: '0', label: '0% (No deposit required)' },
-                    { value: '20', label: '20% Upfront deposit' },
-                    { value: '50', label: '50% Half deposit' },
-                    { value: '100', label: '100% Full prepayment' },
-                  ]}
-                />
-              </StudioField>
-
-              <StudioField label={t('cancellationNotice')}>
-                <CustomSelect
-                  value={cancellationNotice}
-                  onChange={setCancellationNotice}
-                  options={[
-                    { value: '12', label: '12 Hours notice' },
-                    { value: '24', label: '24 Hours notice' },
-                    { value: '48', label: '48 Hours notice' },
-                    { value: '72', label: '72 Hours notice' },
-                  ]}
-                />
-              </StudioField>
-            </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
-              <div>
-                <p className="text-xs font-bold text-[var(--text-primary)]">{t('noShowFee')}</p>
-                <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('noShowNoticeDesc')}</p>
-              </div>
-              <Toggle enabled={noShowFee} onToggle={() => setNoShowFee(!noShowFee)} color="bg-orange-500" />
-            </div>
-
-            {/* Stripe Connect Direct Payouts Card */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10 border border-blue-500/20 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-                    <Payment24Filled className="w-3.5 h-3.5" />
+          {/* ─── TAB 1: RULES & POLICIES ─── */}
+          {activeTab === 'policies' && (
+            <div className="space-y-6">
+              {/* Section 1: URL & Slug Manager */}
+              <StudioSection title="Custom Booking Slug" icon={Globe24Regular}>
+                <StudioField label={t('bookingSlug')}>
+                  <div className="flex items-center bg-black/5 dark:bg-white/5 px-3.5 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-mono">
+                    <span className="text-[var(--text-secondary)] opacity-70">airbook.app/book/</span>
+                    <input
+                      type="text"
+                      value={slugInput}
+                      onChange={(e) => setSlugInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
+                      className="bg-transparent font-extrabold text-[var(--text-primary)] focus:outline-none w-full ml-0.5"
+                    />
                   </div>
-                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('stripePayoutsActive')}</p>
+                </StudioField>
+              </StudioSection>
+
+              {/* Section 2: Scheduling & Buffer Rules */}
+              <StudioSection title={t('bookingRulesTitle')} icon={Clock24Regular}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <StudioField label={t('advanceBookingWindow')}>
+                    <CustomSelect
+                      value={bookingWindowDays}
+                      onChange={setBookingWindowDays}
+                      options={[
+                        { value: '30', label: '30 Days in advance' },
+                        { value: '60', label: '60 Days in advance' },
+                        { value: '90', label: '90 Days in advance' },
+                        { value: '180', label: '6 Months in advance' },
+                      ]}
+                    />
+                  </StudioField>
+
+                  <StudioField label={t('minNoticeRequired')}>
+                    <CustomSelect
+                      value={minNoticeHours}
+                      onChange={setMinNoticeHours}
+                      options={[
+                        { value: '1', label: '1 Hour before slot' },
+                        { value: '2', label: '2 Hours before slot' },
+                        { value: '6', label: '6 Hours before slot' },
+                        { value: '24', label: '24 Hours before slot' },
+                      ]}
+                    />
+                  </StudioField>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${stripeConnected ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'}`}>
-                  {stripeConnected ? 'Connected (Express)' : 'Setup Required'}
-                </span>
-              </div>
-              <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
-                {t('stripePayoutsDesc')}
-              </p>
-              {!stripeConnected && (
-                <button
-                  type="button"
-                  disabled={isConnectingStripe}
-                  onClick={handleConnectStripe}
-                  className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
-                >
-                  <Payment24Filled className="w-3.5 h-3.5" />
-                  <span>{isConnectingStripe ? t('stripeConnecting') : t('connectStripeBtn')}</span>
-                </button>
-              )}
-            </div>
-          </StudioSection>
 
-          {/* Section 4: Online Service Catalog Visibility */}
-          <StudioSection title={t('serviceVisibilityTitle')} icon={Cut24Regular} badge={`${services.length - hiddenServiceIds.length} Visible`}>
-            <p className="text-xs text-[var(--text-secondary)] -mt-1">
-              {t('serviceVisibilityDesc')}
-            </p>
-
-            <div className="divide-y divide-black/5 dark:divide-white/5 border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-black/[0.02] dark:bg-white/[0.02]">
-              {services.map((srv) => {
-                const isVisible = !hiddenServiceIds.includes(srv.id);
-                return (
-                  <div key={srv.id} className="p-3.5 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ backgroundColor: srv.color }} />
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-[var(--text-primary)] truncate">{srv.name}</p>
-                        <p className="text-[10px] text-[var(--text-secondary)] font-medium">
-                          {srv.category} · {srv.durationMinutes} min · ${srv.price}
-                        </p>
-                      </div>
+                <div className="divide-y divide-[var(--border-subtle)] pt-2">
+                  <div className="py-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowAnyoneToggle')}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{t('allowAnyoneToggleDesc')}</p>
                     </div>
-                    <Toggle enabled={isVisible} onToggle={() => toggleServiceVisibility(srv.id)} />
-                  </div>
-                );
-              })}
-            </div>
-          </StudioSection>
-
-          {/* Section 5: Workstations & Chairs */}
-          <StudioSection title={t('chairsAndStations')} icon={Building24Regular} badge={`${stations.length} Active`}>
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-[var(--text-secondary)]">Manage physical rooms & chairs for simultaneous booking limits.</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setNewStationName('');
-                  setNewStationCategory('Hair & Styling');
-                  setIsAddStationModalOpen(true);
-                }}
-                className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
-              >
-                <Add24Filled className="w-3.5 h-3.5" />
-                <span>{t('addStation')}</span>
-              </button>
-            </div>
-
-            <div className="divide-y divide-black/5 dark:divide-white/5 border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-black/[0.02] dark:bg-white/[0.02]">
-              {stations.map((stn) => (
-                <div key={stn.id} className="px-4 py-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                      <Building24Regular className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[var(--text-primary)] truncate">{stn.name}</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">{stn.category || 'Station'}</p>
-                    </div>
+                    <Toggle enabled={allowAnyoneSpecialist} onToggle={() => setAllowAnyoneSpecialist(!allowAnyoneSpecialist)} />
                   </div>
 
-                  <div className="flex items-center gap-1">
+                  <div className="py-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowPartyToggle')}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{t('allowPartyToggleDesc')}</p>
+                    </div>
+                    <Toggle enabled={allowPartyBooking} onToggle={() => setAllowPartyBooking(!allowPartyBooking)} />
+                  </div>
+                </div>
+              </StudioSection>
+
+              {/* Section 3: Financial & Deposits */}
+              <StudioSection title={t('financialPoliciesTitle')} icon={Money24Regular}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <StudioField label={t('depositPercent')}>
+                    <CustomSelect
+                      value={depositPercent}
+                      onChange={setDepositPercent}
+                      options={[
+                        { value: '0', label: 'No Deposit Required (0%)' },
+                        { value: '15', label: '15% Deposit' },
+                        { value: '20', label: '20% Deposit (Recommended)' },
+                        { value: '50', label: '50% Deposit' },
+                        { value: '100', label: '100% Full Prepayment' },
+                      ]}
+                    />
+                  </StudioField>
+
+                  <StudioField label={t('cancellationNotice')}>
+                    <CustomSelect
+                      value={cancellationNotice}
+                      onChange={setCancellationNotice}
+                      options={[
+                        { value: '12', label: '12 Hours in advance' },
+                        { value: '24', label: '24 Hours (Standard)' },
+                        { value: '48', label: '48 Hours' },
+                        { value: '72', label: '72 Hours' },
+                      ]}
+                    />
+                  </StudioField>
+                </div>
+              </StudioSection>
+            </div>
+          )}
+
+          {/* ─── TAB 2: PAGE BRANDING & BIO ─── */}
+          {activeTab === 'branding' && (
+            <div className="space-y-6">
+              {/* Color Palette Selector */}
+              <StudioSection title={t('brandColorPalette')} icon={Color24Regular}>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                    {BRAND_PALETTES.map((pal) => (
+                      <button
+                        key={pal.hex}
+                        type="button"
+                        onClick={() => setBrandColor(pal.hex)}
+                        className={`p-2.5 rounded-2xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                          brandColor.toLowerCase() === pal.hex.toLowerCase()
+                            ? 'border-blue-500 bg-blue-500/10 shadow-sm'
+                            : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-black/20 dark:hover:border-white/20'
+                        }`}
+                      >
+                        <div className={`w-6 h-6 rounded-full ${pal.bg} shadow-xs`} />
+                        <span className="text-[10px] font-extrabold text-[var(--text-primary)] truncate w-full text-center">
+                          {pal.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-[11px] font-bold text-[var(--text-secondary)]">Custom Hex:</span>
+                    <input
+                      type="text"
+                      value={brandColor}
+                      onChange={(e) => setBrandColor(e.target.value)}
+                      placeholder="#007AFF"
+                      className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] w-32 focus:outline-none uppercase"
+                    />
+                  </div>
+                </div>
+              </StudioSection>
+
+              {/* Cover Banner URL */}
+              <StudioSection title={t('coverBannerUrl')} icon={Image24Regular}>
+                <div className="space-y-2">
+                  <input
+                    type="url"
+                    value={coverImageUrl}
+                    onChange={(e) => setCoverImageUrl(e.target.value)}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="h-28 w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] relative">
+                    <img src={coverImageUrl} alt="Cover preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                      <span className="text-white text-xs font-bold">Public Banner Preview</span>
+                    </div>
+                  </div>
+                </div>
+              </StudioSection>
+
+              {/* Business Bio & Welcome Greeting */}
+              <StudioSection title={t('businessBio')} icon={Tag24Regular}>
+                <textarea
+                  rows={3}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Welcome to our studio! We provide high-end styling and wellness..."
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
+                />
+              </StudioSection>
+
+              {/* Social & Web Links */}
+              <StudioSection title={t('socialLinksTitle')} icon={Share24Regular}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <StudioField label={t('instagramLabel')}>
+                    <input
+                      type="text"
+                      value={instagramUrl}
+                      onChange={(e) => setInstagramUrl(e.target.value)}
+                      placeholder="https://instagram.com/your-salon"
+                      className="w-full px-3.5 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none"
+                    />
+                  </StudioField>
+
+                  <StudioField label={t('websiteLabel')}>
+                    <input
+                      type="url"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://yourwebsite.com"
+                      className="w-full px-3.5 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none"
+                    />
+                  </StudioField>
+                </div>
+              </StudioSection>
+
+              {/* Booking Notice & Disclaimer */}
+              <StudioSection title={t('bookingNoticeLabel')} icon={ShieldCheckmark24Regular}>
+                <textarea
+                  rows={2}
+                  value={bookingNotice}
+                  onChange={(e) => setBookingNotice(e.target.value)}
+                  placeholder="Please arrive 5 minutes prior to your appointment..."
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
+                />
+              </StudioSection>
+            </div>
+          )}
+
+          {/* ─── TAB 3: EMBEDDABLE WIDGETS & DEEP-LINKS ─── */}
+          {activeTab === 'widgets' && (
+            <div className="space-y-6">
+              {/* Embed Widget Generator */}
+              <StudioSection title={t('embedWidgetsTitle')} icon={Code24Regular}>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  {t('embedWidgetsDesc')}
+                </p>
+
+                <div className="grid grid-cols-3 gap-2 pt-1">
+                  {[
+                    { id: 'iframe', label: t('widgetTypeIframe') },
+                    { id: 'button', label: t('widgetTypeButton') },
+                    { id: 'modal', label: t('widgetTypeModal') },
+                  ].map((w) => (
                     <button
+                      key={w.id}
                       type="button"
-                      onClick={() => {
-                        setEditingStationId(stn.id);
-                        setEditingStationName(stn.name);
-                        setEditingStationCategory(stn.category || 'Hair & Styling');
-                      }}
-                      className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
+                      onClick={() => setWidgetType(w.id as any)}
+                      className={`p-3 rounded-2xl border text-xs font-bold text-center transition-all cursor-pointer ${
+                        widgetType === w.id
+                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)]'
+                      }`}
                     >
-                      <Edit24Filled className="w-3.5 h-3.5" />
+                      {w.label}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        deleteStation(stn.id);
-                        addToast('Station deleted', 'info');
-                      }}
-                      className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
-                    >
-                      <Delete24Filled className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  ))}
                 </div>
-              ))}
+
+                <div className="p-4 rounded-2xl bg-black/90 dark:bg-black text-emerald-400 font-mono text-xs overflow-x-auto space-y-3 relative">
+                  <pre className="whitespace-pre-wrap">{getWidgetSnippet()}</pre>
+                  <button
+                    type="button"
+                    onClick={handleCopySnippet}
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+                  >
+                    {isCopiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                    <span>{isCopiedSnippet ? 'Copied!' : t('copySnippet')}</span>
+                  </button>
+                </div>
+              </StudioSection>
+
+              {/* Direct Deep-Link Generator */}
+              <StudioSection title={t('deepLinkBuilderTitle')} icon={Link24Regular}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <StudioField label={t('selectDeepService')}>
+                    <select
+                      value={selectedDeepService}
+                      onChange={(e) => setSelectedDeepService(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
+                    >
+                      <option value="">All Services (Default)</option>
+                      {services.map((svc) => (
+                        <option key={svc.id} value={svc.id}>
+                          {svc.name} (${svc.price})
+                        </option>
+                      ))}
+                    </select>
+                  </StudioField>
+
+                  <StudioField label={t('selectDeepStaff')}>
+                    <select
+                      value={selectedDeepStaff}
+                      onChange={(e) => setSelectedDeepStaff(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
+                    >
+                      <option value="">First Available Specialist</option>
+                      {staffMembers.map((st) => (
+                        <option key={st.id} value={st.id}>
+                          {st.name}
+                        </option>
+                      ))}
+                    </select>
+                  </StudioField>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono">
+                  <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{deepLinkUrl}</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyDeepLink}
+                    className="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                  >
+                    {isCopiedDeepLink ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                    <span>{isCopiedDeepLink ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
+              </StudioSection>
             </div>
-          </StudioSection>
+          )}
 
           {/* Sticky Save Button */}
           <motion.button
             whileTap={{ scale: 0.98 }}
             disabled={saving}
             onClick={handleSaveSettings}
-            className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-colors cursor-pointer"
           >
-            <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500" />
+            <CheckmarkCircle24Filled className="w-4 h-4 text-white" />
             <span>{saving ? t('saving') : t('saveStudioChanges')}</span>
           </motion.button>
         </div>
@@ -549,7 +789,7 @@ export const OnlineBookingModule: React.FC = () => {
               <Sparkle24Regular className="w-4 h-4 text-blue-500" />
               <span>{t('mobileSimulatorTitle')}</span>
             </h3>
-            <span className="text-[10px] font-mono text-[var(--text-secondary)]">Preview (iPhone 16)</span>
+            <span className="text-[10px] font-mono text-[var(--text-secondary)]">iPhone 16 Preview</span>
           </div>
 
           {/* Smartphone Frame Container */}
@@ -560,71 +800,80 @@ export const OnlineBookingModule: React.FC = () => {
             </div>
 
             {/* Inner Mobile Screen Content */}
-            <div className="rounded-[32px] bg-[var(--bg-primary)] p-4 border border-black/10 dark:border-white/10 space-y-3 text-[var(--text-primary)] overflow-hidden min-h-[480px]">
-              {/* Salon Header */}
-              <div className="flex items-center gap-2.5 pb-3 border-b border-[var(--border-subtle)]">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-pink-500 text-white flex items-center justify-center font-bold text-sm shadow-xs flex-shrink-0">
-                  {workspaceName ? workspaceName.charAt(0).toUpperCase() : 'A'}
+            <div className="rounded-[32px] bg-[var(--bg-primary)] p-0 border border-black/10 dark:border-white/10 text-[var(--text-primary)] overflow-hidden min-h-[500px] flex flex-col">
+              {/* Cover Banner */}
+              <div className="h-24 w-full relative bg-slate-800">
+                <img src={coverImageUrl} alt="Cover" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-white">
+                  <span className="text-xs font-black truncate">{workspaceName || 'My Studio'}</span>
+                  <span className="px-2 py-0.2 rounded-full bg-emerald-500/80 text-[8px] font-black uppercase">
+                    Open
+                  </span>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">{workspaceName || 'My Salon'}</p>
-                  <p className="text-[9px] text-[var(--text-secondary)] flex items-center gap-1 truncate">
-                    <Location24Regular className="w-2.5 h-2.5 text-blue-500" />
-                    <span>Downtown District</span>
+              </div>
+
+              {/* Bio & Notice */}
+              <div className="p-3.5 space-y-3 flex-1 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                    {bio}
+                  </p>
+
+                  {bookingNotice && (
+                    <div className="p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[9px] text-[var(--text-secondary)]">
+                      ℹ️ {bookingNotice}
+                    </div>
+                  )}
+
+                  {/* Sample Service Item Preview */}
+                  <div className="p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-[var(--text-primary)]">Selected Service</span>
+                      <span className="text-[9px] text-[var(--text-secondary)]">1 Specialist</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <div
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: brandColor }}
+                        />
+                        <span className="font-bold truncate">{services[0]?.name || 'Signature Consultation'}</span>
+                      </div>
+                      <span className="font-extrabold">${services[0]?.price || 75}</span>
+                    </div>
+                  </div>
+
+                  {/* Deposit notice badge in simulator */}
+                  {parseInt(depositPercent, 10) > 0 && (
+                    <div
+                      className="p-2 rounded-xl text-[9px] flex items-center gap-1.5 border"
+                      style={{
+                        backgroundColor: `${brandColor}15`,
+                        borderColor: `${brandColor}30`,
+                        color: brandColor,
+                      }}
+                    >
+                      <ShieldCheckmark24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{depositPercent}% deposit required upon booking</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile CTA Mock Button */}
+                <div className="pt-2">
+                  <div
+                    className="w-full py-2.5 rounded-xl text-white font-bold text-[10px] text-center shadow-md flex items-center justify-center gap-1.5"
+                    style={{ backgroundColor: brandColor }}
+                  >
+                    <span>Reserve Appointment</span>
+                    <ArrowRight24Filled className="w-3 h-3" />
+                  </div>
+                  <p className="text-[8px] text-center text-[var(--text-secondary)] italic pt-1">
+                    Free cancellation up to {cancellationNotice}h in advance.
                   </p>
                 </div>
-                <span className="ml-auto px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[8px] font-bold uppercase">
-                  Open
-                </span>
               </div>
-
-              {/* Step indicator */}
-              <div className="flex items-center justify-between text-[10px] font-bold text-[var(--text-secondary)]">
-                <span>Step 1 of 3</span>
-                <span className="text-blue-600 dark:text-blue-400">Build Your Party</span>
-              </div>
-
-              {/* Sample Service Item Preview */}
-              <div className="p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">Guest 1</span>
-                  <span className="text-[9px] text-[var(--text-secondary)]">1 Specialist</span>
-                </div>
-                <div className="p-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
-                    <span className="font-bold truncate">{services[0]?.name || 'Signature Cut & Styling'}</span>
-                  </div>
-                  <span className="font-extrabold">${services[0]?.price || 75}</span>
-                </div>
-
-                {allowAnyoneSpecialist && (
-                  <div className="p-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center gap-1.5 text-[9px] font-semibold text-[var(--text-secondary)]">
-                    <Sparkle24Regular className="w-3 h-3 text-blue-500 flex-shrink-0" />
-                    <span className="truncate">First Available Specialist</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Deposit notice badge in simulator */}
-              {parseInt(depositPercent, 10) > 0 && (
-                <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[9px] text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                  <ShieldCheckmark24Regular className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>{depositPercent}% deposit required upon booking</span>
-                </div>
-              )}
-
-              {/* Mobile CTA Mock Button */}
-              <div className="pt-2">
-                <div className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-[10px] text-center shadow-md flex items-center justify-center gap-1.5">
-                  <span>Continue to Date & Time</span>
-                  <ArrowRight24Filled className="w-3 h-3" />
-                </div>
-              </div>
-
-              <p className="text-[8px] text-center text-[var(--text-secondary)] italic pt-1">
-                Free cancellation up to {cancellationNotice}h in advance.
-              </p>
             </div>
           </div>
         </div>
@@ -659,21 +908,16 @@ export const OnlineBookingModule: React.FC = () => {
               {/* High-Resolution QR Vector Card */}
               <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
                 <svg viewBox="0 0 100 100" className="w-36 h-36">
-                  {/* Outer Frame */}
                   <rect x="0" y="0" width="100" height="100" fill="white" />
-                  {/* Finder Pattern Top-Left */}
                   <rect x="10" y="10" width="24" height="24" fill="black" />
                   <rect x="14" y="14" width="16" height="16" fill="white" />
                   <rect x="18" y="18" width="8" height="8" fill="black" />
-                  {/* Finder Pattern Top-Right */}
                   <rect x="66" y="10" width="24" height="24" fill="black" />
                   <rect x="70" y="14" width="16" height="16" fill="white" />
                   <rect x="74" y="18" width="8" height="8" fill="black" />
-                  {/* Finder Pattern Bottom-Left */}
                   <rect x="10" y="66" width="24" height="24" fill="black" />
                   <rect x="14" y="70" width="16" height="16" fill="white" />
                   <rect x="18" y="74" width="8" height="8" fill="black" />
-                  {/* Data Blocks */}
                   <rect x="40" y="10" width="8" height="8" fill="black" />
                   <rect x="52" y="14" width="8" height="8" fill="black" />
                   <rect x="40" y="26" width="8" height="8" fill="black" />
@@ -699,175 +943,18 @@ export const OnlineBookingModule: React.FC = () => {
                   onClick={handleCopyLink}
                   className="flex-1 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <Copy24Filled className="w-3.5 h-3.5 text-blue-500" />
+                  <Copy24Filled className="w-3.5 h-3.5" />
                   <span>{t('copyBookingLink')}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    addToast('QR Code saved to Downloads', 'success');
-                    setIsQrModalOpen(false);
-                  }}
-                  className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
+                <a
+                  href={`/book/${slugInput}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                 >
-                  <QrCode24Filled className="w-3.5 h-3.5" />
-                  <span>{t('downloadQrCode')}</span>
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Add / Edit Station Modal Dialogs */}
-      <AnimatePresence>
-        {isAddStationModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <Building24Filled className="w-4 h-4 text-blue-500" />
-                  <span>{t('addStation')}</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setIsAddStationModalOpen(false)}
-                  className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                <StudioField label={t('stationName')}>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Styling Chair #1"
-                    value={newStationName}
-                    onChange={(e) => setNewStationName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </StudioField>
-
-                <StudioField label={t('stationCategory')}>
-                  <CustomSelect
-                    value={newStationCategory}
-                    onChange={setNewStationCategory}
-                    options={[
-                      { value: 'Hair & Styling', label: 'Hair & Styling' },
-                      { value: 'Wash Basin', label: 'Wash Basin' },
-                      { value: 'Treatment Room', label: 'Treatment Room' },
-                      { value: 'Nail Station', label: 'Nail Station' },
-                      { value: 'Barber Chair', label: 'Barber Chair' },
-                    ]}
-                  />
-                </StudioField>
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddStationModalOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-bold text-[var(--text-primary)] cursor-pointer"
-                >
-                  {t('cancel')}
-                </button>
-                <button
-                  type="button"
-                  disabled={!newStationName.trim()}
-                  onClick={() => {
-                    if (newStationName.trim()) {
-                      addStation({ name: newStationName.trim(), category: newStationCategory });
-                      setIsAddStationModalOpen(false);
-                      setNewStationName('');
-                      addToast('Station added successfully', 'success');
-                    }
-                  }}
-                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-md disabled:opacity-50 cursor-pointer"
-                >
-                  {t('save')}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-
-        {editingStationId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <Edit24Filled className="w-4 h-4 text-blue-500" />
-                  <span>{t('editStation')}</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setEditingStationId(null)}
-                  className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                <StudioField label={t('stationName')}>
-                  <input
-                    type="text"
-                    required
-                    value={editingStationName}
-                    onChange={(e) => setEditingStationName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </StudioField>
-
-                <StudioField label={t('stationCategory')}>
-                  <CustomSelect
-                    value={editingStationCategory}
-                    onChange={setEditingStationCategory}
-                    options={[
-                      { value: 'Hair & Styling', label: 'Hair & Styling' },
-                      { value: 'Wash Basin', label: 'Wash Basin' },
-                      { value: 'Treatment Room', label: 'Treatment Room' },
-                      { value: 'Nail Station', label: 'Nail Station' },
-                      { value: 'Barber Chair', label: 'Barber Chair' },
-                    ]}
-                  />
-                </StudioField>
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setEditingStationId(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-bold text-[var(--text-primary)] cursor-pointer"
-                >
-                  {t('cancel')}
-                </button>
-                <button
-                  type="button"
-                  disabled={!editingStationName.trim()}
-                  onClick={() => {
-                    if (editingStationName.trim()) {
-                      updateStation(editingStationId, editingStationName.trim(), editingStationCategory);
-                      setEditingStationId(null);
-                      addToast('Station updated', 'success');
-                    }
-                  }}
-                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-md disabled:opacity-50 cursor-pointer"
-                >
-                  {t('save')}
-                </button>
+                  <Open24Filled className="w-3.5 h-3.5" />
+                  <span>{t('openLiveBookingPage')}</span>
+                </a>
               </div>
             </motion.div>
           </div>

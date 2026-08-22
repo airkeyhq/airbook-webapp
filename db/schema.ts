@@ -107,6 +107,12 @@ export const workspaces = pgTable('workspaces', {
   autoReviewEnabled: boolean('auto_review_enabled').default(true).notNull(),
   reengagementDays: integer('reengagement_days').default(21).notNull(),
   autoReengagementEnabled: boolean('auto_reengagement_enabled').default(true).notNull(),
+  coverImageUrl: text('cover_image_url'),
+  bio: text('bio'),
+  instagramUrl: text('instagram_url'),
+  websiteUrl: text('website_url'),
+  bookingNotice: text('booking_notice'),
+  widgetTheme: varchar('widget_theme', { length: 20 }).default('system').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
