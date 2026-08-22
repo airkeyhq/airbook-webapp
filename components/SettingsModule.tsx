@@ -1208,7 +1208,7 @@ export const SettingsModule: React.FC = () => {
       {/* Beta Access Key Modal */}
       <AnimatePresence>
         {isBetaModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1220,8 +1220,12 @@ export const SettingsModule: React.FC = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md glass-panel rounded-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border border-white/80 dark:border-white/10 z-10 space-y-4"
+              className="relative w-full max-w-md glass-panel rounded-t-[32px] md:rounded-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
             >
+              {/* Mobile & Tablet Drag Handle */}
+              <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+              </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">

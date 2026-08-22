@@ -92,7 +92,7 @@ export const BookingDrawer: React.FC = () => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
         {/* Dark Translucent Glass Overlay */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -108,11 +108,11 @@ export const BookingDrawer: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '100%', opacity: 0 }}
           transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-          className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
+          className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
         >
           <form onSubmit={handleSubmit} className="flex flex-col h-full min-h-0 overflow-hidden">
-            {/* Mobile Drag Handle */}
-            <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+            {/* Mobile & Tablet Drag Handle */}
+            <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
               <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
             </div>
 
@@ -191,7 +191,7 @@ export const BookingDrawer: React.FC = () => {
             </div>
 
             {/* Staff Selector & Time Picker Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Staff Member */}
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
@@ -225,7 +225,7 @@ export const BookingDrawer: React.FC = () => {
             </div>
 
             {/* Side-to-Side Bottom Action Banner */}
-            <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
+            <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 rounded-none flex-shrink-0 z-30">
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 whileHover={{ scale: 1.01 }}

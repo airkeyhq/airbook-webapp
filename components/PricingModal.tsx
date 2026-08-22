@@ -44,7 +44,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -60,10 +60,10 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
           transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full max-w-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden p-6 sm:p-8"
+          className="relative w-full max-w-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-y-auto p-6 md:p-8"
         >
-          {/* Mobile Drag Handle */}
-          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-4 sm:hidden" />
+          {/* Mobile & Tablet Drag Handle */}
+          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-4 md:hidden" />
 
           {/* Close Trigger */}
           <button
@@ -114,7 +114,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
           </div>
 
           {/* Plan Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Pro Plan */}
             <div className="p-5 rounded-3xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 flex flex-col justify-between hover:border-black/20 transition-all">
               <div>

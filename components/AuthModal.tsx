@@ -58,7 +58,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -74,8 +74,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="relative w-full max-w-md glass-panel rounded-[32px] p-6 shadow-2xl bg-white/90 dark:bg-gray-900/90 border border-white/80 dark:border-white/10 z-10 space-y-4"
+          className="relative w-full max-w-md glass-panel rounded-t-[32px] md:rounded-[32px] p-6 shadow-2xl bg-white/90 dark:bg-gray-900/90 border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
         >
+          {/* Mobile & Tablet Drag Handle */}
+          <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
+            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+          </div>
+
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
             <div className="flex items-center gap-2">

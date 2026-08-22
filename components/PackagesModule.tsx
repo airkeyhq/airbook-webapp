@@ -821,7 +821,7 @@ export const PackagesModule: React.FC = () => {
       {/* ─── DRAWER 1: ISSUE DIGITAL GIFT CARD ─── */}
       <AnimatePresence>
         {isGiftCardDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -835,10 +835,10 @@ export const PackagesModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden"
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
             >
-              {/* Mobile Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+              {/* Mobile & Tablet Drag Handle */}
+              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                 <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
               </div>
 
@@ -976,7 +976,7 @@ export const PackagesModule: React.FC = () => {
       {/* ─── MODAL 1: REDEEM GIFT CARD MODAL ─── */}
       <AnimatePresence>
         {redeemingCard && (
-          <div className="fixed inset-0 z-[220] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[220] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -989,8 +989,12 @@ export const PackagesModule: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-sm bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-sm bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl p-6 shadow-2xl z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
             >
+              {/* Mobile & Tablet Drag Handle */}
+              <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+              </div>
               <div className="space-y-1">
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">
                   {t('redeemGiftCard')}
@@ -1041,7 +1045,7 @@ export const PackagesModule: React.FC = () => {
       {/* ─── DRAWER 2: CREATE / EDIT SERVICE PACKAGE ─── */}
       <AnimatePresence>
         {isPackageDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1055,10 +1059,10 @@ export const PackagesModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden"
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
             >
-              {/* Mobile Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+              {/* Mobile & Tablet Drag Handle */}
+              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                 <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
               </div>
 
@@ -1213,7 +1217,7 @@ export const PackagesModule: React.FC = () => {
       {/* ─── DRAWER 3: CREATE / EDIT MEMBERSHIP TIER ─── */}
       <AnimatePresence>
         {isMembershipDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1227,10 +1231,10 @@ export const PackagesModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden"
+              className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
             >
-              {/* Mobile Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+              {/* Mobile & Tablet Drag Handle */}
+              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                 <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
               </div>
 

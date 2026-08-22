@@ -402,7 +402,7 @@ export const ClientsModule: React.FC = () => {
       {/* Add Client Modal */}
       <AnimatePresence>
         {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -415,11 +415,11 @@ export const ClientsModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
+              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleAddClient} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
 
@@ -508,7 +508,7 @@ export const ClientsModule: React.FC = () => {
                 </div>
 
                 {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 flex-shrink-0 z-30">
+                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30">
                   <motion.button
                     whileTap={{ scale: 0.96 }}
                     type="submit"

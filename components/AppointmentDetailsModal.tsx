@@ -74,7 +74,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -90,7 +90,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
           transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] sm:rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] sm:max-h-[85vh]"
+          className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] md:max-h-[85vh]"
         >
           {/* Top Decorative Header Accent Bar */}
           <div
@@ -98,8 +98,8 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             style={{ backgroundColor: appointment.color || '#2BB5FF' }}
           />
 
-          {/* Mobile Drag Handle */}
-          <div className="w-full pt-3 pb-1 flex sm:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+          {/* Mobile & Tablet Drag Handle */}
+          <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
           </div>
 
