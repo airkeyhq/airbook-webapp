@@ -68,3 +68,4 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 | **eSign Waiver Pad** | ✅ Released (v1.3) | ❌ Public | Digital Vector Signature & Audit Logs |
 | **HIPAA Compliance Log** | ✅ Released (v1.3) | ❌ Public | KMS Encryption & Immutable Audit Log |
 | **KYC Identity Verification** | ✅ Released (v1.3) | ❌ Public | Biometric 3D Liveness & ID Verification |
+| **Brand & Public Brand Kit** | ✅ Released (v1.3) | ❌ Public | Custom Branding, Covers & Live Storefront |
