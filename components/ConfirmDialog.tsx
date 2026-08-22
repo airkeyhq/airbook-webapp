@@ -45,7 +45,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.94, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 460, damping: 30 }}
-          className="relative w-full max-w-sm bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-3xl p-6 shadow-2xl border border-[var(--border-subtle)] z-10 space-y-5"
+          className="relative w-full md:max-w-sm bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl border-t md:border border-[var(--border-subtle)] z-10 space-y-5"
         >
           {/* Mobile & Tablet Drag Handle */}
           <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-2 md:hidden" />

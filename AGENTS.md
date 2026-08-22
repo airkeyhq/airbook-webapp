@@ -38,7 +38,7 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
    - **"More" Overflow Pattern**: When a dialog has more than 2 actions, use the "Más Acciones..." collapsible overflow trigger (`<MoreHorizontal24Filled />`).
 
 3. **Mobile-First Bottom Sheet Drawers & Single Dismissal**:
-   - Dialogs MUST automatically adapt as Bottom Sheet Drawers on small viewports (`< 768px`) with a top drag-handle pull bar (`w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto md:hidden`).
+   - Dialogs MUST automatically adapt as Bottom Sheet Drawers on mobile/tablet viewports (`< 768px` / `< md:`), spanning 100% side-to-side (`w-full md:max-w-* p-0 md:p-4 rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl border-t md:border`) with a top drag-handle pull bar (`w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto md:hidden`). Never cap mobile drawers with fixed max-width classes like `max-w-md` or `max-w-lg` without the `md:` prefix, which creates unwanted side gaps.
    - Avoid redundant bottom "Cancelar" buttons when top-right `X` icon and top drag-handle pull-bars are present.
 
 4. **Side-to-Side Bottom Action Banner**:

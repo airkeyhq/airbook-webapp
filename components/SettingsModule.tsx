@@ -1220,7 +1220,7 @@ export const SettingsModule: React.FC = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md glass-panel rounded-t-[32px] md:rounded-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
+              className="relative w-full md:max-w-md glass-panel rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border-t md:border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
             >
               {/* Mobile & Tablet Drag Handle */}
               <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
@@ -1304,7 +1304,7 @@ export const SettingsModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col overflow-visible"
+              className="relative w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col overflow-visible"
             >
               <form
                 onSubmit={(e) => {
