@@ -55,6 +55,7 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 
 | Feature Module | Current Status | Beta Locked? | Next Milestone |
 | :--- | :--- | :--- | :--- |
+| **Marketing & Prepaid SMS** | ✅ Released (v1.2) | ❌ Public | Twilio 10DLC automated queue sync |
 | **Packages, Memberships & Gifts** | ✅ Released (v1.2) | ❌ Public | Stripe Billing Subscriptions auto-charge |
 | **Inventory & Retail Products** | ✅ Released (v1.2) | ❌ Public | Barcode scanner camera integration |
 | **POS & Express Checkout** | ✅ Released (v1.2) | ❌ Public | Stripe Terminal WisePad 3 hardware pairing |

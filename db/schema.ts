@@ -102,6 +102,11 @@ export const workspaces = pgTable('workspaces', {
   stripeChargesEnabled: boolean('stripe_charges_enabled').default(false).notNull(),
   stripePayoutsEnabled: boolean('stripe_payouts_enabled').default(false).notNull(),
   stripeDetailsSubmitted: boolean('stripe_details_submitted').default(false).notNull(),
+  smsCreditsRemaining: integer('sms_credits_remaining').default(50).notNull(),
+  googleReviewUrl: text('google_review_url'),
+  autoReviewEnabled: boolean('auto_review_enabled').default(true).notNull(),
+  reengagementDays: integer('reengagement_days').default(21).notNull(),
+  autoReengagementEnabled: boolean('auto_reengagement_enabled').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -292,6 +297,20 @@ export const promotions = pgTable('promotions', {
   maxUses: integer('max_uses').default(100).notNull(),
   currentUses: integer('current_uses').default(0).notNull(),
   expiresAt: timestamp('expires_at'),
+});
+
+export const campaigns = pgTable('campaigns', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(),
+  channel: varchar('channel', { length: 20 }).default('sms').notNull(), // 'sms' | 'email' | 'both'
+  audienceFilter: varchar('audience_filter', { length: 50 }).default('all').notNull(), // 'all' | 'vip' | 'lapsed' | 'new'
+  recipientCount: integer('recipient_count').default(0).notNull(),
+  creditsUsed: integer('credits_used').default(0).notNull(),
+  messageTemplate: text('message_template').notNull(),
+  status: varchar('status', { length: 20 }).default('sent').notNull(), // 'draft' | 'scheduled' | 'sent'
+  sentAt: timestamp('sent_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const memberships = pgTable('memberships', {
