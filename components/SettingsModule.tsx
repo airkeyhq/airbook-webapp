@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CustomSelect } from '@/components/CustomSelect';
+import { AddLocationModal } from '@/components/AddLocationModal';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Person24Filled,
@@ -43,11 +44,12 @@ import {
   Edit24Filled,
 } from '@fluentui/react-icons';
 
-type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance';
+type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Regular },
   { id: 'workspace', labelKey: 'workspace', icon: Building24Regular },
+  { id: 'locations', labelKey: 'tabLocations', icon: Building24Filled },
   { id: 'addons', labelKey: 'addOns', icon: Sparkle24Regular },
   { id: 'compliance', labelKey: 'tabCompliance', icon: Shield24Regular },
 ];
@@ -245,6 +247,36 @@ export const SettingsModule: React.FC = () => {
     window.open('/api/compliance/logs?format=csv', '_blank');
     addToast(t('reportExportedSuccess'), 'success');
   };
+
+  // Locations State
+  const [locations, setLocations] = useState<any[]>([]);
+  const [totalEnterpriseGross, setTotalEnterpriseGross] = useState(0);
+  const [totalEnterpriseStaff, setTotalEnterpriseStaff] = useState(0);
+  const [isAddLocationOpen, setIsAddLocationOpen] = useState(false);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+
+  const fetchLocations = async () => {
+    try {
+      setLoadingLocations(true);
+      const res = await fetch('/api/workspaces/locations');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.branches)) {
+        setLocations(data.branches);
+        setTotalEnterpriseGross(data.totalEnterpriseGrossCents || 0);
+        setTotalEnterpriseStaff(data.totalEnterpriseStaff || 0);
+      }
+    } catch (err) {
+      console.warn('Failed to load locations:', err);
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'locations') {
+      fetchLocations();
+    }
+  }, [activeTab]);
 
   const saveAddons = () => {
     addToast('Add-on modules updated.', 'success');
@@ -989,6 +1021,142 @@ export const SettingsModule: React.FC = () => {
             </div>
           </motion.div>
         )}
+
+        {/* ─── TAB 5: ENTERPRISE MULTI-LOCATION & FRANCHISE HUB ─── */}
+        {activeTab === 'locations' && (
+          <motion.div
+            key="locations"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-5"
+          >
+            {/* Header with Add Location CTA */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                  <Building24Filled className="w-5 h-5 text-blue-600" />
+                  <span>{t('locationsTitle')}</span>
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+                  {t('locationsDesc')}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAddLocationOpen(true)}
+                className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+              >
+                <Add24Filled className="w-4 h-4" />
+                <span>{t('addNewBranch')}</span>
+              </button>
+            </div>
+
+            {/* Aggregated Organization Metrics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  {t('totalEnterpriseLocations')}
+                </span>
+                <p className="text-2xl font-black text-blue-600 font-mono">
+                  {locations.length}
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Active Physical Branches</p>
+              </div>
+
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  {t('networkRevenue')}
+                </span>
+                <p className="text-2xl font-black text-emerald-600 font-mono">
+                  ${(totalEnterpriseGross / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Monthly Consolidated Gross</p>
+              </div>
+
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  {t('networkStaff')}
+                </span>
+                <p className="text-2xl font-black text-purple-600 font-mono">
+                  {totalEnterpriseStaff}
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Practitioners & Specialists</p>
+              </div>
+            </div>
+
+            {/* Branch Cards Divided List */}
+            <div className="space-y-3">
+              {loadingLocations ? (
+                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading location branches…</div>
+              ) : (
+                locations.map((loc) => (
+                  <div
+                    key={loc.id}
+                    className={`p-5 rounded-3xl border transition-all ${
+                      loc.isCurrent
+                        ? 'border-blue-500/50 bg-blue-500/5 shadow-xs ring-1 ring-blue-500/20'
+                        : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-black/20'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="text-sm font-extrabold text-[var(--text-primary)]">
+                            {loc.name}
+                          </h4>
+                          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[9px] font-black uppercase text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                            {loc.locationType}
+                          </span>
+                          {loc.isCurrent && (
+                            <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[9px] font-black uppercase">
+                              {t('currentLocation')}
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-xs text-[var(--text-secondary)]">
+                          {loc.address} {loc.phone && `· ${loc.phone}`}
+                        </p>
+                        <p className="text-[11px] text-[var(--text-muted)]">
+                          Manager: <span className="font-semibold text-[var(--text-secondary)]">{loc.managerName}</span> · Headcount: <span className="font-semibold text-[var(--text-secondary)]">{loc.staffCount} staff</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 flex-shrink-0">
+                        <a
+                          href={`/book/${loc.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors"
+                        >
+                          Booking Page ↗
+                        </a>
+
+                        {!loc.isCurrent && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              addToast(`Switched active branch to ${loc.name}`, 'success');
+                              setTimeout(() => {
+                                window.location.reload();
+                              }, 500);
+                            }}
+                            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold transition-colors cursor-pointer"
+                          >
+                            {t('switchLocation')}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Toast notifications */}
@@ -1301,6 +1469,13 @@ export const SettingsModule: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Add Location Branch Modal */}
+      <AddLocationModal
+        isOpen={isAddLocationOpen}
+        onClose={() => setIsAddLocationOpen(false)}
+        onLocationCreated={fetchLocations}
+      />
     </div>
   );
 };
