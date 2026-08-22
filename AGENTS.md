@@ -77,6 +77,18 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
      4. Optional primary action trigger button (`px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md`).
    - **Standard Component Usage**: ALWAYS use the reusable `<EmptyState icon={...} title={...} description={...} action={...} />` component from `@/components/EmptyState`.
 
+12. **Mandatory Modal & Drawer Z-Index Isolation Invariant**:
+    - **Total Backdrop Occlusion**: When ANY dialog, drawer, or modal opens, its backdrop blur overlay MUST visually cover and dim ALL persistent app chrome (including the top Header, Sidebar, and Floating Dock) without exception.
+    - **Strict Z-Index Hierarchy**:
+      - Base app layout & cards: `z-0` - `z-10`
+      - Persistent Sidebar: `z-20` (tooltips `z-30`)
+      - Persistent Header: `z-30` (header dropdown popovers `z-50`)
+      - Floating Dock: `z-50`
+      - **ALL Modals, Drawers & Dialog Overlays**: `z-[250]` / `z-[300]` (strictly above all app chrome)
+      - Command Palette: `z-[500]`
+      - System Toasts / Alerts: `z-[1000]`
+    - **Zero Piercing Rule**: NEVER assign arbitrary runaway z-indexes (e.g. `z-[99999]`) to base layout headers or navigation bars, which pierces through modal blur backdrops and destroys modal visual focus.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

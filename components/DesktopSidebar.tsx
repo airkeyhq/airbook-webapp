@@ -64,7 +64,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
   return (
     <aside
       className={`hidden md:flex flex-col bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[24px] p-3 flex-shrink-0 h-full shadow-md shadow-black/5 dark:shadow-black/30 transition-all duration-150 ease-out relative ${
-        isSidebarCollapsed ? 'w-[72px] overflow-visible z-[99999]' : 'w-64 overflow-y-auto z-20'
+        isSidebarCollapsed ? 'w-[72px] overflow-visible z-20' : 'w-64 overflow-y-auto z-20'
       }`}
     >
       {/* Header & Toggle Button */}
@@ -91,7 +91,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
           </motion.button>
 
           {isSidebarCollapsed && (
-            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] drop-shadow-2xl">
+            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 drop-shadow-2xl">
               <span>{t('expandSidebar')}</span>
               <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
             </div>
@@ -149,7 +149,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
 
               {/* Floating Tooltip when Collapsed */}
               {isSidebarCollapsed && (
-                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] flex items-center gap-2 drop-shadow-2xl">
+                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 flex items-center gap-2 drop-shadow-2xl">
                   <span>{item.label}</span>
                   {item.soon && (
                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-extrabold bg-amber-500/20 text-amber-400">
@@ -198,7 +198,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
             >
               <Sparkle24Filled className="w-4 h-4" />
             </button>
-            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[99999] drop-shadow-2xl">
+            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 drop-shadow-2xl">
               <span>{t('upgradeToPro')}</span>
               <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
             </div>

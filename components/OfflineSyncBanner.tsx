@@ -39,7 +39,7 @@ export const OfflineSyncBanner: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -48, opacity: 0 }}
           transition={{ type: 'spring', damping: 24, stiffness: 320 }}
-          className="fixed top-0 inset-x-0 z-[9999] flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-white text-xs font-extrabold shadow-lg"
+          className="fixed top-0 inset-x-0 z-50 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-white text-xs font-extrabold shadow-lg"
         >
           <WifiOff24Filled className="w-4 h-4 flex-shrink-0" />
           <span>You are offline. AirBook will sync automatically when your connection returns.</span>
@@ -54,7 +54,7 @@ export const OfflineSyncBanner: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -48, opacity: 0 }}
           transition={{ type: 'spring', damping: 24, stiffness: 320 }}
-          className="fixed top-0 inset-x-0 z-[9999] flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 text-white text-xs font-extrabold shadow-lg"
+          className="fixed top-0 inset-x-0 z-50 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 text-white text-xs font-extrabold shadow-lg"
         >
           <Wifi124Filled className="w-4 h-4 flex-shrink-0" />
           <span>Back online — AirBook is synced and ready.</span>
