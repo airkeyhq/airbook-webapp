@@ -1111,6 +1111,11 @@ export const translations = {
     alwaysEnforced: 'Always Enforced',
     managerLabel: 'Manager',
     staffLabel: 'staff',
+    stripeConnecting: 'Connecting to Stripe...',
+    en: 'English',
+    es: 'Español',
+    de: 'Deutsch',
+    fr: 'Français',
   },
   es: {
     // Days of week
@@ -2214,6 +2219,11 @@ export const translations = {
     alwaysEnforced: 'Siempre Aplicado',
     managerLabel: 'Gerente',
     staffLabel: 'personal',
+    stripeConnecting: 'Conectando con Stripe...',
+    en: 'Inglés',
+    es: 'Español',
+    de: 'Alemán',
+    fr: 'Francés',
   },
   de: {
     // Days of week
@@ -3317,6 +3327,11 @@ export const translations = {
     alwaysEnforced: 'Immer Aktiv',
     managerLabel: 'Manager',
     staffLabel: 'Mitarbeiter',
+    stripeConnecting: 'Verbinde mit Stripe...',
+    en: 'Englisch',
+    es: 'Spanisch',
+    de: 'Deutsch',
+    fr: 'Französisch',
   },
   fr: {
     // Days of week
@@ -4421,5 +4436,10 @@ export const translations = {
     alwaysEnforced: 'Toujours Appliqué',
     managerLabel: 'Responsable',
     staffLabel: 'personnel',
+    stripeConnecting: 'Connexion à Stripe...',
+    en: 'Anglais',
+    es: 'Espagnol',
+    de: 'Allemand',
+    fr: 'Français',
   },
 };
