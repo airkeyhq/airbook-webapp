@@ -421,3 +421,24 @@ export const signed_waivers = pgTable('signed_waivers', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// =============================================================================
+// MODULE 11: HIPAA & AUDIT COMPLIANCE LOGS
+// =============================================================================
+
+export const compliance_logs = pgTable('compliance_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  actorId: text('actor_id'),
+  actorName: text('actor_name').notNull(),
+  actorRole: varchar('actor_role', { length: 50 }).default('Practitioner').notNull(),
+  action: varchar('action', { length: 50 }).notNull(), // 'view_phi' | 'update_formula' | 'export_records' | 'delete_record' | 'sign_waiver'
+  resourceType: varchar('resource_type', { length: 50 }).notNull(), // 'client' | 'formula' | 'waiver' | 'appointment' | 'system'
+  resourceId: text('resource_id'),
+  resourceName: text('resource_name'),
+  details: text('details'),
+  ipAddress: varchar('ip_address', { length: 45 }).default('127.0.0.1'),
+  userAgent: text('user_agent'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+

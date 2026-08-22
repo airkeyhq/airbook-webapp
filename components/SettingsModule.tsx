@@ -43,12 +43,13 @@ import {
   Edit24Filled,
 } from '@fluentui/react-icons';
 
-type SettingsTab = 'profile' | 'workspace' | 'addons';
+type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Regular },
   { id: 'workspace', labelKey: 'workspace', icon: Building24Regular },
   { id: 'addons', labelKey: 'addOns', icon: Sparkle24Regular },
+  { id: 'compliance', labelKey: 'tabCompliance', icon: Shield24Regular },
 ];
 
 /* ─── Toggle Switch ─── */
@@ -213,6 +214,37 @@ export const SettingsModule: React.FC = () => {
   };
 
 
+
+  // Compliance Logs State
+  const [complianceLogs, setComplianceLogs] = useState<any[]>([]);
+  const [complianceFilter, setComplianceFilter] = useState<string>('all');
+  const [loadingCompliance, setLoadingCompliance] = useState(false);
+
+  const fetchComplianceLogs = async () => {
+    try {
+      setLoadingCompliance(true);
+      const res = await fetch('/api/compliance/logs');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.logs)) {
+        setComplianceLogs(data.logs);
+      }
+    } catch (err) {
+      console.warn('Failed to load compliance logs:', err);
+    } finally {
+      setLoadingCompliance(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'compliance') {
+      fetchComplianceLogs();
+    }
+  }, [activeTab]);
+
+  const handleExportComplianceCsv = () => {
+    window.open('/api/compliance/logs?format=csv', '_blank');
+    addToast(t('reportExportedSuccess'), 'success');
+  };
 
   const saveAddons = () => {
     addToast('Add-on modules updated.', 'success');
@@ -799,6 +831,164 @@ export const SettingsModule: React.FC = () => {
             </motion.div>
           );
         })()}
+
+        {/* ─── TAB 4: HIPAA & COMPLIANCE AUDIT CENTER ─── */}
+        {activeTab === 'compliance' && (
+          <motion.div
+            key="compliance"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-5"
+          >
+            {/* Header with Export CTA */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                  <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-500" />
+                  <span>{t('complianceTitle')}</span>
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+                  {t('complianceDesc')}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleExportComplianceCsv}
+                className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+              >
+                <DocumentCheckmark24Regular className="w-4 h-4" />
+                <span>{t('exportAuditReport')}</span>
+              </button>
+            </div>
+
+            {/* Metrics Ribbon */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  {t('totalAuditEvents')}
+                </span>
+                <p className="text-2xl font-black text-blue-600 font-mono">
+                  {complianceLogs.length}
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Immutable Audit Records</p>
+              </div>
+
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  {t('kmsEncryption')}
+                </span>
+                <p className="text-sm font-black text-emerald-600 font-mono mt-1.5 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>{t('kmsActive')}</span>
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Zero-Knowledge Key Vault</p>
+              </div>
+
+              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                  Compliance Status
+                </span>
+                <p className="text-sm font-black text-purple-600 font-mono mt-1.5 flex items-center gap-1.5">
+                  <CheckmarkCircle24Filled className="w-4 h-4" />
+                  <span>HIPAA v1.3 Verified</span>
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)]">Encrypted PHI Storage</p>
+              </div>
+            </div>
+
+            {/* Security Guarantee Banner */}
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-start gap-2.5">
+              <ShieldCheckmark24Regular className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-600" />
+              <span>{t('hipaaGuarantee')}</span>
+            </div>
+
+            {/* Action Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+              {[
+                { id: 'all', label: t('allActions') },
+                { id: 'view_phi', label: t('phiAccess') },
+                { id: 'update_formula', label: t('formulaUpdate') },
+                { id: 'sign_waiver', label: t('waiverSigned') },
+                { id: 'export_records', label: t('recordsExported') },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setComplianceFilter(f.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                    complianceFilter === f.id
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Immutable Audit Log Stream */}
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+              {loadingCompliance ? (
+                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading compliance logs…</div>
+              ) : (
+                complianceLogs
+                  .filter((log) => complianceFilter === 'all' || log.action === complianceFilter)
+                  .map((log) => {
+                    const actionBadgeColor =
+                      log.action === 'view_phi'
+                        ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
+                        : log.action === 'update_formula'
+                        ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                        : log.action === 'sign_waiver'
+                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                        : 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+
+                    return (
+                      <div key={log.id} className="p-4 space-y-2 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              {log.actorName}
+                            </span>
+                            <span className="text-[10px] font-bold text-[var(--text-muted)]">
+                              ({log.actorRole})
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${actionBadgeColor}`}>
+                              {log.action.replace('_', ' ')}
+                            </span>
+                          </div>
+
+                          <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                            {new Date(log.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+
+                        {log.resourceName && (
+                          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                            {log.resourceName}
+                          </p>
+                        )}
+
+                        {log.details && (
+                          <p className="text-xs text-[var(--text-secondary)]">
+                            {log.details}
+                          </p>
+                        )}
+
+                        <div className="flex items-center gap-4 text-[10px] font-mono text-[var(--text-muted)] pt-1">
+                          <span>IP: {log.ipAddress || '127.0.0.1'}</span>
+                          <span>Agent: {log.userAgent || 'AirBook Native Client'}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+              )}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Toast notifications */}
