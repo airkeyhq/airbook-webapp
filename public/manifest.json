@@ -1,22 +1,15 @@
 {
-  "name": "AirBook — Professional Booking SaaS",
+  "name": "AirBook",
   "short_name": "AirBook",
-  "description": "SaaS for Professional Services Bookings. Spas, Hair Stylists, Wellness, and Professional Services.",
-  "start_url": "/",
+  "description": "Professional booking management for salons, spas, clinics, and service professionals.",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#F5F6FA",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
   "theme_color": "#007AFF",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
-  "categories": ["business", "lifestyle", "utilities"]
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/apple-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "apple touch icon" }
+  ]
 }

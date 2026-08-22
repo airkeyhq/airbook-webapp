@@ -70,3 +70,6 @@ Industry Add-On Modules (eSign, HIPAA, KYC) are restricted features:
 | **KYC Identity Verification** | ✅ Released (v1.3) | ❌ Public | Biometric 3D Liveness & ID Verification |
 | **Brand & Public Brand Kit** | ✅ Released (v1.3) | ❌ Public | Custom Branding, Covers & Live Storefront |
 | **Enterprise Multi-Location** | ✅ Released (v2.0) | ❌ Public | Multi-Branch Provisioning & Network Analytics |
+| **Offline-First PWA & Web Push** | ✅ Released (v2.1) | ❌ Public | Service Worker, Web Push VAPID, Offline Sync Banner |
+| **Custom Domain White-Label** | ✅ Released (v2.2) | ❌ Public | Custom Domain DNS Config, CNAME/A Verification, SSL Status |
+| **Stripe Terminal In-Person POS** | ✅ Released (v2.3) | ❌ Public | Hardware Reader Pairing, Tap/Chip/Swipe, Terminal Collect & Capture |

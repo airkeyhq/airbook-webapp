@@ -26,6 +26,7 @@ import { POSCheckoutModal } from '@/components/POSCheckoutModal';
 import { ClientNotesModal } from '@/components/ClientNotesModal';
 import { AppointmentDetailsModal } from '@/components/AppointmentDetailsModal';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { OfflineSyncBanner } from '@/components/OfflineSyncBanner';
 import { motion } from 'framer-motion';
 import {
   Calendar24Filled,
@@ -83,6 +84,9 @@ export default function DashboardPage() {
 
   return (
     <main className="app-shell bg-[var(--canvas-bg)] text-[var(--canvas-fg)] flex flex-col h-screen w-screen overflow-hidden p-2.5 sm:p-3.5 gap-2.5 sm:gap-3.5">
+      {/* Global Offline Sync Banner & Service Worker */}
+      <OfflineSyncBanner />
+
       {/* Top Full-Width Header */}
       <DesktopHeader />
 

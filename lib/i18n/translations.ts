@@ -814,6 +814,37 @@ export const translations = {
     currentLocation: 'Current Active Branch',
     branchProvisionedSuccess: 'New location branch provisioned successfully!',
     branchType: 'Branch Type',
+
+    // v2.1 — Offline-First PWA & Web Push
+    pwaInstalled: 'AirBook installed as an app',
+    pwaOfflineReady: 'Available offline',
+    pushNotificationsEnabled: 'Push notifications active',
+    enablePushNotifications: 'Enable Push Notifications',
+    pushNotificationsDesc: 'Receive instant alerts for new bookings, check-ins, and client messages — even when AirBook is closed.',
+
+    // v2.2 — Custom Domain White-Label
+    tabDomain: 'Custom Domain',
+    customDomainTitle: 'Custom Domain White-Label',
+    customDomainDesc: 'Connect your own domain so clients book directly at booking.yourbrand.com — powered by AirBook.',
+    customDomainSettingDesc: 'Map your own branded domain to your AirBook booking page for a seamless, white-label client experience.',
+    saveDomain: 'Save Domain',
+    customDomainSaved: 'Custom domain saved — add the DNS record below to activate it.',
+    dnsInstructions: 'DNS Configuration Steps',
+    verifyDomain: 'Verify DNS Propagation',
+    verifyingDomain: 'Verifying…',
+    domainVerified: 'Domain verified successfully! SSL certificate is being provisioned.',
+    domainNotVerified: 'DNS not yet propagated. Try again after 1–48 hours.',
+
+    // v2.3 — Stripe Terminal Hardware POS
+    terminalTitle: 'Hardware Reader Payment',
+    terminalDesc: 'In-person tap, chip, or swipe',
+    terminalReader: 'Terminal Reader',
+    terminalSelectReader: 'Select Reader',
+    terminalPairNew: 'Pair New Reader',
+    terminalCollectPayment: 'Collect In-Person',
+    terminalCollecting: 'Awaiting card tap or chip…',
+    terminalPaymentSuccess: 'In-person payment collected!',
+    terminalPaymentError: 'Payment failed. Try again or use digital checkout.',
   },
   es: {
     // Days of week
@@ -1621,6 +1652,37 @@ export const translations = {
     currentLocation: 'Sede Activa Actual',
     branchProvisionedSuccess: '¡Nueva sucursal creada y configurada con éxito!',
     branchType: 'Tipo de Sede',
+
+    // v2.1 — PWA & Push
+    pwaInstalled: 'AirBook instalada como app',
+    pwaOfflineReady: 'Disponible sin conexión',
+    pushNotificationsEnabled: 'Notificaciones push activas',
+    enablePushNotifications: 'Activar Notificaciones Push',
+    pushNotificationsDesc: 'Recibe alertas instantáneas de nuevas reservas, check-ins y mensajes de clientes, incluso cuando AirBook está cerrado.',
+
+    // v2.2 — Dominio Personalizado
+    tabDomain: 'Dominio Personalizado',
+    customDomainTitle: 'Dominio White-Label Personalizado',
+    customDomainDesc: 'Conecta tu propio dominio para que los clientes reserven en booking.tumarca.com — impulsado por AirBook.',
+    customDomainSettingDesc: 'Vincula tu dominio de marca a tu página de reservas AirBook para una experiencia de cliente blanca y profesional.',
+    saveDomain: 'Guardar Dominio',
+    customDomainSaved: 'Dominio guardado. Añade el registro DNS para activarlo.',
+    dnsInstructions: 'Pasos de Configuración DNS',
+    verifyDomain: 'Verificar Propagación DNS',
+    verifyingDomain: 'Verificando…',
+    domainVerified: '¡Dominio verificado! El certificado SSL está siendo aprovisionado.',
+    domainNotVerified: 'DNS aún no propagado. Inténtalo de nuevo en 1–48 horas.',
+
+    // v2.3 — Terminal Stripe
+    terminalTitle: 'Pago con Lector Físico',
+    terminalDesc: 'Cobro presencial por contacto, chip o banda',
+    terminalReader: 'Lector de Terminal',
+    terminalSelectReader: 'Seleccionar Lector',
+    terminalPairNew: 'Vincular Nuevo Lector',
+    terminalCollectPayment: 'Cobrar Presencialmente',
+    terminalCollecting: 'Esperando tarjeta o contacto…',
+    terminalPaymentSuccess: '¡Pago presencial cobrado con éxito!',
+    terminalPaymentError: 'Pago fallido. Inténtalo de nuevo o usa pago digital.',
   },
   de: {
     // Days of week
@@ -2428,6 +2490,37 @@ export const translations = {
     currentLocation: 'Aktuell Aktiver Standort',
     branchProvisionedSuccess: 'Neuer Standort erfolgreich eingerichtet!',
     branchType: 'Standorttyp',
+
+    // v2.1 — PWA & Push
+    pwaInstalled: 'AirBook als App installiert',
+    pwaOfflineReady: 'Offline verfügbar',
+    pushNotificationsEnabled: 'Push-Benachrichtigungen aktiv',
+    enablePushNotifications: 'Push-Benachrichtigungen aktivieren',
+    pushNotificationsDesc: 'Erhalten Sie sofortige Benachrichtigungen für neue Buchungen, Check-ins und Kundennachrichten — auch wenn AirBook geschlossen ist.',
+
+    // v2.2 — Custom Domain
+    tabDomain: 'Eigene Domain',
+    customDomainTitle: 'White-Label Domain',
+    customDomainDesc: 'Verbinden Sie Ihre eigene Domain, damit Kunden direkt über booking.ihrname.de buchen — powered by AirBook.',
+    customDomainSettingDesc: 'Verknüpfen Sie Ihre Markendomain mit Ihrer AirBook-Buchungsseite für ein nahtloses White-Label-Erlebnis.',
+    saveDomain: 'Domain Speichern',
+    customDomainSaved: 'Domain gespeichert — DNS-Eintrag unten hinzufügen.',
+    dnsInstructions: 'DNS-Konfigurationsschritte',
+    verifyDomain: 'DNS-Ausbreitung prüfen',
+    verifyingDomain: 'Wird geprüft…',
+    domainVerified: 'Domain verifiziert! SSL-Zertifikat wird bereitgestellt.',
+    domainNotVerified: 'DNS noch nicht propagiert. Versuche es in 1–48 Stunden erneut.',
+
+    // v2.3 — Stripe Terminal
+    terminalTitle: 'Hardware-Leser-Zahlung',
+    terminalDesc: 'Kontaktlos, Chip oder Magnetstreifen',
+    terminalReader: 'Terminal-Leser',
+    terminalSelectReader: 'Leser Auswählen',
+    terminalPairNew: 'Neuen Leser Koppeln',
+    terminalCollectPayment: 'Vor Ort Kassieren',
+    terminalCollecting: 'Warte auf Karte oder NFC…',
+    terminalPaymentSuccess: 'Vor-Ort-Zahlung erhalten!',
+    terminalPaymentError: 'Zahlung fehlgeschlagen. Erneut versuchen oder digitalen Checkout nutzen.',
   },
   fr: {
     // Days of week
@@ -3236,5 +3329,36 @@ export const translations = {
     currentLocation: 'Établissement Actif Actuel',
     branchProvisionedSuccess: 'Nouvelle succursale déployée et configurée avec succès !',
     branchType: 'Type d’Établissement',
+
+    // v2.1 — PWA & Push
+    pwaInstalled: 'AirBook installée comme application',
+    pwaOfflineReady: 'Disponible hors ligne',
+    pushNotificationsEnabled: 'Notifications push actives',
+    enablePushNotifications: 'Activer les Notifications Push',
+    pushNotificationsDesc: 'Recevez des alertes instantanées pour les nouvelles réservations, enregistrements et messages clients — même quand AirBook est fermé.',
+
+    // v2.2 — Domaine Personnalisé
+    tabDomain: 'Domaine Personnalisé',
+    customDomainTitle: 'Domaine White-Label',
+    customDomainDesc: 'Connectez votre propre domaine pour que vos clients réservent directement sur booking.votremarque.fr — propulsé par AirBook.',
+    customDomainSettingDesc: 'Associez votre domaine de marque à votre page de réservation AirBook pour une expérience client entièrement en marque blanche.',
+    saveDomain: 'Enregistrer le Domaine',
+    customDomainSaved: 'Domaine enregistré — ajoutez l’enregistrement DNS ci-dessous pour l’activer.',
+    dnsInstructions: 'Étapes de Configuration DNS',
+    verifyDomain: 'Vérifier la Propagation DNS',
+    verifyingDomain: 'Vérification…',
+    domainVerified: 'Domaine vérifié ! Le certificat SSL est en cours de provisionnement.',
+    domainNotVerified: 'DNS pas encore propagé. Réessayez dans 1 à 48 heures.',
+
+    // v2.3 — Terminal Stripe
+    terminalTitle: 'Paiement par Lecteur Physique',
+    terminalDesc: 'Paiement en personne par tap, puce ou bande magnétique',
+    terminalReader: 'Lecteur Terminal',
+    terminalSelectReader: 'Choisir un Lecteur',
+    terminalPairNew: 'Associer un Nouveau Lecteur',
+    terminalCollectPayment: 'Encaisser en Présence',
+    terminalCollecting: 'En attente de la carte ou du NFC…',
+    terminalPaymentSuccess: 'Paiement en personne encaissé avec succès !',
+    terminalPaymentError: 'Paiement échoué. Réessayez ou utilisez le paiement numérique.',
   },
 };

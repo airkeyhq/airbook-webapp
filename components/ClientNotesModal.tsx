@@ -127,31 +127,30 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   };
 
   useEffect(() => {
+    if (!isOpen) return;
     setName(clientName);
     setEmail(clientEmail);
     setPhone(clientPhone);
     setNotes(initialNotes);
     setPreferences(initialPreferences);
     setAllergies(initialAllergies);
-    setTags(initialTags);
-    setCustomSpecs(initialSpecs);
+    setTags(initialTags || []);
+    setCustomSpecs(initialSpecs || []);
     setActiveTab('specs');
     setIsAddingSpec(false);
     setIsAddingTag(false);
-    if (isOpen && clientId) {
+    if (clientId) {
       fetchWaivers();
     }
   }, [
+    isOpen,
+    clientId,
     clientName,
     clientEmail,
     clientPhone,
     initialNotes,
     initialPreferences,
     initialAllergies,
-    initialTags,
-    initialSpecs,
-    isOpen,
-    clientId,
   ]);
 
   if (!isOpen) return null;

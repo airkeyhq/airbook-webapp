@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore, Appointment } from '@/lib/store';
 import { POSCheckoutModal } from '@/components/POSCheckoutModal';
+import { POSTerminalModal } from '@/components/POSTerminalModal';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Payment24Filled,
@@ -48,6 +49,10 @@ export const POSModule: React.FC = () => {
   // Active Checkout Modal State
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutAppointment, setCheckoutAppointment] = useState<Appointment | null>(null);
+
+  // Stripe Terminal State
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [terminalAmountCents, setTerminalAmountCents] = useState(0);
 
   const fetchRecentInvoices = async () => {
     try {
@@ -97,6 +102,14 @@ export const POSModule: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => { setTerminalAmountCents(Math.round(totalRevenue * 100) || 5000); setIsTerminalOpen(true); }}
+            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 dark:bg-white/10 dark:hover:bg-white/15 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+          >
+            <Payment24Filled className="w-4 h-4" />
+            <span>{t('terminalReader')}</span>
+          </motion.button>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleOpenWalkinCheckout}
@@ -310,6 +323,18 @@ export const POSModule: React.FC = () => {
         totalPrice={checkoutAppointment?.price || 50}
         staffName={checkoutAppointment?.staffName || 'Staff Specialist'}
         onCheckoutComplete={() => {
+          fetchRecentInvoices();
+        }}
+      />
+
+      {/* Stripe Terminal Hardware Reader Modal */}
+      <POSTerminalModal
+        isOpen={isTerminalOpen}
+        onClose={() => setIsTerminalOpen(false)}
+        amountCents={terminalAmountCents}
+        description="AirBook In-Person Service Payment"
+        onPaymentCollected={() => {
+          setIsTerminalOpen(false);
           fetchRecentInvoices();
         }}
       />

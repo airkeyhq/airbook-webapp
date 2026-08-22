@@ -117,6 +117,24 @@ export const workspaces = pgTable('workspaces', {
   widgetTheme: varchar('widget_theme', { length: 20 }).default('system').notNull(),
   locationType: varchar('location_type', { length: 50 }).default('branch').notNull(), // 'flagship' | 'branch' | 'pop_up'
   managerName: text('manager_name'),
+  // Custom Domain White-Label
+  customDomain: text('custom_domain'),
+  domainVerified: boolean('domain_verified').default(false).notNull(),
+  sslStatus: varchar('ssl_status', { length: 20 }).default('pending'),
+  // Stripe Terminal
+  stripeTerminalLocationId: text('stripe_terminal_location_id'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Web Push Notification Subscriptions
+export const pushSubscriptions = pgTable('push_subscriptions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  endpoint: text('endpoint').notNull(),
+  p256dh: text('p256dh').notNull(),
+  auth: text('auth').notNull(),
+  userAgent: text('user_agent'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

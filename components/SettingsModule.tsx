@@ -9,6 +9,7 @@ import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CustomSelect } from '@/components/CustomSelect';
 import { AddLocationModal } from '@/components/AddLocationModal';
+import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Person24Filled,
@@ -44,12 +45,13 @@ import {
   Edit24Filled,
 } from '@fluentui/react-icons';
 
-type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations';
+type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations' | 'domain';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Regular },
   { id: 'workspace', labelKey: 'workspace', icon: Building24Regular },
   { id: 'locations', labelKey: 'tabLocations', icon: Building24Filled },
+  { id: 'domain', labelKey: 'tabDomain', icon: Globe24Regular },
   { id: 'addons', labelKey: 'addOns', icon: Sparkle24Regular },
   { id: 'compliance', labelKey: 'tabCompliance', icon: Shield24Regular },
 ];
@@ -1019,6 +1021,27 @@ export const SettingsModule: React.FC = () => {
                   })
               )}
             </div>
+          </motion.div>
+        )}
+
+        {/* ─── TAB 6: CUSTOM DOMAIN WHITE-LABEL ─── */}
+        {activeTab === 'domain' && (
+          <motion.div
+            key="domain"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-5"
+          >
+            <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                <Globe24Regular className="w-5 h-5 text-blue-600" />
+                <span>{t('tabDomain')}</span>
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)]">{t('customDomainSettingDesc')}</p>
+            </div>
+            <CustomDomainStudio />
           </motion.div>
         )}
 
