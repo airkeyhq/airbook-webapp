@@ -121,7 +121,7 @@ export const NotificationCenterPopover: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative control-md gap-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
+        className="relative control-md gap-2 px-3 sm:px-4 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
         aria-label={t('notificationsInbox')}
       >
         <Alert24Regular className="w-4 h-4 text-[var(--text-primary)]" />

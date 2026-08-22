@@ -24,7 +24,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div
-      className={`min-h-[300px] sm:min-h-[340px] p-8 sm:p-14 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-center space-y-2 bg-[var(--bg-primary)]/40 ${className}`}
+      className={`min-h-[320px] p-8 sm:p-12 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-center space-y-2 bg-[var(--bg-primary)]/40 ${className}`}
     >
       <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] opacity-60 mb-1">
         <Icon className="w-10 h-10" />
@@ -47,7 +47,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             whileHover={{ scale: 1.02 }}
             type="button"
             onClick={action.onClick}
-            className="px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer"
           >
             {action.icon && <action.icon className="w-4 h-4" />}
             <span>{action.label}</span>

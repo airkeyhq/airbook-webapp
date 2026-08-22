@@ -89,6 +89,14 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - System Toasts / Alerts: `z-[1000]`
     - **Zero Piercing Rule**: NEVER assign arbitrary runaway z-indexes (e.g. `z-[99999]`) to base layout headers or navigation bars, which pierces through modal blur backdrops and destroys modal visual focus.
 
+13. **Mandatory 8-Point & 4-Point Design Grid System**:
+    - **Strict 8pt/4pt Spatial Multiples**: All layout containers, component heights, padding, margins, and gaps MUST strictly align with the 8-point system (8px, 16px, 24px, 32px, 40px, 48px, 56px, 64px) with a 4px sub-grid (4px, 12px, 20px, 28px, 36px) for micro-spacing.
+    - **Zero Arbitrary Odd Values**: NEVER use arbitrary off-grid values (e.g. `p-2.5` / 10px, `p-3.5` / 14px, `gap-2.5`, `h-9` / 36px, `h-11` / 44px). ALWAYS use standard grid tokens (`p-2` / 8px, `p-3` / 12px, `p-4` / 16px, `gap-2` / 8px, `gap-3` / 12px, `h-8` / 32px, `h-10` / 40px, `h-12` / 48px, `h-14` / 56px).
+    - **Design Token Invariants**:
+      - Control Heights: `--size-control-sm: 32px` (`h-8`), `--size-control-md: 40px` (`h-10`), `--size-control-lg: 48px` (`h-12`).
+      - Spacing Scale: `--space-1: 4px`, `--space-2: 8px`, `--space-3: 12px`, `--space-4: 16px`, `--space-5: 20px`, `--space-6: 24px`, `--space-8: 32px`, `--space-10: 40px`, `--space-12: 48px`, `--space-16: 64px`.
+      - Radius Scale: `--radius-xs: 8px`, `--radius-sm: 12px`, `--radius-md: 16px` (`rounded-2xl`), `--radius-lg: 24px` (`rounded-3xl`), `--radius-xl: 32px` (`rounded-[32px]`), `--radius-pill: 9999px` (`rounded-full`).
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

@@ -3,26 +3,32 @@
 @variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {
-  /* ─── ASTRYX-INSPIRED DESIGN TOKEN SYSTEM ─── */
+  /* ─── 8-POINT & 4-POINT DESIGN TOKEN SYSTEM ─── */
   :root {
-    /* 1. Component Size Tokens */
-    --size-control-sm: 32px;  /* Micro buttons, inline badges, compact inputs */
-    --size-control-md: 36px;  /* Header pills, segmented controls, toolbar items */
-    --size-control-lg: 44px;  /* Primary CTAs, modal submit buttons */
+    /* 1. Component Size Tokens (Strict 8pt & 4pt multiples) */
+    --size-control-sm: 32px;  /* 4 * 8px: Compact buttons, inline badges, micro inputs */
+    --size-control-md: 40px;  /* 5 * 8px: Standard header pills, segmented controls, toolbar items */
+    --size-control-lg: 48px;  /* 6 * 8px: Primary CTAs, modal submit buttons, ergonomic touch targets */
 
-    /* 2. Spacing Scale Tokens */
-    --space-1: 0.25rem;   /* 4px  - Micro inline gaps */
-    --space-2: 0.5rem;    /* 8px  - Compact list item gap */
-    --space-3: 0.75rem;   /* 12px - Standard list breathing space */
-    --space-4: 1.0rem;    /* 16px - Card list gap & section padding */
-    --space-6: 1.5rem;    /* 24px - Container padding */
-    --space-8: 2.0rem;    /* 32px - Module section separation */
+    /* 2. Spacing Scale Tokens (Multiples of 8px with 4px sub-grid) */
+    --space-1: 0.25rem;   /* 4px  - Micro inline gaps & badge insets */
+    --space-2: 0.5rem;    /* 8px  - 1 Unit: Base list item gap & compact padding */
+    --space-3: 0.75rem;   /* 12px - 1.5 Units: Standard form inset & input padding */
+    --space-4: 1.0rem;    /* 16px - 2 Units: Card list gap & inner container padding */
+    --space-5: 1.25rem;   /* 20px - 2.5 Units: Medium container breathing space */
+    --space-6: 1.5rem;    /* 24px - 3 Units: Large card & section padding */
+    --space-8: 2.0rem;    /* 32px - 4 Units: Modal padding & module separation */
+    --space-10: 2.5rem;   /* 40px - 5 Units: Section margin */
+    --space-12: 3.0rem;   /* 48px - 6 Units: Macro block separation */
+    --space-16: 4.0rem;   /* 64px - 8 Units: Viewport & hero container breathing room */
 
-    /* 3. Border Radius Tokens */
-    --radius-sm: 0.75rem; /* 12px - Inner pills & input fields */
-    --radius-md: 1.0rem;  /* 16px - Standard cards & dropdown menus */
-    --radius-lg: 1.5rem;  /* 24px - Large modals & drawers */
-    --radius-pill: 9999px;/* Full pill buttons & dock controls */
+    /* 3. Border Radius Tokens (Multiples of 8px with 4px sub-grid) */
+    --radius-xs: 0.5rem;  /* 8px  - 1 Unit: Micro chips & inner badges */
+    --radius-sm: 0.75rem; /* 12px - 1.5 Units: Inputs & compact controls */
+    --radius-md: 1.0rem;  /* 16px - 2 Units: Standard cards & popover menus */
+    --radius-lg: 1.5rem;  /* 24px - 3 Units: Desktop modal dialogs */
+    --radius-xl: 2.0rem;  /* 32px - 4 Units: Mobile bottom sheet drawers & amie panels */
+    --radius-pill: 9999px;/* Full pill buttons, floating docks & avatars */
 
     /* 4. Brand & Accent Color Tokens (AirBook Amie Values) */
     --color-accent-primary: #2BB5FF;       /* Electric Sky Blue */
@@ -192,9 +198,9 @@ body {
 
 .control-md {
   height: var(--size-control-md);
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
-  font-size: 0.75rem;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  font-size: 0.8125rem;
   font-weight: 800;
   border-radius: var(--radius-pill);
   display: inline-flex;
@@ -205,8 +211,8 @@ body {
 
 .control-lg {
   height: var(--size-control-lg);
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
   font-size: 0.875rem;
   font-weight: 800;
   border-radius: var(--radius-md);
@@ -216,12 +222,15 @@ body {
   box-sizing: border-box;
 }
 
-/* Vertical Stacking List Utilities (Guarantees Breathing Space) */
+/* Vertical Stacking List Utilities (Guarantees 8pt/4pt Breathing Space) */
 .stack-1 { display: flex; flex-direction: column; gap: var(--space-1); }
 .stack-2 { display: flex; flex-direction: column; gap: var(--space-2); }
 .stack-3 { display: flex; flex-direction: column; gap: var(--space-3); }
 .stack-4 { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-5 { display: flex; flex-direction: column; gap: var(--space-5); }
 .stack-6 { display: flex; flex-direction: column; gap: var(--space-6); }
+.stack-8 { display: flex; flex-direction: column; gap: var(--space-8); }
+.stack-10 { display: flex; flex-direction: column; gap: var(--space-10); }
 
 /* Aliases for backwards compatibility */
 .stack-xs { display: flex; flex-direction: column; gap: var(--space-1); }

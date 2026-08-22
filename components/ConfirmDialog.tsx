@@ -45,7 +45,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.94, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 460, damping: 30 }}
-          className="relative w-full md:max-w-sm bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl border-t md:border border-[var(--border-subtle)] z-10 space-y-5"
+          className="relative w-full md:max-w-sm bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl border-t md:border border-[var(--border-subtle)] z-10 space-y-4"
         >
           {/* Mobile & Tablet Drag Handle */}
           <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-2 md:hidden" />
@@ -70,11 +70,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
 
           {/* Vertical Button Stacking */}
-          <div className="flex flex-col gap-2.5 w-full pt-2">
+          <div className="flex flex-col gap-2 w-full pt-2">
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onConfirm}
-              className={`w-full py-3.5 rounded-2xl text-xs font-bold shadow-md transition-colors flex items-center justify-center gap-2 ${
+              className={`w-full py-3 rounded-2xl text-xs font-bold shadow-md transition-colors flex items-center justify-center gap-2 ${
                 variant === 'danger'
                   ? 'bg-red-600 hover:bg-red-700 text-white'
                   : 'bg-black text-white dark:bg-white dark:text-black'
