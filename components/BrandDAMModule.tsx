@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Logo, CircleCloudIconFlat, LogoBadgeStyle, LogoFlatStyle } from './Logo';
+import { motion } from 'framer-motion';
+import { Logo, CircleCloudIcon3D, CircleCloudIconFlat, BlueprintBadgeIcon, LogoBadgeStyle, LogoFlatStyle } from './Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import {
   Sparkle24Filled,
-  Sparkle24Regular,
   Copy24Filled,
   Checkmark24Filled,
   ArrowDownload24Filled,
@@ -21,11 +20,11 @@ import {
   Globe24Regular,
   Image24Filled,
   Calendar24Filled,
-  CheckmarkCircle24Filled,
+  Sparkle24Regular,
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
-type StudioTab = 'identity' | 'storefront' | 'badges' | 'embed';
+type StudioTab = 'identity' | 'storefront' | 'badges' | 'glyphs' | 'vector';
 
 const CURATED_COVERS = [
   {
@@ -61,6 +60,40 @@ const CURATED_PALETTES = [
   { name: 'Cyber Blue', primary: '#007AFF', accent: '#60A5FA' },
   { name: 'Sunset Amber Luxury', primary: '#D97706', accent: '#FBBF24' },
 ];
+
+const BADGE_VARIANTS: { id: LogoBadgeStyle; title: string; desc: string; bg: string }[] = [
+  { id: 'sky', title: 'Sky Blue App Badge', desc: 'Default primary AirBook app tile icon', bg: 'from-[#38BDF8] to-[#0284C7]' },
+  { id: 'pink', title: 'Rose Pink App Badge', desc: 'Warm beauty & salon app variant', bg: 'from-[#FFA6B9] to-[#FF8DA1]' },
+  { id: 'grey', title: 'Silver Grey App Badge', desc: 'Minimalist neutral corporate app tile', bg: 'from-[#D1D5DB] to-[#9CA3AF]' },
+  { id: 'dark', title: 'Obsidian Dark Badge', desc: 'Dark theme & macOS app icon variant', bg: 'from-[#1E293B] to-[#0F172A]' },
+  { id: 'blueprint', title: 'Blueprint Grid Badge', desc: 'Engineering & technical vector blueprint', bg: 'bg-[#1D61F2]' },
+];
+
+const FLAT_VARIANTS: { id: LogoFlatStyle; title: string; desc: string }[] = [
+  { id: 'outline', title: 'Black Outline Glyph', desc: 'Clean vector line icon with hollow center' },
+  { id: 'duotone', title: 'Duotone Fill & Stroke', desc: 'Slate grey body with black stroke outline' },
+  { id: 'light-outline', title: 'Light Slate Outline', desc: 'Subtle slate grey outline icon' },
+  { id: 'solid-black', title: 'Solid Black Glyph', desc: 'High-contrast solid black filled silhouette' },
+  { id: 'solid-grey', title: 'Solid Medium Grey', desc: 'Neutral grey filled silhouette glyph' },
+  { id: 'solid-white', title: 'Solid White Glyph', desc: 'White filled silhouette for dark backgrounds' },
+];
+
+const RAW_SVG_CODE = `<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cloudShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.22" />
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.14" />
+    </filter>
+    <linearGradient id="cloudBodyGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#F1F5F9" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+  </defs>
+  <g filter="url(#cloudShadow)">
+    <path fill-rule="evenodd" clip-rule="evenodd" fill="url(#cloudBodyGrad)" d="M 68.00,45.01 Q 100.00,15.00 132.00,45.01 Q 174.05,57.12 164.00,100.00 Q 174.05,142.88 132.00,154.99 Q 100.00,185.00 68.00,154.99 Q 25.95,142.88 36.00,100.00 Q 25.95,57.12 68.00,45.01 Z M 88,72 A 12,12 0 0,1 112,72 L 112,84 A 4,4 0 0,0 116,88 L 128,88 A 12,12 0 0,1 128,112 L 116,112 A 4,4 0 0,0 112,116 L 112,128 A 12,12 0 0,1 88,128 L 88,116 A 4,4 0 0,0 84,112 L 72,112 A 12,12 0 0,1 72,88 L 84,88 A 4,4 0 0,0 88,84 Z" />
+  </g>
+</svg>`;
 
 export const BrandDAMModule: React.FC = () => {
   const { t } = useTranslation();
@@ -164,40 +197,6 @@ export const BrandDAMModule: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const RAW_SVG_CODE = `<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="cloudShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.22" />
-      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.14" />
-    </filter>
-    <linearGradient id="cloudBodyGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="60%" stop-color="#F1F5F9" />
-      <stop offset="100%" stop-color="#CBD5E1" />
-    </linearGradient>
-  </defs>
-  <g filter="url(#cloudShadow)">
-    <path fill-rule="evenodd" clip-rule="evenodd" fill="url(#cloudBodyGrad)" d="M 68.00,45.01 Q 100.00,15.00 132.00,45.01 Q 174.05,57.12 164.00,100.00 Q 174.05,142.88 132.00,154.99 Q 100.00,185.00 68.00,154.99 Q 25.95,142.88 36.00,100.00 Q 25.95,57.12 68.00,45.01 Z M 88,72 A 12,12 0 0,1 112,72 L 112,84 A 4,4 0 0,0 116,88 L 128,88 A 12,12 0 0,1 128,112 L 116,112 A 4,4 0 0,0 112,116 L 112,128 A 12,12 0 0,1 88,128 L 88,116 A 4,4 0 0,0 84,112 L 72,112 A 12,12 0 0,1 72,88 L 84,88 A 4,4 0 0,0 88,84 Z" />
-  </g>
-</svg>`;
-
-  const BADGE_VARIANTS: { id: LogoBadgeStyle; title: string; desc: string; bg: string }[] = [
-    { id: 'sky', title: 'Sky Blue App Badge', desc: 'Default primary AirBook app tile icon', bg: 'from-[#38BDF8] to-[#0284C7]' },
-    { id: 'pink', title: 'Rose Pink App Badge', desc: 'Warm beauty & salon app variant', bg: 'from-[#FFA6B9] to-[#FF8DA1]' },
-    { id: 'grey', title: 'Silver Grey App Badge', desc: 'Minimalist neutral corporate app tile', bg: 'from-[#D1D5DB] to-[#9CA3AF]' },
-    { id: 'dark', title: 'Obsidian Dark Badge', desc: 'Dark theme & macOS app icon variant', bg: 'from-[#1E293B] to-[#0F172A]' },
-    { id: 'blueprint', title: 'Blueprint Grid Badge', desc: 'Engineering & technical vector blueprint', bg: 'bg-[#1D61F2]' },
-  ];
-
-  const FLAT_VARIANTS: { id: LogoFlatStyle; title: string; desc: string }[] = [
-    { id: 'outline', title: 'Black Outline Glyph', desc: 'Clean vector line icon with hollow center' },
-    { id: 'duotone', title: 'Duotone Fill & Stroke', desc: 'Slate grey body with black stroke outline' },
-    { id: 'light-outline', title: 'Light Slate Outline', desc: 'Subtle slate grey outline icon' },
-    { id: 'solid-black', title: 'Solid Black Glyph', desc: 'High-contrast solid black filled silhouette' },
-    { id: 'solid-grey', title: 'Solid Medium Grey', desc: 'Neutral grey filled silhouette glyph' },
-    { id: 'solid-white', title: 'Solid White Glyph', desc: 'White filled silhouette for dark backgrounds' },
-  ];
-
   const getCanvasBgClass = () => {
     switch (bgTheme) {
       case 'light': return 'bg-white text-slate-900 border-slate-200/80';
@@ -220,7 +219,7 @@ export const BrandDAMModule: React.FC = () => {
               <ArrowLeft24Filled className="w-3.5 h-3.5" /> Dashboard
             </Link>
             <span>/</span>
-            <span>Brand Identity Center</span>
+            <span>Digital Asset Management (DAM) & Brand Studio</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--text-primary)] flex items-center gap-3">
             <Logo variant="3d" size={36} />
@@ -231,25 +230,37 @@ export const BrandDAMModule: React.FC = () => {
           </p>
         </div>
 
-        {/* Global Save Button */}
-        <button
-          type="button"
-          onClick={handleSaveBrandKit}
-          disabled={isSaving}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg transition-all cursor-pointer flex-shrink-0"
-        >
-          <Save24Filled className="w-4 h-4" />
-          <span>{isSaving ? 'Saving…' : t('saveBrandKit')}</span>
-        </button>
+        {/* Global Action Buttons */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => handleDownloadSVG('airbook-logo-primary.svg', RAW_SVG_CODE)}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors cursor-pointer"
+          >
+            <ArrowDownload24Filled className="w-4 h-4" />
+            <span>Download SVG</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSaveBrandKit}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg transition-all cursor-pointer"
+          >
+            <Save24Filled className="w-4 h-4" />
+            <span>{isSaving ? 'Saving…' : t('saveBrandKit')}</span>
+          </button>
+        </div>
       </div>
 
-      {/* 4-Tab Navigation Bar */}
+      {/* 5-Tab Navigation Bar */}
       <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] overflow-x-auto">
         {[
           { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
           { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
-          { id: 'badges' as const, label: t('tabAssetKit'), icon: Box24Filled },
-          { id: 'embed' as const, label: 'Embed & Badges', icon: Code24Filled },
+          { id: 'badges' as const, label: '3D App Tiles', icon: Box24Filled },
+          { id: 'glyphs' as const, label: 'Flat UI Glyphs & Icons', icon: Grid24Filled },
+          { id: 'vector' as const, label: 'Vector SVG & Embed Badge', icon: Code24Filled },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -447,7 +458,7 @@ export const BrandDAMModule: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('instagramLabel')}
+                  Instagram Profile URL
                 </label>
                 <input
                   type="url"
@@ -473,7 +484,7 @@ export const BrandDAMModule: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('websiteLabel')}
+                  Official Website URL
                 </label>
                 <input
                   type="url"
@@ -573,9 +584,9 @@ export const BrandDAMModule: React.FC = () => {
         </motion.div>
       )}
 
-      {/* TAB 3: 3D APP BADGES & UI GLYPHS */}
+      {/* TAB 3: 3D APP TILES (ALL 5 VARIATIONS) */}
       {activeTab === 'badges' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           {/* Controls */}
           <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -641,7 +652,7 @@ export const BrandDAMModule: React.FC = () => {
                     ) : (
                       <>
                         <Copy24Filled className="w-3.5 h-3.5" />
-                        <span>Copy Code</span>
+                        <span>Copy React Code</span>
                       </>
                     )}
                   </button>
@@ -652,9 +663,80 @@ export const BrandDAMModule: React.FC = () => {
         </motion.div>
       )}
 
-      {/* TAB 4: EMBED & BADGES */}
-      {activeTab === 'embed' && (
+      {/* TAB 4: FLAT UI GLYPHS & ICONS (ALL 6 VARIATIONS) */}
+      {activeTab === 'glyphs' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          {/* Controls */}
+          <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-extrabold text-[var(--text-muted)] uppercase tracking-wider">
+                Scale ({previewSize}px):
+              </span>
+              <input
+                type="range"
+                min="24"
+                max="160"
+                step="8"
+                value={previewSize}
+                onChange={(e) => setPreviewSize(Number(e.target.value))}
+                className="w-32 accent-blue-600 cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
+              {(['cream', 'light', 'dark', 'grid'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setBgTheme(t)}
+                  className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
+                    bgTheme === t
+                      ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 6 Glyphs Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {FLAT_VARIANTS.map((flat) => (
+              <div
+                key={flat.id}
+                className={`p-5 rounded-3xl border flex flex-col items-center justify-between text-center gap-4 transition-all ${getCanvasBgClass()}`}
+              >
+                <div className="min-h-[100px] flex items-center justify-center p-2">
+                  <CircleCloudIconFlat size={previewSize} styleType={flat.id} />
+                </div>
+
+                <div className="w-full pt-3 border-t border-slate-200/60 dark:border-white/10 space-y-2">
+                  <span className="text-xs font-extrabold text-[var(--text-primary)] block truncate">{flat.title}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(`<Logo variant="flat" flatStyle="${flat.id}" size={${previewSize}} />`, flat.id)}
+                    className="w-full py-1.5 px-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 text-[10px] font-extrabold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                  >
+                    {copiedId === flat.id ? (
+                      <Checkmark24Filled className="w-3 h-3 text-emerald-500" />
+                    ) : (
+                      <Copy24Filled className="w-3 h-3" />
+                    )}
+                    <span>{copiedId === flat.id ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* TAB 5: VECTOR SVG & EMBED BADGE */}
+      {activeTab === 'vector' && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          {/* Embed Button Badge Generator */}
           <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
@@ -662,7 +744,7 @@ export const BrandDAMModule: React.FC = () => {
                   {t('bookOnAirBookBadge')}
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Embed this responsive button badge into your website header or footer.
+                  Embed this responsive button badge into your website header, footer, or Linktree.
                 </p>
               </div>
 
@@ -695,27 +777,38 @@ export const BrandDAMModule: React.FC = () => {
             </pre>
           </div>
 
-          {/* Raw SVG Section */}
-          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)]">
-                  Master Vector SVG Logo
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  High-resolution vector asset for print and signage.
-                </p>
-              </div>
+          {/* Master Vector SVG Code */}
+          <div className="p-6 rounded-3xl bg-slate-900 text-slate-100 border border-slate-800 space-y-4">
+            <div className="flex items-center justify-between text-xs font-mono text-slate-400 pb-3 border-b border-slate-800">
+              <span>public/logo.svg (200x200 Master Vector Spec)</span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(RAW_SVG_CODE, 'raw-svg')}
+                  className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
+                >
+                  {copiedId === 'raw-svg' ? (
+                    <Checkmark24Filled className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <Copy24Filled className="w-4 h-4" />
+                  )}
+                  <span>{copiedId === 'raw-svg' ? 'Copied SVG Code!' : 'Copy SVG Code'}</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => handleDownloadSVG('airbook-brand-logo.svg', RAW_SVG_CODE)}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
-              >
-                <ArrowDownload24Filled className="w-4 h-4" />
-                <span>{t('downloadBrandKit')}</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownloadSVG('airbook-brand-logo.svg', RAW_SVG_CODE)}
+                  className="flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+                >
+                  <ArrowDownload24Filled className="w-4 h-4" />
+                  <span>Download File</span>
+                </button>
+              </div>
             </div>
+
+            <pre className="text-xs font-mono text-blue-300 overflow-x-auto p-4 bg-slate-950 rounded-2xl border border-slate-800 max-h-48 overflow-y-auto">
+              {RAW_SVG_CODE}
+            </pre>
           </div>
         </motion.div>
       )}
