@@ -380,3 +380,44 @@ export const expenses = pgTable('expenses', {
   dateStr: varchar('date_str', { length: 10 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// =============================================================================
+// MODULE 10: ESIGN WAIVER PAD & COMPLIANCE LOGS
+// =============================================================================
+
+export const waiver_templates = pgTable('waiver_templates', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  title: text('title').notNull(),
+  category: varchar('category', { length: 50 }).default('General').notNull(),
+  content: text('content').notNull(),
+  requireSignature: boolean('require_signature').default(true).notNull(),
+  requirePhotoConsent: boolean('require_photo_consent').default(true).notNull(),
+  requireAllergyDeclaration: boolean('require_allergy_declaration').default(true).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const signed_waivers = pgTable('signed_waivers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  templateId: uuid('template_id').references(() => waiver_templates.id, { onDelete: 'set null' }),
+  templateTitle: text('template_title').notNull(),
+  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'set null' }),
+  clientName: text('client_name').notNull(),
+  clientEmail: varchar('client_email', { length: 255 }),
+  clientPhone: varchar('client_phone', { length: 30 }),
+  appointmentId: uuid('appointment_id').references(() => appointments.id, { onDelete: 'set null' }),
+  signatureDataUrl: text('signature_data_url').notNull(),
+  agreedClauses: jsonb('agreed_clauses').$type<{
+    termsAgreed: boolean;
+    photoConsent: boolean;
+    allergiesDeclared: boolean;
+    allergyNotes?: string;
+  }>(),
+  signerIp: varchar('signer_ip', { length: 45 }).default('127.0.0.1'),
+  userAgent: text('user_agent'),
+  signedAt: timestamp('signed_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+

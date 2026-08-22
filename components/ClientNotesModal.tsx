@@ -17,9 +17,13 @@ import {
   Delete24Filled,
   Shield24Filled,
   DocumentCheckmark24Filled,
+  DocumentSignature24Filled,
   Add24Filled,
   Warning24Regular,
+  Clock24Regular,
+  ShieldCheckmark24Regular,
 } from '@fluentui/react-icons';
+import { WaiverPadModal } from '@/components/WaiverPadModal';
 
 export interface CustomSpecItem {
   id: string;
@@ -80,7 +84,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   const { addons, appointments } = useAirBookStore();
   const { addToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'specs' | 'contact' | 'history'>('specs');
+  const [activeTab, setActiveTab] = useState<'specs' | 'waivers' | 'contact' | 'history'>('specs');
   const [name, setName] = useState(clientName);
   const [email, setEmail] = useState(clientEmail);
   const [phone, setPhone] = useState(clientPhone);
@@ -89,6 +93,9 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   const [allergies, setAllergies] = useState(initialAllergies);
   const [tags, setTags] = useState<string[]>(initialTags);
   const [customSpecs, setCustomSpecs] = useState<CustomSpecItem[]>(initialSpecs);
+
+  const [signedWaivers, setSignedWaivers] = useState<any[]>([]);
+  const [isWaiverModalOpen, setIsWaiverModalOpen] = useState(false);
 
   const [newSpecLabel, setNewSpecLabel] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
@@ -99,6 +106,19 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
   const [isSaving, setIsSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const fetchWaivers = async () => {
+    if (!clientId) return;
+    try {
+      const res = await fetch(`/api/waivers?clientId=${clientId}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.signedWaivers)) {
+        setSignedWaivers(data.signedWaivers);
+      }
+    } catch (err) {
+      console.warn('Failed to load client signed waivers:', err);
+    }
+  };
 
   useEffect(() => {
     setName(clientName);
@@ -112,6 +132,9 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     setActiveTab('specs');
     setIsAddingSpec(false);
     setIsAddingTag(false);
+    if (isOpen && clientId) {
+      fetchWaivers();
+    }
   }, [
     clientName,
     clientEmail,
@@ -122,6 +145,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     initialTags,
     initialSpecs,
     isOpen,
+    clientId,
   ]);
 
   if (!isOpen) return null;
@@ -314,6 +338,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           <div className="px-5 md:px-6 pt-3 pb-1 border-b border-[var(--border-subtle)] flex items-center gap-2 bg-[var(--bg-primary)] flex-shrink-0">
             {[
               { id: 'specs', label: t('technicalSpecs'), icon: Note24Filled },
+              { id: 'waivers', label: t('waiverPadTitle'), icon: DocumentSignature24Filled },
               { id: 'contact', label: t('details'), icon: Person24Filled },
               { id: 'history', label: t('activity'), icon: Calendar24Filled },
             ].map((tab) => {
@@ -529,6 +554,100 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
               </div>
             )}
 
+            {/* ─── TAB: ESIGN WAIVERS & COMPLIANCE LOGS ─── */}
+            {activeTab === 'waivers' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      {t('complianceLog')}
+                    </h4>
+                    <p className="text-[11px] text-[var(--text-secondary)]">
+                      Signed consent waivers and liability agreements on file.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsWaiverModalOpen(true)}
+                    className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <DocumentSignature24Filled className="w-3.5 h-3.5" />
+                    <span>{t('signNewWaiver')}</span>
+                  </button>
+                </div>
+
+                {signedWaivers.length === 0 ? (
+                  <div className="p-8 text-center bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] rounded-2xl space-y-2">
+                    <ShieldCheckmark24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
+                    <p className="text-xs font-bold text-[var(--text-primary)]">{t('noSignedWaivers')}</p>
+                    <p className="text-[11px] text-[var(--text-secondary)]">{t('noSignedWaiversSub')}</p>
+                    <button
+                      type="button"
+                      onClick={() => setIsWaiverModalOpen(true)}
+                      className="mt-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold inline-flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <DocumentSignature24Filled className="w-3.5 h-3.5" />
+                      <span>{t('signWaiver')}</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {signedWaivers.map((w) => (
+                      <div
+                        key={w.id}
+                        className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] space-y-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-xs font-extrabold text-[var(--text-primary)]">{w.templateTitle}</p>
+                            <p className="text-[10px] text-[var(--text-secondary)]">
+                              Signed: {new Date(w.signedAt).toLocaleDateString()} at {new Date(w.signedAt).toLocaleTimeString()}
+                            </p>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase">
+                            Verified eSign
+                          </span>
+                        </div>
+
+                        {/* Signature Preview */}
+                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-[var(--border-subtle)] flex items-center justify-between">
+                          <img
+                            src={w.signatureDataUrl}
+                            alt="Digital Signature"
+                            className="h-10 max-w-[160px] object-contain"
+                          />
+                          <div className="text-right text-[10px] text-[var(--text-muted)] font-mono">
+                            <p>IP: {w.signerIp || '127.0.0.1'}</p>
+                            <p>Hash: SHA-256 Verified</p>
+                          </div>
+                        </div>
+
+                        {/* Clauses */}
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {w.agreedClauses?.termsAgreed && (
+                            <span className="px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/5 text-[10px] font-semibold text-[var(--text-secondary)]">
+                              ✓ Terms Accepted
+                            </span>
+                          )}
+                          {w.agreedClauses?.photoConsent && (
+                            <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 text-[10px] font-semibold">
+                              ✓ Photo Consent
+                            </span>
+                          )}
+                          {w.agreedClauses?.allergiesDeclared && (
+                            <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 text-[10px] font-semibold">
+                              ✓ Medical Declared
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === 'contact' && (
               <div className="space-y-4">
                 <div className="space-y-1.5">
@@ -667,6 +786,19 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           </div>
         </motion.div>
       </div>
+
+      {/* Embedded Digital Waiver Signing Pad */}
+      <WaiverPadModal
+        isOpen={isWaiverModalOpen}
+        onClose={() => setIsWaiverModalOpen(false)}
+        clientId={clientId}
+        initialClientName={name}
+        initialClientEmail={email}
+        initialClientPhone={phone}
+        onSignedSuccess={(newWaiver) => {
+          setSignedWaivers((prev) => [newWaiver, ...prev]);
+        }}
+      />
     </AnimatePresence>
   );
 };
