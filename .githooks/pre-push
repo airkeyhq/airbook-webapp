@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "\n🔍 [AirBook Guardrail] Running i18n & 4-locale symmetry check before git push..."
+node scripts/audit-i18n.mjs
+
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+  echo "\n\033[0;31m❌ Push Aborted: i18n violations or dictionary discrepancies detected.\033[0m"
+  echo "👉 Check i18n-audit-report.md for details and resolve them before pushing.\n"
+  exit 1
+fi
+
+echo "\n\033[0;32m✅ i18n Guardrail Passed: Code is 100% compliant. Proceeding with push...\033[0m\n"
+exit 0
