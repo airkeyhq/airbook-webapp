@@ -47,3 +47,7 @@ firebase-debug.log
 
 # graphify generated output
 /graphify-out/
+
+# generated audit reports
+i18n-audit-report.md
+
