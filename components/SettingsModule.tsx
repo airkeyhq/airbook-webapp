@@ -10,6 +10,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CustomSelect } from '@/components/CustomSelect';
 import { AddLocationModal } from '@/components/AddLocationModal';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
+import { EmptyState } from '@/components/EmptyState';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Person24Filled,
@@ -873,7 +874,7 @@ export const SettingsModule: React.FC = () => {
           );
         })()}
 
-        {/* ─── TAB 4: HIPAA & COMPLIANCE AUDIT CENTER ─── */}
+        {/* ─── TAB 4: PRIVACY & COMPLIANCE AUDIT CENTER ─── */}
         {activeTab === 'compliance' && (
           <motion.div
             key="compliance"
@@ -883,67 +884,50 @@ export const SettingsModule: React.FC = () => {
             transition={{ duration: 0.15 }}
             className="space-y-5"
           >
-            {/* Header with Export CTA */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs">
-              <div>
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-500" />
-                  <span>{t('complianceTitle')}</span>
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
-                  {t('complianceDesc')}
-                </p>
+            {/* Unified Privacy & Security Overview Card */}
+            <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-base font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                    <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-500" />
+                    <span>{t('complianceTitle')}</span>
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+                    {t('complianceDesc')}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleExportComplianceCsv}
+                  className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                >
+                  <DocumentCheckmark24Regular className="w-4 h-4" />
+                  <span>{t('exportAuditReport')}</span>
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={handleExportComplianceCsv}
-                className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
-              >
-                <DocumentCheckmark24Regular className="w-4 h-4" />
-                <span>{t('exportAuditReport')}</span>
-              </button>
-            </div>
+              {/* Inline Trust & Security Badges Strip */}
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center gap-2.5">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs font-mono font-bold text-[var(--text-primary)]">
+                  <span className="text-blue-500 font-extrabold">{complianceLogs.length}</span>
+                  <span className="text-[11px] font-sans text-[var(--text-secondary)]">{t('totalAuditEvents')}</span>
+                </div>
 
-            {/* Metrics Ribbon */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
-                  {t('totalAuditEvents')}
-                </span>
-                <p className="text-2xl font-black text-blue-600 font-mono">
-                  {complianceLogs.length}
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('immutableAuditRecords')}</p>
-              </div>
-
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
-                  {t('kmsEncryption')}
-                </span>
-                <p className="text-sm font-black text-emerald-600 font-mono mt-1.5 flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>{t('kmsActive')}</span>
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('zeroKnowledgeKeyVault')}</p>
-              </div>
+                  <span>{t('kmsEncryption')} ({t('kmsActive')})</span>
+                </div>
 
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
-                  {t('complianceStatus') || 'Compliance Status'}
-                </span>
-                <p className="text-sm font-black text-purple-600 font-mono mt-1.5 flex items-center gap-1.5">
-                  <CheckmarkCircle24Filled className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-700 dark:text-purple-300 text-xs font-semibold">
+                  <CheckmarkCircle24Filled className="w-3.5 h-3.5" />
                   <span>{t('hipaaVerified')}</span>
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('encryptedPhiStorage')}</p>
-              </div>
-            </div>
+                </div>
 
-            {/* Security Guarantee Banner */}
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-start gap-2.5">
-              <ShieldCheckmark24Regular className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-600" />
-              <span>{t('hipaaGuarantee')}</span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs font-medium text-[var(--text-muted)]">
+                  <span>{t('zeroKnowledgeKeyVault')}</span>
+                </div>
+              </div>
             </div>
 
             {/* Immutable Audit Log Stream Container */}
@@ -977,12 +961,16 @@ export const SettingsModule: React.FC = () => {
                 </div>
               </div>
 
-              {/* Log Stream Content */}
+              {/* Log Stream Content / Standard EmptyState */}
               {loadingCompliance ? (
                 <div className="p-8 text-center text-xs text-[var(--text-secondary)]">{t('loadingComplianceLogs')}</div>
               ) : complianceLogs.filter((log) => complianceFilter === 'all' || log.action === complianceFilter).length === 0 ? (
-                <div className="p-8 text-center text-xs text-[var(--text-muted)]">
-                  {t('noAuditLogs')}
+                <div className="p-4 sm:p-6">
+                  <EmptyState
+                    icon={ShieldCheckmark24Regular}
+                    title={t('noAuditLogsTitle')}
+                    description={t('noAuditLogsDesc')}
+                  />
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border-subtle)]">
