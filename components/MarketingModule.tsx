@@ -304,15 +304,10 @@ export const MarketingModule: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
         {/* Metric 1: SMS Credits Balance */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Phone24Regular className="w-4 h-4 text-blue-500" />
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
-                {t('smsCreditsBalance')}
-              </span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold uppercase">
-              {t('prepaidLedger')}
+          <div className="flex items-center gap-2">
+            <Phone24Regular className="w-4 h-4 text-blue-500" />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+              {t('smsCreditsBalance')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -332,15 +327,10 @@ export const MarketingModule: React.FC = () => {
 
         {/* Metric 2: Email Marketing Engine */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Mail24Regular className="w-4 h-4 text-purple-500" />
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
-                {t('emailMarketing')}
-              </span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-extrabold uppercase">
-              {t('resendEngine')}
+          <div className="flex items-center gap-2">
+            <Mail24Regular className="w-4 h-4 text-purple-500" />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+              {t('emailMarketing')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
@@ -355,24 +345,16 @@ export const MarketingModule: React.FC = () => {
 
         {/* Metric 3: Active Automations */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
-                {t('automatedTriggers')}
-              </span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
-              {t('zeroDebtGuarantee')}
+          <div className="flex items-center gap-2">
+            <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+              {t('automatedTriggers')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
             <p className="text-3xl font-extrabold text-[var(--text-primary)] font-mono">
               {(autoReviewEnabled ? 1 : 0) + (autoReengagementEnabled ? 1 : 0)} / 2
             </p>
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              {t('triggerActive')}
-            </span>
           </div>
         </div>
       </div>
@@ -430,10 +412,7 @@ export const MarketingModule: React.FC = () => {
             </div>
 
             {/* Custom Animated iOS Toggle Switch */}
-            <div className="flex items-center justify-between md:justify-end gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
-              <span className={`text-xs font-extrabold ${autoReviewEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-muted)]'}`}>
-                {autoReviewEnabled ? t('triggerActive') : t('triggerDisabled')}
-              </span>
+            <div className="flex items-center justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
               <button
                 type="button"
                 role="switch"
@@ -484,10 +463,7 @@ export const MarketingModule: React.FC = () => {
             </div>
 
             {/* Custom Animated iOS Toggle Switch */}
-            <div className="flex items-center justify-between md:justify-end gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
-              <span className={`text-xs font-extrabold ${autoReengagementEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-muted)]'}`}>
-                {autoReengagementEnabled ? t('triggerActive') : t('triggerDisabled')}
-              </span>
+            <div className="flex items-center justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
               <button
                 type="button"
                 role="switch"
