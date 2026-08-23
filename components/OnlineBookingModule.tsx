@@ -6,6 +6,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Globe24Regular,
@@ -15,6 +16,7 @@ import {
   QrCode24Filled,
   QrCode24Regular,
   Clock24Regular,
+  Clock24Filled,
   Money24Regular,
   Sparkle24Regular,
   Sparkle24Filled,
@@ -139,7 +141,7 @@ export const OnlineBookingModule: React.FC = () => {
   const { addToast } = useToast();
 
   // Navigation Tab State
-  const [activeTab, setActiveTab] = useState<'policies' | 'branding' | 'widgets'>('policies');
+  const [activeTab, setActiveTab] = useState<'links' | 'policies' | 'branding'>('links');
 
   // Policy Settings State
   const [slugInput, setSlugInput] = useState(workspaceSlug || 'my-salon');
@@ -428,6 +430,19 @@ export const OnlineBookingModule: React.FC = () => {
       <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2 overflow-x-auto scrollbar-none">
         <button
           type="button"
+          onClick={() => setActiveTab('links')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
+            activeTab === 'links'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
+          }`}
+        >
+          <Globe24Filled className="w-4 h-4" />
+          <span>{t('tabStudioLinks')}</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab('policies')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'policies'
@@ -435,7 +450,7 @@ export const OnlineBookingModule: React.FC = () => {
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
-          <Clock24Regular className="w-4 h-4" />
+          <Clock24Filled className="w-4 h-4" />
           <span>{t('tabStudioPolicies')}</span>
         </button>
 
@@ -448,21 +463,8 @@ export const OnlineBookingModule: React.FC = () => {
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
-          <Color24Regular className="w-4 h-4" />
+          <Sparkle24Filled className="w-4 h-4" />
           <span>{t('tabStudioBranding')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('widgets')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
-            activeTab === 'widgets'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
-          }`}
-        >
-          <Code24Regular className="w-4 h-4" />
-          <span>{t('tabStudioWidgets')}</span>
         </button>
       </div>
 
@@ -470,11 +472,14 @@ export const OnlineBookingModule: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Studio Form Panels */}
         <div className="lg:col-span-7 space-y-6">
-          {/* ─── TAB 1: RULES & POLICIES ─── */}
-          {activeTab === 'policies' && (
+          {/* ─── TAB 1: LINKS, DOMAIN & WIDGETS ─── */}
+          {activeTab === 'links' && (
             <div className="space-y-6">
-              {/* Section 1: URL & Slug Manager */}
-              <StudioSection title="Custom Booking Slug" icon={Globe24Regular}>
+              {/* Section 1: AirBook Direct Booking Link & Slug */}
+              <StudioSection title={t('airbookDirectLink')} icon={Globe24Regular}>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  {t('airbookDirectLinkDesc')}
+                </p>
                 <StudioField label={t('bookingSlug')}>
                   <div className="flex items-center bg-black/5 dark:bg-white/5 px-3.5 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-mono">
                     <span className="text-[var(--text-secondary)] opacity-70">airbook.app/book/</span>
@@ -488,7 +493,102 @@ export const OnlineBookingModule: React.FC = () => {
                 </StudioField>
               </StudioSection>
 
-              {/* Section 2: Scheduling & Buffer Rules */}
+              {/* Section 2: White-Label Custom Domain */}
+              <CustomDomainStudio />
+
+              {/* Section 3: Embeddable Widgets */}
+              <StudioSection title={t('embedWidgetsTitle')} icon={Code24Regular}>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  {t('embedWidgetsDesc')}
+                </p>
+
+                <div className="grid grid-cols-3 gap-2 pt-1">
+                  {[
+                    { id: 'iframe', label: t('widgetTypeIframe') },
+                    { id: 'button', label: t('widgetTypeButton') },
+                    { id: 'modal', label: t('widgetTypeModal') },
+                  ].map((w) => (
+                    <button
+                      key={w.id}
+                      type="button"
+                      onClick={() => setWidgetType(w.id as any)}
+                      className={`p-3 rounded-2xl border text-xs font-bold text-center transition-all cursor-pointer ${
+                        widgetType === w.id
+                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)]'
+                      }`}
+                    >
+                      {w.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/90 dark:bg-black text-emerald-400 font-mono text-xs overflow-x-auto space-y-3 relative">
+                  <pre className="whitespace-pre-wrap">{getWidgetSnippet()}</pre>
+                  <button
+                    type="button"
+                    onClick={handleCopySnippet}
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+                  >
+                    {isCopiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                    <span>{isCopiedSnippet ? '✓' : t('copySnippet')}</span>
+                  </button>
+                </div>
+              </StudioSection>
+
+              {/* Section 4: Direct Deep-Link Generator */}
+              <StudioSection title={t('deepLinkBuilderTitle')} icon={Link24Regular}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <StudioField label={t('selectDeepService')}>
+                    <select
+                      value={selectedDeepService}
+                      onChange={(e) => setSelectedDeepService(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
+                    >
+                      <option value="">{t('allServicesDefault')}</option>
+                      {services.map((svc) => (
+                        <option key={svc.id} value={svc.id}>
+                          {svc.name} (${svc.price})
+                        </option>
+                      ))}
+                    </select>
+                  </StudioField>
+
+                  <StudioField label={t('selectDeepStaff')}>
+                    <select
+                      value={selectedDeepStaff}
+                      onChange={(e) => setSelectedDeepStaff(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
+                    >
+                      <option value="">{t('firstAvailableSpecialist')}</option>
+                      {staffMembers.map((st) => (
+                        <option key={st.id} value={st.id}>
+                          {st.name}
+                        </option>
+                      ))}
+                    </select>
+                  </StudioField>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono overflow-x-auto">
+                  <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{deepLinkUrl}</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyDeepLink}
+                    className="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                  >
+                    {isCopiedDeepLink ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                    <span>{isCopiedDeepLink ? '✓' : t('copyBookingLink')}</span>
+                  </button>
+                </div>
+              </StudioSection>
+            </div>
+          )}
+
+          {/* ─── TAB 2: RULES & POLICIES ─── */}
+          {activeTab === 'policies' && (
+            <div className="space-y-6">
+              {/* Section 1: Scheduling & Buffer Rules */}
               <StudioSection title={t('bookingRulesTitle')} icon={Clock24Regular}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <StudioField label={t('advanceBookingWindow')}>
@@ -537,7 +637,7 @@ export const OnlineBookingModule: React.FC = () => {
                 </div>
               </StudioSection>
 
-              {/* Section 3: Financial & Deposits */}
+              {/* Section 2: Financial & Deposits */}
               <StudioSection title={t('financialPoliciesTitle')} icon={Money24Regular}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <StudioField label={t('depositPercent')}>
@@ -549,7 +649,7 @@ export const OnlineBookingModule: React.FC = () => {
                         { value: '15', label: '15% Deposit' },
                         { value: '20', label: '20% Deposit (Recommended)' },
                         { value: '50', label: '50% Deposit' },
-                        { value: '100', label: '100% Full Prepayment' },
+                        { value: '100', label: 'Full Upfront Prepayment (100%)' },
                       ]}
                     />
                   </StudioField>
@@ -559,19 +659,48 @@ export const OnlineBookingModule: React.FC = () => {
                       value={cancellationNotice}
                       onChange={setCancellationNotice}
                       options={[
-                        { value: '12', label: '12 Hours in advance' },
-                        { value: '24', label: '24 Hours (Standard)' },
-                        { value: '48', label: '48 Hours' },
-                        { value: '72', label: '72 Hours' },
+                        { value: '2', label: '2 Hours Notice' },
+                        { value: '6', label: '6 Hours Notice' },
+                        { value: '12', label: '12 Hours Notice' },
+                        { value: '24', label: '24 Hours Notice (Recommended)' },
+                        { value: '48', label: '48 Hours Notice' },
                       ]}
                     />
                   </StudioField>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-2 mt-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--text-primary)]">{t('stripePayoutsActive')}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{t('stripePayoutsDesc')}</p>
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${
+                      stripeConnected
+                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                        : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                    }`}>
+                      {stripeConnected ? t('stripePayoutsActive') : t('connectStripeBtn')}
+                    </span>
+                  </div>
+
+                  {!stripeConnected && (
+                    <button
+                      type="button"
+                      onClick={handleConnectStripe}
+                      disabled={isConnectingStripe}
+                      className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer mt-2"
+                    >
+                      <Payment24Filled className="w-4 h-4" />
+                      <span>{isConnectingStripe ? 'Connecting…' : t('connectStripeBtn')}</span>
+                    </button>
+                  )}
                 </div>
               </StudioSection>
             </div>
           )}
 
-          {/* ─── TAB 2: PAGE BRANDING & BIO ─── */}
+          {/* ─── TAB 3: PAGE BRANDING & BIO ─── */}
           {activeTab === 'branding' && (
             <div className="space-y-6">
               {/* Color Palette Selector */}
@@ -674,98 +803,6 @@ export const OnlineBookingModule: React.FC = () => {
                   placeholder="Please arrive 5 minutes prior to your appointment..."
                   className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
                 />
-              </StudioSection>
-            </div>
-          )}
-
-          {/* ─── TAB 3: EMBEDDABLE WIDGETS & DEEP-LINKS ─── */}
-          {activeTab === 'widgets' && (
-            <div className="space-y-6">
-              {/* Embed Widget Generator */}
-              <StudioSection title={t('embedWidgetsTitle')} icon={Code24Regular}>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {t('embedWidgetsDesc')}
-                </p>
-
-                <div className="grid grid-cols-3 gap-2 pt-1">
-                  {[
-                    { id: 'iframe', label: t('widgetTypeIframe') },
-                    { id: 'button', label: t('widgetTypeButton') },
-                    { id: 'modal', label: t('widgetTypeModal') },
-                  ].map((w) => (
-                    <button
-                      key={w.id}
-                      type="button"
-                      onClick={() => setWidgetType(w.id as any)}
-                      className={`p-3 rounded-2xl border text-xs font-bold text-center transition-all cursor-pointer ${
-                        widgetType === w.id
-                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm'
-                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)]'
-                      }`}
-                    >
-                      {w.label}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="p-4 rounded-2xl bg-black/90 dark:bg-black text-emerald-400 font-mono text-xs overflow-x-auto space-y-3 relative">
-                  <pre className="whitespace-pre-wrap">{getWidgetSnippet()}</pre>
-                  <button
-                    type="button"
-                    onClick={handleCopySnippet}
-                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
-                  >
-                    {isCopiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
-                    <span>{isCopiedSnippet ? 'Copied!' : t('copySnippet')}</span>
-                  </button>
-                </div>
-              </StudioSection>
-
-              {/* Direct Deep-Link Generator */}
-              <StudioSection title={t('deepLinkBuilderTitle')} icon={Link24Regular}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <StudioField label={t('selectDeepService')}>
-                    <select
-                      value={selectedDeepService}
-                      onChange={(e) => setSelectedDeepService(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
-                    >
-                      <option value="">{t('allServicesDefault')}</option>
-                      {services.map((svc) => (
-                        <option key={svc.id} value={svc.id}>
-                          {svc.name} (${svc.price})
-                        </option>
-                      ))}
-                    </select>
-                  </StudioField>
-
-                  <StudioField label={t('selectDeepStaff')}>
-                    <select
-                      value={selectedDeepStaff}
-                      onChange={(e) => setSelectedDeepStaff(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
-                    >
-                      <option value="">{t('firstAvailableSpecialist')}</option>
-                      {staffMembers.map((st) => (
-                        <option key={st.id} value={st.id}>
-                          {st.name}
-                        </option>
-                      ))}
-                    </select>
-                  </StudioField>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono">
-                  <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{deepLinkUrl}</span>
-                  <button
-                    type="button"
-                    onClick={handleCopyDeepLink}
-                    className="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
-                  >
-                    {isCopiedDeepLink ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
-                    <span>{isCopiedDeepLink ? 'Copied' : 'Copy'}</span>
-                  </button>
-                </div>
               </StudioSection>
             </div>
           )}
