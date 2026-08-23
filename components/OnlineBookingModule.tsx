@@ -369,7 +369,7 @@ export const OnlineBookingModule: React.FC = () => {
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 space-y-6 pb-24">
       {/* Header Banner with Action Buttons */}
       <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
@@ -382,36 +382,6 @@ export const OnlineBookingModule: React.FC = () => {
             <p className="text-xs text-[var(--text-secondary)] max-w-xl">
               {t('onlineBookingDesc')}
             </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setIsQrModalOpen(true)}
-              className="px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center gap-2 transition-all cursor-pointer"
-            >
-              <QrCode24Filled className="w-4 h-4 text-purple-500" />
-              <span>{t('qrCodeModalTitle')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              className="px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center gap-2 transition-all cursor-pointer"
-            >
-              {isCopied ? <Checkmark24Filled className="w-4 h-4 text-emerald-500" /> : <Copy24Filled className="w-4 h-4 text-blue-500" />}
-              <span>{isCopied ? t('linkCopied') : t('copyBookingLink')}</span>
-            </button>
-
-            <a
-              href={`/book/${slugInput}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-md transition-all cursor-pointer"
-            >
-              <Open24Filled className="w-4 h-4" />
-              <span>{t('openLiveBookingPage')}</span>
-            </a>
           </div>
         </div>
       </div>

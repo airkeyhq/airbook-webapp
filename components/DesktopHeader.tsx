@@ -9,7 +9,19 @@ import { NotificationCenterPopover } from './NotificationCenterPopover';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
-import { ChevronDown24Filled, Share24Filled, Sparkle24Filled, SignOut24Filled, Person24Filled } from '@fluentui/react-icons';
+import {
+  ChevronDown24Filled,
+  Share24Filled,
+  Sparkle24Filled,
+  SignOut24Filled,
+  Person24Filled,
+  Open24Filled,
+  Copy24Filled,
+  Checkmark24Filled,
+  QrCode24Filled,
+  Dismiss24Filled,
+} from '@fluentui/react-icons';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export const DesktopHeader: React.FC = () => {
@@ -23,12 +35,15 @@ export const DesktopHeader: React.FC = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [workspaces, setWorkspaces] = useState<any[]>([]);
 
   const [mounted, setMounted] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const workspaceDropdownRef = useRef<HTMLDivElement>(null);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/workspaces')
@@ -52,15 +67,24 @@ export const DesktopHeader: React.FC = () => {
       if (workspaceDropdownRef.current && !workspaceDropdownRef.current.contains(target)) {
         setIsWorkspaceMenuOpen(false);
       }
+      if (shareMenuRef.current && !shareMenuRef.current.contains(target)) {
+        setIsShareMenuOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleShareLink = () => {
-    navigator.clipboard.writeText(`https://getairbook.com/book/${workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`);
+  const currentSlug = workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+  const publicBookingUrl = `https://getairbook.com/book/${currentSlug}`;
+
+  const handleCopyDirectLink = () => {
+    navigator.clipboard.writeText(publicBookingUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      setCopied(false);
+      setIsShareMenuOpen(false);
+    }, 1500);
   };
 
   const handleSignOut = async () => {
@@ -236,16 +260,151 @@ export const DesktopHeader: React.FC = () => {
             )}
           </div>
 
-          {/* Share Booking Link Button */}
-          <button
-            onClick={handleShareLink}
-            className="h-9 flex items-center justify-center gap-1.5 px-3 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0"
-          >
-            <Share24Filled className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="hidden sm:inline">{copied ? t('linkCopied') : t('shareLink')}</span>
-          </button>
+          {/* Share Booking Dropdown */}
+          <div ref={shareMenuRef} className="relative z-40">
+            <button
+              onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
+              className="h-9 flex items-center justify-center gap-1.5 px-3 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0 cursor-pointer"
+            >
+              <Share24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{t('shareLink')}</span>
+            </button>
+
+            {isShareMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+                <div className="px-3 py-2 border-b border-[var(--border-subtle)] mb-1">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                    {t('onlineBookingTitle')}
+                  </p>
+                  <p className="text-xs font-mono font-bold text-blue-500 truncate mt-0.5">
+                    {`getairbook.com/book/${currentSlug}`}
+                  </p>
+                </div>
+
+                {/* Option 1: Open Live Page */}
+                <a
+                  href={`/book/${currentSlug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsShareMenuOpen(false)}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                >
+                  <Open24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span>{t('openLiveBookingPage')}</span>
+                </a>
+
+                {/* Option 2: Copy Link */}
+                <button
+                  onClick={handleCopyDirectLink}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                >
+                  {copied ? (
+                    <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  ) : (
+                    <Copy24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  )}
+                  <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
+                </button>
+
+                {/* Option 3: QR Code */}
+                <button
+                  onClick={() => {
+                    setIsShareMenuOpen(false);
+                    setIsQrModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                >
+                  <QrCode24Filled className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span>{t('qrCodeModalTitle')}</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
+
+      {/* QR Code Modal */}
+      <AnimatePresence>
+        {isQrModalOpen && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-sm rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                  <QrCode24Filled className="w-4 h-4 text-purple-500" />
+                  <span>{t('qrCodeModalTitle')}</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsQrModalOpen(false)}
+                  className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
+                >
+                  <Dismiss24Filled className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
+
+              {/* High-Resolution QR Vector Card */}
+              <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
+                <svg viewBox="0 0 100 100" className="w-36 h-36">
+                  <rect x="0" y="0" width="100" height="100" fill="white" />
+                  <rect x="10" y="10" width="24" height="24" fill="black" />
+                  <rect x="14" y="14" width="16" height="16" fill="white" />
+                  <rect x="18" y="18" width="8" height="8" fill="black" />
+                  <rect x="66" y="10" width="24" height="24" fill="black" />
+                  <rect x="70" y="14" width="16" height="16" fill="white" />
+                  <rect x="74" y="18" width="8" height="8" fill="black" />
+                  <rect x="10" y="66" width="24" height="24" fill="black" />
+                  <rect x="14" y="70" width="16" height="16" fill="white" />
+                  <rect x="18" y="74" width="8" height="8" fill="black" />
+                  <rect x="40" y="10" width="8" height="8" fill="black" />
+                  <rect x="52" y="14" width="8" height="8" fill="black" />
+                  <rect x="40" y="26" width="8" height="8" fill="black" />
+                  <rect x="48" y="38" width="8" height="8" fill="black" />
+                  <rect x="14" y="44" width="8" height="8" fill="black" />
+                  <rect x="28" y="48" width="8" height="8" fill="black" />
+                  <rect x="66" y="44" width="8" height="8" fill="black" />
+                  <rect x="78" y="52" width="8" height="8" fill="black" />
+                  <rect x="40" y="66" width="8" height="8" fill="black" />
+                  <rect x="54" y="74" width="8" height="8" fill="black" />
+                  <rect x="62" y="66" width="8" height="8" fill="black" />
+                  <rect x="78" y="80" width="8" height="8" fill="black" />
+                </svg>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[11px] font-mono text-blue-500 font-bold truncate">
+                  {publicBookingUrl}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyDirectLink}
+                    className="flex-1 py-2.5 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    {copied ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                    <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
+                  </button>
+                  <a
+                    href={`/book/${currentSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Open24Filled className="w-3.5 h-3.5" />
+                    <span>{t('openLiveBookingPage')}</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Modal Dialogs */}
       <PricingModal isOpen={isPricingOpen || isPricingModalOpen} onClose={() => { setIsPricingOpen(false); closePricingModal(); }} />
