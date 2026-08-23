@@ -249,7 +249,7 @@ export const OnlineBookingModule: React.FC = () => {
     }
   };
 
-  const originUrl = typeof window !== 'undefined' ? window.location.origin : 'https://airbook.app';
+  const originUrl = typeof window !== 'undefined' ? window.location.origin : 'https://getairbook.com';
   const publicUrl = `${originUrl}/book/${slugInput}`;
 
   // Deep Link Calculation
@@ -413,17 +413,6 @@ export const OnlineBookingModule: React.FC = () => {
             </a>
           </div>
         </div>
-
-        {/* Live URL Pill */}
-        <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono">
-          <div className="flex items-center gap-2 truncate">
-            <span className="text-[var(--text-secondary)] font-bold">{t('liveBookingUrl')}:</span>
-            <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{publicUrl}</span>
-          </div>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider flex-shrink-0">
-            Active
-          </span>
-        </div>
       </div>
 
       {/* Sub-Tab Navigation Bar */}
@@ -482,7 +471,7 @@ export const OnlineBookingModule: React.FC = () => {
                 </p>
                 <StudioField label={t('bookingSlug')}>
                   <div className="flex items-center bg-black/5 dark:bg-white/5 px-3.5 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-mono">
-                    <span className="text-[var(--text-secondary)] opacity-70">airbook.app/book/</span>
+                    <span className="text-[var(--text-secondary)] opacity-70">getairbook.com/book/</span>
                     <input
                       type="text"
                       value={slugInput}
@@ -971,7 +960,7 @@ export const OnlineBookingModule: React.FC = () => {
               </div>
 
               <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate">
-                airbook.app/book/{slugInput}
+                getairbook.com/book/{slugInput}
               </div>
 
               <div className="flex gap-2">

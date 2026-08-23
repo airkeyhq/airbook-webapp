@@ -4,7 +4,7 @@ import { workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 
-const CNAME_TARGET = 'cname.airbook.app';
+const CNAME_TARGET = 'cname.getairbook.com';
 const A_RECORD_TARGET = '76.76.21.21';
 
 export async function GET(req: NextRequest) {

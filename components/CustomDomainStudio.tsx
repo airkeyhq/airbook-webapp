@@ -23,7 +23,7 @@ export const CustomDomainStudio: React.FC = () => {
   const [savedDomain, setSavedDomain] = useState<string | null>(null);
   const [domainVerified, setDomainVerified] = useState(false);
   const [sslStatus, setSslStatus] = useState('pending');
-  const [cnameTarget, setCnameTarget] = useState('cname.airbook.app');
+  const [cnameTarget, setCnameTarget] = useState('cname.getairbook.com');
   const [aRecord, setARecord] = useState('76.76.21.21');
   const [isSaving, setIsSaving] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);

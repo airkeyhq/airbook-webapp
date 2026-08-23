@@ -58,7 +58,7 @@ export const DesktopHeader: React.FC = () => {
   }, []);
 
   const handleShareLink = () => {
-    navigator.clipboard.writeText(`https://airbook.app/book/${workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`);
+    navigator.clipboard.writeText(`https://getairbook.com/book/${workspaceSlug || workspaceName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -106,7 +106,7 @@ export const DesktopHeader: React.FC = () => {
                     </div>
                     <div className="flex flex-col flex-1 truncate">
                       <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
-                      <span className="text-[10px] text-[var(--text-muted)] truncate">airbook.app/book/{ws.slug}</span>
+                      <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
                     </div>
                   </button>
                 ))}

@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           },
           body: JSON.stringify({
             personalizations: [{ to: [{ email: recipient }] }],
-            from: { email: process.env.SENDGRID_FROM_EMAIL || 'notifications@airbook.app' },
+            from: { email: process.env.SENDGRID_FROM_EMAIL || 'notifications@getairbook.com' },
             subject: 'AirBook Notification',
             content: [{ type: 'text/plain', value: message }],
           }),

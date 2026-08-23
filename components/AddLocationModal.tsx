@@ -150,7 +150,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
               </label>
               <div className="flex items-center gap-1">
                 <span className="text-xs font-mono text-[var(--text-muted)] bg-black/5 dark:bg-white/5 px-2.5 py-2.5 rounded-xl border border-[var(--border-subtle)]">
-                  airbook.app/book/
+                  getairbook.com/book/
                 </span>
                 <input
                   type="text"

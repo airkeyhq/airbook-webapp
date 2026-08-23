@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const cnameResult = await resolveCname(domain);
-      if (cnameResult.some((r) => r.includes('airbook.app'))) {
+      if (cnameResult.some((r) => r.includes('getairbook.com') || r.includes('airbook'))) {
         verified = true;
         method = 'CNAME';
         resolvedValue = cnameResult[0];

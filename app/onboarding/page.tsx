@@ -281,7 +281,7 @@ export default function OnboardingPage() {
                 {/* Booking slug preview */}
                 {slugInput && (
                   <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--text-muted)]">
-                    <span>airbook.app/book/</span>
+                    <span>getairbook.com/book/</span>
                     <span className="font-bold text-[var(--text-primary)]">{slugInput}</span>
                   </div>
                 )}

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       headers: await headers(),
     }).catch(() => null);
 
-    const userEmail = session?.user?.email || 'operator@airbook.app';
+    const userEmail = session?.user?.email || 'operator@getairbook.com';
     const host = req.headers.get('host') || 'localhost:3000';
     const protocol = req.headers.get('x-forwarded-proto') || 'http';
     const origin = `${protocol}://${host}`;
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
           },
           business_profile: {
             name: ws?.name || 'AirBook Salon',
-            url: `https://airbook.app/book/${ws?.slug || 'salon'}`,
+            url: `https://getairbook.com/book/${ws?.slug || 'salon'}`,
           },
         });
         accountId = account.id;

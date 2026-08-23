@@ -534,7 +534,7 @@ export const SettingsModule: React.FC = () => {
                   </Field>
                   <Field label={t('bookingSlug')}>
                     <div className="flex items-center bg-black/5 dark:bg-white/5 px-3 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-mono">
-                      <span className="text-[var(--text-muted)]">airbook.app/book/</span>
+                      <span className="text-[var(--text-muted)]">getairbook.com/book/</span>
                       <input
                         type="text"
                         value={slug}

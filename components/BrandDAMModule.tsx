@@ -207,7 +207,7 @@ export const BrandDAMModule: React.FC = () => {
   };
 
   const bookingSlug = workspaceSlug || brandName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-  const embedBadgeHtml = `<a href="https://airbook.app/book/${bookingSlug}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:${primaryColor};color:#ffffff;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">📅 Book on AirBook</a>`;
+  const embedBadgeHtml = `<a href="https://getairbook.com/book/${bookingSlug}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:${primaryColor};color:#ffffff;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">📅 Book on AirBook</a>`;
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 p-4 sm:p-8">

@@ -13,7 +13,7 @@ async function getOrCreateDefaultOrgAndUser() {
       .values({
         id: `usr_${Date.now()}`,
         name: 'Eduardo Moreno',
-        email: 'owner@airbook.app',
+        email: 'owner@getairbook.com',
         emailVerified: true,
       })
       .returning();
