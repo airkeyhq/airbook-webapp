@@ -146,13 +146,113 @@ export const NotificationCenterPopover: React.FC = () => {
         </div>
       )}
 
-      {/* Drawer Overlay (Portaled to document.body for total backdrop occlusion over all app chrome) */}
+      {/* Desktop Popover (Lightweight anchored dropdown on desktop >= md:) */}
+      {isOpen && (
+        <div className="hidden md:flex absolute right-0 top-full mt-2 w-96 max-h-[34rem] rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 shadow-2xl z-[150] animate-in fade-in zoom-in-95 flex-col gap-3 overflow-hidden">
+          {/* Popover Header */}
+          <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <Alert24Regular className="w-4 h-4 text-blue-500" />
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
+            </div>
+            {unreadCount > 0 && (
+              <button
+                type="button"
+                onClick={markAllRead}
+                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                {t('markAllRead')}
+              </button>
+            )}
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-bold flex-shrink-0">
+            {[
+              { id: 'all', label: t('filterAll') },
+              { id: 'unread', label: `${t('filterUnread')} (${unreadCount})` },
+              { id: 'logs', label: t('filterLogs') },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveFilter(tab.id as any)}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                  activeFilter === tab.id
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Notification List with Smooth Scroll */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 scroll-fade-y py-1 min-h-0">
+            {filteredNotifications.length === 0 ? (
+              <div className="py-10 px-4 text-center flex flex-col items-center justify-center space-y-2.5">
+                <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center text-[var(--text-muted)]">
+                  <Alert24Regular className="w-6 h-6 opacity-60" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-extrabold text-[var(--text-primary)] tracking-tight">
+                    {t('noNotificationsView')}
+                  </h4>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-[240px] mx-auto leading-relaxed">
+                    {t('noNotificationsSub')}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              filteredNotifications.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    setNotifications((prev) =>
+                      prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
+                    );
+                  }}
+                  className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                    item.isRead
+                      ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
+                      : 'bg-blue-500/5 border-blue-500/20'
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
+                      {item.type === 'sms' || item.type === 'email' ? (
+                        <Mail24Regular className="w-4 h-4" />
+                      ) : item.type === 'payment' ? (
+                        <Payment24Regular className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <Box24Regular className="w-4 h-4 text-amber-500" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{item.title}</h4>
+                        <span className="text-[10px] font-mono text-[var(--text-muted)]">{item.timestamp}</span>
+                      </div>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug line-clamp-2">
+                        {item.message}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile/Tablet Bottom Sheet Drawer (Portaled to document.body, md:hidden) */}
       {mounted &&
         createPortal(
           <AnimatePresence>
             {isOpen && (
-              <div className="fixed inset-0 z-[300] flex flex-col justify-end md:justify-start md:items-end p-0 md:p-4 pointer-events-none">
-                {/* Backdrop Blur Overlay covering 100% of viewport and all app chrome */}
+              <div className="fixed inset-0 z-[300] flex flex-col justify-end p-0 pointer-events-none md:hidden">
+                {/* Backdrop Blur Overlay covering viewport on mobile/tablet */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -161,16 +261,16 @@ export const NotificationCenterPopover: React.FC = () => {
                   className="fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto"
                 />
 
-                {/* Drawer / Popover Panel */}
+                {/* Bottom Sheet Drawer Panel */}
                 <motion.div
-                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 40 }}
                   transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-                  className="relative pointer-events-auto w-full max-h-[85vh] md:max-h-[34rem] md:max-w-md rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl border-t md:border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 md:p-6 shadow-2xl flex flex-col gap-3.5 overflow-hidden z-10 md:mt-14 md:mr-2"
+                  className="relative pointer-events-auto w-full max-h-[85vh] rounded-t-[32px] rounded-b-none border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 shadow-2xl flex flex-col gap-3.5 overflow-hidden z-10"
                 >
                   {/* Drag Handle on mobile */}
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto md:hidden flex-shrink-0" />
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mb-1 flex-shrink-0" />
 
                   {/* Drawer Header */}
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
