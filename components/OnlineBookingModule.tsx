@@ -249,8 +249,8 @@ export const OnlineBookingModule: React.FC = () => {
     }
   };
 
-  const originUrl = typeof window !== 'undefined' ? window.location.origin : 'https://getairbook.com';
-  const publicUrl = `${originUrl}/book/${slugInput}`;
+  const originUrl = 'https://getairbook.com';
+  const publicUrl = `https://getairbook.com/book/${slugInput}`;
 
   // Deep Link Calculation
   let deepLinkUrl = publicUrl;
@@ -529,33 +529,31 @@ export const OnlineBookingModule: React.FC = () => {
               <StudioSection title={t('deepLinkBuilderTitle')} icon={Link24Regular}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <StudioField label={t('selectDeepService')}>
-                    <select
+                    <CustomSelect
                       value={selectedDeepService}
-                      onChange={(e) => setSelectedDeepService(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
-                    >
-                      <option value="">{t('allServicesDefault')}</option>
-                      {services.map((svc) => (
-                        <option key={svc.id} value={svc.id}>
-                          {svc.name} (${svc.price})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setSelectedDeepService}
+                      options={[
+                        { value: '', label: t('allServicesDefault') },
+                        ...services.map((svc) => ({
+                          value: svc.id,
+                          label: `${svc.name} ($${svc.price})`,
+                        })),
+                      ]}
+                    />
                   </StudioField>
 
                   <StudioField label={t('selectDeepStaff')}>
-                    <select
+                    <CustomSelect
                       value={selectedDeepStaff}
-                      onChange={(e) => setSelectedDeepStaff(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none"
-                    >
-                      <option value="">{t('firstAvailableSpecialist')}</option>
-                      {staffMembers.map((st) => (
-                        <option key={st.id} value={st.id}>
-                          {st.name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setSelectedDeepStaff}
+                      options={[
+                        { value: '', label: t('firstAvailableSpecialist') },
+                        ...staffMembers.map((st) => ({
+                          value: st.id,
+                          label: `${st.name} (${st.role || t('staff')})`,
+                        })),
+                      ]}
+                    />
                   </StudioField>
                 </div>
 

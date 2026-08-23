@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { CustomSelect } from '@/components/CustomSelect';
 import {
   Dismiss24Filled,
   CheckmarkCircle24Filled,
@@ -291,17 +292,14 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                 <label className="text-xs font-bold text-[var(--text-secondary)] block">
                   {t('waiverTemplate')}
                 </label>
-                <select
+                <CustomSelect
                   value={selectedTemplateId}
-                  onChange={(e) => setSelectedTemplateId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {templates.map((tmpl) => (
-                    <option key={tmpl.id} value={tmpl.id}>
-                      {tmpl.title} ({tmpl.category})
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedTemplateId}
+                  options={templates.map((tmpl) => ({
+                    value: tmpl.id,
+                    label: `${tmpl.title} (${tmpl.category})`,
+                  }))}
+                />
               </div>
 
               {/* Scrollable Agreement Terms */}

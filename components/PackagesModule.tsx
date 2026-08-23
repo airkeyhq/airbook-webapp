@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { CustomSelect } from './CustomSelect';
 import { EmptyState } from './EmptyState';
 import {
   Tag24Filled,
@@ -1106,21 +1107,18 @@ export const PackagesModule: React.FC = () => {
                     <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                       {t('serviceCovered')}
                     </label>
-                    <select
+                    <CustomSelect
                       value={pkgServiceName}
-                      onChange={(e) => setPkgServiceName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {servicesList.length > 0 ? (
-                        servicesList.map((s) => (
-                          <option key={s.id} value={s.name}>
-                            {s.name} (${(s.priceCents / 100).toFixed(2)})
-                          </option>
-                        ))
-                      ) : (
-                        <option value="Haircut & Styling">{t('haircutStyling') || 'Haircut & Styling'}</option>
-                      )}
-                    </select>
+                      onChange={setPkgServiceName}
+                      options={
+                        servicesList.length > 0
+                          ? servicesList.map((s) => ({
+                              value: s.name,
+                              label: `${s.name} ($${(s.priceCents / 100).toFixed(2)})`,
+                            }))
+                          : [{ value: 'Haircut & Styling', label: t('haircutStyling') || 'Haircut & Styling' }]
+                      }
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1173,16 +1171,16 @@ export const PackagesModule: React.FC = () => {
                       <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                         {t('validityDays')}
                       </label>
-                      <select
-                        value={pkgValidityDays}
-                        onChange={(e) => setPkgValidityDays(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value={90}>{t('validity90Days')}</option>
-                        <option value={180}>{t('validity180Days')}</option>
-                        <option value={365}>{t('validity365Days')}</option>
-                        <option value={730}>{t('validity730Days')}</option>
-                      </select>
+                      <CustomSelect
+                        value={String(pkgValidityDays)}
+                        onChange={(val) => setPkgValidityDays(Number(val))}
+                        options={[
+                          { value: '90', label: t('validity90Days') },
+                          { value: '180', label: t('validity180Days') },
+                          { value: '365', label: t('validity365Days') },
+                          { value: '730', label: t('validity730Days') },
+                        ]}
+                      />
                     </div>
                   </div>
                 </div>

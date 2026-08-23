@@ -463,16 +463,16 @@ export const MarketingModule: React.FC = () => {
               <label className="text-[11px] font-bold text-[var(--text-secondary)] block">
                 {t('reengagementInterval')}
               </label>
-              <select
-                value={reengagementDays}
-                onChange={(e) => setReengagementDays(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value={14}>{t('days14')}</option>
-                <option value={21}>{t('days21')}</option>
-                <option value={30}>{t('days30')}</option>
-                <option value={60}>{t('days60')}</option>
-              </select>
+              <CustomSelect
+                value={String(reengagementDays)}
+                onChange={(val) => setReengagementDays(Number(val))}
+                options={[
+                  { value: '14', label: t('days14') },
+                  { value: '21', label: t('days21') },
+                  { value: '30', label: t('days30') },
+                  { value: '60', label: t('days60') },
+                ]}
+              />
             </div>
 
             <div className="flex items-center justify-between pt-1">
@@ -627,31 +627,31 @@ export const MarketingModule: React.FC = () => {
                       <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                         {t('targetAudience')}
                       </label>
-                      <select
+                      <CustomSelect
                         value={campAudience}
-                        onChange={(e) => setCampAudience(e.target.value as any)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="all">{t('audienceAll', { count: totalClientsCount })}</option>
-                        <option value="vip">{t('audienceVip', { count: Math.max(5, Math.round(totalClientsCount * 0.25)) })}</option>
-                        <option value="lapsed">{t('audienceLapsed', { count: Math.max(8, Math.round(totalClientsCount * 0.4)) })}</option>
-                        <option value="new">{t('audienceNew', { count: Math.max(4, Math.round(totalClientsCount * 0.15)) })}</option>
-                      </select>
+                        onChange={(val) => setCampAudience(val as any)}
+                        options={[
+                          { value: 'all', label: t('audienceAll', { count: totalClientsCount }) },
+                          { value: 'vip', label: t('audienceVip', { count: Math.max(5, Math.round(totalClientsCount * 0.25)) }) },
+                          { value: 'lapsed', label: t('audienceLapsed', { count: Math.max(8, Math.round(totalClientsCount * 0.4)) }) },
+                          { value: 'new', label: t('audienceNew', { count: Math.max(4, Math.round(totalClientsCount * 0.15)) }) },
+                        ]}
+                      />
                     </div>
 
                     <div className="space-y-1">
                       <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                         {t('campaignChannel')}
                       </label>
-                      <select
+                      <CustomSelect
                         value={campChannel}
-                        onChange={(e) => setCampChannel(e.target.value as any)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="sms">{t('channelSms')}</option>
-                        <option value="email">{t('channelEmail')} ({t('freeLabel')})</option>
-                        <option value="both">{t('channelBoth')}</option>
-                      </select>
+                        onChange={(val) => setCampChannel(val as any)}
+                        options={[
+                          { value: 'sms', label: t('channelSms') },
+                          { value: 'email', label: `${t('channelEmail')} (${t('freeLabel')})` },
+                          { value: 'both', label: t('channelBoth') },
+                        ]}
+                      />
                     </div>
                   </div>
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { CustomSelect } from '@/components/CustomSelect';
 import {
   Building24Filled,
   Dismiss24Filled,
@@ -181,15 +182,15 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 <label className="text-xs font-bold text-[var(--text-secondary)] block">
                   {t('branchTypeLabel')}
                 </label>
-                <select
+                <CustomSelect
                   value={locationType}
-                  onChange={(e) => setLocationType(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                >
-                  <option value="flagship">{t('flagship')}</option>
-                  <option value="branch">{t('branch')}</option>
-                  <option value="pop_up">{t('popUp')}</option>
-                </select>
+                  onChange={(val) => setLocationType(val as any)}
+                  options={[
+                    { value: 'flagship', label: t('flagship') },
+                    { value: 'branch', label: t('branch') },
+                    { value: 'pop_up', label: t('popUp') },
+                  ]}
+                />
               </div>
 
               <div className="space-y-1.5">

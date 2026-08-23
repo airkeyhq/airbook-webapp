@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { useAirBookStore } from '@/lib/store';
+import { CustomSelect } from '@/components/CustomSelect';
 import {
   Add24Filled,
   Phone24Filled,
@@ -512,36 +513,34 @@ export const WalkInKioskModule: React.FC = () => {
                     <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                       {t('selectService')}
                     </label>
-                    <select
+                    <CustomSelect
                       value={selectedServiceId}
-                      onChange={(e) => setSelectedServiceId(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">{t('generalWalkInConsultation')}</option>
-                      {services.map((svc) => (
-                        <option key={svc.id} value={svc.id}>
-                          {svc.name} (${svc.price} · {svc.durationMinutes}m)
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setSelectedServiceId}
+                      options={[
+                        { value: '', label: t('generalWalkInConsultation') },
+                        ...services.map((svc) => ({
+                          value: svc.id,
+                          label: `${svc.name} ($${svc.price} · ${svc.durationMinutes}m)`,
+                        })),
+                      ]}
+                    />
                   </div>
 
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-[var(--text-secondary)] block">
                       {t('preferredSpecialist')}
                     </label>
-                    <select
+                    <CustomSelect
                       value={selectedStaffId}
-                      onChange={(e) => setSelectedStaffId(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">{t('firstAvailable')}</option>
-                      {staffMembers.map((st) => (
-                        <option key={st.id} value={st.id}>
-                          {st.name} ({st.role})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setSelectedStaffId}
+                      options={[
+                        { value: '', label: t('firstAvailable') },
+                        ...staffMembers.map((st) => ({
+                          value: st.id,
+                          label: `${st.name} (${st.role || t('staff')})`,
+                        })),
+                      ]}
+                    />
                   </div>
                 </div>
 
