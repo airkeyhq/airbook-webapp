@@ -168,10 +168,10 @@ export const translations = {
     // Settings Module
     settingsTitle: 'Settings',
     settingsDesc: 'Manage your profile, workspace, team, and feature modules.',
-    myProfile: 'My Profile',
+    myProfile: 'Profile',
     workspace: 'Workspace',
     teamInvites: 'Team & Invites',
-    addOns: 'Add-On Modules',
+    addOns: 'Add-ons',
     personalInfo: 'Personal Info',
     fullName: 'Full Name',
     email: 'Email',
@@ -728,8 +728,8 @@ export const translations = {
     signedAt: 'Signed At',
     signedBy: 'Signed By',
 
-    // HIPAA & Compliance Audit Engine
-    tabCompliance: 'HIPAA & Audit Logs',
+    // Compliance & HIPAA Logs
+    tabCompliance: 'Security & HIPAA',
     complianceTitle: 'HIPAA & Compliance Audit Center',
     complianceDesc: 'Immutable practitioner access logs, encrypted PHI tracking, and exportable audit records.',
     exportAuditReport: 'Export Audit Trail (CSV)',
@@ -794,7 +794,7 @@ export const translations = {
     badgeCopied: 'Vector badge HTML copied to clipboard!',
 
     // Enterprise Multi-Location & Franchise
-    tabLocations: 'Multi-Location Hub',
+    tabLocations: 'Locations',
     locationsTitle: 'Enterprise Multi-Location & Franchise Hub',
     locationsDesc: 'Manage multiple salon, spa, or clinic branches under a unified organization account with cross-location analytics.',
     addNewBranch: '+ Add New Location / Branch',
@@ -823,7 +823,7 @@ export const translations = {
     pushNotificationsDesc: 'Receive instant alerts for new bookings, check-ins, and client messages — even when AirBook is closed.',
 
     // v2.2 — Custom Domain White-Label
-    tabDomain: 'Custom Domain',
+    tabDomain: 'Domain',
     customDomainTitle: 'Custom Domain White-Label',
     customDomainDesc: 'Connect your own domain so clients book directly at booking.yourbrand.com — powered by AirBook.',
     customDomainSettingDesc: 'Map your own branded domain to your AirBook booking page for a seamless, white-label client experience.',
@@ -1295,10 +1295,10 @@ export const translations = {
     // Settings Module
     settingsTitle: 'Configuración',
     settingsDesc: 'Administra tu perfil, espacio de trabajo, equipo y módulos de funciones.',
-    myProfile: 'Mi Perfil',
-    workspace: 'Espacio de Trabajo',
+    myProfile: 'Perfil',
+    workspace: 'Espacio',
     teamInvites: 'Equipo e Invitaciones',
-    addOns: 'Módulos Adicionales',
+    addOns: 'Módulos',
     personalInfo: 'Información Personal',
     fullName: 'Nombre Completo',
     email: 'Correo Electrónico',
@@ -1856,7 +1856,7 @@ export const translations = {
     signedBy: 'Firmado Por',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'HIPAA y Registros de Auditoría',
+    tabCompliance: 'Seguridad & HIPAA',
     complianceTitle: 'Centro de Auditoría y Cumplimiento HIPAA',
     complianceDesc: 'Registros inmutables de acceso de profesionales, seguimiento cifrado de información médica (PHI) y reportes exportables.',
     exportAuditReport: 'Exportar Registro de Auditoría (CSV)',
@@ -1921,7 +1921,7 @@ export const translations = {
     badgeCopied: '¡Código HTML del botón copiado al portapapeles!',
 
     // Enterprise Multi-Location & Franchise
-    tabLocations: 'Módulo Multisede',
+    tabLocations: 'Sedes',
     locationsTitle: 'Centro Empresarial Multisede y Franquicias',
     locationsDesc: 'Administra múltiples sucursales de salón, spa o clínica bajo una cuenta de organización unificada con analíticas globales.',
     addNewBranch: '+ Añadir Nueva Sede / Sucursal',
@@ -1950,7 +1950,7 @@ export const translations = {
     pushNotificationsDesc: 'Recibe alertas instantáneas de nuevas reservas, check-ins y mensajes de clientes, incluso cuando AirBook está cerrado.',
 
     // v2.2 — Dominio Personalizado
-    tabDomain: 'Dominio Personalizado',
+    tabDomain: 'Dominio',
     customDomainTitle: 'Dominio White-Label Personalizado',
     customDomainDesc: 'Conecta tu propio dominio para que los clientes reserven en booking.tumarca.com — impulsado por AirBook.',
     customDomainSettingDesc: 'Vincula tu dominio de marca a tu página de reservas AirBook para una experiencia de cliente blanca y profesional.',
@@ -2421,10 +2421,10 @@ export const translations = {
     // Settings Module
     settingsTitle: 'Einstellungen',
     settingsDesc: 'Verwalten Sie Ihr Profil, Ihren Arbeitsbereich, Ihr Team und Module.',
-    myProfile: 'Mein Profil',
+    myProfile: 'Profil',
     workspace: 'Arbeitsbereich',
     teamInvites: 'Team & Einladungen',
-    addOns: 'Zusatzmodule',
+    addOns: 'Module',
     personalInfo: 'Persönliche Informationen',
     fullName: 'Vollständiger Name',
     email: 'E-Mail-Adresse',
@@ -2982,7 +2982,7 @@ export const translations = {
     signedBy: 'Unterschrieben Von',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'HIPAA & Prüfprotokolle',
+    tabCompliance: 'Sicherheit & HIPAA',
     complianceTitle: 'HIPAA- & Compliance-Audit-Zentrum',
     complianceDesc: 'Unveränderliche Zugriffsprotokolle für Behandler, verschlüsselte PHI-Verfolgung und exportierbare Prüfberichte.',
     exportAuditReport: 'Prüfbericht Exportieren (CSV)',
@@ -3047,7 +3047,7 @@ export const translations = {
     badgeCopied: 'Badge-HTML in die Zwischenablage kopiert!',
 
     // Enterprise Multi-Location & Franchise
-    tabLocations: 'Standort-Hub',
+    tabLocations: 'Standorte',
     locationsTitle: 'Unternehmens-Filialen & Franchise-Hub',
     locationsDesc: 'Verwalten Sie mehrere Salon-, Spa- oder Klinik-Standorte unter einem zentralen Organisationskonto mit standortübergreifenden Analysen.',
     addNewBranch: '+ Neuen Standort / Filiale Hinzufügen',
@@ -3076,7 +3076,7 @@ export const translations = {
     pushNotificationsDesc: 'Erhalten Sie sofortige Benachrichtigungen für neue Buchungen, Check-ins und Kundennachrichten — auch wenn AirBook geschlossen ist.',
 
     // v2.2 — Custom Domain
-    tabDomain: 'Eigene Domain',
+    tabDomain: 'Domain',
     customDomainTitle: 'White-Label Domain',
     customDomainDesc: 'Verbinden Sie Ihre eigene Domain, damit Kunden direkt über booking.ihrname.de buchen — powered by AirBook.',
     customDomainSettingDesc: 'Verknüpfen Sie Ihre Markendomain mit Ihrer AirBook-Buchungsseite für ein nahtloses White-Label-Erlebnis.',
@@ -3547,10 +3547,10 @@ export const translations = {
     // Settings Module
     settingsTitle: 'Paramètres',
     settingsDesc: 'Gérez votre profil, espace de travail, équipe et modules.',
-    myProfile: 'Mon Profil',
-    workspace: 'Espace de Travail',
+    myProfile: 'Profil',
+    workspace: 'Espace',
     teamInvites: 'Équipe & Invitations',
-    addOns: 'Modules d\'extension',
+    addOns: 'Modules',
     personalInfo: 'Informations Personnelles',
     fullName: 'Nom Complet',
     email: 'Adresse E-mail',
@@ -4109,7 +4109,7 @@ export const translations = {
     signedBy: 'Signé Par',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'HIPAA & Journaux d’Audit',
+    tabCompliance: 'Sécurité & HIPAA',
     complianceTitle: 'Centre d’Audit et Conformité HIPAA',
     complianceDesc: 'Journaux d’accès immuables pour les praticiens, suivi chiffré des données de santé (PHI) et rapports d’audit exportables.',
     exportAuditReport: 'Exporter le Journal d’Audit (CSV)',
@@ -4174,7 +4174,7 @@ export const translations = {
     badgeCopied: 'Code HTML du badge copié dans le presse-papiers !',
 
     // Enterprise Multi-Location & Franchise
-    tabLocations: 'Gestion Multisede',
+    tabLocations: 'Sites',
     locationsTitle: 'Centre Entreprise Multisede & Franchises',
     locationsDesc: 'Gérez plusieurs succursales de salons, spas ou cliniques sous un compte d’organisation unifié avec analyses globales.',
     addNewBranch: '+ Ajouter une Nouvelle Succursale / Sede',
@@ -4203,7 +4203,7 @@ export const translations = {
     pushNotificationsDesc: 'Recevez des alertes instantanées pour les nouvelles réservations, enregistrements et messages clients — même quand AirBook est fermé.',
 
     // v2.2 — Domaine Personnalisé
-    tabDomain: 'Domaine Personnalisé',
+    tabDomain: 'Domaine',
     customDomainTitle: 'Domaine White-Label',
     customDomainDesc: 'Connectez votre propre domaine pour que vos clients réservent directement sur booking.votremarque.fr — propulsé par AirBook.',
     customDomainSettingDesc: 'Associez votre domaine de marque à votre page de réservation AirBook pour une expérience client entièrement en marque blanche.',

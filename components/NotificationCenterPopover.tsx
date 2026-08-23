@@ -121,7 +121,7 @@ export const NotificationCenterPopover: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative control-md gap-2 px-3 sm:px-4 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
+        className="relative control-md gap-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
         aria-label={t('notificationsInbox')}
       >
         <Alert24Regular className="w-4 h-4 text-[var(--text-primary)]" />
@@ -206,14 +206,14 @@ export const NotificationCenterPopover: React.FC = () => {
                         prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
                       );
                     }}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                       item.isRead
                         ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
                         : 'bg-blue-500/5 border-blue-500/20'
                     }`}
                   >
-                    <div className="flex items-start gap-2">
-                      <div className="p-2 rounded-lg bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
+                    <div className="flex items-start gap-2.5">
+                      <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
                         {item.type === 'sms' || item.type === 'email' ? (
                           <Mail24Regular className="w-4 h-4" />
                         ) : item.type === 'payment' ? (

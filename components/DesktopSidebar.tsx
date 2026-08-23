@@ -63,7 +63,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
 
   return (
     <aside
-      className={`hidden md:flex flex-col bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-3xl p-3 flex-shrink-0 h-full shadow-md shadow-black/5 dark:shadow-black/30 transition-all duration-150 ease-out relative ${
+      className={`hidden md:flex flex-col bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[24px] p-3 flex-shrink-0 h-full shadow-md shadow-black/5 dark:shadow-black/30 transition-all duration-150 ease-out relative ${
         isSidebarCollapsed ? 'w-[72px] overflow-visible z-20' : 'w-64 overflow-y-auto z-20'
       }`}
     >
@@ -91,7 +91,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
           </motion.button>
 
           {isSidebarCollapsed && (
-            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 drop-shadow-2xl">
+            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 drop-shadow-2xl">
               <span>{t('expandSidebar')}</span>
               <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
             </div>
@@ -100,7 +100,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
       </div>
 
       {/* Navigation Links */}
-      <nav className={`mt-2 space-y-1 flex-1 pr-0.5 ${isSidebarCollapsed ? 'overflow-visible' : 'overflow-y-auto'}`}>
+      <nav className={`mt-2 space-y-1.5 flex-1 pr-0.5 ${isSidebarCollapsed ? 'overflow-visible' : 'overflow-y-auto'}`}>
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -111,14 +111,14 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                 whileTap={{ scale: 0.96 }}
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center ${
-                  isSidebarCollapsed ? 'justify-center py-3' : 'justify-between px-3 py-2'
+                  isSidebarCollapsed ? 'justify-center py-3' : 'justify-between px-3 py-2.5'
                 } rounded-2xl text-xs font-bold transition-all relative ${
                   isActive
                     ? 'bg-[var(--nav-active-bg)] text-[var(--nav-active-fg)] shadow-md'
                     : 'text-[var(--nav-inactive)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
@@ -149,7 +149,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
 
               {/* Floating Tooltip when Collapsed */}
               {isSidebarCollapsed && (
-                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 flex items-center gap-2 drop-shadow-2xl">
+                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-30 flex items-center gap-2 drop-shadow-2xl">
                   <span>{item.label}</span>
                   {item.soon && (
                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-extrabold bg-amber-500/20 text-amber-400">
@@ -172,8 +172,8 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
       {/* Sidebar Footer Card: Upgrade to Pro */}
       <div className="mt-auto pt-2">
         {!isSidebarCollapsed ? (
-          <div className="p-4 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
-            <div className="flex items-center gap-2 font-extrabold text-amber-600 dark:text-amber-400">
+          <div className="p-3.5 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
+            <div className="flex items-center gap-1.5 font-extrabold text-amber-600 dark:text-amber-400">
               <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
               <span>{t('upgradeTo')}</span>
               <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider leading-none">PRO</span>

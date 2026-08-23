@@ -34,7 +34,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calenda
         initial={{ y: 50, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-        className="glass-floating-dock pointer-events-auto rounded-full p-2 inline-flex items-center gap-2 backdrop-blur-3xl shadow-2xl border border-white/60 dark:border-white/10"
+        className="glass-floating-dock pointer-events-auto rounded-full p-1.5 sm:p-2 inline-flex items-center gap-1.5 sm:gap-2 backdrop-blur-3xl shadow-2xl border border-white/60 dark:border-white/10"
       >
         {/* Search / Command Palette (⌘K) */}
         <motion.button
@@ -61,7 +61,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calenda
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.85, x: -6 }}
               transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 sm:gap-2"
             >
               <div className="h-4 w-[1px] bg-black/10 dark:bg-white/10 my-auto" />
 

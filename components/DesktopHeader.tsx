@@ -74,21 +74,21 @@ export const DesktopHeader: React.FC = () => {
   return (
     <>
       <header
-        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-3xl px-3 sm:px-4 flex items-center justify-between flex-shrink-0 z-30 relative shadow-sm gap-2 overflow-visible"
+        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-30 relative shadow-sm gap-1.5 overflow-visible"
       >
         {/* Left: Workspace Dropdown Pill & Sidebar Toggle */}
-        <div ref={workspaceDropdownRef} className="flex items-center gap-2 flex-shrink-0 relative z-40">
+        <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-40">
           <button
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
-            className="h-10 flex items-center gap-2 px-3 sm:px-4 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
+            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
           >
             <CircleCloudIcon size={20} className="flex-shrink-0" />
             <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
-            <ChevronDown24Filled className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+            <ChevronDown24Filled className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           </button>
 
           {isWorkspaceMenuOpen && (
-            <div className="absolute left-0 top-12 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+            <div className="absolute left-0 top-11 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
               
               <div className="max-h-60 overflow-y-auto space-y-1">
                 {workspaces.map((ws) => (
@@ -99,9 +99,9 @@ export const DesktopHeader: React.FC = () => {
                       useAirBookStore.getState().setWorkspaceSlug(ws.slug);
                       setIsWorkspaceMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-md flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
                       {ws.name.charAt(0)}
                     </div>
                     <div className="flex flex-col flex-1 truncate">
@@ -118,7 +118,7 @@ export const DesktopHeader: React.FC = () => {
                     setIsWorkspaceMenuOpen(false);
                     setIsAuthOpen(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 >
                   <Sparkle24Filled className="w-4 h-4" />
                   <span>{t('createNewWorkspace')}</span>
@@ -129,7 +129,7 @@ export const DesktopHeader: React.FC = () => {
         </div>
 
         {/* Right Action Pills */}
-        <div className="flex items-center gap-2 flex-shrink-0 relative">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative">
           {/* Notifications Inbox Popover */}
           <NotificationCenterPopover />
 
@@ -137,7 +137,7 @@ export const DesktopHeader: React.FC = () => {
           <div ref={langMenuRef} className="relative z-40">
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="h-10 flex items-center gap-2 px-3 sm:px-4 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              className="h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
             >
               <img
                 src={`https://hatscripts.github.io/circle-flags/flags/${availableLanguages.find((l) => l.id === language)?.flagCode || 'us'}.svg`}
@@ -149,7 +149,7 @@ export const DesktopHeader: React.FC = () => {
             </button>
 
             {isLangMenuOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
                 {availableLanguages.map((lang) => (
                   <button
                     key={lang.id}
@@ -157,7 +157,7 @@ export const DesktopHeader: React.FC = () => {
                       setLanguage(lang.id);
                       setIsLangMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
                       language === lang.id
                         ? 'bg-black/5 dark:bg-white/10 text-blue-600 dark:text-blue-400 font-extrabold'
                         : 'text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
@@ -179,7 +179,7 @@ export const DesktopHeader: React.FC = () => {
           {mounted && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
             <button
               onClick={toggleDemoMode}
-              className={`h-10 flex items-center gap-2 px-3 sm:px-4 rounded-full transition-all text-xs font-extrabold border ${
+              className={`h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full transition-all text-xs font-extrabold border ${
                 isDemoMode
                   ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
                   : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border-transparent hover:bg-black/10'
@@ -196,7 +196,7 @@ export const DesktopHeader: React.FC = () => {
           <div ref={userDropdownRef} className="relative z-40">
             <button
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-              className="h-10 flex items-center gap-2 px-3 sm:px-4 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
             >
               <img
                 src={getAvatarUrl(userName || 'Operator', session?.user?.image)}
@@ -215,7 +215,7 @@ export const DesktopHeader: React.FC = () => {
                 {session ? (
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
                   >
                     <SignOut24Filled className="w-4 h-4" />
                     <span>{t('signOut')}</span>
@@ -226,7 +226,7 @@ export const DesktopHeader: React.FC = () => {
                       setIsUserDropdownOpen(false);
                       setIsAuthOpen(true);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                   >
                     <Person24Filled className="w-4 h-4" />
                     <span>{t('signIn')}</span>
