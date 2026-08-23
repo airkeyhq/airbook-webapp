@@ -116,7 +116,7 @@ export const NotificationCenterPopover: React.FC = () => {
   });
 
   return (
-    <div ref={containerRef} className="relative z-[100]">
+    <div ref={containerRef} className="relative z-[100] group">
       {/* Bell Button Pill (Icon Only, Actionable Filled) */}
       <button
         type="button"
@@ -131,6 +131,14 @@ export const NotificationCenterPopover: React.FC = () => {
           </span>
         )}
       </button>
+
+      {/* Hover Tooltip */}
+      {!isOpen && (
+        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform translate-y-[-2px] group-hover:translate-y-0 z-30 drop-shadow-2xl">
+          <span>{t('notificationsInbox')}</span>
+          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
+        </div>
+      )}
 
       {/* Popover Dropdown */}
       <AnimatePresence>

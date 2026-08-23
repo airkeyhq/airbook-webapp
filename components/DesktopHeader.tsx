@@ -159,7 +159,7 @@ export const DesktopHeader: React.FC = () => {
           <NotificationCenterPopover />
 
           {/* Share Booking Dropdown (Icon Only, next to Notifications) */}
-          <div ref={shareMenuRef} className="relative z-[100]">
+          <div ref={shareMenuRef} className="relative z-[100] group">
             <button
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
               className="w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] relative flex-shrink-0 cursor-pointer"
@@ -167,6 +167,14 @@ export const DesktopHeader: React.FC = () => {
             >
               <Share24Filled className="w-4 h-4 text-[var(--text-primary)]" />
             </button>
+
+            {/* Hover Tooltip */}
+            {!isShareMenuOpen && (
+              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform translate-y-[-2px] group-hover:translate-y-0 z-30 drop-shadow-2xl">
+                <span>{t('shareLink')}</span>
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
+              </div>
+            )}
 
             {isShareMenuOpen && (
               <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-56 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-0.5">
