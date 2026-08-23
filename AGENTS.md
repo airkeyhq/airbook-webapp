@@ -93,7 +93,7 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Strict 8pt/4pt Spatial Multiples**: All layout containers, component heights, padding, margins, and gaps MUST strictly align with the 8-point system (8px, 16px, 24px, 32px, 40px, 48px, 56px, 64px) with a 4px sub-grid (4px, 12px, 20px, 28px, 36px) for micro-spacing.
     - **Zero Arbitrary Odd Values**: NEVER use arbitrary off-grid values (e.g. `p-2.5` / 10px, `p-3.5` / 14px, `gap-2.5`, `h-9` / 36px, `h-11` / 44px). ALWAYS use standard grid tokens (`p-2` / 8px, `p-3` / 12px, `p-4` / 16px, `gap-2` / 8px, `gap-3` / 12px, `h-8` / 32px, `h-10` / 40px, `h-12` / 48px, `h-14` / 56px).
     - **Design Token Invariants**:
-      - Control Heights: `--size-control-sm: 32px` (`h-8`), `--size-control-md: 40px` (`h-10`), `--size-control-lg: 48px` (`h-12`).
+      - Control Heights: `--size-control-sm: 36px` (`h-9` min touch), `--size-control-md: 40px` (`h-10`), `--size-control-lg: 48px` (`h-12` standard input), `--size-control-xl: 56px` (`h-14` primary CTA).
       - Spacing Scale: `--space-1: 4px`, `--space-2: 8px`, `--space-3: 12px`, `--space-4: 16px`, `--space-5: 20px`, `--space-6: 24px`, `--space-8: 32px`, `--space-10: 40px`, `--space-12: 48px`, `--space-16: 64px`.
       - Radius Scale: `--radius-xs: 8px`, `--radius-sm: 12px`, `--radius-md: 16px` (`rounded-2xl`), `--radius-lg: 24px` (`rounded-3xl`), `--radius-xl: 32px` (`rounded-[32px]`), `--radius-pill: 9999px` (`rounded-full`).
 
@@ -106,6 +106,14 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - Outer Card `rounded-2xl` ($16\text{px}$) with `p-2` ($8\text{px}$) $\rightarrow$ Inner item `rounded-lg` ($8\text{px}$).
       - Outer Modal `rounded-[32px]` ($32\text{px}$) with `p-4` ($16\text{px}$) $\rightarrow$ Inner card `rounded-2xl` ($16\text{px}$).
       - Outer Filter Chip `rounded-xl` ($12\text{px}$) with `p-1` ($4\text{px}$) $\rightarrow$ Inner active tab `rounded-lg` ($8\text{px}$).
+
+15. **Mandatory Astryx Touch-First Foundations & Ergonomics**:
+    - **Counter & Tablet Readiness**: Because AirBook runs on countertop touch registers, iPad counter stands, and mobile devices, interactive components MUST use generous touch-ready dimensions without cramped mouse-only hitboxes.
+    - **Standard Touch Control Heights**:
+      - Form Inputs & Custom Selects: MUST be minimum **`48px`** (`h-12` or `min-h-[48px]`) with `text-sm font-medium`.
+      - Primary Action Banners & POS Checkout CTAs: MUST be **`48px` to `56px`** (`h-12` / `h-14`) with bold, tactile typography (`font-extrabold text-sm`).
+      - Divided List Rows (Clients, Staff, Inventory, Services): MUST maintain minimum height of **`56px`** (`min-h-[56px]`).
+      - Minimum Touch Target Area: $44\times44\text{px}$ to $48\times48\text{px}$ for zero accidental mis-taps.
 
 # Mandatory UI Integrity & Feature Evaluation System
 

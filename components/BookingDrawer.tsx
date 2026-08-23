@@ -230,7 +230,7 @@ export const BookingDrawer: React.FC = () => {
                 whileTap={{ scale: 0.96 }}
                 whileHover={{ scale: 1.01 }}
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+                className="w-full h-12 sm:h-14 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-sm shadow-md flex items-center justify-center gap-2 transition-all"
               >
                 <Sparkle24Filled className="w-4 h-4 text-white dark:text-black" />
                 <span>{t('createAppointment')}</span>

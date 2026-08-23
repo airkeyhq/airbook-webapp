@@ -132,7 +132,7 @@ function Field({
 }
 
 const INPUT_CLS =
-  'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
+  'w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-sm font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
 
 export const SettingsModule: React.FC = () => {
   const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
