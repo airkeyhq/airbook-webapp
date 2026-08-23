@@ -16,12 +16,14 @@ import {
   Person24Regular,
   Building24Filled,
   Building24Regular,
+  Location24Filled,
   People24Filled,
   People24Regular,
   Sparkle24Filled,
   Sparkle24Regular,
   Shield24Regular,
   ShieldCheckmark24Regular,
+  ShieldCheckmark24Filled,
   DocumentCheckmark24Regular,
   Link24Regular,
   Alert24Regular,
@@ -33,6 +35,7 @@ import {
   Add24Filled,
   Dismiss24Filled,
   Globe24Regular,
+  Globe24Filled,
   Clock24Regular,
   Payment24Regular,
   Payment24Filled,
@@ -48,12 +51,12 @@ import {
 type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations' | 'domain';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
-  { id: 'profile', labelKey: 'myProfile', icon: Person24Regular },
-  { id: 'workspace', labelKey: 'workspace', icon: Building24Regular },
-  { id: 'locations', labelKey: 'tabLocations', icon: Building24Regular },
-  { id: 'domain', labelKey: 'tabDomain', icon: Globe24Regular },
-  { id: 'addons', labelKey: 'addOns', icon: Sparkle24Regular },
-  { id: 'compliance', labelKey: 'tabCompliance', icon: ShieldCheckmark24Regular },
+  { id: 'profile', labelKey: 'myProfile', icon: Person24Filled },
+  { id: 'workspace', labelKey: 'workspace', icon: Building24Filled },
+  { id: 'locations', labelKey: 'tabLocations', icon: Location24Filled },
+  { id: 'domain', labelKey: 'tabDomain', icon: Globe24Filled },
+  { id: 'addons', labelKey: 'addOns', icon: Sparkle24Filled },
+  { id: 'compliance', labelKey: 'tabCompliance', icon: ShieldCheckmark24Filled },
 ];
 
 /* ─── Toggle Switch ─── */

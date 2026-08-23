@@ -729,7 +729,7 @@ export const translations = {
     signedBy: 'Signed By',
 
     // Compliance & HIPAA Logs
-    tabCompliance: 'Security & HIPAA',
+    tabCompliance: 'Privacy',
     complianceTitle: 'HIPAA & Compliance Audit Center',
     complianceDesc: 'Immutable practitioner access logs, encrypted PHI tracking, and exportable audit records.',
     exportAuditReport: 'Export Audit Trail (CSV)',
@@ -1856,7 +1856,7 @@ export const translations = {
     signedBy: 'Firmado Por',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'Seguridad & HIPAA',
+    tabCompliance: 'Privacidad',
     complianceTitle: 'Centro de Auditoría y Cumplimiento HIPAA',
     complianceDesc: 'Registros inmutables de acceso de profesionales, seguimiento cifrado de información médica (PHI) y reportes exportables.',
     exportAuditReport: 'Exportar Registro de Auditoría (CSV)',
@@ -2982,7 +2982,7 @@ export const translations = {
     signedBy: 'Unterschrieben Von',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'Sicherheit & HIPAA',
+    tabCompliance: 'Datenschutz',
     complianceTitle: 'HIPAA- & Compliance-Audit-Zentrum',
     complianceDesc: 'Unveränderliche Zugriffsprotokolle für Behandler, verschlüsselte PHI-Verfolgung und exportierbare Prüfberichte.',
     exportAuditReport: 'Prüfbericht Exportieren (CSV)',
@@ -4109,7 +4109,7 @@ export const translations = {
     signedBy: 'Signé Par',
 
     // HIPAA & Compliance Audit Engine
-    tabCompliance: 'Sécurité & HIPAA',
+    tabCompliance: 'Confidentialité',
     complianceTitle: 'Centre d’Audit et Conformité HIPAA',
     complianceDesc: 'Journaux d’accès immuables pour les praticiens, suivi chiffré des données de santé (PHI) et rapports d’audit exportables.',
     exportAuditReport: 'Exporter le Journal d’Audit (CSV)',
