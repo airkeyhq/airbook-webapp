@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import {
   Globe24Filled,
+  Globe24Regular,
   Checkmark24Filled,
   ArrowSync24Filled,
   LockClosed24Regular,
@@ -156,14 +157,14 @@ export const CustomDomainStudio: React.FC = () => {
   return (
     <div className="space-y-5">
       {/* ─── Top Configuration Overview Card ─── */}
-      <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+      <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-base font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-              <Globe24Filled className="w-5 h-5 text-blue-500" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+              <Globe24Regular className="w-4 h-4 text-blue-500" />
               <span>{t('customDomainTitle')}</span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+            <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
               {t('customDomainDesc')}
             </p>
           </div>
@@ -238,7 +239,7 @@ export const CustomDomainStudio: React.FC = () => {
 
       {/* ─── DNS Configuration Instructions & Live Verification ─── */}
       {savedDomain && !domainVerified && (
-        <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+        <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
           <div className="flex items-center gap-2">
             <Info24Regular className="w-5 h-5 text-blue-500" />
             <div>

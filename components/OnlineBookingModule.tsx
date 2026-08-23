@@ -87,7 +87,7 @@ function StudioSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="p-5 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4 shadow-sm">
+    <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
           <Icon className="w-4 h-4 text-blue-500" />
@@ -367,7 +367,7 @@ export const OnlineBookingModule: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 space-y-6 pb-24">
       {/* Header Banner with Action Buttons */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-sm space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
@@ -913,7 +913,7 @@ export const OnlineBookingModule: React.FC = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
+              className="w-full max-w-sm rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
