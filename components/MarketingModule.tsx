@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
@@ -22,6 +22,7 @@ import {
   Phone24Regular,
   ArrowRepeatAll24Regular,
   ShieldCheckmark24Regular,
+  MoreHorizontal24Filled,
 } from '@fluentui/react-icons';
 
 interface Campaign {
@@ -58,6 +59,8 @@ export const MarketingModule: React.FC = () => {
   const [sendingCampaign, setSendingCampaign] = useState(false);
   const [buyingCredits, setBuyingCredits] = useState(false);
   const [testSmsSending, setTestSmsSending] = useState(false);
+  const [reviewActionsOpen, setReviewActionsOpen] = useState(false);
+  const reviewActionsRef = useRef<HTMLDivElement>(null);
 
   // New Campaign Form State
   const [campName, setCampName] = useState('');
@@ -69,6 +72,16 @@ export const MarketingModule: React.FC = () => {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (reviewActionsRef.current && !reviewActionsRef.current.contains(event.target as Node)) {
+        setReviewActionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Load Data
@@ -389,7 +402,7 @@ export const MarketingModule: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                <div className="flex items-center gap-2 pt-1">
                   <input
                     type="url"
                     value={googleReviewUrl}
@@ -398,15 +411,43 @@ export const MarketingModule: React.FC = () => {
                     placeholder="https://g.page/r/your-id/review"
                     className="flex-1 px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <button
-                    type="button"
-                    onClick={handleSendTestReviewSms}
-                    disabled={testSmsSending}
-                    className="px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-blue-600 dark:text-blue-400 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer flex-shrink-0"
-                  >
-                    <Send24Filled className="w-3.5 h-3.5" />
-                    <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
-                  </button>
+
+                  {/* 3-Dots Action Popover */}
+                  <div ref={reviewActionsRef} className="relative flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setReviewActionsOpen(!reviewActionsOpen)}
+                      className="w-8 h-8 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                      aria-label={t('moreActions')}
+                    >
+                      <MoreHorizontal24Filled className="w-4 h-4" />
+                    </button>
+
+                    <AnimatePresence>
+                      {reviewActionsOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                          transition={{ duration: 0.1 }}
+                          className="absolute right-0 top-full mt-1.5 w-60 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
+                        >
+                          <button
+                            type="button"
+                            disabled={testSmsSending}
+                            onClick={() => {
+                              setReviewActionsOpen(false);
+                              handleSendTestReviewSms();
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-left"
+                          >
+                            <Send24Filled className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                            <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
             </div>
