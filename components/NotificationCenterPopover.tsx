@@ -140,110 +140,136 @@ export const NotificationCenterPopover: React.FC = () => {
         </div>
       )}
 
-      {/* Popover Dropdown */}
+      {/* Drawer / Popover Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 glass-panel bg-white/95 dark:bg-[#141720]/95 rounded-3xl shadow-2xl p-4 z-[150] stack-3 overflow-hidden"
-          >
-            {/* Popover Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-black/5 dark:border-white/10">
-              <div className="flex items-center gap-2">
-                <Alert24Filled className="w-4 h-4 text-blue-500" />
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
-              </div>
-              {unreadCount > 0 && (
-                <button
-                  type="button"
-                  onClick={markAllRead}
-                  className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  {t('markAllRead')}
-                </button>
-              )}
-            </div>
+          <>
+            {/* Mobile/Tablet Backdrop Blur Overlay (covers all chrome at z-[300]) */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 z-[300] bg-black/60 backdrop-blur-sm md:hidden"
+            />
 
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-bold">
-              {[
-                { id: 'all', label: t('filterAll') },
-                { id: 'unread', label: `${t('filterUnread')} (${unreadCount})` },
-                { id: 'logs', label: t('filterLogs') },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveFilter(tab.id as any)}
-                  className={`flex-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-colors ${
-                    activeFilter === tab.id
-                      ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+            {/* Panel: Bottom Sheet Drawer on Mobile/Tablet (< md:), Floating Popover on Desktop (md:) */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed inset-x-0 bottom-0 z-[300] max-h-[85vh] rounded-t-[32px] rounded-b-none border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 shadow-2xl flex flex-col gap-3.5 overflow-hidden md:absolute md:inset-auto md:right-0 md:top-full md:mt-2 md:w-96 md:max-h-[32rem] md:rounded-3xl md:border md:p-4 md:shadow-2xl md:z-[150]"
+            >
+              {/* Mobile Drag Handle Pull Bar */}
+              <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto md:hidden flex-shrink-0" />
 
-            {/* Notification List with Smooth Scroll Fade */}
-            <div className="max-h-72 overflow-y-auto space-y-2 pr-1 scroll-fade-y py-1">
-              {filteredNotifications.length === 0 ? (
-                <div className="py-10 px-4 text-center flex flex-col items-center justify-center space-y-2.5">
-                  <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center text-[var(--text-muted)]">
-                    <Alert24Regular className="w-6 h-6 opacity-60" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-extrabold text-[var(--text-primary)] tracking-tight">
-                      {t('noNotificationsView')}
-                    </h4>
-                    <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-[240px] mx-auto leading-relaxed">
-                      {t('noNotificationsSub')}
-                    </p>
-                  </div>
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <Alert24Filled className="w-4 h-4 text-blue-500" />
+                  <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
                 </div>
-              ) : (
-                filteredNotifications.map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => {
-                      setNotifications((prev) =>
-                        prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
-                      );
-                    }}
-                    className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                      item.isRead
-                        ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
-                        : 'bg-blue-500/5 border-blue-500/20'
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={markAllRead}
+                      className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    >
+                      {t('markAllRead')}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="w-7 h-7 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors flex items-center justify-center text-[var(--text-secondary)] md:hidden cursor-pointer"
+                    aria-label={t('close')}
+                  >
+                    <Dismiss24Filled className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-bold flex-shrink-0">
+                {[
+                  { id: 'all', label: t('filterAll') },
+                  { id: 'unread', label: `${t('filterUnread')} (${unreadCount})` },
+                  { id: 'logs', label: t('filterLogs') },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveFilter(tab.id as any)}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                      activeFilter === tab.id
+                        ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="flex items-start gap-2.5">
-                      <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
-                        {item.type === 'sms' || item.type === 'email' ? (
-                          <Mail24Regular className="w-4 h-4" />
-                        ) : item.type === 'payment' ? (
-                          <Payment24Regular className="w-4 h-4 text-emerald-500" />
-                        ) : (
-                          <Box24Regular className="w-4 h-4 text-amber-500" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{item.title}</h4>
-                          <span className="text-[10px] font-mono text-[var(--text-muted)]">{item.timestamp}</span>
-                        </div>
-                        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug line-clamp-2">
-                          {item.message}
-                        </p>
-                      </div>
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Notification List with Smooth Scroll */}
+              <div className="flex-1 overflow-y-auto space-y-2 pr-1 scroll-fade-y py-1 min-h-0">
+                {filteredNotifications.length === 0 ? (
+                  <div className="py-10 px-4 text-center flex flex-col items-center justify-center space-y-2.5">
+                    <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center text-[var(--text-muted)]">
+                      <Alert24Regular className="w-6 h-6 opacity-60" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-extrabold text-[var(--text-primary)] tracking-tight">
+                        {t('noNotificationsView')}
+                      </h4>
+                      <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-[240px] mx-auto leading-relaxed">
+                        {t('noNotificationsSub')}
+                      </p>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </motion.div>
+                ) : (
+                  filteredNotifications.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setNotifications((prev) =>
+                          prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
+                        );
+                      }}
+                      className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                        item.isRead
+                          ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
+                          : 'bg-blue-500/5 border-blue-500/20'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
+                          {item.type === 'sms' || item.type === 'email' ? (
+                            <Mail24Regular className="w-4 h-4" />
+                          ) : item.type === 'payment' ? (
+                            <Payment24Regular className="w-4 h-4 text-emerald-500" />
+                          ) : (
+                            <Box24Regular className="w-4 h-4 text-amber-500" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{item.title}</h4>
+                            <span className="text-[10px] font-mono text-[var(--text-muted)]">{item.timestamp}</span>
+                          </div>
+                          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug line-clamp-2">
+                            {item.message}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
