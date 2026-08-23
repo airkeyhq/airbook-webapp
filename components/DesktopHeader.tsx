@@ -99,9 +99,9 @@ export const DesktopHeader: React.FC = () => {
                       useAirBookStore.getState().setWorkspaceSlug(ws.slug);
                       setIsWorkspaceMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
+                    <div className="w-8 h-8 rounded-md flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
                       {ws.name.charAt(0)}
                     </div>
                     <div className="flex flex-col flex-1 truncate">
@@ -118,7 +118,7 @@ export const DesktopHeader: React.FC = () => {
                     setIsWorkspaceMenuOpen(false);
                     setIsAuthOpen(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 >
                   <Sparkle24Filled className="w-4 h-4" />
                   <span>{t('createNewWorkspace')}</span>
@@ -157,7 +157,7 @@ export const DesktopHeader: React.FC = () => {
                       setLanguage(lang.id);
                       setIsLangMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
                       language === lang.id
                         ? 'bg-black/5 dark:bg-white/10 text-blue-600 dark:text-blue-400 font-extrabold'
                         : 'text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
@@ -215,7 +215,7 @@ export const DesktopHeader: React.FC = () => {
                 {session ? (
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
                   >
                     <SignOut24Filled className="w-4 h-4" />
                     <span>{t('signOut')}</span>
@@ -226,7 +226,7 @@ export const DesktopHeader: React.FC = () => {
                       setIsUserDropdownOpen(false);
                       setIsAuthOpen(true);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                   >
                     <Person24Filled className="w-4 h-4" />
                     <span>{t('signIn')}</span>

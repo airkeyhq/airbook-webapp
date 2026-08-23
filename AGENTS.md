@@ -97,6 +97,16 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - Spacing Scale: `--space-1: 4px`, `--space-2: 8px`, `--space-3: 12px`, `--space-4: 16px`, `--space-5: 20px`, `--space-6: 24px`, `--space-8: 32px`, `--space-10: 40px`, `--space-12: 48px`, `--space-16: 64px`.
       - Radius Scale: `--radius-xs: 8px`, `--radius-sm: 12px`, `--radius-md: 16px` (`rounded-2xl`), `--radius-lg: 24px` (`rounded-3xl`), `--radius-xl: 32px` (`rounded-[32px]`), `--radius-pill: 9999px` (`rounded-full`).
 
+14. **Mandatory Nested Border Radius (Concentric Curves) Invariant**:
+    - **The Concentric Formula**: When nesting rounded containers, the outer border radius MUST equal the inner border radius plus the container padding:
+      $$R_{\text{outer}} = R_{\text{inner}} + \text{Padding} \quad \Longleftrightarrow \quad R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Padding})$$
+    - **Zero Pinched Corners**: NEVER use identical outer and inner radii (e.g. outer $12\text{px}$ with $8\text{px}$ padding and inner $12\text{px}$), which causes visually pinched, uneven corners.
+    - **Concentric Pairings Table**:
+      - Outer Card `rounded-3xl` ($24\text{px}$) with `p-3` ($12\text{px}$) $\rightarrow$ Inner item `rounded-xl` ($12\text{px}$).
+      - Outer Card `rounded-2xl` ($16\text{px}$) with `p-2` ($8\text{px}$) $\rightarrow$ Inner item `rounded-lg` ($8\text{px}$).
+      - Outer Modal `rounded-[32px]` ($32\text{px}$) with `p-4` ($16\text{px}$) $\rightarrow$ Inner card `rounded-2xl` ($16\text{px}$).
+      - Outer Filter Chip `rounded-xl` ($12\text{px}$) with `p-1` ($4\text{px}$) $\rightarrow$ Inner active tab `rounded-lg` ($8\text{px}$).
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
