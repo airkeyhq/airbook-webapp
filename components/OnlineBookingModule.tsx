@@ -17,6 +17,7 @@ import {
   QrCode24Regular,
   Clock24Regular,
   Clock24Filled,
+  Calendar24Filled,
   Money24Regular,
   Sparkle24Regular,
   Sparkle24Filled,
@@ -491,7 +492,7 @@ export const OnlineBookingModule: React.FC = () => {
                   {t('embedWidgetsDesc')}
                 </p>
 
-                <div className="grid grid-cols-3 gap-2 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
                   {[
                     { id: 'iframe', label: t('widgetTypeIframe') },
                     { id: 'button', label: t('widgetTypeButton') },
@@ -503,8 +504,8 @@ export const OnlineBookingModule: React.FC = () => {
                       onClick={() => setWidgetType(w.id as any)}
                       className={`p-3 rounded-2xl border text-xs font-bold text-center transition-all cursor-pointer ${
                         widgetType === w.id
-                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm'
-                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)]'
+                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-xs'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:border-blue-500/30'
                       }`}
                     >
                       {w.label}
@@ -512,12 +513,127 @@ export const OnlineBookingModule: React.FC = () => {
                   ))}
                 </div>
 
+                {/* ─── LIVE INTERACTIVE WIDGET PREVIEW CANVAS ─── */}
+                <div className="rounded-2xl border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-secondary)] shadow-xs space-y-0">
+                  {/* Browser Mock Chrome Bar */}
+                  <div className="px-4 py-2.5 bg-black/5 dark:bg-white/5 border-b border-[var(--border-subtle)] flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400/80 inline-block flex-shrink-0" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 inline-block flex-shrink-0" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 inline-block flex-shrink-0" />
+                      <span className="ml-2 text-[10px] font-mono font-bold text-[var(--text-secondary)] truncate">
+                        yourwebsite.com/booking
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 flex-shrink-0">
+                      {t('liveWidgetPreview')}
+                    </span>
+                  </div>
+
+                  {/* Preview Canvas Area */}
+                  <div className="p-4 sm:p-6 min-h-[220px] flex flex-col items-center justify-center bg-[var(--bg-primary)]">
+                    {/* 1. IFRAME PREVIEW */}
+                    {widgetType === 'iframe' && (
+                      <div className="w-full max-w-sm rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 shadow-md space-y-3">
+                        <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-7 h-7 rounded-xl flex items-center justify-center text-white text-[11px] font-black shadow-xs"
+                              style={{ backgroundColor: brandColor }}
+                            >
+                              A
+                            </div>
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              {workspaceSlug || 'my-salon'}
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                            Online
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <div className="p-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                            <span className="font-bold text-[var(--text-primary)]">Signature Styling</span>
+                            <span className="font-mono font-bold text-[var(--text-secondary)]">$75</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                            <span className="font-bold text-[var(--text-primary)]">Spa Ritual & Glow</span>
+                            <span className="font-mono font-bold text-[var(--text-secondary)]">$120</span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => addToast('✓ iFrame booking widget clicked (preview)', 'success')}
+                          className="w-full py-2.5 rounded-xl text-white font-extrabold text-xs shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
+                          style={{ backgroundColor: brandColor }}
+                        >
+                          {t('bookNowWidgetBtn')}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* 2. FLOATING BUTTON PREVIEW */}
+                    {widgetType === 'button' && (
+                      <div className="w-full h-44 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)]/50 p-4 relative flex flex-col justify-between">
+                        <div className="space-y-2 max-w-xs">
+                          <div className="h-3 w-3/4 bg-black/10 dark:bg-white/10 rounded-full" />
+                          <div className="h-2.5 w-1/2 bg-black/5 dark:bg-white/5 rounded-full" />
+                          <div className="h-2.5 w-2/3 bg-black/5 dark:bg-white/5 rounded-full" />
+                        </div>
+
+                        <div className="flex justify-end">
+                          <motion.button
+                            type="button"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => addToast('✓ Floating action button triggers booking drawer (preview)', 'success')}
+                            className="px-4 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
+                            style={{ backgroundColor: brandColor }}
+                          >
+                            <Calendar24Filled className="w-4 h-4" />
+                            <span>{t('bookNowWidgetBtn')}</span>
+                          </motion.button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. MODAL TRIGGER BUTTON PREVIEW */}
+                    {widgetType === 'modal' && (
+                      <div className="w-full h-44 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)]/50 p-4 flex flex-col items-center justify-center gap-3 text-center">
+                        <div className="space-y-1">
+                          <p className="text-xs font-extrabold text-[var(--text-primary)]">
+                            {workspaceSlug ? workspaceSlug.toUpperCase() : 'SALON & SPA'}
+                          </p>
+                          <p className="text-[11px] text-[var(--text-secondary)]">
+                            {t('previewMockWebsite')}
+                          </p>
+                        </div>
+
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => addToast('✓ Modal popup trigger clicked (preview)', 'success')}
+                          className="px-5 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
+                          style={{ backgroundColor: brandColor }}
+                        >
+                          <Sparkle24Filled className="w-4 h-4" />
+                          <span>{t('bookNowWidgetBtn')}</span>
+                        </motion.button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Code Snippet Box */}
                 <div className="p-4 rounded-2xl bg-black/90 dark:bg-black text-emerald-400 font-mono text-xs overflow-x-auto space-y-3 relative">
                   <pre className="whitespace-pre-wrap">{getWidgetSnippet()}</pre>
                   <button
                     type="button"
                     onClick={handleCopySnippet}
-                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                   >
                     {isCopiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
                     <span>{isCopiedSnippet ? '✓' : t('copySnippet')}</span>
