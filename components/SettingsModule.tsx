@@ -1039,43 +1039,8 @@ export const SettingsModule: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="space-y-4"
           >
-            {/* White-Label Live DNS Routing Manager */}
-            <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <Globe24Regular className="w-5 h-5 text-blue-500" />
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {t('customDomainTitle')}
-                  </h3>
-                </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase">
-                  {t('domainVerified')}
-                </span>
-              </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-                {t('customDomainDesc')}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
-                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('cnameRecord')}</span>
-                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">cname.airbook.app</p>
-                  <p className="text-[10px] text-emerald-600 font-semibold">{t('dnsPropagated')}</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('sslTlsCertificate')}</span>
-                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">{t('autoManagedLetsEncrypt')}</p>
-                  <p className="text-[10px] text-emerald-600 font-semibold">{t('activeSecured')}</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{t('apexRedirect')}</span>
-                  <p className="text-xs font-mono font-extrabold text-[var(--text-primary)]">{t('auto301HttpHttps')}</p>
-                  <p className="text-[10px] text-emerald-600 font-semibold">{t('alwaysEnforced')}</p>
-                </div>
-              </div>
-            </div>
+            <CustomDomainStudio />
           </motion.div>
         )}
 
