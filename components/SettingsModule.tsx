@@ -946,86 +946,98 @@ export const SettingsModule: React.FC = () => {
               <span>{t('hipaaGuarantee')}</span>
             </div>
 
-            {/* Action Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-              {[
-                { id: 'all', label: t('allActions') },
-                { id: 'view_phi', label: t('phiAccess') },
-                { id: 'update_formula', label: t('formulaUpdate') },
-                { id: 'sign_waiver', label: t('waiverSigned') },
-                { id: 'export_records', label: t('recordsExported') },
-              ].map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setComplianceFilter(f.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
-                    complianceFilter === f.id
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
+            {/* Immutable Audit Log Stream Container */}
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-visible shadow-xs">
+              {/* Table Header Toolbar with Filter Dropdown */}
+              <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)]">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                    <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
+                    <span>{t('immutableAuditRecords')}</span>
+                  </h4>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                    {t('totalAuditEvents')}: {complianceLogs.filter((log) => complianceFilter === 'all' || log.action === complianceFilter).length}
+                  </p>
+                </div>
 
-            {/* Immutable Audit Log Stream */}
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+                {/* Filter Dropdown */}
+                <div className="w-full sm:w-64">
+                  <CustomSelect
+                    options={[
+                      { value: 'all', label: t('allActions') },
+                      { value: 'view_phi', label: t('phiAccess') },
+                      { value: 'update_formula', label: t('formulaUpdate') },
+                      { value: 'sign_waiver', label: t('waiverSigned') },
+                      { value: 'export_records', label: t('recordsExported') },
+                    ]}
+                    value={complianceFilter}
+                    onChange={setComplianceFilter}
+                    compact
+                  />
+                </div>
+              </div>
+
+              {/* Log Stream Content */}
               {loadingCompliance ? (
                 <div className="p-8 text-center text-xs text-[var(--text-secondary)]">{t('loadingComplianceLogs')}</div>
+              ) : complianceLogs.filter((log) => complianceFilter === 'all' || log.action === complianceFilter).length === 0 ? (
+                <div className="p-8 text-center text-xs text-[var(--text-muted)]">
+                  {t('noAuditLogs')}
+                </div>
               ) : (
-                complianceLogs
-                  .filter((log) => complianceFilter === 'all' || log.action === complianceFilter)
-                  .map((log) => {
-                    const actionBadgeColor =
-                      log.action === 'view_phi'
-                        ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-                        : log.action === 'update_formula'
-                        ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                        : log.action === 'sign_waiver'
-                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                        : 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+                <div className="divide-y divide-[var(--border-subtle)]">
+                  {complianceLogs
+                    .filter((log) => complianceFilter === 'all' || log.action === complianceFilter)
+                    .map((log) => {
+                      const actionBadgeColor =
+                        log.action === 'view_phi'
+                          ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
+                          : log.action === 'update_formula'
+                          ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                          : log.action === 'sign_waiver'
+                          ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-600 border-amber-500/20';
 
-                    return (
-                      <div key={log.id} className="p-4 space-y-2 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
-                              {log.actorName}
-                            </span>
-                            <span className="text-[10px] font-bold text-[var(--text-muted)]">
-                              ({log.actorRole})
-                            </span>
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${actionBadgeColor}`}>
-                              {log.action.replace('_', ' ')}
+                      return (
+                        <div key={log.id} className="p-4 space-y-2 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                                {log.actorName}
+                              </span>
+                              <span className="text-[10px] font-bold text-[var(--text-muted)]">
+                                ({log.actorRole})
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${actionBadgeColor}`}>
+                                {log.action.replace('_', ' ')}
+                              </span>
+                            </div>
+
+                            <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                              {new Date(log.createdAt).toLocaleString()}
                             </span>
                           </div>
 
-                          <span className="text-[10px] font-mono text-[var(--text-muted)]">
-                            {new Date(log.createdAt).toLocaleString()}
-                          </span>
+                          {log.resourceName && (
+                            <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                              {log.resourceName}
+                            </p>
+                          )}
+
+                          {log.details && (
+                            <p className="text-xs text-[var(--text-secondary)]">
+                              {log.details}
+                            </p>
+                          )}
+
+                          <div className="flex items-center gap-4 text-[10px] font-mono text-[var(--text-muted)] pt-1">
+                            <span>IP: {log.ipAddress || '127.0.0.1'}</span>
+                            <span>Agent: {log.userAgent || 'AirBook Native Client'}</span>
+                          </div>
                         </div>
-
-                        {log.resourceName && (
-                          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                            {log.resourceName}
-                          </p>
-                        )}
-
-                        {log.details && (
-                          <p className="text-xs text-[var(--text-secondary)]">
-                            {log.details}
-                          </p>
-                        )}
-
-                        <div className="flex items-center gap-4 text-[10px] font-mono text-[var(--text-muted)] pt-1">
-                          <span>IP: {log.ipAddress || '127.0.0.1'}</span>
-                          <span>Agent: {log.userAgent || 'AirBook Native Client'}</span>
-                        </div>
-                      </div>
-                    );
-                  })
+                      );
+                    })}
+                </div>
               )}
             </div>
           </motion.div>
