@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAirBookStore } from '@/lib/store';
 import { PricingModal } from './PricingModal';
 import { CircleCloudIcon } from './Logo';
@@ -158,7 +159,7 @@ export const DesktopHeader: React.FC = () => {
           {/* Notifications Inbox Popover */}
           <NotificationCenterPopover />
 
-          {/* Share Booking Dropdown (Icon Only, next to Notifications) */}
+          {/* Share Booking Trigger (Icon Only, next to Notifications) */}
           <div ref={shareMenuRef} className="relative z-[100] group">
             <button
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
@@ -175,48 +176,94 @@ export const DesktopHeader: React.FC = () => {
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
               </div>
             )}
-
-            {isShareMenuOpen && (
-              <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-56 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-0.5">
-                {/* Option 1: Open Live Page */}
-                <a
-                  href={`/book/${currentSlug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsShareMenuOpen(false)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  <Globe24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span>{t('openLiveBookingPage')}</span>
-                </a>
-
-                {/* Option 2: Copy Link */}
-                <button
-                  onClick={handleCopyDirectLink}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  {copied ? (
-                    <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  ) : (
-                    <Copy24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  )}
-                  <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
-                </button>
-
-                {/* Option 3: QR Code */}
-                <button
-                  onClick={() => {
-                    setIsShareMenuOpen(false);
-                    setIsQrModalOpen(true);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  <QrCode24Filled className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span>{t('qrCodeModalTitle')}</span>
-                </button>
-              </div>
-            )}
           </div>
+
+          {/* Share Menu Drawer / Popover (Portaled to document.body for total backdrop occlusion over all app chrome) */}
+          {mounted &&
+            createPortal(
+              <AnimatePresence>
+                {isShareMenuOpen && (
+                  <div className="fixed inset-0 z-[300] flex flex-col justify-end md:justify-start md:items-end p-0 md:p-4 pointer-events-none">
+                    {/* Backdrop Blur Overlay covering 100% of viewport and all app chrome */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsShareMenuOpen(false)}
+                      className="fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto"
+                    />
+
+                    {/* Drawer / Popover Panel */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                      transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+                      className="relative pointer-events-auto w-full md:max-w-xs rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl border-t md:border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 md:p-3 shadow-2xl flex flex-col gap-2.5 overflow-hidden z-10 md:mt-14 md:mr-20"
+                    >
+                      {/* Drag Handle on mobile */}
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto md:hidden flex-shrink-0" />
+
+                      {/* Header on mobile */}
+                      <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)] md:hidden flex-shrink-0">
+                        <div className="flex items-center gap-2">
+                          <Share24Filled className="w-4 h-4 text-blue-500" />
+                          <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('shareLink')}</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsShareMenuOpen(false)}
+                          className="w-7 h-7 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors flex items-center justify-center text-[var(--text-secondary)] cursor-pointer"
+                          aria-label={t('close')}
+                        >
+                          <Dismiss24Filled className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Option 1: Open Live Page */}
+                      <a
+                        href={`/book/${currentSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsShareMenuOpen(false)}
+                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        <Globe24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                        <span>{t('openLiveBookingPage')}</span>
+                      </a>
+
+                      {/* Option 2: Copy Link */}
+                      <button
+                        type="button"
+                        onClick={handleCopyDirectLink}
+                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        {copied ? (
+                          <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        ) : (
+                          <Copy24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        )}
+                        <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
+                      </button>
+
+                      {/* Option 3: QR Code */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsShareMenuOpen(false);
+                          setIsQrModalOpen(true);
+                        }}
+                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        <QrCode24Filled className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                        <span>{t('qrCodeModalTitle')}</span>
+                      </button>
+                    </motion.div>
+                  </div>
+                )}
+              </AnimatePresence>,
+              document.body
+            )}
 
           {/* Language Switcher Pill */}
           <div ref={langMenuRef} className="relative z-[100]">
