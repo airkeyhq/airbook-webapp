@@ -98,10 +98,10 @@ export const DesktopHeader: React.FC = () => {
   return (
     <>
       <header
-        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-30 relative shadow-sm gap-1.5 overflow-visible"
+        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-40 relative shadow-sm gap-1.5 overflow-visible"
       >
         {/* Left: Workspace Dropdown Pill & Sidebar Toggle */}
-        <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-40">
+        <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-[100]">
           <button
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
             className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
@@ -112,7 +112,7 @@ export const DesktopHeader: React.FC = () => {
           </button>
 
           {isWorkspaceMenuOpen && (
-            <div className="absolute left-0 top-11 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+            <div className="absolute left-0 top-11 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
               
               <div className="max-h-60 overflow-y-auto space-y-1">
                 {workspaces.map((ws) => (
@@ -158,7 +158,7 @@ export const DesktopHeader: React.FC = () => {
           <NotificationCenterPopover />
 
           {/* Language Switcher Pill */}
-          <div ref={langMenuRef} className="relative z-40">
+          <div ref={langMenuRef} className="relative z-[100]">
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
               className="h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
@@ -173,7 +173,7 @@ export const DesktopHeader: React.FC = () => {
             </button>
 
             {isLangMenuOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
                 {availableLanguages.map((lang) => (
                   <button
                     key={lang.id}
@@ -217,7 +217,7 @@ export const DesktopHeader: React.FC = () => {
 
 
           {/* User Profile Pill / Dropdown */}
-          <div ref={userDropdownRef} className="relative z-40">
+          <div ref={userDropdownRef} className="relative z-[100]">
             <button
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
               className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
@@ -231,7 +231,7 @@ export const DesktopHeader: React.FC = () => {
             </button>
 
             {isUserDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
                 <div className="px-3 py-2 border-b border-slate-100 dark:border-white/10 mb-1">
                   <p className="text-xs font-bold text-[#0F172A] dark:text-white truncate">{userName}</p>
                   {userEmail && <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{userEmail}</p>}
@@ -261,7 +261,7 @@ export const DesktopHeader: React.FC = () => {
           </div>
 
           {/* Share Booking Dropdown */}
-          <div ref={shareMenuRef} className="relative z-40">
+          <div ref={shareMenuRef} className="relative z-[100]">
             <button
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
               className="h-9 flex items-center justify-center gap-1.5 px-3 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0 cursor-pointer"
@@ -271,7 +271,7 @@ export const DesktopHeader: React.FC = () => {
             </button>
 
             {isShareMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 flex flex-col gap-1">
+              <div className="absolute right-0 mt-2 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
                 <div className="px-3 py-2 border-b border-[var(--border-subtle)] mb-1">
                   <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
                     {t('onlineBookingTitle')}

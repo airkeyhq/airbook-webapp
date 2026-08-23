@@ -116,7 +116,7 @@ export const NotificationCenterPopover: React.FC = () => {
   });
 
   return (
-    <div ref={containerRef} className="relative z-40">
+    <div ref={containerRef} className="relative z-[100]">
       {/* Bell Button Pill */}
       <button
         type="button"
@@ -141,7 +141,7 @@ export const NotificationCenterPopover: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 glass-panel bg-white/95 dark:bg-[#141720]/95 rounded-3xl shadow-2xl p-4 z-50 stack-3 overflow-hidden"
+            className="absolute right-0 mt-2 w-80 sm:w-96 glass-panel bg-white/95 dark:bg-[#141720]/95 rounded-3xl shadow-2xl p-4 z-[150] stack-3 overflow-hidden"
           >
             {/* Popover Header */}
             <div className="flex items-center justify-between pb-2 border-b border-black/5 dark:border-white/10">
