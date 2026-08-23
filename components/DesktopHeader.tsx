@@ -16,6 +16,7 @@ import {
   SignOut24Filled,
   Person24Filled,
   Open24Filled,
+  Globe24Filled,
   Copy24Filled,
   Checkmark24Filled,
   QrCode24Filled,
@@ -280,7 +281,7 @@ export const DesktopHeader: React.FC = () => {
                   onClick={() => setIsShareMenuOpen(false)}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
-                  <Open24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <Globe24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
                   <span>{t('openLiveBookingPage')}</span>
                 </a>
 
