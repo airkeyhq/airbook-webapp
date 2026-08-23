@@ -175,7 +175,7 @@ export const NotificationCenterPopover: React.FC = () => {
                   {/* Drawer Header */}
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
                     <div className="flex items-center gap-2">
-                      <Alert24Filled className="w-4 h-4 text-blue-500" />
+                      <Alert24Regular className="w-4 h-4 text-blue-500" />
                       <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
                     </div>
                     <div className="flex items-center gap-2">

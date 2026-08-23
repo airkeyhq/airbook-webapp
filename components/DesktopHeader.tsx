@@ -13,6 +13,7 @@ import { getAvatarUrl } from '@/lib/avatars';
 import {
   ChevronDown24Filled,
   Share24Filled,
+  Share24Regular,
   Sparkle24Filled,
   SignOut24Filled,
   Person24Filled,
@@ -207,7 +208,7 @@ export const DesktopHeader: React.FC = () => {
                       {/* Header on mobile */}
                       <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)] md:hidden flex-shrink-0">
                         <div className="flex items-center gap-2">
-                          <Share24Filled className="w-4 h-4 text-blue-500" />
+                          <Share24Regular className="w-4 h-4 text-blue-500" />
                           <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('shareLink')}</h3>
                         </div>
                         <button
