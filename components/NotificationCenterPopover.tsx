@@ -117,17 +117,16 @@ export const NotificationCenterPopover: React.FC = () => {
 
   return (
     <div ref={containerRef} className="relative z-[100]">
-      {/* Bell Button Pill */}
+      {/* Bell Button Pill (Icon Only, Actionable Filled) */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative control-md gap-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] flex-shrink-0"
+        className="w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] relative flex-shrink-0 cursor-pointer"
         aria-label={t('notificationsInbox')}
       >
         <Alert24Filled className="w-4 h-4 text-[var(--text-primary)]" />
-        <span className="hidden sm:inline">{t('inboxLabel')}</span>
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto px-1.5 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center min-w-[18px] h-[18px] shadow-sm">
+          <span className="absolute -top-0.5 -right-0.5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center min-w-[16px] h-[16px] shadow-sm">
             {unreadCount}
           </span>
         )}

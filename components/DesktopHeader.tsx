@@ -15,6 +15,7 @@ import {
   Sparkle24Filled,
   SignOut24Filled,
   Person24Filled,
+  Open24Filled,
   Globe24Filled,
   Copy24Filled,
   Checkmark24Filled,
@@ -266,7 +267,7 @@ export const DesktopHeader: React.FC = () => {
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
               className="h-9 flex items-center justify-center gap-1.5 px-3 sm:px-4 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all active:scale-95 flex-shrink-0 cursor-pointer"
             >
-              <Share24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+              <Share24Filled className="w-4 h-4 flex-shrink-0" />
               <span>{t('shareLink')}</span>
             </button>
 
@@ -387,7 +388,7 @@ export const DesktopHeader: React.FC = () => {
                     rel="noopener noreferrer"
                     className="flex-1 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Globe24Filled className="w-3.5 h-3.5" />
+                    <Open24Filled className="w-3.5 h-3.5" />
                     <span>{t('openLiveBookingPage')}</span>
                   </a>
                 </div>
