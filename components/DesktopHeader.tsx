@@ -271,23 +271,14 @@ export const DesktopHeader: React.FC = () => {
             </button>
 
             {isShareMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
-                <div className="px-3 py-2 border-b border-[var(--border-subtle)] mb-1">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                    {t('onlineBookingTitle')}
-                  </p>
-                  <p className="text-xs font-mono font-bold text-blue-500 truncate mt-0.5">
-                    {`getairbook.com/book/${currentSlug}`}
-                  </p>
-                </div>
-
+              <div className="absolute right-0 mt-2 w-56 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-0.5">
                 {/* Option 1: Open Live Page */}
                 <a
                   href={`/book/${currentSlug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsShareMenuOpen(false)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   <Open24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
                   <span>{t('openLiveBookingPage')}</span>
@@ -296,7 +287,7 @@ export const DesktopHeader: React.FC = () => {
                 {/* Option 2: Copy Link */}
                 <button
                   onClick={handleCopyDirectLink}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   {copied ? (
                     <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
@@ -312,7 +303,7 @@ export const DesktopHeader: React.FC = () => {
                     setIsShareMenuOpen(false);
                     setIsQrModalOpen(true);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   <QrCode24Filled className="w-4 h-4 text-purple-500 flex-shrink-0" />
                   <span>{t('qrCodeModalTitle')}</span>
