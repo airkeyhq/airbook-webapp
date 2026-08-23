@@ -430,7 +430,7 @@ export const MarketingModule: React.FC = () => {
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -4 }}
                           transition={{ duration: 0.1 }}
-                          className="absolute right-0 top-full mt-1.5 w-60 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
+                          className="absolute right-0 top-full mt-1.5 min-w-[150px] whitespace-nowrap bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
                         >
                           <button
                             type="button"

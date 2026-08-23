@@ -466,8 +466,8 @@ export const translations = {
     googleReviewTitle: 'Google Review Request Automation',
     googleReviewDesc: 'Sends an automated text 1 hour after a completed appointment asking happy clients to leave a 5-star Google review.',
     autoSendReviews: 'Auto-Send Review Requests',
-    sendTestSms: 'Send Test SMS Campaign',
-    testSmsSent: 'Test SMS Sent to your Phone!',
+    sendTestSms: 'Send test SMS',
+    testSmsSent: 'Test SMS sent',
 
     // Packages & Gift Cards
     packagesTitle: 'Packages, Memberships & Gift Cards',
@@ -1617,8 +1617,8 @@ export const translations = {
     googleReviewTitle: 'Automatización de Reseñas en Google',
     googleReviewDesc: 'Envía un mensaje de texto automático 1 hora después de finalizar la cita solicitando una reseña de 5 estrellas en Google.',
     autoSendReviews: 'Enviar Solicitudes de Reseña Automáticamente',
-    sendTestSms: 'Enviar Campaña SMS de Prueba',
-    testSmsSent: '¡SMS de Prueba Enviado a tu Teléfono!',
+    sendTestSms: 'Enviar prueba',
+    testSmsSent: 'SMS de prueba enviado',
 
     // Packages & Gift Cards
     packagesTitle: 'Paquetes, Membresías y Tarjetas de Regalo',
@@ -2767,8 +2767,8 @@ export const translations = {
     googleReviewTitle: 'Automatische Google-Bewertungsanfrage',
     googleReviewDesc: 'Sendet 1 Stunde nach einem abgeschlossenen Termin automatisch eine SMS für eine 5-Sterne-Google-Bewertung.',
     autoSendReviews: 'Bewertungsanfragen automatisch senden',
-    sendTestSms: 'Test-SMS-Kampagne senden',
-    testSmsSent: 'Test-SMS an Ihr Telefon gesendet!',
+    sendTestSms: 'Test senden',
+    testSmsSent: 'Test-SMS gesendet',
 
     // Packages & Gift Cards
     packagesTitle: 'Pakete, Mitgliedschaften & Gutscheine',
@@ -3917,8 +3917,8 @@ export const translations = {
     googleReviewTitle: 'Demande d\'avis Google Automatique',
     googleReviewDesc: 'Envoie un SMS automatique 1 heure après le rendez-vous pour demander un avis 5 étoiles sur Google.',
     autoSendReviews: 'Envoyer automatiquement les demandes d\'avis',
-    sendTestSms: 'Envoyer une campagne SMS de test',
-    testSmsSent: 'SMS de test envoyé sur votre téléphone !',
+    sendTestSms: 'Envoyer un test',
+    testSmsSent: 'SMS de test envoyé',
 
     // Packages & Gift Cards
     packagesTitle: 'Forfaits, Abonnements & Cartes Cadeaux',
