@@ -15,7 +15,6 @@ import {
   Sparkle24Filled,
   SignOut24Filled,
   Person24Filled,
-  Open24Filled,
   Globe24Filled,
   Copy24Filled,
   Checkmark24Filled,
@@ -388,7 +387,7 @@ export const DesktopHeader: React.FC = () => {
                     rel="noopener noreferrer"
                     className="flex-1 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Open24Filled className="w-3.5 h-3.5" />
+                    <Globe24Filled className="w-3.5 h-3.5" />
                     <span>{t('openLiveBookingPage')}</span>
                   </a>
                 </div>
