@@ -420,10 +420,10 @@ export const translations = {
     
     // Automated Triggers
     automatedTriggers: 'Automated Retention Triggers',
-    googleReviewTrigger: '⭐ 5-Star Google Review Requests',
+    googleReviewTrigger: '5-Star Google Review Requests',
     googleReviewTriggerDesc: 'Automatically sends a text message 1 hour after checkout with your direct Google review link.',
     googleReviewUrlLabel: 'Your Google Business Review Link',
-    reengagementTrigger: '🔄 Lapsed Client Re-Booking Reminders',
+    reengagementTrigger: 'Lapsed Client Re-Booking Reminders',
     reengagementTriggerDesc: 'Automatically reaches out to clients who haven\'t booked in X days with a quick re-booking link.',
     reengagementInterval: 'Re-engagement Interval',
     days14: '14 Days (2 Weeks)',
@@ -1571,10 +1571,10 @@ export const translations = {
     
     // Disparadores Automatizados
     automatedTriggers: 'Disparadores de Retención Automatizados',
-    googleReviewTrigger: '⭐ Solicitud de Reseña de 5 Estrellas en Google',
+    googleReviewTrigger: 'Solicitud de Reseña de 5 Estrellas en Google',
     googleReviewTriggerDesc: 'Envía automáticamente un mensaje de texto 1 hora después del cobro con tu enlace de Google Reviews.',
     googleReviewUrlLabel: 'Enlace de Google Business Reviews',
-    reengagementTrigger: '🔄 Recordatorio de Re-reserva a Clientes Inactivos',
+    reengagementTrigger: 'Recordatorio de Re-reserva a Clientes Inactivos',
     reengagementTriggerDesc: 'Contacta automáticamente a clientes que no han reservado en X días con enlace directo de cita.',
     reengagementInterval: 'Intervalo de Re-enganche',
     days14: '14 Días (2 Semanas)',
@@ -2721,10 +2721,10 @@ export const translations = {
     
     // Automatische Auslöser
     automatedTriggers: 'Automatische Kundenbindungs-Auslöser',
-    googleReviewTrigger: '⭐ 5-Sterne Google-Bewertungsanfragen',
+    googleReviewTrigger: '5-Sterne Google-Bewertungsanfragen',
     googleReviewTriggerDesc: 'Sendet 1 Stunde nach Bezahlung automatisch eine SMS mit Ihrem Google-Bewertungslink.',
     googleReviewUrlLabel: 'Ihr Google Business Bewertungslink',
-    reengagementTrigger: '🔄 Reaktivierung inaktiver Kunden',
+    reengagementTrigger: 'Reaktivierung inaktiver Kunden',
     reengagementTriggerDesc: 'Erinnert Kunden nach X Tagen automatisch an die nächste Terminbuchung.',
     reengagementInterval: 'Reaktivierungsintervall',
     days14: '14 Tage (2 Wochen)',
@@ -3871,10 +3871,10 @@ export const translations = {
     
     // Déclencheurs Automatisés
     automatedTriggers: 'Déclencheurs de Fidélisation Automatisés',
-    googleReviewTrigger: '⭐ Demande d\'avis Google 5 Étoiles',
+    googleReviewTrigger: 'Demande d\'avis Google 5 Étoiles',
     googleReviewTriggerDesc: 'Envoie automatiquement un SMS 1 heure après l\'encaissement avec votre lien d\'avis Google.',
     googleReviewUrlLabel: 'Lien de votre fiche Google Business',
-    reengagementTrigger: '🔄 Relance des Clients Inactifs',
+    reengagementTrigger: 'Relance des Clients Inactifs',
     reengagementTriggerDesc: 'Recontacte automatiquement les clients n\'ayant pas réservé depuis X jours.',
     reengagementInterval: 'Délai de relance',
     days14: '14 Jours (2 Semaines)',
