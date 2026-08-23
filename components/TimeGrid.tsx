@@ -278,9 +278,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
         
         {/* STICKY HEADER ROW (Corner + Day / Staff Headers) */}
         {viewMode === 'week' && (
-          <div className="sticky top-0 z-50 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-sm">
+          <div className="sticky top-0 z-10 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-xs">
             {/* Corner Cell (Sticky Left inside Sticky Top) */}
-            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-[60] bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
+            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-20 bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
             
             {/* Day Headers (7 Columns Responsively Filling Viewport) */}
             <div className="flex flex-1 min-w-[380px] sm:min-w-0">
@@ -313,8 +313,8 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
 
         {/* Multi-Staff Day View Sticky Header */}
         {viewMode === 'day' && (
-          <div className="sticky top-0 z-50 flex w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 shadow-sm">
-            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-[60] bg-white dark:bg-[#141720] border-r border-slate-200/80 dark:border-white/10" />
+          <div className="sticky top-0 z-10 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-xs">
+            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-20 bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
 
             <div className="flex flex-1 min-w-[320px] sm:min-w-0">
               {staffToRender.map((staff, idx) => {
@@ -371,11 +371,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
         <div className="flex w-full relative">
           
           {/* Time Axis (Sticky Left) */}
-          <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-40 bg-[var(--grid-bg)] border-r border-[var(--border-subtle)]">
+          <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-10 bg-[var(--grid-bg)] border-r border-[var(--border-subtle)]">
             {/* Current Time Dot */}
             {nowOffsetPx !== null && (
               <div 
-                className="absolute right-0 z-50 flex items-center justify-center translate-x-[4px] -translate-y-1/2 opacity-90 pointer-events-none"
+                className="absolute right-0 z-20 flex items-center justify-center translate-x-[4px] -translate-y-1/2 opacity-90 pointer-events-none"
                 style={{ top: `${nowOffsetPx}px` }}
               >
                 <span className="absolute w-3.5 h-3.5 rounded-full bg-[#FF3B30]/40 animate-ping" />
@@ -401,7 +401,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
             {/* Full-width Continuous Current Time Line connected to left time dot */}
             {nowOffsetPx !== null && (
               <div 
-                className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none"
+                className="absolute left-0 right-0 z-10 -translate-y-1/2 pointer-events-none"
                 style={{ top: `${nowOffsetPx}px` }}
               >
                 <div className="h-[2px] w-full bg-[#FF3B30] shadow-sm" />
