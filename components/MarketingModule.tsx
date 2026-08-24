@@ -387,73 +387,70 @@ export const MarketingModule: React.FC = () => {
 
         <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
           {/* Trigger 1: 5-Star Google Reviews */}
-          <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
-            <div className="flex items-start gap-3.5 flex-1 min-w-0">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
                 <Star24Regular className="w-5 h-5" />
               </div>
-              <div className="space-y-2 flex-1 min-w-0">
-                <div>
-                  <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
-                    {t('googleReviewTrigger')}
-                  </h4>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    {t('googleReviewTriggerDesc')}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="url"
-                    value={googleReviewUrl}
-                    onChange={(e) => setGoogleReviewUrl(e.target.value)}
-                    onBlur={() => persistAutomationSettings({ googleReviewUrl })}
-                    placeholder="https://g.page/r/your-id/review"
-                    className="flex-1 px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-
-                  {/* 3-Dots Action Popover */}
-                  <div ref={reviewActionsRef} className="relative flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setReviewActionsOpen(!reviewActionsOpen)}
-                      className="w-8 h-8 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
-                      aria-label={t('moreActions')}
-                    >
-                      <MoreHorizontal24Filled className="w-4 h-4" />
-                    </button>
-
-                    <AnimatePresence>
-                      {reviewActionsOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                          transition={{ duration: 0.1 }}
-                          className="absolute right-0 top-full mt-1.5 min-w-[150px] whitespace-nowrap bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
-                        >
-                          <button
-                            type="button"
-                            disabled={testSmsSending}
-                            onClick={() => {
-                              setReviewActionsOpen(false);
-                              handleSendTestReviewSms();
-                            }}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-left"
-                          >
-                            <Send24Filled className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-                            <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
+              <div className="min-w-0">
+                <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
+                  {t('googleReviewTrigger')}
+                </h4>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  {t('googleReviewTriggerDesc')}
+                </p>
               </div>
             </div>
 
-            {/* Custom Animated iOS Toggle Switch */}
-            <div className="flex items-center justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
+            {/* Controls + 3-Dots + Switch (Center Aligned) */}
+            <div className="flex items-center gap-2 sm:gap-2.5 w-full lg:w-auto pt-1 lg:pt-0 flex-shrink-0">
+              <input
+                type="url"
+                value={googleReviewUrl}
+                onChange={(e) => setGoogleReviewUrl(e.target.value)}
+                onBlur={() => persistAutomationSettings({ googleReviewUrl })}
+                placeholder="https://g.page/r/your-id/review"
+                className="flex-1 lg:w-64 px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+
+              {/* 3-Dots Action Popover */}
+              <div ref={reviewActionsRef} className="relative flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setReviewActionsOpen(!reviewActionsOpen)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                  aria-label={t('moreActions')}
+                >
+                  <MoreHorizontal24Filled className="w-4 h-4" />
+                </button>
+
+                <AnimatePresence>
+                  {reviewActionsOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                      transition={{ duration: 0.1 }}
+                      className="absolute right-0 top-full mt-1.5 min-w-[150px] whitespace-nowrap bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
+                    >
+                      <button
+                        type="button"
+                        disabled={testSmsSending}
+                        onClick={() => {
+                          setReviewActionsOpen(false);
+                          handleSendTestReviewSms();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-left"
+                      >
+                        <Send24Filled className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                        <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Custom Animated iOS Toggle Switch */}
               <button
                 type="button"
                 role="switch"
@@ -473,38 +470,37 @@ export const MarketingModule: React.FC = () => {
           </div>
 
           {/* Trigger 2: Lapsed Client Re-Engagement */}
-          <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
-            <div className="flex items-start gap-3.5 flex-1 min-w-0">
-              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
                 <ArrowRepeatAll24Regular className="w-5 h-5" />
               </div>
-              <div className="space-y-2 flex-1 min-w-0">
-                <div>
-                  <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
-                    {t('reengagementTrigger')}
-                  </h4>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    {t('reengagementTriggerDesc')}
-                  </p>
-                </div>
-
-                <div className="w-full max-w-xs pt-1">
-                  <CustomSelect
-                    value={String(reengagementDays)}
-                    onChange={(val) => handleChangeReengagementDays(Number(val))}
-                    options={[
-                      { value: '14', label: t('days14') },
-                      { value: '21', label: t('days21') },
-                      { value: '30', label: t('days30') },
-                      { value: '60', label: t('days60') },
-                    ]}
-                  />
-                </div>
+              <div className="min-w-0">
+                <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
+                  {t('reengagementTrigger')}
+                </h4>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  {t('reengagementTriggerDesc')}
+                </p>
               </div>
             </div>
 
-            {/* Custom Animated iOS Toggle Switch */}
-            <div className="flex items-center justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)] flex-shrink-0">
+            {/* Dropdown + Switch (Center Aligned) */}
+            <div className="flex items-center gap-2 sm:gap-2.5 w-full lg:w-auto pt-1 lg:pt-0 flex-shrink-0">
+              <div className="flex-1 lg:w-56">
+                <CustomSelect
+                  value={String(reengagementDays)}
+                  onChange={(val) => handleChangeReengagementDays(Number(val))}
+                  options={[
+                    { value: '14', label: t('days14') },
+                    { value: '21', label: t('days21') },
+                    { value: '30', label: t('days30') },
+                    { value: '60', label: t('days60') },
+                  ]}
+                />
+              </div>
+
+              {/* Custom Animated iOS Toggle Switch */}
               <button
                 type="button"
                 role="switch"
