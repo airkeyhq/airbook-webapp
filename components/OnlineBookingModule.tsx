@@ -461,7 +461,7 @@ export const OnlineBookingModule: React.FC = () => {
                   {t('embedWidgetsDesc')}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-full overflow-x-auto">
                   {[
                     { id: 'iframe', label: t('widgetTypeIframe') },
                     { id: 'button', label: t('widgetTypeButton') },
@@ -471,10 +471,10 @@ export const OnlineBookingModule: React.FC = () => {
                       key={w.id}
                       type="button"
                       onClick={() => setWidgetType(w.id as any)}
-                      className={`p-3 rounded-2xl border text-xs font-bold text-center transition-all cursor-pointer ${
+                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center whitespace-nowrap ${
                         widgetType === w.id
-                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-xs'
-                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:border-blue-500/30'
+                          ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                       }`}
                     >
                       {w.label}
