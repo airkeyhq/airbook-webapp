@@ -47,6 +47,7 @@ import {
   Checkmark24Filled,
   CheckmarkCircle24Filled,
   Edit24Filled,
+  Save24Filled,
 } from '@fluentui/react-icons';
 
 type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations' | 'domain';
@@ -135,8 +136,7 @@ function Field({
   );
 }
 
-const INPUT_CLS =
-  'w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50';
+const INPUT_CLS = 'input-base w-full';
 
 export const SettingsModule: React.FC = () => {
   const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
@@ -691,9 +691,10 @@ export const SettingsModule: React.FC = () => {
                 whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={() => addToast('Booking policies saved.', 'success')}
-                className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md"
+                className="btn-primary"
               >
-                {t('savePolicies')}
+                <Save24Filled className="w-4 h-4" />
+                <span>{t('savePolicies')}</span>
               </motion.button>
             </Section>
 
@@ -780,9 +781,10 @@ export const SettingsModule: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setIsBetaModalOpen(true)}
-                        className="px-4 py-2 rounded-xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-sm hover:opacity-90 transition-opacity"
+                        className="btn-primary"
                       >
-                        🔑 {t('enterBetaCode')}
+                        <LockClosed16Filled className="w-3.5 h-3.5" />
+                        <span>{t('enterBetaCode')}</span>
                       </button>
                     </div>
                   </div>
@@ -865,9 +867,10 @@ export const SettingsModule: React.FC = () => {
                   type="button"
                   disabled={!canAccessAddons}
                   onClick={saveAddons}
-                  className="w-full py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {t('saveAddons')}
+                  <Save24Filled className="w-4 h-4" />
+                  <span>{t('saveAddons')}</span>
                 </motion.button>
               </Section>
             </motion.div>
@@ -1358,7 +1361,7 @@ export const SettingsModule: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                    className="btn-primary flex-1 flex items-center justify-center gap-1.5"
                   >
                     <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{t('addStation')}</span>
@@ -1464,7 +1467,7 @@ export const SettingsModule: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                    className="btn-primary flex-1 flex items-center justify-center gap-1.5"
                   >
                     <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{t('save')}</span>
