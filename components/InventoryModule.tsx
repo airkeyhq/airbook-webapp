@@ -298,7 +298,7 @@ export const InventoryModule: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
             <Box24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('totalStockUnits')}</span>
@@ -306,7 +306,7 @@ export const InventoryModule: React.FC = () => {
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">{metrics.totalUnits}</p>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
             <Warning24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('lowStock')}</span>
@@ -316,7 +316,7 @@ export const InventoryModule: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
             <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('inventoryValuation')}</span>
@@ -326,7 +326,7 @@ export const InventoryModule: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
             <ArrowTrending24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('metricRetailPotential')}</span>
@@ -385,7 +385,7 @@ export const InventoryModule: React.FC = () => {
       </div>
 
       {loading && (
-        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-8 space-y-4 shadow-xs">
+        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl p-8 space-y-4 shadow-xs">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-16 rounded-2xl bg-black/5 dark:bg-white/5 animate-pulse" />
           ))}
@@ -406,7 +406,7 @@ export const InventoryModule: React.FC = () => {
       )}
 
       {!loading && filteredProducts.length > 0 && (
-        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
           {filteredProducts.map((prod) => {
             const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
             const isOutOfStock = prod.stockQuantity === 0;
