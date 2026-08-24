@@ -822,8 +822,13 @@ export const translations = {
     networkStaff: 'Total Enterprise Staff',
     switchLocation: 'Switch to Location',
     currentLocation: 'Current Active Branch',
-    branchProvisionedSuccess: 'New location branch provisioned successfully!',
     branchType: 'Branch Type',
+    branchProvisionedSuccess: 'New location branch provisioned successfully!',
+    multiLocationTitle: 'Locations & Branches',
+    multiLocationSubtitle: 'Manage multiple studios, branches, and pop-up locations from one organization.',
+    addLocation: 'Add Location',
+    noLocationsTitle: 'No Additional Locations',
+    noLocationsDesc: 'Scale your business by provisioning flagship studios, local branches, or seasonal pop-ups.',
 
     // v2.1 — Offline-First PWA & Web Push
     pwaInstalled: 'AirBook installed as an app',
@@ -1977,8 +1982,13 @@ export const translations = {
     networkStaff: 'Personal Total de la Empresa',
     switchLocation: 'Cambiar a esta Sede',
     currentLocation: 'Sede Activa Actual',
-    branchProvisionedSuccess: '¡Nueva sucursal creada y configurada con éxito!',
     branchType: 'Tipo de Sede',
+    branchProvisionedSuccess: '¡Nueva sucursal creada y configurada con éxito!',
+    multiLocationTitle: 'Sedes y Sucursales',
+    multiLocationSubtitle: 'Administra múltiples salones, sucursales y sedes temporales desde una sola organización.',
+    addLocation: 'Añadir Sede',
+    noLocationsTitle: 'Sin Sedes Adicionales',
+    noLocationsDesc: 'Haz crecer tu negocio añadiendo sedes principales, sucursales locales o sedes temporales.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook instalada como app',
@@ -3131,8 +3141,13 @@ export const translations = {
     networkStaff: 'Mitarbeiter im Netzwerk',
     switchLocation: 'Zu diesem Standort Wechseln',
     currentLocation: 'Aktuell Aktiver Standort',
-    branchProvisionedSuccess: 'Neuer Standort erfolgreich eingerichtet!',
     branchType: 'Standorttyp',
+    branchProvisionedSuccess: 'Neuer Standort erfolgreich eingerichtet!',
+    multiLocationTitle: 'Standorte & Filialen',
+    multiLocationSubtitle: 'Verwalten Sie mehrere Studios, Filialen und Pop-up-Standorte von einer Organisation aus.',
+    addLocation: 'Standort hinzufügen',
+    noLocationsTitle: 'Keine weiteren Standorte',
+    noLocationsDesc: 'Erweitern Sie Ihr Geschäft mit weiteren Filialen, Studios und Pop-up-Standorten.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook als App installiert',
@@ -4286,8 +4301,13 @@ export const translations = {
     networkStaff: 'Effectif Global Entreprise',
     switchLocation: 'Basculer vers cet Établissement',
     currentLocation: 'Établissement Actif Actuel',
-    branchProvisionedSuccess: 'Nouvelle succursale déployée et configurée avec succès !',
     branchType: 'Type d’Établissement',
+    branchProvisionedSuccess: 'Nouvelle succursale déployée et configurée avec succès !',
+    multiLocationTitle: 'Établissements & Succursales',
+    multiLocationSubtitle: 'Gérez plusieurs salons, succursales et établissements temporaires depuis une seule organisation.',
+    addLocation: 'Ajouter un Établissement',
+    noLocationsTitle: 'Aucun Autre Établissement',
+    noLocationsDesc: 'Développez votre activité en déployant des succursales, des salons ou des pop-ups saisonniers.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook installée comme application',

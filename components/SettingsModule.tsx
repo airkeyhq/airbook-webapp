@@ -775,29 +775,29 @@ export const SettingsModule: React.FC = () => {
                     {
                       id: 'hipaa' as const,
                       icon: Shield24Regular,
-                      iconColor: 'text-blue-500',
+                      iconColor: 'text-[var(--text-secondary)]',
                       title: t('hipaaTitle'),
                       desc: t('hipaaDesc'),
                       val: addons.hipaa,
-                      color: 'bg-blue-600',
+                      color: 'bg-black dark:bg-white',
                     },
                     {
                       id: 'esign' as const,
                       icon: DocumentCheckmark24Regular,
-                      iconColor: 'text-purple-500',
+                      iconColor: 'text-[var(--text-secondary)]',
                       title: t('esignTitle'),
                       desc: t('esignDesc'),
                       val: addons.esign,
-                      color: 'bg-purple-600',
+                      color: 'bg-black dark:bg-white',
                     },
                     {
                       id: 'kyc' as const,
                       icon: Person24Regular,
-                      iconColor: 'text-green-500',
+                      iconColor: 'text-[var(--text-secondary)]',
                       title: t('kycTitle'),
                       desc: t('kycDesc'),
                       val: addons.kyc,
-                      color: 'bg-green-600',
+                      color: 'bg-black dark:bg-white',
                     },
                   ].map((mod) => {
                     const Icon = mod.icon;
@@ -883,7 +883,7 @@ export const SettingsModule: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleExportComplianceCsv}
-                  className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                  className="btn-primary flex-shrink-0"
                 >
                   <DocumentCheckmark24Regular className="w-4 h-4" />
                   <span>{t('exportAuditReport')}</span>
@@ -893,16 +893,16 @@ export const SettingsModule: React.FC = () => {
               {/* Inline Trust & Security Badges Strip */}
               <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center gap-2.5">
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs font-mono font-bold text-[var(--text-primary)]">
-                  <span className="text-blue-500 font-extrabold">{complianceLogs.length}</span>
+                  <span className="font-extrabold text-[var(--text-primary)]">{complianceLogs.length}</span>
                   <span className="text-[11px] font-sans text-[var(--text-secondary)]">{t('totalAuditEvents')}</span>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] text-xs font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   <span>{t('kmsEncryption')} ({t('kmsActive')})</span>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-700 dark:text-purple-300 text-xs font-semibold">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] text-xs font-semibold">
                   <CheckmarkCircle24Filled className="w-3.5 h-3.5" />
                   <span>{t('hipaaVerified')}</span>
                 </div>
@@ -919,7 +919,7 @@ export const SettingsModule: React.FC = () => {
               <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)]">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                    <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
+                    <ShieldCheckmark24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
                     <span>{t('immutableAuditRecords')}</span>
                   </h4>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
@@ -960,15 +960,6 @@ export const SettingsModule: React.FC = () => {
                   {complianceLogs
                     .filter((log) => complianceFilter === 'all' || log.action === complianceFilter)
                     .map((log) => {
-                      const actionBadgeColor =
-                        log.action === 'view_phi'
-                          ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-                          : log.action === 'update_formula'
-                          ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                          : log.action === 'sign_waiver'
-                          ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-
                       return (
                         <div key={log.id} className="p-4 space-y-2 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -979,7 +970,7 @@ export const SettingsModule: React.FC = () => {
                               <span className="text-[10px] font-bold text-[var(--text-muted)]">
                                 ({log.actorRole})
                               </span>
-                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${actionBadgeColor}`}>
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border border-[var(--border-subtle)] bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]">
                                 {log.action.replace('_', ' ')}
                               </span>
                             </div>
@@ -990,7 +981,7 @@ export const SettingsModule: React.FC = () => {
                           </div>
 
                           {log.resourceName && (
-                            <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                            <p className="text-xs font-semibold text-[var(--text-primary)]">
                               {log.resourceName}
                             </p>
                           )}
@@ -1035,66 +1026,105 @@ export const SettingsModule: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            {/* Aggregated Organization Metrics */}
+            {/* Header with Title and Primary Action CTA */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                  <Building24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <span>{t('multiLocationTitle')}</span>
+                  {locations.length > 0 && (
+                    <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
+                      {locations.length}
+                    </span>
+                  )}
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  {t('multiLocationSubtitle')}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAddLocationOpen(true)}
+                className="btn-primary self-start sm:self-auto flex-shrink-0"
+              >
+                <Add24Filled className="w-4 h-4" />
+                <span>{t('addLocation')}</span>
+              </button>
+            </div>
+
+            {/* Aggregated Organization Metrics (Neutral Tokens - Zero Color Sprinkles) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                   {t('totalEnterpriseLocations')}
                 </span>
-                <p className="text-2xl font-black text-blue-600 font-mono">
+                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
                   {locations.length}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('activePhysicalBranches')}</p>
+                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('activePhysicalBranches')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                   {t('networkRevenue')}
                 </span>
-                <p className="text-2xl font-black text-emerald-600 font-mono">
+                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
                   ${(totalEnterpriseGross / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('monthlyConsolidatedGross')}</p>
+                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('monthlyConsolidatedGross')}</p>
               </div>
 
               <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase">
+                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                   {t('networkStaff')}
                 </span>
-                <p className="text-2xl font-black text-purple-600 font-mono">
+                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
                   {totalEnterpriseStaff}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)]">{t('practitionersAndSpecialists')}</p>
+                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('practitionersAndSpecialists')}</p>
               </div>
             </div>
 
-            {/* Branch Cards Divided List */}
-            <div className="space-y-3">
-              {loadingLocations ? (
-                <div className="p-8 text-center text-xs text-[var(--text-secondary)]">{t('loadingLocationBranches')}</div>
-              ) : (
-                locations.map((loc) => (
+            {/* Branch Cards / Empty State */}
+            {loadingLocations ? (
+              <div className="min-h-[200px] flex items-center justify-center text-xs text-[var(--text-secondary)] font-medium">
+                {t('loadingLocationBranches')}
+              </div>
+            ) : locations.length === 0 ? (
+              <EmptyState
+                icon={Building24Regular}
+                title={t('noLocationsTitle')}
+                description={t('noLocationsDesc')}
+                action={{
+                  label: t('addLocation'),
+                  onClick: () => setIsAddLocationOpen(true),
+                  icon: Add24Filled,
+                }}
+              />
+            ) : (
+              <div className="space-y-3">
+                {locations.map((loc) => (
                   <div
                     key={loc.id}
                     className={`p-5 rounded-3xl border transition-all ${
                       loc.isCurrent
-                        ? 'border-blue-500/50 bg-blue-500/5 shadow-xs ring-1 ring-blue-500/20'
-                        : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-black/20'
+                        ? 'border-[var(--color-accent-primary)]/40 bg-[var(--bg-secondary)] shadow-xs'
+                        : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-black/20 dark:hover:border-white/20'
                     }`}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+                      <div className="space-y-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="text-sm font-extrabold text-[var(--text-primary)]">
+                          <h4 className="text-sm font-extrabold text-[var(--text-primary)] truncate">
                             {loc.name}
                           </h4>
-                          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[9px] font-black uppercase text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[9px] font-bold uppercase text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                             {loc.locationType}
                           </span>
                           {loc.isCurrent && (
-                            <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[9px] font-black uppercase">
+                            <span className="px-2 py-0.5 rounded-full bg-black text-white dark:bg-white dark:text-black text-[9px] font-bold uppercase">
                               {t('currentLocation')}
                             </span>
                           )}
@@ -1113,7 +1143,7 @@ export const SettingsModule: React.FC = () => {
                           href={`/book/${loc.slug}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors"
+                          className="h-10 px-3.5 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/5 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center justify-center"
                         >
                           {t('bookingPageLink')} ↗
                         </a>
@@ -1127,7 +1157,7 @@ export const SettingsModule: React.FC = () => {
                                 window.location.reload();
                               }, 500);
                             }}
-                            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold transition-colors cursor-pointer"
+                            className="btn-primary"
                           >
                             {t('switchLocation')}
                           </button>
@@ -1135,9 +1165,9 @@ export const SettingsModule: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
