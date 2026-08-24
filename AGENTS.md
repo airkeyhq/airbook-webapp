@@ -89,6 +89,25 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - System Toasts / Alerts: `z-[1000]`
     - **Zero Piercing Rule**: NEVER assign arbitrary runaway z-indexes (e.g. `z-[99999]`) to base layout headers or navigation bars, which pierces through modal blur backdrops and destroys modal visual focus.
 
+13. **Tactile Electric Blue Primary Button System (`.btn-primary`)**:
+    - **Slider Handle DNA**: Primary action buttons MUST match the tactile depth, inner white ambient light highlight, `#1A8EFF` border stroke, and electric sky blue glow of the signature custom range slider handle.
+    - **Standard Styling**: Always use the `.btn-primary` class (or tokens `h-10 px-4 rounded-2xl bg-[var(--color-accent-primary)] text-white border-[1.5px] border-[#1A8EFF] font-extrabold text-xs shadow-[0_4px_12px_-2px_rgba(43,181,255,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)]`).
+    - **Micro-Animations**: Hover scale `1.02` with deepened glow `shadow-[0_6px_16px_-2px_rgba(43,181,255,0.7),inset_0_1px_1px_rgba(255,255,255,0.4)]`, active scale `0.97`.
+
+14. **Single Icon Invariant & Zero Duplicate Microcopy Icons**:
+    - **Exactly One Icon**: Action buttons MUST render exactly ONE vector icon (e.g. `<Add24Filled className="w-4 h-4" />`).
+    - **Zero Literal Symbols in Microcopy**: Translation strings in `translations.ts` MUST NEVER include literal `+` or icon characters (e.g. use `'Venta sin cita'` or `'Add Service'`, NEVER `'+ Venta sin cita'`). Placing literal symbols in strings creates accidental `+ + Action` duplicate icons.
+
+15. **Conditional Search & Filter on Empty States**:
+    - **No Search/Filter on Initial Empty Catalog**: When a dataset or catalog is empty (`items.length === 0`), NEVER render search input bars or category filter dropdowns above the `<EmptyState />` container.
+    - **Active Catalog Only**: Search and filter controls MUST be conditionally rendered ONLY when `items.length > 0` (or during loading skeleton state). When a search query produces 0 matches on an existing catalog, keep the filter bar visible above the search-empty state so the query can be cleared.
+
+16. **Gestalt Proximity Spacing & 4-Column Grid Proportionality**:
+    - **Proximity Grouping**: Filter/search controls and the data list they govern form a unified functional group and MUST be wrapped in a tight sub-container (`space-y-3.5` / `14px`), while independent page sections (Header, Metric Ribbon, Catalog Group) use `space-y-6` (`24px`).
+    - **Mathematical Grid Alignment**: Search & Filter rows MUST align with the 4-column metric cards above them (e.g. `grid grid-cols-1 md:grid-cols-4 gap-3.5` with `md:col-span-3` for search and `md:col-span-1` for category filter in a 3:1 ratio).
+    - **Unified Control Height**: All inputs, `CustomSelect` dropdowns, and buttons MUST share the exact same height (`h-10` / 40px / `--control-height`) and `rounded-2xl` corner radius.
+    - **Zero Color Sprinkles**: Metric card icons and total counts MUST use neutral design tokens (`text-[var(--text-secondary)]`, `text-[var(--text-primary)]`). Color is strictly reserved for real, actionable warnings (e.g. `lowStockCount > 0`).
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
