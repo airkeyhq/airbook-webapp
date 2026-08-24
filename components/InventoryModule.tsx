@@ -393,77 +393,81 @@ export const InventoryModule: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden shadow-xs">
-        {loading && (
-          <div className="p-8 space-y-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-16 rounded-2xl bg-black/5 dark:bg-white/5 animate-pulse" />
-            ))}
-          </div>
-        )}
+      {loading && (
+        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-8 space-y-4 shadow-xs">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-16 rounded-2xl bg-black/5 dark:bg-white/5 animate-pulse" />
+          ))}
+        </div>
+      )}
 
-        {!loading && filteredProducts.length === 0 && (
-          <EmptyState
-            icon={Box24Regular}
-            title={t('noProducts')}
-            description={t('noProductsSub')}
-          />
-        )}
+      {!loading && filteredProducts.length === 0 && (
+        <EmptyState
+          icon={Box24Regular}
+          title={t('noProducts')}
+          description={t('noProductsSub')}
+          action={{
+            label: t('addProduct'),
+            onClick: () => setIsAddModalOpen(true),
+            icon: Add24Filled,
+          }}
+        />
+      )}
 
-        {!loading && filteredProducts.length > 0 && (
-          <div className="divide-y divide-[var(--border-subtle)]">
-            {filteredProducts.map((prod) => {
-              const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
-              const isOutOfStock = prod.stockQuantity === 0;
-              const margin =
-                prod.retailPriceCents > 0
-                  ? Math.round(
-                      ((prod.retailPriceCents - (prod.costPriceCents || 0)) / prod.retailPriceCents) * 100
-                    )
-                  : 0;
+      {!loading && filteredProducts.length > 0 && (
+        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+          {filteredProducts.map((prod) => {
+            const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
+            const isOutOfStock = prod.stockQuantity === 0;
+            const margin =
+              prod.retailPriceCents > 0
+                ? Math.round(
+                    ((prod.retailPriceCents - (prod.costPriceCents || 0)) / prod.retailPriceCents) * 100
+                  )
+                : 0;
 
-              return (
-                <div
-                  key={prod.id}
-                  onClick={() => openEditDrawer(prod)}
-                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {prod.imageUrl ? (
-                        <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <ShoppingBag24Regular className="w-6 h-6 text-blue-500/70" />
+            return (
+              <div
+                key={prod.id}
+                onClick={() => openEditDrawer(prod)}
+                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {prod.imageUrl ? (
+                      <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <ShoppingBag24Regular className="w-6 h-6 text-[var(--text-muted)]" />
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] transition-colors">
+                        {prod.name}
+                      </h3>
+                      {prod.sku && (
+                        <span className="hidden sm:inline px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-[10px] font-mono text-[var(--text-muted)]">
+                          {prod.sku}
+                        </span>
                       )}
                     </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {prod.name}
-                        </h3>
-                        {prod.sku && (
-                          <span className="hidden sm:inline px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-[10px] font-mono text-[var(--text-muted)]">
-                            {prod.sku}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
-                        <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px]">
-                          {prod.category}
-                        </span>
-                        <span className="hidden sm:inline">•</span>
-                        <span className="text-[var(--text-muted)] font-mono">
-                          {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
-                        </span>
-                        <span>•</span>
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                          {t('marginPercent').replace('{margin}', String(margin))}
-                        </span>
-                      </div>
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
+                      <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] font-bold text-[10px]">
+                        {prod.category}
+                      </span>
+                      <span className="hidden sm:inline">•</span>
+                      <span className="text-[var(--text-muted)] font-mono">
+                        {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
+                      </span>
+                      <span>•</span>
+                      <span className="text-[var(--text-secondary)] font-mono font-bold">
+                        {t('marginPercent').replace('{margin}', String(margin))}
+                      </span>
                     </div>
                   </div>
+                </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-4">
                     <div className="text-left sm:text-right">
@@ -508,7 +512,6 @@ export const InventoryModule: React.FC = () => {
             })}
           </div>
         )}
-      </div>
 
       <AnimatePresence>
         {isAddModalOpen && (
