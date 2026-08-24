@@ -222,13 +222,13 @@ export const CustomDomainStudio: React.FC = () => {
               value={domainInput}
               onChange={(e) => setDomainInput(e.target.value)}
               placeholder="booking.yourbrand.com"
-              className="flex-1 px-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="input-base flex-1 font-mono font-bold"
             />
             <button
               type="button"
               onClick={handleSave}
               disabled={isSaving || !domainInput.trim() || domainInput.trim() === savedDomain}
-              className="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer flex-shrink-0"
+              className="btn-primary flex-shrink-0"
             >
               <CheckmarkCircle24Filled className="w-4 h-4" />
               <span>{isSaving ? '...' : t('saveDomain')}</span>

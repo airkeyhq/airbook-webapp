@@ -965,7 +965,7 @@ export const PackagesModule: React.FC = () => {
                         placeholder={t('customAmountPlaceholder')}
                         value={gcCustomAmount}
                         onChange={(e) => setGcCustomAmount(e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -981,7 +981,7 @@ export const PackagesModule: React.FC = () => {
                         placeholder={t('recipientNamePlaceholder')}
                         value={gcRecipientName}
                         onChange={(e) => setGcRecipientName(e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full"
                       />
                     </div>
 
@@ -994,7 +994,7 @@ export const PackagesModule: React.FC = () => {
                         placeholder={t('recipientEmailPlaceholder')}
                         value={gcRecipientEmail}
                         onChange={(e) => setGcRecipientEmail(e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full"
                       />
                     </div>
                   </div>
@@ -1009,7 +1009,7 @@ export const PackagesModule: React.FC = () => {
                       placeholder={t('senderNamePlaceholder')}
                       value={gcSenderName}
                       onChange={(e) => setGcSenderName(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -1022,7 +1022,7 @@ export const PackagesModule: React.FC = () => {
                       placeholder={t('personalGreetingPlaceholder')}
                       value={gcNotes}
                       onChange={(e) => setGcNotes(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className="textarea-base w-full resize-none"
                     />
                   </div>
                 </div>
@@ -1169,7 +1169,7 @@ export const PackagesModule: React.FC = () => {
                       placeholder={t('packageNamePlaceholder')}
                       value={pkgName}
                       onChange={(e) => setPkgName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -1203,7 +1203,7 @@ export const PackagesModule: React.FC = () => {
                         required
                         value={pkgTotalSessions}
                         onChange={(e) => setPkgTotalSessions(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -1217,7 +1217,7 @@ export const PackagesModule: React.FC = () => {
                         required
                         value={pkgPrice}
                         onChange={(e) => setPkgPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -1233,7 +1233,7 @@ export const PackagesModule: React.FC = () => {
                         max="80"
                         value={pkgDiscountPercent}
                         onChange={(e) => setPkgDiscountPercent(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -1270,7 +1270,7 @@ export const PackagesModule: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleDeletePackage(editingPackage.id)}
-                      className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
+                      className="w-full py-2 rounded-xl text-red-500 hover:bg-red-500/10 font-extrabold text-xs transition-colors cursor-pointer"
                     >
                       {t('deletePackage')}
                     </button>
@@ -1338,7 +1338,7 @@ export const PackagesModule: React.FC = () => {
                       placeholder={t('tierNamePlaceholder')}
                       value={memName}
                       onChange={(e) => setMemName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -1353,7 +1353,7 @@ export const PackagesModule: React.FC = () => {
                         required
                         value={memPrice}
                         onChange={(e) => setMemPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -1367,7 +1367,7 @@ export const PackagesModule: React.FC = () => {
                         max="20"
                         value={memIncludedServices}
                         onChange={(e) => setMemIncludedServices(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -1381,7 +1381,7 @@ export const PackagesModule: React.FC = () => {
                         max="50"
                         value={memDiscountRetail}
                         onChange={(e) => setMemDiscountRetail(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -1395,7 +1395,7 @@ export const PackagesModule: React.FC = () => {
                       placeholder={t('tierPerksPlaceholder')}
                       value={memPerks}
                       onChange={(e) => setMemPerks(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className="textarea-base w-full resize-none"
                     />
                   </div>
                 </div>

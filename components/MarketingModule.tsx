@@ -409,7 +409,7 @@ export const MarketingModule: React.FC = () => {
                 onChange={(e) => setGoogleReviewUrl(e.target.value)}
                 onBlur={() => persistAutomationSettings({ googleReviewUrl })}
                 placeholder="https://g.page/r/your-id/review"
-                className="flex-1 max-w-md px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
+                className="input-base flex-1 max-w-md font-mono"
               />
 
               {/* 3-Dots Action Popover */}
@@ -641,7 +641,7 @@ export const MarketingModule: React.FC = () => {
                           placeholder={t('vipCampaignPlaceholder')}
                           value={campName}
                           onChange={(e) => setCampName(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="input-base w-full"
                         />
                       </div>
 
@@ -692,7 +692,7 @@ export const MarketingModule: React.FC = () => {
                           required
                           value={campMessage}
                           onChange={(e) => setCampMessage(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
+                          className="textarea-base w-full resize-none"
                         />
 
                         <div className="flex items-center gap-1.5 flex-wrap pt-1">

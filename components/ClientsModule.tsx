@@ -462,7 +462,7 @@ export const ClientsModule: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Alex Rivera"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -476,7 +476,7 @@ export const ClientsModule: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="alex@example.com"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                        className="input-base w-full"
                       />
                     </div>
 
@@ -489,7 +489,7 @@ export const ClientsModule: React.FC = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="(555) 019-2834"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                        className="input-base w-full"
                       />
                     </div>
                   </div>
@@ -503,7 +503,7 @@ export const ClientsModule: React.FC = () => {
                       value={preferences}
                       onChange={(e) => setPreferences(e.target.value)}
                       placeholder="e.g. Early morning slots, sparkling water, quiet session"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -516,7 +516,7 @@ export const ClientsModule: React.FC = () => {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="e.g. Initial consultation notes, service goals, technical specs..."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="textarea-base w-full resize-none"
                     />
                   </div>
                 </div>

@@ -562,7 +562,7 @@ export const InventoryModule: React.FC = () => {
                       placeholder={t('productNamePlaceholder')}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -587,7 +587,7 @@ export const InventoryModule: React.FC = () => {
                         placeholder={t('skuPlaceholder')}
                         value={sku}
                         onChange={(e) => setSku(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -603,7 +603,7 @@ export const InventoryModule: React.FC = () => {
                         required
                         value={retailPrice}
                         onChange={(e) => setRetailPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -616,7 +616,7 @@ export const InventoryModule: React.FC = () => {
                         step="0.01"
                         value={costPrice}
                         onChange={(e) => setCostPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -637,7 +637,7 @@ export const InventoryModule: React.FC = () => {
                         type="number"
                         value={stockQuantity}
                         onChange={(e) => setStockQuantity(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -649,7 +649,7 @@ export const InventoryModule: React.FC = () => {
                         type="number"
                         value={lowStockThreshold}
                         onChange={(e) => setLowStockThreshold(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -752,7 +752,7 @@ export const InventoryModule: React.FC = () => {
                       required
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -776,7 +776,7 @@ export const InventoryModule: React.FC = () => {
                         type="text"
                         value={editSku}
                         onChange={(e) => setEditSku(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -792,7 +792,7 @@ export const InventoryModule: React.FC = () => {
                         required
                         value={editRetailPrice}
                         onChange={(e) => setEditRetailPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -805,7 +805,7 @@ export const InventoryModule: React.FC = () => {
                         step="0.01"
                         value={editCostPrice}
                         onChange={(e) => setEditCostPrice(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -826,7 +826,7 @@ export const InventoryModule: React.FC = () => {
                         type="number"
                         value={editStockQuantity}
                         onChange={(e) => setEditStockQuantity(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
 
@@ -838,7 +838,7 @@ export const InventoryModule: React.FC = () => {
                         type="number"
                         value={editLowStockThreshold}
                         onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-base w-full font-mono"
                       />
                     </div>
                   </div>
@@ -852,7 +852,7 @@ export const InventoryModule: React.FC = () => {
                       placeholder="https://..."
                       value={editImageUrl}
                       onChange={(e) => setEditImageUrl(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 

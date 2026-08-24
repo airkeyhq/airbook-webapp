@@ -275,6 +275,81 @@ body {
   border-color: rgba(43, 181, 255, 0.3);
 }
 
+/* ─── UNIFIED INPUT & CONTROL SYSTEM ─── */
+.input-base,
+.input-field {
+  height: var(--size-control-base); /* 40px */
+  padding-left: var(--space-4);      /* 16px */
+  padding-right: var(--space-4);     /* 16px */
+  border-radius: var(--radius-md);   /* 16px (rounded-2xl) */
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.75rem;                /* 12px / text-xs */
+  font-weight: 500;
+  transition: all 0.1s ease-out;
+  outline: none;
+}
+
+.input-base:hover,
+.input-field:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .input-base:hover,
+[data-theme="dark"] .input-field:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.input-base:focus,
+.input-field:focus {
+  border-color: var(--border-subtle);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .input-base:focus,
+[data-theme="dark"] .input-field:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.input-base::placeholder,
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.textarea-base {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.1s ease-out;
+  outline: none;
+}
+
+.textarea-base:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .textarea-base:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.textarea-base:focus {
+  border-color: var(--border-subtle);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .textarea-base:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.textarea-base::placeholder {
+  color: var(--text-muted);
+}
+
 /* ─── CUSTOM PILL RANGE SLIDER WITH < > ARROWS ─── */
 input[type="range"] {
   -webkit-appearance: none;
