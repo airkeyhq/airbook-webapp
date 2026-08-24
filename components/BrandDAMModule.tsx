@@ -289,7 +289,7 @@ export const BrandDAMModule: React.FC = () => {
             {/* Left: General Brand Identity */}
             <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
               <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                <Sparkle24Filled className="w-4 h-4 text-blue-500" />
+                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
                 <span>{t('identityBio')}</span>
               </h3>
 

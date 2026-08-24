@@ -162,7 +162,7 @@ export const CustomDomainStudio: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Globe24Regular className="w-4 h-4 text-blue-500" />
+              <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('customDomainTitle')}</span>
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
@@ -242,7 +242,7 @@ export const CustomDomainStudio: React.FC = () => {
       {savedDomain && !domainVerified && (
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
           <div className="flex items-center gap-2">
-            <Info24Regular className="w-5 h-5 text-blue-500" />
+            <Info24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
             <div>
               <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('dnsInstructions')}</h4>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">

@@ -108,9 +108,9 @@ function Toggle({
 /* ─── Section wrapper ─── */
 function Section({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+    <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
       <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-        <Icon className="w-4 h-4 text-blue-500" />
+        <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
         <span>{title}</span>
       </h3>
       {children}
@@ -613,7 +613,7 @@ export const SettingsModule: React.FC = () => {
                     className="px-4 py-3 flex items-center justify-between gap-3 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] flex items-center justify-center flex-shrink-0">
                         <Building24Regular className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
@@ -1304,7 +1304,7 @@ export const SettingsModule: React.FC = () => {
                 {/* Header */}
                 <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                   <div className="flex items-center gap-2.5">
-                    <Building24Regular className="w-5 h-5 text-blue-500" />
+                    <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
                     <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
                   </div>
                   <button
@@ -1411,7 +1411,7 @@ export const SettingsModule: React.FC = () => {
                 {/* Header */}
                 <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                   <div className="flex items-center gap-2.5">
-                    <Building24Regular className="w-5 h-5 text-blue-500" />
+                    <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
                     <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editChairStation')}</h3>
                   </div>
                   <button

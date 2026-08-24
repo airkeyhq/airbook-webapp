@@ -115,6 +115,10 @@ export const NotificationCenterPopover: React.FC = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
   };
 
+  const markAsRead = (id: string) => {
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
+  };
+
   const filteredNotifications = notifications.filter((n) => {
     if (activeFilter === 'unread') return !n.isRead;
     if (activeFilter === 'logs') return n.type === 'sms' || n.type === 'email';
@@ -208,11 +212,7 @@ export const NotificationCenterPopover: React.FC = () => {
               filteredNotifications.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => {
-                    setNotifications((prev) =>
-                      prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
-                    );
-                  }}
+                  onClick={() => markAsRead(item.id)}
                   className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                     item.isRead
                       ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
@@ -220,13 +220,13 @@ export const NotificationCenterPopover: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-start gap-2.5">
-                    <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
+                    <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] mt-0.5 flex-shrink-0">
                       {item.type === 'sms' || item.type === 'email' ? (
                         <Mail24Regular className="w-4 h-4" />
                       ) : item.type === 'payment' ? (
-                        <Payment24Regular className="w-4 h-4 text-emerald-500" />
+                        <Payment24Regular className="w-4 h-4" />
                       ) : (
-                        <Box24Regular className="w-4 h-4 text-amber-500" />
+                        <Box24Regular className="w-4 h-4" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export const NotificationCenterPopover: React.FC = () => {
                   {/* Drawer Header */}
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
                     <div className="flex items-center gap-2">
-                      <Alert24Regular className="w-4 h-4 text-blue-500" />
+                      <Alert24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
                       <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
                     </div>
                     <div className="flex items-center gap-2">
@@ -353,13 +353,13 @@ export const NotificationCenterPopover: React.FC = () => {
                           }`}
                         >
                           <div className="flex items-start gap-2.5">
-                            <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-blue-500 mt-0.5 flex-shrink-0">
+                            <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] mt-0.5 flex-shrink-0">
                               {item.type === 'sms' || item.type === 'email' ? (
                                 <Mail24Regular className="w-4 h-4" />
                               ) : item.type === 'payment' ? (
-                                <Payment24Regular className="w-4 h-4 text-emerald-500" />
+                                <Payment24Regular className="w-4 h-4" />
                               ) : (
-                                <Box24Regular className="w-4 h-4 text-amber-500" />
+                                <Box24Regular className="w-4 h-4" />
                               )}
                             </div>
                             <div className="flex-1 min-w-0">

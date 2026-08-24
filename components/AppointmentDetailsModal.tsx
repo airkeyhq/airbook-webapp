@@ -230,7 +230,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               }}
               className="btn-secondary w-full"
             >
-              <DocumentText24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <DocumentText24Filled className="w-4 h-4 flex-shrink-0" />
               <span>{t('clientNotesBtn')}</span>
             </button>
 

@@ -207,8 +207,7 @@ export const WalkInKioskModule: React.FC = () => {
             <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
               {t('kioskTitle')}
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold flex items-center gap-1.5 uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold uppercase">
               <span>{t('kioskActive')}</span>
             </span>
           </div>
@@ -380,7 +379,7 @@ export const WalkInKioskModule: React.FC = () => {
                         className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                       >
                         <div className="flex items-start sm:items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 font-mono font-black flex items-center justify-center text-xs flex-shrink-0">
+                          <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] font-mono font-bold flex items-center justify-center text-xs flex-shrink-0">
                             #{idx + 1}
                           </div>
 
@@ -392,7 +391,7 @@ export const WalkInKioskModule: React.FC = () => {
                               )}
                             </div>
                             <p className="text-[11px] text-[var(--text-secondary)]">
-                              {guest.serviceName} · <span className="font-semibold text-blue-600 dark:text-blue-400">{guest.staffName}</span>
+                              {guest.serviceName} · <span className="font-bold text-[var(--text-primary)]">{guest.staffName}</span>
                             </p>
                           </div>
                         </div>
@@ -402,7 +401,7 @@ export const WalkInKioskModule: React.FC = () => {
                             type="button"
                             onClick={() => handleSendReadyAlert(guest)}
                             title={t('sendReadyAlert')}
-                            className="px-2.5 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                            className="btn-secondary"
                           >
                             <Phone24Filled className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">{t('smsCta')}</span>
@@ -449,13 +448,13 @@ export const WalkInKioskModule: React.FC = () => {
                         className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
-                          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-sm flex-shrink-0">
+                          <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] font-extrabold flex items-center justify-center text-sm flex-shrink-0">
                             {guest.clientName.charAt(0)}
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               <h4 className="text-xs font-extrabold text-[var(--text-primary)] truncate">{guest.clientName}</h4>
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
+                              <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-[var(--text-secondary)] text-[10px] font-bold uppercase">
                                 {t('statusInChair')}
                               </span>
                             </div>
@@ -469,7 +468,7 @@ export const WalkInKioskModule: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleUpdateStatus(guest.id, 'completed')}
-                            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                            className="btn-primary"
                           >
                             <CheckmarkCircle24Filled className="w-4 h-4" />
                             <span>{t('markCompleted')}</span>
@@ -479,11 +478,11 @@ export const WalkInKioskModule: React.FC = () => {
                     ))}
                   </div>
                 )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* ─── DRAWER 1: MANUAL CHECK-IN DRAWER ─── */}
       <AnimatePresence>

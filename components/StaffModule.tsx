@@ -156,10 +156,10 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
     <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 space-y-3.5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <label className="text-xs font-extrabold text-[var(--text-primary)] flex items-center gap-1.5">
-          <Clock24Regular className="w-4 h-4 text-blue-500" />
+          <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
           <span>{t('workingShiftsAndHours')}</span>
         </label>
-        <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+        <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full border border-[var(--border-subtle)]">
           {t('weeklySummary')
             .replace('{workingDays}', String(activeDays.length))
             .replace('{totalHours}', totalHours.toFixed(1))}
@@ -171,9 +171,9 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
         <button
           type="button"
           onClick={applyDefaultWeekdays}
-          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors flex items-center gap-1"
+          className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-black/5 dark:bg-white/10 text-[var(--text-primary)] hover:bg-black/10 transition-colors flex items-center gap-1"
         >
-          <Sparkle24Filled className="w-3 h-3 text-blue-500" />
+          <Sparkle24Filled className="w-3 h-3 text-[var(--text-secondary)]" />
           <span>{t('applyDefaultWeekdays')}</span>
         </button>
         <button
@@ -956,7 +956,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   onClick={() => handleViewCalendar(selectedStaffForEdit.id)}
                   className="btn-secondary w-full"
                 >
-                  <Calendar24Filled className="w-4 h-4 text-blue-500" />
+                  <Calendar24Filled className="w-4 h-4" />
                   <span>{t('viewCalendarSchedule')}</span>
                 </button>
 

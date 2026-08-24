@@ -1009,7 +1009,7 @@ export const OnlineBookingModule: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <QrCode24Filled className="w-4 h-4 text-purple-500" />
+                  <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
                   <span>{t('qrCodeModalTitle')}</span>
                 </h3>
                 <button
