@@ -541,7 +541,7 @@ export const WalkInKioskModule: React.FC = () => {
                       placeholder="e.g. Jordan Miller"
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -554,7 +554,7 @@ export const WalkInKioskModule: React.FC = () => {
                       placeholder="+1 (555) 234-5678"
                       value={clientPhone}
                       onChange={(e) => setClientPhone(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full font-mono"
                     />
                   </div>
 
@@ -598,7 +598,7 @@ export const WalkInKioskModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="btn-primary w-full sm:w-auto disabled:opacity-50"
                   >
                     <Add24Filled className="w-4 h-4" />
                     <span>{submitting ? t('addingToQueue') : t('addToQueue')}</span>

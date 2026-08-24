@@ -74,17 +74,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onConfirm}
-              className={`w-full py-3.5 rounded-2xl text-xs font-bold shadow-md transition-colors flex items-center justify-center gap-2 ${
+              className={
                 variant === 'danger'
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-black text-white dark:bg-white dark:text-black'
-              }`}
+                  ? 'w-full py-3.5 rounded-2xl text-xs font-bold shadow-md transition-colors flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white cursor-pointer'
+                  : 'btn-primary w-full'
+              }
             >
               {confirmLabel}
             </motion.button>
             <button
+              type="button"
               onClick={onCancel}
-              className="w-full py-3 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] transition-colors"
+              className="btn-secondary w-full"
             >
               {cancelLabel}
             </button>

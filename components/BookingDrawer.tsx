@@ -148,7 +148,7 @@ export const BookingDrawer: React.FC = () => {
                 placeholder={t('clientNamePlaceholder')}
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-sm font-medium text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input-base w-full"
               />
             </div>
 
@@ -217,7 +217,7 @@ export const BookingDrawer: React.FC = () => {
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-medium text-[var(--text-primary)] focus:outline-none"
+                  className="input-base w-full font-mono"
                 />
               </div>
             </div>
@@ -228,11 +228,10 @@ export const BookingDrawer: React.FC = () => {
             <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 rounded-none flex-shrink-0 z-30">
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                whileHover={{ scale: 1.01 }}
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+                className="btn-primary w-full"
               >
-                <Sparkle24Filled className="w-4 h-4 text-white dark:text-black" />
+                <Sparkle24Filled className="w-4 h-4" />
                 <span>{t('createAppointment')}</span>
               </motion.button>
             </div>

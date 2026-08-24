@@ -791,7 +791,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 whileTap={{ scale: 0.97 }}
                 disabled={submitting}
                 onClick={handleProcessPayment}
-                className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                className="btn-primary w-full disabled:opacity-50"
               >
                 <Payment24Filled className="w-4 h-4" />
                 <span>

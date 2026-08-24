@@ -141,7 +141,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 value={name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="e.g. AirBook · Soho Flagship"
-                className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="input-base w-full"
               />
             </div>
 
@@ -150,7 +150,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 {t('branchSlugLabel')} *
               </label>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-mono text-[var(--text-muted)] bg-black/5 dark:bg-white/5 px-2.5 py-2.5 rounded-xl border border-[var(--border-subtle)]">
+                <span className="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-secondary)] px-3 py-2.5 rounded-2xl border border-[var(--border-subtle)]">
                   getairbook.com/book/
                 </span>
                 <input
@@ -159,7 +159,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="soho-flagship"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="input-base w-full font-mono font-bold"
                 />
               </div>
             </div>
@@ -173,7 +173,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="e.g. 482 Broome St, New York, NY 10013"
-                className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="input-base w-full"
               />
             </div>
 
@@ -202,7 +202,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                   value={managerName}
                   onChange={(e) => setManagerName(e.target.value)}
                   placeholder="e.g. Elena Rostova"
-                  className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="input-base w-full"
                 />
               </div>
             </div>
@@ -216,7 +216,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+1 (212) 555-0199"
-                className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="input-base w-full"
               />
             </div>
 
@@ -225,14 +225,14 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
+                className="btn-secondary"
               >
                 {t('cancel')}
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer"
+                className="btn-primary"
               >
                 <Add24Filled className="w-4 h-4" />
                 <span>{isSubmitting ? 'Deploying Branch…' : 'Deploy Location Branch'}</span>

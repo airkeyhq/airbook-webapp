@@ -543,7 +543,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     value={preferences}
                     onChange={(e) => setPreferences(e.target.value)}
                     placeholder="e.g. Sparkling water on arrival, room temp 70°F, quiet session"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    className="input-base w-full"
                   />
                 </div>
 
@@ -557,7 +557,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     value={allergies}
                     onChange={(e) => setAllergies(e.target.value)}
                     placeholder="e.g. Allergic to latex, synthetic fragrance, tree nut oils"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-red-500/5 border border-red-500/20 text-xs font-semibold text-red-600 dark:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                    className="input-base w-full border-red-500/30 text-red-600 dark:text-red-400 bg-red-500/5"
                   />
                 </div>
 
@@ -570,7 +570,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Internal practitioner notes, conversation points, client history..."
-                    className="w-full p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    className="textarea-base w-full resize-none"
                   />
                 </div>
               </div>
@@ -592,7 +592,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsWaiverModalOpen(true)}
-                    className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                    className="btn-primary"
                   >
                     <DocumentSignature24Filled className="w-3.5 h-3.5" />
                     <span>{t('signNewWaiver')}</span>
@@ -680,7 +680,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    className="input-base w-full"
                   />
                 </div>
 
@@ -694,7 +694,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="client@gmail.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -707,7 +707,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="(555) 019-2834"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="input-base w-full"
                     />
                   </div>
                 </div>
@@ -791,7 +791,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+              className="btn-secondary"
             >
               {t('cancel')}
             </button>
@@ -800,7 +800,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
               type="button"
               disabled={isSaving}
               onClick={handleSaveClient}
-              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer"
+              className="btn-primary"
             >
               <Save24Filled className="w-4 h-4" />
               <span>{isSaving ? 'Saving…' : t('saveNotes')}</span>

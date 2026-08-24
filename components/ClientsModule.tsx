@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Dismiss24Filled,
+  Person24Filled,
   Person24Regular,
   Mail24Regular,
   Phone24Regular,
@@ -429,7 +430,7 @@ export const ClientsModule: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
             >
               <form onSubmit={handleAddClient} className="flex flex-col h-full min-h-0 overflow-hidden">
                 {/* Mobile & Tablet Drag Handle */}
@@ -527,8 +528,9 @@ export const ClientsModule: React.FC = () => {
                     whileTap={{ scale: 0.96 }}
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
+                    <Person24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveClient')}</span>
                   </motion.button>
                 </div>

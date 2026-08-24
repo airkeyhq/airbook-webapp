@@ -274,12 +274,12 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                       <p className="text-xs font-extrabold text-[var(--text-primary)]">{t('terminalPairNew')}</p>
                       <input type="text" value={readerLabel} onChange={(e) => setReaderLabel(e.target.value)}
                         placeholder="e.g. Register 1 — Front Desk"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)]" />
+                        className="input-base w-full" />
                       <input type="text" required value={registrationCode} onChange={(e) => setRegistrationCode(e.target.value)}
                         placeholder="Registration Code (on device screen)"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] uppercase" />
+                        className="input-base w-full font-mono font-bold uppercase" />
                       <button type="submit" disabled={isPairing}
-                        className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs transition-colors cursor-pointer">
+                        className="btn-primary w-full disabled:opacity-50">
                         {isPairing ? 'Pairing…' : 'Pair This Reader'}
                       </button>
                     </motion.form>
@@ -293,12 +293,12 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
           {paymentStatus === 'idle' && (
             <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-3 flex-shrink-0">
               <button type="button" onClick={onClose}
-                className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5">
+                className="btn-secondary flex-1">
                 {t('cancel')}
               </button>
               <button type="button" onClick={handleCollectPayment}
                 disabled={!selectedReaderId || isCollecting}
-                className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                className="btn-primary flex-1 disabled:opacity-50">
                 <Payment24Filled className="w-4 h-4" />
                 <span>{t('terminalCollectPayment')} · ${(amountCents / 100).toFixed(2)}</span>
               </button>
@@ -307,7 +307,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
           {paymentStatus === 'success' && (
             <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex-shrink-0">
               <button type="button" onClick={onClose}
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md">
+                className="btn-primary w-full">
                 Done — Close
               </button>
             </div>

@@ -425,8 +425,8 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                     className="w-full h-full cursor-crosshair block"
                   />
                   {!hasSignature && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-xs font-bold text-blue-500/30">
-                      Sign Here ✍️
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-xs font-bold text-blue-500/40 uppercase tracking-wider">
+                      {t('drawSignaturePrompt')}
                     </div>
                   )}
                 </div>
@@ -446,7 +446,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
               <button
                 type="submit"
                 disabled={submitting || !hasSignature}
-                className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className="btn-primary w-full sm:w-auto disabled:opacity-50"
               >
                 <CheckmarkCircle24Filled className="w-4 h-4" />
                 <span>{submitting ? 'Recording…' : t('signWaiver')}</span>
