@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { FloatingInput } from '@/components/FloatingInput';
 import {
   Payment24Filled,
   Dismiss24Filled,
@@ -270,14 +271,24 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                   {showPairForm && (
                     <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                       onSubmit={handlePairReader}
-                      className="space-y-3 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] overflow-hidden">
+                      className="space-y-3.5 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] overflow-hidden">
                       <p className="text-xs font-extrabold text-[var(--text-primary)]">{t('terminalPairNew')}</p>
-                      <input type="text" value={readerLabel} onChange={(e) => setReaderLabel(e.target.value)}
+                      <FloatingInput
+                        label={t('terminalPairNew')}
+                        type="text"
+                        value={readerLabel}
+                        onChange={(e) => setReaderLabel(e.target.value)}
                         placeholder="e.g. Register 1 — Front Desk"
-                        className="input-base w-full" />
-                      <input type="text" required value={registrationCode} onChange={(e) => setRegistrationCode(e.target.value)}
+                      />
+                      <FloatingInput
+                        label="Registration Code"
+                        type="text"
+                        required
+                        value={registrationCode}
+                        onChange={(e) => setRegistrationCode(e.target.value)}
                         placeholder="Registration Code (on device screen)"
-                        className="input-base w-full font-mono font-bold uppercase" />
+                        className="font-mono font-bold uppercase"
+                      />
                       <button type="submit" disabled={isPairing}
                         className="btn-primary w-full disabled:opacity-50">
                         {isPairing ? 'Pairing…' : 'Pair This Reader'}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { FloatingInput } from '@/components/FloatingInput';
 import {
   Globe24Filled,
   Globe24Regular,
@@ -213,28 +214,25 @@ export const CustomDomainStudio: React.FC = () => {
         )}
 
         {/* Domain Input Field */}
-        <div className="pt-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-            {t('tabDomain')}
-          </label>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-            <input
-              type="text"
-              value={domainInput}
-              onChange={(e) => setDomainInput(e.target.value)}
-              placeholder="booking.yourbrand.com"
-              className="input-base flex-1 font-mono font-bold"
-            />
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving || !domainInput.trim() || domainInput.trim() === savedDomain}
-              className="btn-primary flex-shrink-0"
-            >
-              <Save24Filled className="w-4 h-4" />
-              <span>{isSaving ? '...' : t('save')}</span>
-            </button>
-          </div>
+        <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <FloatingInput
+            label={t('tabDomain')}
+            type="text"
+            value={domainInput}
+            onChange={(e) => setDomainInput(e.target.value)}
+            placeholder="booking.yourbrand.com"
+            className="font-mono font-bold"
+            containerClassName="flex-1"
+          />
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving || !domainInput.trim() || domainInput.trim() === savedDomain}
+            className="btn-primary h-[52px] flex-shrink-0"
+          >
+            <Save24Filled className="w-4 h-4" />
+            <span>{isSaving ? '...' : t('save')}</span>
+          </button>
         </div>
       </div>
 

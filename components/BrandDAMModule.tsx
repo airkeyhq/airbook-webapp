@@ -6,6 +6,7 @@ import { Logo, CircleCloudIcon3D, CircleCloudIconFlat, BlueprintBadgeIcon, LogoB
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
+import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import {
   Sparkle24Filled,
   Copy24Filled,
@@ -293,43 +294,28 @@ export const BrandDAMModule: React.FC = () => {
                 <span>{t('identityBio')}</span>
               </h3>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('brandNameLabel')}
-                </label>
-                <input
-                  type="text"
-                  value={brandName}
-                  onChange={(e) => setBrandName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                />
-              </div>
+              <FloatingInput
+                label={t('brandNameLabel')}
+                type="text"
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
+              />
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('taglineLabel')}
-                </label>
-                <textarea
-                  rows={3}
-                  value={tagline}
-                  onChange={(e) => setTagline(e.target.value)}
-                  placeholder={t('taglinePlaceholder')}
-                  className="w-full p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                />
-              </div>
+              <FloatingTextarea
+                label={t('taglineLabel')}
+                rows={3}
+                value={tagline}
+                onChange={(e) => setTagline(e.target.value)}
+                placeholder={t('taglinePlaceholder')}
+              />
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('logoUploadLabel')} (Image / SVG URL)
-                </label>
-                <input
-                  type="url"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="https://your-domain.com/logo.svg"
-                  className="w-full px-4 py-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                />
-              </div>
+              <FloatingInput
+                label={`${t('logoUploadLabel')} (Image / SVG URL)`}
+                type="url"
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+                placeholder="https://your-domain.com/logo.svg"
+              />
             </div>
 
             {/* Right: Color Palette Engine */}
@@ -454,45 +440,30 @@ export const BrandDAMModule: React.FC = () => {
               {t('socialLinksLabel')}
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  Instagram Profile URL
-                </label>
-                <input
-                  type="url"
-                  value={instagramUrl}
-                  onChange={(e) => setInstagramUrl(e.target.value)}
-                  placeholder="https://instagram.com/yourhandle"
-                  className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)]"
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <FloatingInput
+                label="Instagram Profile URL"
+                type="url"
+                value={instagramUrl}
+                onChange={(e) => setInstagramUrl(e.target.value)}
+                placeholder="https://instagram.com/yourhandle"
+              />
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('tiktokLabel')}
-                </label>
-                <input
-                  type="url"
-                  value={tiktokUrl}
-                  onChange={(e) => setTiktokUrl(e.target.value)}
-                  placeholder="https://tiktok.com/@yourhandle"
-                  className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)]"
-                />
-              </div>
+              <FloatingInput
+                label={t('tiktokLabel')}
+                type="url"
+                value={tiktokUrl}
+                onChange={(e) => setTiktokUrl(e.target.value)}
+                placeholder="https://tiktok.com/@yourhandle"
+              />
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  Official Website URL
-                </label>
-                <input
-                  type="url"
-                  value={websiteUrl}
-                  onChange={(e) => setWebsiteUrl(e.target.value)}
-                  placeholder="https://yourwebsite.com"
-                  className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)]"
-                />
-              </div>
+              <FloatingInput
+                label="Official Website URL"
+                type="url"
+                value={websiteUrl}
+                onChange={(e) => setWebsiteUrl(e.target.value)}
+                placeholder="https://yourwebsite.com"
+              />
             </div>
           </div>
         </motion.div>

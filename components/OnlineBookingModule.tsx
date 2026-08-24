@@ -6,6 +6,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
@@ -822,13 +823,14 @@ export const OnlineBookingModule: React.FC = () => {
 
               {/* Cover Banner URL */}
               <StudioSection title={t('coverBannerUrl')} icon={Image24Regular}>
-                <div className="space-y-2">
-                  <input
+                <div className="space-y-3">
+                  <FloatingInput
+                    label={t('coverBannerUrl')}
                     type="url"
                     value={coverImageUrl}
                     onChange={(e) => setCoverImageUrl(e.target.value)}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="font-mono"
                   />
                   <div className="h-28 w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] relative">
                     <img src={coverImageUrl} alt="Cover preview" className="w-full h-full object-cover" />
@@ -841,48 +843,44 @@ export const OnlineBookingModule: React.FC = () => {
 
               {/* Business Bio & Welcome Greeting */}
               <StudioSection title={t('businessBio')} icon={Tag24Regular}>
-                <textarea
+                <FloatingTextarea
+                  label={t('businessBio')}
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Welcome to our studio! We provide high-end styling and wellness..."
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
                 />
               </StudioSection>
 
               {/* Social & Web Links */}
               <StudioSection title={t('socialLinksTitle')} icon={Share24Regular}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <StudioField label={t('instagramLabel')}>
-                    <input
-                      type="text"
-                      value={instagramUrl}
-                      onChange={(e) => setInstagramUrl(e.target.value)}
-                      placeholder="https://instagram.com/your-salon"
-                      className="w-full px-3.5 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none"
-                    />
-                  </StudioField>
+                  <FloatingInput
+                    label={t('instagramLabel')}
+                    type="text"
+                    value={instagramUrl}
+                    onChange={(e) => setInstagramUrl(e.target.value)}
+                    placeholder="https://instagram.com/your-salon"
+                  />
 
-                  <StudioField label={t('websiteLabel')}>
-                    <input
-                      type="url"
-                      value={websiteUrl}
-                      onChange={(e) => setWebsiteUrl(e.target.value)}
-                      placeholder="https://yourwebsite.com"
-                      className="w-full px-3.5 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none"
-                    />
-                  </StudioField>
+                  <FloatingInput
+                    label={t('websiteLabel')}
+                    type="url"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    placeholder="https://yourwebsite.com"
+                  />
                 </div>
               </StudioSection>
 
               {/* Booking Notice & Disclaimer */}
               <StudioSection title={t('bookingNoticeLabel')} icon={ShieldCheckmark24Regular}>
-                <textarea
+                <FloatingTextarea
+                  label={t('bookingNoticeLabel')}
                   rows={2}
                   value={bookingNotice}
                   onChange={(e) => setBookingNotice(e.target.value)}
                   placeholder="Please arrive 5 minutes prior to your appointment..."
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"
                 />
               </StudioSection>
             </div>

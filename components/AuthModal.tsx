@@ -6,6 +6,7 @@ import { useAirBookStore } from '@/lib/store';
 import { CircleCloudIcon } from './Logo';
 import { signIn, signUp } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { FloatingInput } from '@/components/FloatingInput';
 import { Dismiss24Filled, ArrowRight24Filled, Sparkle24Filled, Mail24Regular, LockClosed24Regular, Building24Regular, ShieldCheckmark24Regular } from '@fluentui/react-icons';
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
 import AppleMono from '@lobehub/icons/es/Apple/components/Mono';
@@ -137,58 +138,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
             {mode === 'signup' && (
               <>
-                <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                    Workspace / Salon Name
-                  </label>
-                  <div className="relative">
-                    <Building24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3 z-10" />
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Glow Beauty Studio"
-                      value={workspaceName}
-                      onChange={(e) => setWorkspaceNameInput(e.target.value)}
-                      className="input-base w-full pl-10"
-                    />
-                  </div>
-                </div>
+                <FloatingInput
+                  label="Workspace / Salon Name"
+                  type="text"
+                  required
+                  placeholder="e.g. Glow Beauty Studio"
+                  value={workspaceName}
+                  onChange={(e) => setWorkspaceNameInput(e.target.value)}
+                  icon={<Building24Regular className="w-4 h-4" />}
+                />
 
-                <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                    Your Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Alex Johnson"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="input-base w-full"
-                  />
-                </div>
+                <FloatingInput
+                  label="Your Full Name"
+                  type="text"
+                  required
+                  placeholder="e.g. Alex Johnson"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </>
             )}
 
-            <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                Work Email
-              </label>
-              <div className="relative">
-                <Mail24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3 z-10" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@business.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-base w-full pl-10"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label="Work Email"
+              type="email"
+              required
+              placeholder="name@business.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              icon={<Mail24Regular className="w-4 h-4" />}
+            />
 
             {message && (
               <div className="p-2.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs flex items-center gap-2">

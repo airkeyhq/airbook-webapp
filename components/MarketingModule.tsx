@@ -7,6 +7,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from './CustomSelect';
+import { FloatingInput, FloatingTextarea } from './FloatingInput';
 import { EmptyState } from './EmptyState';
 import {
   Send24Filled,
@@ -403,13 +404,15 @@ export const MarketingModule: React.FC = () => {
 
             {/* Vertically Stacked Controls Row: Input + 3-Dots */}
             <div className="sm:pl-[54px] flex items-center gap-2">
-              <input
+              <FloatingInput
+                label="Google Review URL"
                 type="url"
                 value={googleReviewUrl}
                 onChange={(e) => setGoogleReviewUrl(e.target.value)}
                 onBlur={() => persistAutomationSettings({ googleReviewUrl })}
                 placeholder="https://g.page/r/your-id/review"
-                className="input-base flex-1 max-w-md font-mono"
+                containerClassName="flex-1 max-w-md"
+                className="font-mono"
               />
 
               {/* 3-Dots Action Popover */}
@@ -630,69 +633,48 @@ export const MarketingModule: React.FC = () => {
 
                   {/* Form Body */}
                   <form onSubmit={handleLaunchCampaign} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                          {t('campaignName')}
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder={t('vipCampaignPlaceholder')}
-                          value={campName}
-                          onChange={(e) => setCampName(e.target.value)}
-                          className="input-base w-full"
+                    <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
+                      <FloatingInput
+                        label={t('campaignName')}
+                        type="text"
+                        required
+                        placeholder={t('vipCampaignPlaceholder')}
+                        value={campName}
+                        onChange={(e) => setCampName(e.target.value)}
+                      />
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <CustomSelect
+                          label={t('targetAudience')}
+                          value={campAudience}
+                          onChange={(val) => setCampAudience(val as any)}
+                          options={[
+                            { value: 'all', label: t('audienceAll', { count: totalClientsCount }) },
+                            { value: 'vip', label: t('audienceVip', { count: Math.max(5, Math.round(totalClientsCount * 0.25)) }) },
+                            { value: 'lapsed', label: t('audienceLapsed', { count: Math.max(8, Math.round(totalClientsCount * 0.4)) }) },
+                            { value: 'new', label: t('audienceNew', { count: Math.max(4, Math.round(totalClientsCount * 0.15)) }) },
+                          ]}
+                        />
+
+                        <CustomSelect
+                          label={t('campaignChannel')}
+                          value={campChannel}
+                          onChange={(val) => setCampChannel(val as any)}
+                          options={[
+                            { value: 'sms', label: t('channelSms') },
+                            { value: 'email', label: `${t('channelEmail')} (${t('freeLabel')})` },
+                            { value: 'both', label: t('channelBoth') },
+                          ]}
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                            {t('targetAudience')}
-                          </label>
-                          <CustomSelect
-                            value={campAudience}
-                            onChange={(val) => setCampAudience(val as any)}
-                            options={[
-                              { value: 'all', label: t('audienceAll', { count: totalClientsCount }) },
-                              { value: 'vip', label: t('audienceVip', { count: Math.max(5, Math.round(totalClientsCount * 0.25)) }) },
-                              { value: 'lapsed', label: t('audienceLapsed', { count: Math.max(8, Math.round(totalClientsCount * 0.4)) }) },
-                              { value: 'new', label: t('audienceNew', { count: Math.max(4, Math.round(totalClientsCount * 0.15)) }) },
-                            ]}
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                            {t('campaignChannel')}
-                          </label>
-                          <CustomSelect
-                            value={campChannel}
-                            onChange={(val) => setCampChannel(val as any)}
-                            options={[
-                              { value: 'sms', label: t('channelSms') },
-                              { value: 'email', label: `${t('channelEmail')} (${t('freeLabel')})` },
-                              { value: 'both', label: t('channelBoth') },
-                            ]}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <label className="text-xs font-semibold text-[var(--text-secondary)]">
-                            {t('messageComposer')}
-                          </label>
-                          <span className="text-[10px] font-mono text-[var(--text-muted)]">
-                            {t('charCount', { chars: charCount, segments: smsSegments })}
-                          </span>
-                        </div>
-                        <textarea
+                      <div className="space-y-1.5">
+                        <FloatingTextarea
+                          label={`${t('messageComposer')} · ${t('charCount', { chars: charCount, segments: smsSegments })}`}
                           rows={3}
                           required
                           value={campMessage}
                           onChange={(e) => setCampMessage(e.target.value)}
-                          className="textarea-base w-full resize-none"
                         />
 
                         <div className="flex items-center gap-1.5 flex-wrap pt-1">

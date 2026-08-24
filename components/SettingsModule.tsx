@@ -119,26 +119,6 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
   );
 }
 
-/* ─── Field ─── */
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const INPUT_CLS = 'input-base w-full';
-
 export const SettingsModule: React.FC = () => {
   const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
   const [isAddStationModalOpen, setIsAddStationModalOpen] = useState(false);
@@ -380,22 +360,24 @@ export const SettingsModule: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label={t('fullName')}>
-                    <input
-                      type="text"
-                      value={profileName}
-                      onChange={(e) => setProfileName(e.target.value)}
-                      className={INPUT_CLS}
-                    />
-                  </Field>
-                  <Field label={t('email')}>
-                    <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs">
-                      <Mail24Regular className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="text-[var(--text-primary)] font-medium">{profileEmail}</span>
-                      <span className="ml-auto px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold">{t('verified')}</span>
-                    </div>
-                  </Field>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <FloatingInput
+                    label={t('fullName')}
+                    type="text"
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                  />
+                  <FloatingInput
+                    label={t('email')}
+                    type="email"
+                    value={profileEmail}
+                    readOnly
+                    rightElement={
+                      <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold">
+                        {t('verified')}
+                      </span>
+                    }
+                  />
                 </div>
 
                 <motion.button
@@ -530,45 +512,42 @@ export const SettingsModule: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label={t('workspaceName')}>
-                    <input type="text" value={wsName} onChange={(e) => setWsName(e.target.value)} className={INPUT_CLS} />
-                  </Field>
-                  <Field label={t('bookingSlug')}>
-                    <div className="flex items-center bg-black/5 dark:bg-white/5 px-3 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-mono">
-                      <span className="text-[var(--text-muted)]">getairbook.com/book/</span>
-                      <input
-                        type="text"
-                        value={slug}
-                        onChange={(e) => setSlug(e.target.value)}
-                        className="bg-transparent font-bold text-[var(--text-primary)] focus:outline-none w-full"
-                      />
-                    </div>
-                  </Field>
-                  <Field label={t('timezone')}>
-                    <CustomSelect
-                      value={timezone}
-                      onChange={setTimezone}
-                      options={[
-                        { value: 'America/New_York', label: t('tzEastern') },
-                        { value: 'America/Chicago', label: t('tzCentral') },
-                        { value: 'America/Denver', label: t('tzMountain') },
-                        { value: 'America/Los_Angeles', label: t('tzPacific') },
-                        { value: 'Europe/London', label: t('tzLondon') },
-                        { value: 'Europe/Berlin', label: t('tzBerlin') },
-                      ]}
-                    />
-                  </Field>
-                  <Field label={t('hourFormat')}>
-                    <CustomSelect
-                      value={timeFormat}
-                      onChange={(val) => setTimeFormat(val as '12h' | '24h')}
-                      options={[
-                        { value: '12h', label: t('timeFormat12h') },
-                        { value: '24h', label: t('timeFormat24h') },
-                      ]}
-                    />
-                  </Field>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <FloatingInput
+                    label={t('workspaceName')}
+                    type="text"
+                    value={wsName}
+                    onChange={(e) => setWsName(e.target.value)}
+                  />
+                  <FloatingInput
+                    label={t('bookingSlug')}
+                    type="text"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    className="font-mono"
+                  />
+                  <CustomSelect
+                    label={t('timezone')}
+                    value={timezone}
+                    onChange={setTimezone}
+                    options={[
+                      { value: 'America/New_York', label: t('tzEastern') },
+                      { value: 'America/Chicago', label: t('tzCentral') },
+                      { value: 'America/Denver', label: t('tzMountain') },
+                      { value: 'America/Los_Angeles', label: t('tzPacific') },
+                      { value: 'Europe/London', label: t('tzLondon') },
+                      { value: 'Europe/Berlin', label: t('tzBerlin') },
+                    ]}
+                  />
+                  <CustomSelect
+                    label={t('hourFormat')}
+                    value={timeFormat}
+                    onChange={(val) => setTimeFormat(val as '12h' | '24h')}
+                    options={[
+                      { value: '12h', label: t('timeFormat12h') },
+                      { value: '24h', label: t('timeFormat24h') },
+                    ]}
+                  />
                 </div>
                 <motion.button whileTap={{ scale: 0.97 }} type="submit" className="btn-primary self-start">
                   <Save24Filled className="w-4 h-4" />
@@ -658,30 +637,28 @@ export const SettingsModule: React.FC = () => {
             </div>
 
             <Section title={t('bookingPolicies')} icon={Clock24Regular}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Field label={t('cancellationNotice')}>
-                  <CustomSelect
-                    value={cancellation}
-                    onChange={setCancellation}
-                    options={[
-                      { value: '12', label: '12 ' + (t('hoursUnit') || 'Hours') },
-                      { value: '24', label: '24 ' + (t('hoursUnit') || 'Hours') },
-                      { value: '48', label: '48 ' + (t('hoursUnit') || 'Hours') },
-                    ]}
-                  />
-                </Field>
-                <Field label={t('depositPercent')}>
-                  <CustomSelect
-                    value={deposit}
-                    onChange={setDeposit}
-                    options={[
-                      { value: '0', label: '0%' },
-                      { value: '20', label: '20%' },
-                      { value: '50', label: '50%' },
-                      { value: '100', label: '100%' },
-                    ]}
-                  />
-                </Field>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <CustomSelect
+                  label={t('cancellationNotice')}
+                  value={cancellation}
+                  onChange={setCancellation}
+                  options={[
+                    { value: '12', label: '12 ' + (t('hoursUnit') || 'Hours') },
+                    { value: '24', label: '24 ' + (t('hoursUnit') || 'Hours') },
+                    { value: '48', label: '48 ' + (t('hoursUnit') || 'Hours') },
+                  ]}
+                />
+                <CustomSelect
+                  label={t('depositPercent')}
+                  value={deposit}
+                  onChange={setDeposit}
+                  options={[
+                    { value: '0', label: '0%' },
+                    { value: '20', label: '20%' },
+                    { value: '50', label: '50%' },
+                    { value: '100', label: '100%' },
+                  ]}
+                />
               </div>
               <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5">
                 <div>

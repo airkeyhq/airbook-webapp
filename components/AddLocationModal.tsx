@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import {
   Building24Filled,
   Dismiss24Filled,
@@ -130,95 +131,59 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
           </div>
 
           {/* Body Form */}
-          <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                {t('branchNameLabel')} *
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="e.g. AirBook · Soho Flagship"
-                className="input-base w-full"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-3.5 flex-1">
+            <FloatingInput
+              label={t('branchNameLabel')}
+              required
+              value={name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="e.g. AirBook · Soho Flagship"
+            />
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                {t('branchSlugLabel')} *
-              </label>
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-secondary)] px-3 py-2.5 rounded-2xl border border-[var(--border-subtle)]">
-                  getairbook.com/book/
-                </span>
-                <input
-                  type="text"
-                  required
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="soho-flagship"
-                  className="input-base w-full font-mono font-bold"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label={t('branchSlugLabel')}
+              required
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="soho-flagship"
+              className="font-mono font-bold"
+            />
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                {t('branchAddressLabel')}
-              </label>
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="e.g. 482 Broome St, New York, NY 10013"
-                className="input-base w-full"
-              />
-            </div>
+            <FloatingInput
+              label={t('branchAddressLabel')}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="e.g. 482 Broome St, New York, NY 10013"
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('branchTypeLabel')}
-                </label>
-                <CustomSelect
-                  value={locationType}
-                  onChange={(val) => setLocationType(val as any)}
-                  options={[
-                    { value: 'flagship', label: t('flagship') },
-                    { value: 'branch', label: t('branch') },
-                    { value: 'pop_up', label: t('popUp') },
-                  ]}
-                />
-              </div>
+              <CustomSelect
+                label={t('branchTypeLabel')}
+                value={locationType}
+                onChange={(val) => setLocationType(val as any)}
+                options={[
+                  { value: 'flagship', label: t('flagship') },
+                  { value: 'branch', label: t('branch') },
+                  { value: 'pop_up', label: t('popUp') },
+                ]}
+              />
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                  {t('branchManagerLabel')}
-                </label>
-                <input
-                  type="text"
-                  value={managerName}
-                  onChange={(e) => setManagerName(e.target.value)}
-                  placeholder="e.g. Elena Rostova"
-                  className="input-base w-full"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                Branch Contact Phone
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1 (212) 555-0199"
-                className="input-base w-full"
+              <FloatingInput
+                label={t('branchManagerLabel')}
+                value={managerName}
+                onChange={(e) => setManagerName(e.target.value)}
+                placeholder="e.g. Elena Rostova"
               />
             </div>
+
+            <FloatingInput
+              label={t('phoneLabel')}
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+1 (212) 555-0199"
+              className="font-mono"
+            />
 
             {/* Bottom Actions */}
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-end gap-3">

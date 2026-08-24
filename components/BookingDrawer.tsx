@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dismiss24Filled, Sparkle24Filled } from '@fluentui/react-icons';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
@@ -138,23 +139,18 @@ export const BookingDrawer: React.FC = () => {
             {/* Scrollable Form Body */}
             <div className="p-6 overflow-y-auto space-y-4 flex-1">
             {/* Client Name Field */}
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                {t('fullName')}
-              </label>
-              <input
-                type="text"
-                required
-                placeholder={t('clientNamePlaceholder')}
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                className="input-base w-full"
-              />
-            </div>
+            <FloatingInput
+              label={t('fullName')}
+              type="text"
+              required
+              placeholder={t('clientNamePlaceholder')}
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+            />
 
             {/* Service Selection */}
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5 block">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">
                 {t('selectService')}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
@@ -168,7 +164,7 @@ export const BookingDrawer: React.FC = () => {
                         setSelectedServiceId(srv.id);
                         setSelectedColor(srv.color);
                       }}
-                      className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
+                      className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                         isSelected
                           ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 font-semibold shadow-2xs'
                           : 'border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 text-[var(--text-primary)]'
@@ -191,35 +187,27 @@ export const BookingDrawer: React.FC = () => {
             </div>
 
             {/* Staff Selector & Time Picker Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Staff Member */}
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                  {t('selectStaff')}
-                </label>
-                <CustomSelect
-                  value={selectedStaffId}
-                  onChange={setSelectedStaffId}
-                  options={staffMembers.map((stf) => ({
-                    value: stf.id,
-                    label: stf.name,
-                    sublabel: stf.role,
-                  }))}
-                />
-              </div>
+              <CustomSelect
+                label={t('selectStaff')}
+                value={selectedStaffId}
+                onChange={setSelectedStaffId}
+                options={staffMembers.map((stf) => ({
+                  value: stf.id,
+                  label: stf.name,
+                  sublabel: stf.role,
+                }))}
+              />
 
               {/* Start Time */}
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">
-                  {t('time')}
-                </label>
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="input-base w-full font-mono"
-                />
-              </div>
+              <FloatingInput
+                label={t('time')}
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="font-mono"
+              />
             </div>
 
             </div>

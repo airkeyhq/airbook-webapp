@@ -44,6 +44,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const isFloatingActive = Boolean(label) && (isOpen || (selectedOption !== undefined && selectedOption.value !== ''));
+
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
       {/* Custom Trigger Button */}
@@ -52,7 +54,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full ${
           label
-            ? 'px-4 py-2 rounded-2xl flex items-center justify-between gap-2.5'
+            ? 'h-[52px] px-4 rounded-2xl flex items-center justify-between gap-2.5'
             : compact
             ? 'h-8 px-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-between gap-1.5'
             : 'h-10 px-4 rounded-2xl text-xs font-medium flex items-center justify-between gap-1.5'
@@ -60,17 +62,33 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           isOpen
             ? 'border-[var(--color-accent-primary)] ring-2 ring-[#1A8EFF]/20'
             : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
-        } text-[var(--text-primary)] transition-all duration-100 ease-out cursor-pointer text-left`}
+        } text-[var(--text-primary)] transition-all duration-150 ease-out cursor-pointer text-left`}
       >
-        <div className="min-w-0 flex-1 flex flex-col justify-center">
-          {label && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] select-none pointer-events-none truncate block">
-              {label}
+        <div className="relative min-w-0 flex-1 h-full flex flex-col justify-center">
+          {label ? (
+            <>
+              <span
+                className={`absolute left-0 pointer-events-none select-none transition-all duration-150 ease-out truncate max-w-full ${
+                  isFloatingActive
+                    ? 'top-2 text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]'
+                    : 'top-1/2 -translate-y-1/2 text-xs font-medium text-[var(--text-muted)]'
+                }`}
+              >
+                {label}
+              </span>
+              <span
+                className={`truncate block text-xs font-bold text-[var(--text-primary)] transition-all duration-150 ease-out ${
+                  isFloatingActive ? 'pt-3.5 opacity-100' : 'opacity-0'
+                }`}
+              >
+                {selectedOption ? selectedOption.label : placeholder}
+              </span>
+            </>
+          ) : (
+            <span className="truncate block">
+              {selectedOption ? selectedOption.label : placeholder}
             </span>
           )}
-          <span className={`truncate block ${label ? 'text-xs font-bold text-[var(--text-primary)]' : ''}`}>
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
         </div>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
