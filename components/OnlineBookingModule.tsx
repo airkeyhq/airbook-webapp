@@ -999,7 +999,7 @@ export const OnlineBookingModule: React.FC = () => {
       {/* QR Code Modal */}
       <AnimatePresence>
         {isQrModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -1058,7 +1058,7 @@ export const OnlineBookingModule: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="flex-1 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="btn-secondary flex-1"
                 >
                   <Copy24Filled className="w-3.5 h-3.5" />
                   <span>{t('copyBookingLink')}</span>
@@ -1067,7 +1067,7 @@ export const OnlineBookingModule: React.FC = () => {
                   href={`/book/${slugInput}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                  className="btn-primary flex-1"
                 >
                   <Open24Filled className="w-3.5 h-3.5" />
                   <span>{t('openLiveBookingPage')}</span>

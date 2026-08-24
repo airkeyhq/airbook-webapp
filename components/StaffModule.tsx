@@ -944,7 +944,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <button
                   type="button"
                   onClick={handleSaveEdit as any}
-                  className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                  className="btn-primary w-full"
                 >
                   <CheckmarkCircle24Filled className="w-4 h-4" />
                   <span>{t('saveStaff')}</span>
@@ -954,7 +954,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <button
                   type="button"
                   onClick={() => handleViewCalendar(selectedStaffForEdit.id)}
-                  className="w-full py-3 px-4 rounded-2xl bg-black/5 dark:bg-white/10 text-[var(--text-primary)] text-xs font-bold border border-black/5 dark:border-white/10 hover:bg-black/10 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                  className="btn-secondary w-full"
                 >
                   <Calendar24Filled className="w-4 h-4 text-blue-500" />
                   <span>{t('viewCalendarSchedule')}</span>
@@ -1151,7 +1151,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all duration-100 ease-out flex items-center justify-center gap-2"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveStaff')}</span>

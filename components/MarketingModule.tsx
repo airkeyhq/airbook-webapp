@@ -735,7 +735,7 @@ export const MarketingModule: React.FC = () => {
                       <button
                         type="submit"
                         disabled={sendingCampaign}
-                        className="px-5 py-3 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 disabled:opacity-50 font-extrabold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer"
+                        className="btn-primary disabled:opacity-50"
                       >
                         <Send24Filled className="w-4 h-4" />
                         <span>{sendingCampaign ? t('dispatchingState') : t('launchCampaign')}</span>

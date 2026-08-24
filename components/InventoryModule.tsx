@@ -663,7 +663,7 @@ export const InventoryModule: React.FC = () => {
                       placeholder="https://..."
                       value={imageUrl}
                       onChange={(e) => setImageUrl(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-base w-full"
                     />
                   </div>
 
@@ -684,7 +684,7 @@ export const InventoryModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveProduct')}</span>
@@ -873,7 +873,7 @@ export const InventoryModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-md hover:opacity-90 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <CheckmarkCircle24Filled className="w-4 h-4" />
                     <span>{submitting ? t('saving') : t('saveProduct')}</span>
@@ -883,7 +883,7 @@ export const InventoryModule: React.FC = () => {
                     type="button"
                     onClick={handleDeleteProduct}
                     disabled={submitting}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-500/20 active:scale-98 transition-all flex items-center justify-center gap-2"
+                    className="btn-secondary w-full text-red-600 dark:text-red-400 hover:bg-red-500/10"
                   >
                     <Delete24Filled className="w-4 h-4" />
                     <span>{t('deleteProduct')}</span>

@@ -145,14 +145,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     Workspace / Salon Name
                   </label>
                   <div className="relative">
-                    <Building24Regular className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                    <Building24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3 z-10" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Glow Beauty Studio"
                       value={workspaceName}
                       onChange={(e) => setWorkspaceNameInput(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] placeholder-gray-400 focus:outline-none"
+                      className="input-base w-full pl-10"
                     />
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     placeholder="e.g. Alex Johnson"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] placeholder-gray-400 focus:outline-none"
+                    className="input-base w-full"
                   />
                 </div>
               </>
@@ -178,14 +178,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 Work Email
               </label>
               <div className="relative">
-                <Mail24Regular className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                <Mail24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3 z-10" />
                 <input
                   type="email"
                   required
                   placeholder="name@business.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] placeholder-gray-400 focus:outline-none"
+                  className="input-base w-full pl-10"
                 />
               </div>
             </div>
@@ -199,10 +199,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <motion.button
               whileTap={{ scale: 0.96 }}
-              whileHover={{ scale: 1.01 }}
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 rounded-2xl bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-bold text-xs shadow-lg shadow-[#2BB5FF]/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+              className="btn-primary w-full disabled:opacity-50 mt-2"
             >
               <Sparkle24Filled className="w-4 h-4" />
               <span>{loading ? 'Sending...' : 'Send Magic Link'}</span>

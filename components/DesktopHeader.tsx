@@ -476,7 +476,7 @@ export const DesktopHeader: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleCopyDirectLink}
-                    className="flex-1 py-2.5 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    className="btn-secondary flex-1"
                   >
                     {copied ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
                     <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
@@ -485,7 +485,7 @@ export const DesktopHeader: React.FC = () => {
                     href={`/book/${currentSlug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    className="btn-primary flex-1"
                   >
                     <Open24Filled className="w-3.5 h-3.5" />
                     <span>{t('openLiveBookingPage')}</span>

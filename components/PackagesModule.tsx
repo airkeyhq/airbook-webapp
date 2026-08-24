@@ -951,8 +951,8 @@ export const PackagesModule: React.FC = () => {
                           }}
                           className={`py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
                             gcAmount === amt && !gcCustomAmount
-                              ? 'bg-blue-600 text-white shadow-xs'
-                              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10'
+                              ? 'bg-[var(--color-accent-primary)] text-white border-[1.5px] border-[#1A8EFF] shadow-xs'
+                              : 'bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                           }`}
                         >
                           ${amt}
@@ -1032,7 +1032,7 @@ export const PackagesModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <GiftCard24Filled className="w-4 h-4" />
                     <span>{saving ? t('issuingGiftCard') : t('issueGiftCard')}</span>
@@ -1087,7 +1087,7 @@ export const PackagesModule: React.FC = () => {
                     required
                     value={redeemAmount}
                     onChange={(e) => setRedeemAmount(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-base w-full font-mono"
                   />
                 </div>
 
@@ -1095,14 +1095,15 @@ export const PackagesModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="w-full py-3 rounded-2xl bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-xs shadow-md transition-colors cursor-pointer"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
-                    {saving ? t('redeeming') : t('redeemGiftCard')}
+                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <span>{saving ? t('redeeming') : t('redeemGiftCard')}</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setRedeemingCard(null)}
-                    className="w-full py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-xs font-bold hover:bg-black/10 transition-colors cursor-pointer"
+                    className="btn-secondary w-full"
                   >
                     {t('cancel')}
                   </button>
@@ -1260,7 +1261,7 @@ export const PackagesModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <Tag24Filled className="w-4 h-4" />
                     <span>{saving ? t('savingState') : editingPackage ? t('updatePackage') : t('createPackage')}</span>
@@ -1405,7 +1406,7 @@ export const PackagesModule: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="btn-primary w-full disabled:opacity-50"
                   >
                     <Sparkle24Filled className="w-4 h-4" />
                     <span>{saving ? t('savingState') : editingMembership ? t('updateTier') : t('createMembership')}</span>

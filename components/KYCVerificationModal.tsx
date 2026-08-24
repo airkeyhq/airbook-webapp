@@ -182,7 +182,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  className="btn-primary w-full"
                 >
                   <span>Continue to Document Scan</span>
                   <ArrowRight24Filled className="w-4 h-4" />
@@ -220,14 +220,14 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="w-1/3 py-3 rounded-2xl bg-black/5 dark:bg-white/5 text-xs font-bold text-[var(--text-secondary)]"
+                    className="btn-secondary w-1/3"
                   >
                     Back
                   </button>
                   <button
                     type="button"
                     onClick={handleStartLivenessScan}
-                    className="w-2/3 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2"
+                    className="btn-primary w-2/3"
                   >
                     <Sparkle24Filled className="w-4 h-4" />
                     <span>Proceed to 3D Selfie</span>
@@ -305,7 +305,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-colors cursor-pointer"
+                  className="btn-primary w-full"
                 >
                   Done
                 </button>

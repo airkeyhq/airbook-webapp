@@ -215,7 +215,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 onClose();
                 onOpenPOS(appointment);
               }}
-              className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+              className="btn-primary w-full"
             >
               <Payment24Filled className="w-4 h-4 flex-shrink-0" />
               <span>{t('posCheckout')} (${appointment.price})</span>
@@ -223,11 +223,12 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
             {/* Client Notes & Specs Button */}
             <button
+              type="button"
               onClick={() => {
                 onClose();
                 onOpenNotes();
               }}
-              className="w-full py-3 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-primary)] font-bold text-xs flex items-center justify-center gap-2 transition-all"
+              className="btn-secondary w-full"
             >
               <DocumentText24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
               <span>{t('clientNotesBtn')}</span>
@@ -235,8 +236,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
             {/* Delete Appointment Button */}
             <button
+              type="button"
               onClick={handleDelete}
-              className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+              className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <Delete24Filled className="w-4 h-4 flex-shrink-0" />
               <span>{t('delete')}</span>

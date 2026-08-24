@@ -147,7 +147,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleSelectPlan('pro')}
-                className="mt-6 w-full py-2.5 rounded-2xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/20 text-[var(--text-primary)] font-semibold text-xs transition-all shadow-sm"
+                className="btn-secondary w-full mt-6"
               >
                 {loadingPlan === 'pro' ? 'Redirecting...' : 'Select Pro'}
               </motion.button>
@@ -189,7 +189,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) =
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleSelectPlan('business')}
-                className="mt-6 w-full py-2.5 rounded-2xl bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-bold text-xs shadow-md shadow-[#2BB5FF]/30 transition-all"
+                className="btn-primary w-full mt-6"
               >
                 {loadingPlan === 'business' ? 'Redirecting...' : 'Select Business'}
               </motion.button>
