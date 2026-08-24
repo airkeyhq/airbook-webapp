@@ -404,11 +404,11 @@ export const translations = {
     joinQueue: 'Join Waitlist Queue',
 
     // Marketing & Campaigns Module
-    marketingTitle: 'Automated Client Marketing & Campaigns',
+    marketingTitle: 'Marketing',
     createNewWorkspace: 'Create New Workspace',
-    marketingDesc: 'Boost rebooking retention, collect 5-star reviews, and send broadcast SMS/Email campaigns with prepaid credits.',
+    marketingDesc: 'Automated retention triggers and client broadcast campaigns.',
     smsCredits: 'SMS Credits',
-    smsCreditsBalance: 'Prepaid SMS Balance',
+    smsCreditsBalance: 'SMS Credits',
     topUpCredits: 'Top Up SMS Credits',
     buySmsPack: 'Buy SMS Pack',
     pack250: '250 SMS Credits — $5.00 ($0.020/sms)',
@@ -419,12 +419,12 @@ export const translations = {
     freeEmailOption: 'Free Unlimited Email',
     
     // Automated Triggers
-    automatedTriggers: 'Automated Retention Triggers',
-    googleReviewTrigger: '5-Star Google Review Requests',
-    googleReviewTriggerDesc: 'Automatically sends a text message 1 hour after checkout with your direct Google review link.',
+    automatedTriggers: 'Automated Triggers',
+    googleReviewTrigger: '5-Star Google Reviews',
+    googleReviewTriggerDesc: 'Sends an automatic text message 1 hour after checkout with your Google review link.',
     googleReviewUrlLabel: 'Your Google Business Review Link',
-    reengagementTrigger: 'Lapsed Client Re-Booking Reminders',
-    reengagementTriggerDesc: 'Automatically reaches out to clients who haven\'t booked in X days with a quick re-booking link.',
+    reengagementTrigger: 'Lapsed Client Reminders',
+    reengagementTriggerDesc: 'Reaches out to clients who have not booked in X days with a rebooking link.',
     reengagementInterval: 'Re-engagement Interval',
     days14: '14 Days (2 Weeks)',
     days21: '21 Days (3 Weeks)',
@@ -434,7 +434,7 @@ export const translations = {
     triggerDisabled: 'Trigger Paused',
 
     // Broadcast Campaigns
-    newBroadcastCampaign: 'New Broadcast Campaign',
+    newBroadcastCampaign: 'New Campaign',
     campaignName: 'Campaign Title',
     targetAudience: 'Target Audience',
     audienceAll: 'All Clients ({count})',
@@ -975,7 +975,7 @@ export const translations = {
     zeroPerMessage: '$0.00 / message',
     platformProtection: 'Platform Protection',
     zeroDebtGuarantee: 'Zero-Debt Guarantee',
-    platformProtectionDesc: 'Prepaid credit validation prevents unexpected carrier debt or out-of-pocket billing.',
+    platformProtectionDesc: 'Automated messages sent after checkout or client inactivity.',
     savingState: 'Saving…',
     sendingTestState: 'Sending Test…',
     includesBookingShortlink: 'Includes booking short-link',
@@ -1555,11 +1555,11 @@ export const translations = {
     joinQueue: 'Unirse a Lista de Espera',
 
     // Marketing & Campaigns Module
-    marketingTitle: 'Marketing Automatizado y Campañas',
+    marketingTitle: 'Marketing',
     createNewWorkspace: 'Crear Nuevo Espacio',
-    marketingDesc: 'Aumenta la retención, consigue reseñas de 5 estrellas y envía campañas SMS/Email con créditos prepagados.',
+    marketingDesc: 'Disparadores de retención y campañas de difusión.',
     smsCredits: 'Créditos SMS',
-    smsCreditsBalance: 'Saldo Prepago de SMS',
+    smsCreditsBalance: 'Créditos SMS',
     topUpCredits: 'Recargar Créditos SMS',
     buySmsPack: 'Comprar Paquete de SMS',
     pack250: '250 Créditos SMS — $5.00 ($0.020/sms)',
@@ -1570,12 +1570,12 @@ export const translations = {
     freeEmailOption: 'Correo Electrónico Gratuito',
     
     // Disparadores Automatizados
-    automatedTriggers: 'Disparadores de Retención Automatizados',
-    googleReviewTrigger: 'Solicitud de Reseña de 5 Estrellas en Google',
-    googleReviewTriggerDesc: 'Envía automáticamente un mensaje de texto 1 hora después del cobro con tu enlace de Google Reviews.',
+    automatedTriggers: 'Disparadores Automáticos',
+    googleReviewTrigger: 'Reseñas en Google',
+    googleReviewTriggerDesc: 'Envía un mensaje de texto 1 hora tras el cobro con tu enlace de Google Reviews.',
     googleReviewUrlLabel: 'Enlace de Google Business Reviews',
-    reengagementTrigger: 'Recordatorio de Re-reserva a Clientes Inactivos',
-    reengagementTriggerDesc: 'Contacta automáticamente a clientes que no han reservado en X días con enlace directo de cita.',
+    reengagementTrigger: 'Clientes Inactivos',
+    reengagementTriggerDesc: 'Contacta a clientes que no han reservado en X días con un enlace de cita.',
     reengagementInterval: 'Intervalo de Re-enganche',
     days14: '14 Días (2 Semanas)',
     days21: '21 Días (3 Semanas)',
@@ -1585,7 +1585,7 @@ export const translations = {
     triggerDisabled: 'Disparador Pausado',
 
     // Campañas de Difusión
-    newBroadcastCampaign: 'Nueva Campaña de Difusión',
+    newBroadcastCampaign: 'Nueva campaña',
     campaignName: 'Título de la Campaña',
     targetAudience: 'Audiencia Objetivo',
     audienceAll: 'Todos los Clientes ({count})',
@@ -2125,7 +2125,7 @@ export const translations = {
     zeroPerMessage: '$0.00 / mensaje',
     platformProtection: 'Protección de Plataforma',
     zeroDebtGuarantee: 'Garantía Cero Deuda',
-    platformProtectionDesc: 'La validación de saldo prepagado previene cargos inesperados de operadoras.',
+    platformProtectionDesc: 'Mensajes automáticos tras el cobro o inactividad del cliente.',
     savingState: 'Guardando…',
     sendingTestState: 'Enviando Prueba…',
     includesBookingShortlink: 'Incluye enlace corto de reserva',
@@ -2705,11 +2705,11 @@ export const translations = {
     joinQueue: 'In Warteliste eintragen',
 
     // Marketing & Campaigns Module
-    marketingTitle: 'Automatisiertes Marketing & Kampagnen',
+    marketingTitle: 'Marketing',
     createNewWorkspace: 'Neuen Arbeitsbereich erstellen',
-    marketingDesc: 'Steigern Sie Kundenbindung, sammeln Sie 5-Sterne-Bewertungen und versenden Sie SMS/E-Mail-Kampagnen mit Prepaid-Guthaben.',
+    marketingDesc: 'Automatisierte Kundenbindung und Direktkampagnen.',
     smsCredits: 'SMS-Guthaben',
-    smsCreditsBalance: 'Prepaid-SMS-Guthaben',
+    smsCreditsBalance: 'SMS-Guthaben',
     topUpCredits: 'SMS-Guthaben aufladen',
     buySmsPack: 'SMS-Paket kaufen',
     pack250: '250 SMS-Credits — $5.00 ($0.020/sms)',
@@ -2720,11 +2720,11 @@ export const translations = {
     freeEmailOption: 'Kostenlose unbegrenzte E-Mail',
     
     // Automatische Auslöser
-    automatedTriggers: 'Automatische Kundenbindungs-Auslöser',
-    googleReviewTrigger: '5-Sterne Google-Bewertungsanfragen',
-    googleReviewTriggerDesc: 'Sendet 1 Stunde nach Bezahlung automatisch eine SMS mit Ihrem Google-Bewertungslink.',
+    automatedTriggers: 'Automatische Auslöser',
+    googleReviewTrigger: 'Google-Bewertungen',
+    googleReviewTriggerDesc: 'Sendet 1 Stunde nach Bezahlung eine SMS mit Ihrem Google-Bewertungslink.',
     googleReviewUrlLabel: 'Ihr Google Business Bewertungslink',
-    reengagementTrigger: 'Reaktivierung inaktiver Kunden',
+    reengagementTrigger: 'Inaktive Kunden',
     reengagementTriggerDesc: 'Erinnert Kunden nach X Tagen automatisch an die nächste Terminbuchung.',
     reengagementInterval: 'Reaktivierungsintervall',
     days14: '14 Tage (2 Wochen)',
@@ -2735,7 +2735,7 @@ export const translations = {
     triggerDisabled: 'Auslöser Pausiert',
 
     // Kampagnen
-    newBroadcastCampaign: 'Neue Kampagne erstellen',
+    newBroadcastCampaign: 'Neue Kampagne',
     campaignName: 'Kampagnentitel',
     targetAudience: 'Zielgruppe',
     audienceAll: 'Alle Kunden ({count})',
@@ -3275,7 +3275,7 @@ export const translations = {
     zeroPerMessage: '0,00 $ / Nachricht',
     platformProtection: 'Plattform-Schutz',
     zeroDebtGuarantee: 'Null-Schulden-Garantie',
-    platformProtectionDesc: 'Prepaid-Guthaben verhindert unerwartete Gebühren oder Nachzahlungen.',
+    platformProtectionDesc: 'Automatische Nachrichten nach Checkout oder Inaktivität.',
     savingState: 'Speichern…',
     sendingTestState: 'Test senden…',
     includesBookingShortlink: 'Inklusive Buchungs-Kurzlink',
@@ -3855,11 +3855,11 @@ export const translations = {
     joinQueue: 'Rejoindre la file d’attente',
 
     // Marketing & Campaigns Module
-    marketingTitle: 'Marketing Automatisé & Campagnes',
+    marketingTitle: 'Marketing',
     createNewWorkspace: 'Créer un Nouvel Espace',
-    marketingDesc: 'Fidélisez vos clients, collectez des avis 5 étoiles et envoyez des campagnes SMS/E-mail avec des crédits prépayés.',
+    marketingDesc: 'Déclencheurs de rétention et campagnes de diffusion.',
     smsCredits: 'Crédits SMS',
-    smsCreditsBalance: 'Solde SMS Prépayé',
+    smsCreditsBalance: 'Crédits SMS',
     topUpCredits: 'Recharger des crédits SMS',
     buySmsPack: 'Acheter un pack SMS',
     pack250: '250 Crédits SMS — 5,00 $ (0,020 $/sms)',
@@ -3870,12 +3870,12 @@ export const translations = {
     freeEmailOption: 'E-mail Gratuit Illimité',
     
     // Déclencheurs Automatisés
-    automatedTriggers: 'Déclencheurs de Fidélisation Automatisés',
-    googleReviewTrigger: 'Demande d\'avis Google 5 Étoiles',
-    googleReviewTriggerDesc: 'Envoie automatiquement un SMS 1 heure après l\'encaissement avec votre lien d\'avis Google.',
+    automatedTriggers: 'Déclencheurs Automatiques',
+    googleReviewTrigger: 'Avis Google',
+    googleReviewTriggerDesc: 'Envoie un SMS 1 heure après l\'encaissement avec votre lien d\'avis Google.',
     googleReviewUrlLabel: 'Lien de votre fiche Google Business',
-    reengagementTrigger: 'Relance des Clients Inactifs',
-    reengagementTriggerDesc: 'Recontacte automatiquement les clients n\'ayant pas réservé depuis X jours.',
+    reengagementTrigger: 'Clients Inactifs',
+    reengagementTriggerDesc: 'Recontacte les clients sans réservation depuis X jours.',
     reengagementInterval: 'Délai de relance',
     days14: '14 Jours (2 Semaines)',
     days21: '21 Jours (3 Semaines)',
@@ -3885,7 +3885,7 @@ export const translations = {
     triggerDisabled: 'Déclencheur en Pause',
 
     // Campagnes de Diffusion
-    newBroadcastCampaign: 'Nouvelle Campagne de Diffusion',
+    newBroadcastCampaign: 'Nouvelle campagne',
     campaignName: 'Titre de la campagne',
     targetAudience: 'Audience Cible',
     audienceAll: 'Tous les clients ({count})',
@@ -4426,7 +4426,7 @@ export const translations = {
     zeroPerMessage: '0,00 $ / message',
     platformProtection: 'Protection de Plateforme',
     zeroDebtGuarantee: 'Garantie Zéro Dette',
-    platformProtectionDesc: 'La validation du solde prépayé évite les frais d’opérateurs imprévus.',
+    platformProtectionDesc: 'Messages automatiques après paiement ou inactivité.',
     savingState: 'Enregistrement…',
     sendingTestState: 'Envoi du Test…',
     includesBookingShortlink: 'Comprend un lien court de réservation',

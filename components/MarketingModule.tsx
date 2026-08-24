@@ -12,7 +12,6 @@ import {
   Send24Filled,
   Send24Regular,
   Sparkle24Filled,
-  Sparkle24Regular,
   Star24Regular,
   Dismiss24Filled,
   Add24Filled,
@@ -288,16 +287,11 @@ export const MarketingModule: React.FC = () => {
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       {/* ─── SECTION 1: HEADER ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
-              {t('marketingTitle')}
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold uppercase">
-              {t('retentionAndReviews')}
-            </span>
-          </div>
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            {t('marketingTitle')}
+          </h2>
           <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-2xl">
             {t('marketingDesc')}
           </p>
@@ -314,7 +308,7 @@ export const MarketingModule: React.FC = () => {
       </div>
 
       {/* ─── SECTION 2: UNIFORM METRICS & BALANCE RIBBON ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {/* Metric 1: SMS Credits Balance */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
@@ -330,7 +324,7 @@ export const MarketingModule: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsTopUpOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] text-xs font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Add24Filled className="w-3.5 h-3.5" />
               <span>{t('topUpBtn')}</span>
@@ -353,21 +347,6 @@ export const MarketingModule: React.FC = () => {
             <span className="text-xs font-bold text-[var(--text-muted)]">
               {t('zeroPerMessage')}
             </span>
-          </div>
-        </div>
-
-        {/* Metric 3: Active Automations */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
-          <div className="flex items-center gap-2">
-            <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
-              {t('automatedTriggers')}
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <p className="text-3xl font-extrabold text-[var(--text-primary)] font-mono">
-              {(autoReviewEnabled ? 1 : 0) + (autoReengagementEnabled ? 1 : 0)} / 2
-            </p>
           </div>
         </div>
       </div>
