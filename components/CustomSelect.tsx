@@ -50,9 +50,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full ${
           compact ? 'h-8 px-2.5 rounded-xl text-xs font-mono font-bold' : 'h-10 px-4 rounded-2xl text-xs font-medium'
-        } bg-black/5 dark:bg-white/5 border ${
+        } bg-[var(--bg-secondary)] border ${
           isOpen
-            ? 'border-blue-500 ring-2 ring-blue-500/20'
+            ? 'border-[var(--border-subtle)] ring-2 ring-black/10 dark:ring-white/10'
             : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
         } text-[var(--text-primary)] flex items-center justify-between gap-1.5 transition-all duration-100 ease-out cursor-pointer`}
       >
@@ -90,7 +90,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   }}
                   className={`w-full px-3 py-2 rounded-xl text-left text-xs font-medium flex items-center justify-between gap-2 transition-colors ${
                     isSelected
-                      ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 font-extrabold'
+                      ? 'bg-black/5 dark:bg-white/5 text-[var(--text-primary)] font-extrabold'
                       : 'text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
                   }`}
                 >
@@ -106,7 +106,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                     </div>
                   </div>
                   {isSelected && (
-                    <Checkmark24Filled className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                    <Checkmark24Filled className="w-3.5 h-3.5 text-[var(--text-primary)] flex-shrink-0" />
                   )}
                 </button>
               );
