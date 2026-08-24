@@ -199,14 +199,14 @@ export const WalkInKioskModule: React.FC = () => {
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
               {t('kioskTitle')}
             </h2>
-            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 flex items-center gap-1.5 uppercase">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold flex items-center gap-1.5 uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span>{t('kioskActive')}</span>
             </span>
           </div>
@@ -222,16 +222,16 @@ export const WalkInKioskModule: React.FC = () => {
               setKioskStep(1);
               setIsIpadKioskOpen(true);
             }}
-            className="px-3.5 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-primary)] font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="btn-secondary h-10 px-4 rounded-2xl flex items-center gap-1.5 text-xs font-bold"
           >
-            <Open24Filled className="w-4 h-4 text-purple-500" />
+            <Open24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('launchIpadKiosk')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsCheckInOpen(true)}
-            className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center gap-2 transition-all duration-100 cursor-pointer"
+            className="btn-primary self-start sm:self-auto"
           >
             <Add24Filled className="w-4 h-4" />
             <span>{t('walkInCheckIn')}</span>
@@ -241,18 +241,18 @@ export const WalkInKioskModule: React.FC = () => {
 
       {/* Metrics Ribbon */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Clock24Regular className="w-4 h-4 text-blue-500" />
+              <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('waiting')}</span>
             </div>
-            <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
               {t('metricQueueLength')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
-            <p className="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono">
+            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
               {waitingGuests.length}
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">
@@ -261,18 +261,18 @@ export const WalkInKioskModule: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
+              <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('inChair')}</span>
             </div>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
               {t('metricActiveInService')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
-            <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
               {inChairGuests.length}
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">
@@ -281,18 +281,18 @@ export const WalkInKioskModule: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Clock24Regular className="w-4 h-4 text-purple-500" />
+              <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('estWait')}</span>
             </div>
-            <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
               {t('metricRealTimeEst')}
             </span>
           </div>
           <div className="flex items-baseline justify-between pt-1">
-            <p className="text-2xl font-black text-purple-600 dark:text-purple-400 font-mono">
+            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
               ~{avgWait} min
             </p>
             <span className="text-xs font-bold text-[var(--text-muted)]">

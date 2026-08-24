@@ -108,7 +108,7 @@ export const ServicesModule: React.FC = () => {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md hover:opacity-90 transition-opacity"
+          className="btn-primary self-start sm:self-auto"
         >
           <Add24Filled className="w-4 h-4" />
           <span>{t('addService')}</span>
@@ -116,10 +116,10 @@ export const ServicesModule: React.FC = () => {
       </div>
 
       {/* Smart Dynamic Pricing Control Card - Roadmap Teaser */}
-      <div className="p-4 rounded-3xl glass-panel bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10 border border-blue-500/20 space-y-3">
+      <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Money24Regular className="w-5 h-5 text-blue-500" />
+            <Money24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
             <div>
               <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
                 {t('smartDynamicPricingTitle')}
@@ -129,7 +129,7 @@ export const ServicesModule: React.FC = () => {
               </p>
             </div>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+          <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
             {t('comingSoonV11')}
           </span>
         </div>
@@ -139,54 +139,54 @@ export const ServicesModule: React.FC = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           onSubmit={handleAddService}
-          className="p-5 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/80 dark:border-white/10 space-y-3 shadow-md"
+          className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-sm"
         >
           <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
             {t('addService')}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <input
               type="text"
               required
               placeholder={t('serviceName')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] focus:outline-none"
+              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
             <input
               type="text"
               placeholder={t('category')}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] focus:outline-none"
+              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
             <input
               type="number"
               placeholder={t('priceDollars')}
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] focus:outline-none"
+              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
             <input
               type="number"
               placeholder={t('durationMins')}
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-[var(--text-primary)] focus:outline-none"
+              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
           </div>
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-secondary)]"
+              className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-xs shadow-md disabled:opacity-50"
+              className="btn-primary"
             >
               {submitting ? t('saving') : t('saveService')}
             </button>
@@ -194,42 +194,48 @@ export const ServicesModule: React.FC = () => {
         </motion.form>
       )}
 
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 shadow-sm animate-pulse"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="h-4 w-16 rounded-full bg-black/10 dark:bg-white/10" />
-                  <div className="h-4 w-12 rounded-lg bg-black/10 dark:bg-white/10" />
+      {/* Catalog Section: Services List / Empty State */}
+      <div className="space-y-3.5">
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-4 shadow-xs animate-pulse"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="h-4 w-16 rounded-full bg-black/10 dark:bg-white/10" />
+                    <div className="h-4 w-12 rounded-lg bg-black/10 dark:bg-white/10" />
+                  </div>
+                  <div className="h-4 w-4/5 rounded-lg bg-black/10 dark:bg-white/10 mb-2" />
+                  <div className="h-3 w-full rounded-md bg-black/5 dark:bg-white/5" />
                 </div>
-                <div className="h-4 w-4/5 rounded-lg bg-black/10 dark:bg-white/10 mb-2" />
-                <div className="h-3 w-full rounded-md bg-black/5 dark:bg-white/5" />
+                <div className="flex items-center justify-between pt-3 border-t border-[var(--border-subtle)]">
+                  <div className="h-3 w-20 rounded-md bg-black/5 dark:bg-white/5" />
+                  <div className="h-3 w-16 rounded-md bg-black/5 dark:bg-white/5" />
+                </div>
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/10">
-                <div className="h-3 w-20 rounded-md bg-black/5 dark:bg-white/5" />
-                <div className="h-3 w-16 rounded-md bg-black/5 dark:bg-white/5" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {/* Services Grid */}
-      {!loading && (
-        <div>
-          {serviceList.length === 0 ? (
-            <EmptyState
-              icon={Tag24Regular}
-              title={t('noServices')}
-              description={t('noServicesSub')}
-            />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {serviceList.map((srv) => {
+        {!loading && serviceList.length === 0 && (
+          <EmptyState
+            icon={Tag24Regular}
+            title={t('noServices')}
+            description={t('noServicesSub')}
+            action={{
+              label: t('addService'),
+              onClick: () => setShowForm(true),
+              icon: Add24Filled,
+            }}
+          />
+        )}
+
+        {!loading && serviceList.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {serviceList.map((srv) => {
               const priceDollars = (srv.priceCents || 0) / 100;
               const depositDollars = srv.depositCents ? srv.depositCents / 100 : Math.round(priceDollars * 0.2);
 
@@ -238,7 +244,7 @@ export const ServicesModule: React.FC = () => {
                   key={srv.id}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.1, ease: 'easeOut' }}
-                  className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex flex-col justify-between space-y-4 shadow-sm transition-all duration-100 ease-out"
+                  className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-4 shadow-xs transition-all duration-100 ease-out"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -273,7 +279,6 @@ export const ServicesModule: React.FC = () => {
           </div>
         )}
       </div>
-    )}
-  </div>
+    </div>
   );
 };

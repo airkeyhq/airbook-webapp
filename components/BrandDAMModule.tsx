@@ -235,7 +235,7 @@ export const BrandDAMModule: React.FC = () => {
           <button
             type="button"
             onClick={() => handleDownloadSVG('airbook-logo-primary.svg', RAW_SVG_CODE)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:bg-black/5 text-xs font-bold text-[var(--text-primary)] transition-colors cursor-pointer"
+            className="btn-secondary h-10 px-4 rounded-2xl flex items-center gap-1.5 text-xs font-bold"
           >
             <ArrowDownload24Filled className="w-4 h-4" />
             <span>{t('downloadSvg')}</span>
@@ -245,7 +245,7 @@ export const BrandDAMModule: React.FC = () => {
             type="button"
             onClick={handleSaveBrandKit}
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg transition-all cursor-pointer"
+            className="btn-primary px-6"
           >
             <Save24Filled className="w-4 h-4" />
             <span>{isSaving ? t('savingState') : t('saveBrandKit')}</span>
@@ -254,25 +254,24 @@ export const BrandDAMModule: React.FC = () => {
       </div>
 
       {/* 5-Tab Navigation Bar */}
-      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] overflow-x-auto">
+      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto">
         {[
           { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
           { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
-          { id: 'badges' as const, label: '3D App Tiles', icon: Box24Filled },
-          { id: 'glyphs' as const, label: 'Flat UI Glyphs & Icons', icon: Grid24Filled },
-          { id: 'vector' as const, label: 'Vector SVG & Embed Badge', icon: Code24Filled },
+          { id: 'badges' as const, label: t('tabAppBadges'), icon: Box24Filled },
+          { id: 'glyphs' as const, label: t('tabVectorGlyphs'), icon: Grid24Filled },
+          { id: 'vector' as const, label: t('tabRawVectorCode'), icon: Code24Filled },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
-              type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-100 whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? 'bg-white dark:bg-slate-800 text-[var(--text-primary)] shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
+                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <Icon className="w-4 h-4" />

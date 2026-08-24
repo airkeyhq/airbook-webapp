@@ -301,7 +301,7 @@ export const SettingsModule: React.FC = () => {
       {/* Main 2-Column Responsive Layout: Left Nav Rail + Right Content Surface */}
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Navigation Rail (Desktop: Vertical Sidebar / Mobile: Horizontal Swipe Strip) */}
-        <nav className="w-full md:w-56 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hide-scrollbar">
+        <nav className="w-full md:w-56 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hide-scrollbar">
           {TAB_LIST.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -312,11 +312,11 @@ export const SettingsModule: React.FC = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left whitespace-nowrap md:w-full cursor-pointer ${
                   isActive
-                    ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm font-extrabold'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-blue-500' : 'text-[var(--text-muted)]'}`} />
+                <Icon className="w-4 h-4 flex-shrink-0 text-[var(--text-secondary)]" />
                 <span>{t(tab.labelKey as any)}</span>
               </button>
             );
@@ -400,7 +400,7 @@ export const SettingsModule: React.FC = () => {
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   type="submit"
-                  className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md"
+                  className="btn-primary self-start"
                 >
                   {t('saveProfile')}
                 </motion.button>
@@ -568,19 +568,19 @@ export const SettingsModule: React.FC = () => {
                     />
                   </Field>
                 </div>
-                <motion.button whileTap={{ scale: 0.97 }} type="submit" className="px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-semibold text-xs shadow-md">
+                <motion.button whileTap={{ scale: 0.97 }} type="submit" className="btn-primary self-start">
                   {t('saveWorkspace')}
                 </motion.button>
               </form>
             </Section>
 
             {/* Chairs & Workstations Manager - Action -> Trigger UX */}
-            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+            <div className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Building24Regular className="w-4 h-4 text-blue-500" />
+                  <Building24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
                   <span>{t('chairsAndStations')}</span>
-                  <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                  <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
                     {stations.length} {t('statusActive')}
                   </span>
                 </h3>
@@ -591,9 +591,9 @@ export const SettingsModule: React.FC = () => {
                     setNewStationCategory('Hair & Styling');
                     setIsAddStationModalOpen(true);
                   }}
-                  className="px-3.5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md active:scale-95 transition-all duration-100 ease-out flex items-center gap-1.5 cursor-pointer"
+                  className="btn-primary"
                 >
-                  <Add24Filled className="w-4 h-4 text-white" />
+                  <Add24Filled className="w-4 h-4" />
                   <span>{t('addStation')}</span>
                 </button>
               </div>

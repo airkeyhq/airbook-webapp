@@ -172,120 +172,133 @@ export const ClientsModule: React.FC = () => {
       </div>
 
       {/* Quick Metrics Header Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
             <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalClients')}</span>
           </div>
-          <p className="text-lg font-black text-[var(--text-primary)]">{totalClientsCount}</p>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{totalClientsCount}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Sparkle24Regular className="w-4 h-4 text-amber-500" />
+            <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricVipMembers')}</span>
           </div>
-          <p className="text-lg font-black text-amber-600 dark:text-amber-400">{vipCount}</p>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{vipCount}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Money24Regular className="w-4 h-4 text-emerald-500" />
+            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalRevenue')}</span>
           </div>
-          <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">${totalLifetimeRevenue.toFixed(0)}</p>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">${totalLifetimeRevenue.toFixed(0)}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Tag24Regular className="w-4 h-4 text-purple-500" />
+            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgLifetimeValue')}</span>
           </div>
-          <p className="text-lg font-black text-purple-600 dark:text-purple-400">${avgSpendPerClient.toFixed(0)}</p>
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">${avgSpendPerClient.toFixed(0)}</p>
         </div>
       </div>
 
-      {/* Search & Tag Filter Bar */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-sm">
-          <Search24Regular className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('searchClientsPlaceholder')}
-            className="bg-transparent text-xs font-semibold text-[var(--text-primary)] focus:outline-none w-full placeholder:text-[var(--text-secondary)]/60"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            >
-              <Dismiss24Filled className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-
-        {/* Tag Filter Chips */}
-        {allUniqueTags.length > 1 && (
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-[11px] font-bold text-[var(--text-secondary)] mr-1 flex-shrink-0">
-              {t('filterByTag')}
-            </span>
-            {allUniqueTags.map((tag) => {
-              const isSelected = selectedTag === tag;
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setSelectedTag(tag)}
-                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                    isSelected
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {tag}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Loading state */}
-      {loading && (
-        <div className="space-y-3">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-between gap-4 shadow-sm animate-pulse"
-            >
-              <div className="flex items-center gap-3.5 w-full">
-                <div className="w-12 h-12 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
-                <div className="space-y-2 flex-1">
-                  <div className="h-4 w-36 rounded-lg bg-black/10 dark:bg-white/10" />
-                  <div className="h-3 w-48 rounded-lg bg-black/5 dark:bg-white/5" />
+      {/* Catalog Group: Filter + Clients List / Empty State */}
+      <div className="space-y-3.5">
+        {loading && (
+          <div className="space-y-3.5">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-between gap-4 shadow-xs animate-pulse"
+              >
+                <div className="flex items-center gap-3.5 w-full">
+                  <div className="w-12 h-12 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-4 w-36 rounded-lg bg-black/10 dark:bg-white/10" />
+                    <div className="h-3 w-48 rounded-lg bg-black/5 dark:bg-white/5" />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {/* Structured Interactive Clients List */}
-      {!loading && (
-        <>
-          {filteredClients.length === 0 ? (
-            <EmptyState
-              icon={Person24Regular}
-              title={t('noClients')}
-              description={t('noClientsSub')}
-            />
-          ) : (
-            <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
+        {!loading && clients.length === 0 && (
+          <EmptyState
+            icon={Person24Regular}
+            title={t('noClients')}
+            description={t('noClientsSub')}
+            action={{
+              label: t('addClient'),
+              onClick: () => setIsAddModalOpen(true),
+              icon: Add24Filled,
+            }}
+          />
+        )}
+
+        {!loading && clients.length > 0 && (
+          <>
+            {/* Search & Tag Filter Bar */}
+            <div className="space-y-3">
+              <div className="relative">
+                <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('searchClientsPlaceholder')}
+                  className="w-full h-10 pl-9 pr-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Tag Filter Chips */}
+              {allUniqueTags.length > 1 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                  <span className="text-[11px] font-bold text-[var(--text-secondary)] mr-1 flex-shrink-0">
+                    {t('filterByTag')}
+                  </span>
+                  {allUniqueTags.map((tag) => {
+                    const isSelected = selectedTag === tag;
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setSelectedTag(tag)}
+                        className={`h-7 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                          isSelected
+                            ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
+                            : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {filteredClients.length === 0 ? (
+              <EmptyState
+                icon={Search24Regular}
+                title={t('noClients')}
+                description={t('noClientsSub')}
+              />
+            ) : (
+              <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
               {filteredClients.map((cli) => {
                 const avatarSrc = cli.avatarUrl || getAvatarUrl(cli.name);
                 const specsCount = (cli.customSpecs || []).length;
@@ -374,6 +387,7 @@ export const ClientsModule: React.FC = () => {
           )}
         </>
       )}
+      </div>
 
       {/* Client Profile & Technical Specs Drawer */}
       <ClientNotesModal

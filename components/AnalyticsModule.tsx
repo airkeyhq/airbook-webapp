@@ -56,11 +56,11 @@ export const AnalyticsModule: React.FC = () => {
       </div>
 
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-2.5 animate-pulse"
+              className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2.5 animate-pulse shadow-xs"
             >
               <div className="h-3 w-24 rounded-full bg-black/10 dark:bg-white/10" />
               <div className="h-7 w-28 rounded-xl bg-black/15 dark:bg-white/15" />
@@ -72,33 +72,37 @@ export const AnalyticsModule: React.FC = () => {
       {!loading && (
         <>
           {/* Metrics Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('metricTotalRevenue')}</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black">${rev.toLocaleString()}</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('metricTotalRevenue')}</span>
               </div>
+              <p className="text-xl font-black text-[var(--text-primary)] font-mono">${rev.toLocaleString()}</p>
             </div>
 
-            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('netProfit')}</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black">${net.toLocaleString()}</span>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <DataTrending24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('netProfit')}</span>
               </div>
+              <p className="text-xl font-black text-[var(--text-primary)] font-mono">${net.toLocaleString()}</p>
             </div>
 
-            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('appointments')}</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black">{apts}</span>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('appointments')}</span>
               </div>
+              <p className="text-xl font-black text-[var(--text-primary)] font-mono">{apts}</p>
             </div>
 
-            <div className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{t('metricTotalClients')}</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black">{clientsCount}</span>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('metricTotalClients')}</span>
               </div>
+              <p className="text-xl font-black text-[var(--text-primary)] font-mono">{clientsCount}</p>
             </div>
           </div>
         </>

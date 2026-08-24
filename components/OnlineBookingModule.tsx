@@ -75,7 +75,6 @@ function Toggle({
   );
 }
 
-/* ─── Studio Section Card ─── */
 function StudioSection({
   title,
   icon: Icon,
@@ -88,14 +87,14 @@ function StudioSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+    <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-          <Icon className="w-4 h-4 text-blue-500" />
+          <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
           <span>{title}</span>
         </h3>
         {badge && (
-          <span className="text-[10px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
+          <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2.5 py-0.5 rounded-full border border-[var(--border-subtle)]">
             {badge}
           </span>
         )}
@@ -368,11 +367,11 @@ export const OnlineBookingModule: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 space-y-6 pb-24">
       {/* Header Banner with Action Buttons */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
+              <div className="w-9 h-9 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-xs">
                 <Globe24Filled className="w-5 h-5" />
               </div>
               <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
@@ -393,7 +392,7 @@ export const OnlineBookingModule: React.FC = () => {
           onClick={() => setActiveTab('links')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'links'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -406,7 +405,7 @@ export const OnlineBookingModule: React.FC = () => {
           onClick={() => setActiveTab('policies')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'policies'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -419,7 +418,7 @@ export const OnlineBookingModule: React.FC = () => {
           onClick={() => setActiveTab('branding')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'branding'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -885,7 +884,7 @@ export const OnlineBookingModule: React.FC = () => {
             whileTap={{ scale: 0.98 }}
             disabled={saving}
             onClick={handleSaveSettings}
-            className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-colors cursor-pointer"
+            className="w-full btn-primary h-12 text-sm shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             <CheckmarkCircle24Filled className="w-4 h-4 text-white" />
             <span>{saving ? t('saving') : t('saveStudioChanges')}</span>
@@ -896,7 +895,7 @@ export const OnlineBookingModule: React.FC = () => {
         <div className="lg:col-span-5 sticky top-6 space-y-3">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-              <Sparkle24Regular className="w-4 h-4 text-blue-500" />
+              <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('mobileSimulatorTitle')}</span>
             </h3>
             <span className="text-[10px] font-mono text-[var(--text-secondary)]">{t('phonePreviewModel')}</span>

@@ -487,7 +487,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity whitespace-nowrap self-start sm:self-auto"
+            className="btn-primary self-start sm:self-auto"
           >
             <Add24Filled className="w-4 h-4 flex-shrink-0" />
             <span>{t('addStaffMember')}</span>
@@ -496,13 +496,13 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       </div>
 
       {/* Sub Navigation Tabs */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] w-fit">
+      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit">
         <button
           type="button"
           onClick={() => setActiveTab('roster')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'roster'
-              ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
+              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
@@ -514,28 +514,28 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           onClick={() => setActiveTab('invites')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'invites'
-              ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
+              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <Mail24Regular className="w-4 h-4" />
           <span>{t('pendingInvites')}</span>
           {pendingInvitesList.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[10px] font-extrabold">
+            <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-accent-primary)] text-white text-[10px] font-extrabold">
               {pendingInvitesList.length}
             </span>
           )}
         </button>
       </div>
 
-        {/* Roster Tab View */}
+      {/* Roster Tab View */}
       {activeTab === 'roster' && (
-        <>
+        <div className="space-y-3.5">
           {/* Calendar Provider Color Setting Control Banner */}
-          <div className="p-4 sm:p-5 rounded-3xl glass-panel bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-indigo-500/10 border border-purple-500/20">
+          <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start sm:items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex-shrink-0">
+                <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex-shrink-0">
                   <Color24Regular className="w-5 h-5" />
                 </div>
                 <div>
@@ -548,13 +548,13 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 p-1 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-bold w-full sm:w-auto">
+              <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-bold w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setProviderColorMode('auto')}
                   className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
                     providerColorMode === 'auto'
-                      ? 'bg-purple-600 text-white shadow-sm font-extrabold'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -566,7 +566,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   onClick={() => setProviderColorMode('custom')}
                   className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
                     providerColorMode === 'custom'
-                      ? 'bg-purple-600 text-white shadow-sm font-extrabold'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -578,11 +578,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           </div>
 
           {loading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="p-5 rounded-3xl glass-panel bg-white/70 dark:bg-gray-900/70 border border-white/60 dark:border-white/10 flex items-center gap-4 animate-pulse"
+                  className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center gap-4 animate-pulse shadow-xs"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-black/10 dark:bg-white/10 flex-shrink-0" />
                   <div className="space-y-2 flex-1">
@@ -601,9 +601,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   icon={People24Regular}
                   title={t('noStaff')}
                   description={t('noStaffSub')}
+                  action={{
+                    label: t('addStaffMember'),
+                    onClick: () => setIsAddModalOpen(true),
+                    icon: Add24Filled,
+                  }}
                 />
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {staffList.map((stf, idx) => {
                   const providerColor = getProviderColor(idx, (stf as any).color, providerColorMode);
                   const avatarSrc = getAvatarUrl(stf.name, (stf as any).avatarUrl, providerColor);
@@ -616,7 +621,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       whileTap={{ scale: 0.98 }}
                       transition={{ duration: 0.08, ease: 'easeOut' }}
                       onClick={() => handleCardClick(stf)}
-                      className="p-5 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 flex items-start justify-between gap-4 shadow-sm hover:shadow-md cursor-pointer transition-all duration-100 ease-out group"
+                      className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-start justify-between gap-4 shadow-xs hover:border-black/20 dark:hover:border-white/20 cursor-pointer transition-all duration-100 ease-out group"
                     >
                       <div className="flex items-center gap-4">
                         <div className="relative p-1 rounded-2xl bg-black/5 dark:bg-white/5 flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -655,20 +660,20 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     </motion.div>
                   );
                 })}
-              </div>
-            )}
-          </div>
-        )}
-      </>
-    )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Invites Tab View */}
       {activeTab === 'invites' && (
         <div className="space-y-6">
-          {/* Send Invite Form Card */}
-          <div className="p-5 sm:p-6 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+          {/* Invite Form Card */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Add24Regular className="w-4 h-4 text-blue-500" />
+              <Add24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('inviteTeamMembers')}</span>
             </h3>
             <form onSubmit={handleSendInvite} className="space-y-3.5">
@@ -683,7 +688,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     placeholder="teammate@salon.com"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    className="w-full h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
                   />
                 </div>
                 <div className="space-y-1">
@@ -706,7 +711,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   whileTap={{ scale: 0.97 }}
                   type="submit"
                   disabled={sendingInvite}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md disabled:opacity-50 hover:opacity-90 transition-opacity"
+                  className="btn-primary"
                 >
                   <Mail24Filled className="w-4 h-4" />
                   <span>{sendingInvite ? t('saving') : t('invite')}</span>
@@ -716,9 +721,9 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           </div>
 
           {/* Pending Invites List & Empty State */}
-          <div className="p-5 sm:p-6 rounded-3xl glass-panel bg-white/80 dark:bg-gray-900/80 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
+          <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Mail24Regular className="w-4 h-4 text-blue-500" />
+              <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>{t('pendingInvites')}</span>
             </h3>
 

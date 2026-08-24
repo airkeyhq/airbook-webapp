@@ -10,13 +10,13 @@ export const MarketplaceModule: React.FC = () => {
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
               {t('marketplaceTitle')}
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase">
+            <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold uppercase">
               {t('comingSoonV12')}
             </span>
           </div>
@@ -27,8 +27,8 @@ export const MarketplaceModule: React.FC = () => {
       </div>
 
       {/* Honest Roadmap Teaser Card */}
-      <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-sm">
-        <div className="w-14 h-14 rounded-3xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+      <div className="p-8 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-xs">
+        <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex items-center justify-center mx-auto">
           <ShoppingBag24Regular className="w-7 h-7" />
         </div>
 
@@ -41,9 +41,9 @@ export const MarketplaceModule: React.FC = () => {
           </p>
         </div>
 
-        <div className="pt-3 max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        <div className="pt-3 max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left">
           <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-start gap-2.5">
-            <CheckmarkCircle24Regular className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-[var(--text-primary)]">{t('marketplaceFeature1Title')}</p>
               <p className="text-[11px] text-[var(--text-secondary)]">{t('marketplaceFeature1Desc')}</p>
@@ -51,7 +51,7 @@ export const MarketplaceModule: React.FC = () => {
           </div>
 
           <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-start gap-2.5">
-            <CheckmarkCircle24Regular className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-[var(--text-primary)]">{t('marketplaceFeature2Title')}</p>
               <p className="text-[11px] text-[var(--text-secondary)]">{t('marketplaceFeature2Desc')}</p>
@@ -60,7 +60,7 @@ export const MarketplaceModule: React.FC = () => {
         </div>
 
         <div className="pt-2">
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-500/15 text-blue-700 dark:text-blue-300 text-xs font-extrabold">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-xs font-extrabold">
             <ShoppingBag24Regular className="w-3.5 h-3.5" />
             <span>{t('marketplaceScheduledFor')}</span>
           </span>

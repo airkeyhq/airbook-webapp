@@ -418,7 +418,7 @@ export const PackagesModule: React.FC = () => {
                 setGcExpiresAt('');
                 setIsGiftCardDrawerOpen(true);
               }}
-              className="w-full sm:w-auto px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all duration-100 cursor-pointer"
+              className="btn-primary self-start sm:self-auto"
             >
               <Add24Filled className="w-4 h-4" />
               <span>{t('issueGiftCard')}</span>
@@ -438,7 +438,7 @@ export const PackagesModule: React.FC = () => {
                 setPkgValidityDays(365);
                 setIsPackageDrawerOpen(true);
               }}
-              className="w-full sm:w-auto px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all duration-100 cursor-pointer"
+              className="btn-primary self-start sm:self-auto"
             >
               <Add24Filled className="w-4 h-4" />
               <span>{t('createPackage')}</span>
@@ -457,7 +457,7 @@ export const PackagesModule: React.FC = () => {
                 setMemPerks('Priority Weekend Access · 15% Off Retail Products');
                 setIsMembershipDrawerOpen(true);
               }}
-              className="w-full sm:w-auto px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all duration-100 cursor-pointer"
+              className="btn-primary self-start sm:self-auto"
             >
               <Add24Filled className="w-4 h-4" />
               <span>{t('createMembership')}</span>
@@ -468,13 +468,13 @@ export const PackagesModule: React.FC = () => {
 
       {/* Live Metrics Ribbon */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <GiftCard24Regular className="w-4 h-4 text-pink-500" />
+            <GiftCard24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('totalOutstandingBalance')}</span>
           </div>
           <div className="flex items-baseline justify-between">
-            <p className="text-xl font-black text-pink-600 dark:text-pink-400 font-mono">
+            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
               ${totalGiftCardBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <span className="text-[11px] font-bold text-[var(--text-muted)]">
@@ -483,9 +483,9 @@ export const PackagesModule: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Tag24Regular className="w-4 h-4 text-purple-500" />
+            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('activePackages')}</span>
           </div>
           <div className="flex items-baseline justify-between">
@@ -498,13 +498,13 @@ export const PackagesModule: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
+            <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('recurringRevenueMRR')}</span>
           </div>
           <div className="flex items-baseline justify-between">
-            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
               ${Math.round(estimatedMRR).toLocaleString()} {t('perMonthShort')}
             </p>
             <span className="text-[11px] font-bold text-[var(--text-muted)]">
@@ -521,7 +521,7 @@ export const PackagesModule: React.FC = () => {
           onClick={() => setActiveTab('gift_cards')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'gift_cards'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -537,7 +537,7 @@ export const PackagesModule: React.FC = () => {
           onClick={() => setActiveTab('packages')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'packages'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -553,7 +553,7 @@ export const PackagesModule: React.FC = () => {
           onClick={() => setActiveTab('memberships')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
             activeTab === 'memberships'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
           }`}
         >
@@ -573,9 +573,21 @@ export const PackagesModule: React.FC = () => {
               icon={GiftCard24Regular}
               title={t('noGiftCardsFound')}
               description={t('noGiftCardsSub')}
+              action={{
+                label: t('issueGiftCard'),
+                onClick: () => {
+                  setGcRecipientName('');
+                  setGcRecipientEmail('');
+                  setGcSenderName('');
+                  setGcNotes('');
+                  setGcExpiresAt('');
+                  setIsGiftCardDrawerOpen(true);
+                },
+                icon: Add24Filled,
+              }}
             />
           ) : (
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {giftCards.map((card) => {
                 const isRedeemed = card.status === 'redeemed' || card.currentBalanceCents === 0;
                 const isExpired = card.status === 'expired';
@@ -680,9 +692,23 @@ export const PackagesModule: React.FC = () => {
               icon={Tag24Regular}
               title={t('noPackagesFound')}
               description={t('noPackagesSub')}
+              action={{
+                label: t('createPackage'),
+                onClick: () => {
+                  setEditingPackage(null);
+                  setPkgName('');
+                  setPkgServiceName(servicesList[0]?.name || 'Haircut & Styling');
+                  setPkgTotalSessions(5);
+                  setPkgPrice('225');
+                  setPkgDiscountPercent(15);
+                  setPkgValidityDays(365);
+                  setIsPackageDrawerOpen(true);
+                },
+                icon: Add24Filled,
+              }}
             />
           ) : (
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {packagesList.map((pkg) => (
                 <div
                   key={pkg.id}
@@ -754,9 +780,22 @@ export const PackagesModule: React.FC = () => {
               icon={Sparkle24Regular}
               title={t('noMembershipsFound')}
               description={t('noMembershipsSub')}
+              action={{
+                label: t('createMembership'),
+                onClick: () => {
+                  setEditingMembership(null);
+                  setMemName('');
+                  setMemPrice('120');
+                  setMemIncludedServices(2);
+                  setMemDiscountRetail(15);
+                  setMemPerks('Priority Weekend Access · 15% Off Retail Products');
+                  setIsMembershipDrawerOpen(true);
+                },
+                icon: Add24Filled,
+              }}
             />
           ) : (
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
               {membershipsList.map((mem) => (
                 <div
                   key={mem.id}
