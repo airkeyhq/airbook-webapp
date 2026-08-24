@@ -330,7 +330,7 @@ export const MarketingModule: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsTopUpOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] text-xs font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Add24Filled className="w-3.5 h-3.5" />
               <span>{t('topUpBtn')}</span>
@@ -730,7 +730,7 @@ export const MarketingModule: React.FC = () => {
                               key={tag}
                               type="button"
                               onClick={() => setCampMessage((prev) => `${prev} ${tag}`)}
-                              className="px-2 py-0.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-mono font-bold transition-colors cursor-pointer"
+                              className="px-2 py-0.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[10px] font-mono font-bold transition-colors cursor-pointer"
                             >
                               + {tag}
                             </button>

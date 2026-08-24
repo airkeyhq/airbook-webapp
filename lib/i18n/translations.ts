@@ -968,7 +968,7 @@ export const translations = {
     // Phase 2 i18n — MarketingModule
     retentionAndReviews: 'Retention & Reviews',
     prepaidLedger: 'Prepaid Ledger',
-    topUpBtn: '+ Top Up',
+    topUpBtn: 'Top Up',
     emailMarketing: 'Email Marketing',
     resendEngine: 'Resend Engine',
     unlimited: 'Unlimited',
@@ -2118,7 +2118,7 @@ export const translations = {
     // Phase 2 i18n — MarketingModule
     retentionAndReviews: 'Retención y Reseñas',
     prepaidLedger: 'Saldo Prepagado',
-    topUpBtn: '+ Recargar',
+    topUpBtn: 'Recargar',
     emailMarketing: 'Email Marketing',
     resendEngine: 'Motor Resend',
     unlimited: 'Ilimitado',
@@ -3268,7 +3268,7 @@ export const translations = {
     // Phase 2 i18n — MarketingModule
     retentionAndReviews: 'Kundenbindung & Bewertungen',
     prepaidLedger: 'Prepaid-Guthaben',
-    topUpBtn: '+ Aufladen',
+    topUpBtn: 'Aufladen',
     emailMarketing: 'E-Mail-Marketing',
     resendEngine: 'Resend-Engine',
     unlimited: 'Unbegrenzt',
@@ -4419,7 +4419,7 @@ export const translations = {
     // Phase 2 i18n — MarketingModule
     retentionAndReviews: 'Rétention & Avis',
     prepaidLedger: 'Solde Prépayé',
-    topUpBtn: '+ Recharger',
+    topUpBtn: 'Recharger',
     emailMarketing: 'Email Marketing',
     resendEngine: 'Moteur Resend',
     unlimited: 'Illimité',
