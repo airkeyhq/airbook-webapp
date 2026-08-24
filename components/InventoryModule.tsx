@@ -356,36 +356,6 @@ export const InventoryModule: React.FC = () => {
 
       {/* Catalog Section: Search/Filter + List / Empty State */}
       <div className="space-y-3.5">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
-          <div className="relative md:col-span-3">
-            <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('searchInventoryPlaceholder')}
-              className="w-full h-10 pl-9 pr-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-              >
-                <Dismiss24Filled className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          <div className="w-full md:col-span-1">
-            <CustomSelect
-              value={selectedCategory}
-              onChange={setSelectedCategory}
-              options={CATEGORY_OPTIONS}
-            />
-          </div>
-        </div>
-
         {loading && (
           <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl p-8 space-y-4 shadow-xs">
             {[...Array(4)].map((_, i) => (
@@ -394,7 +364,7 @@ export const InventoryModule: React.FC = () => {
           </div>
         )}
 
-        {!loading && filteredProducts.length === 0 && (
+        {!loading && products.length === 0 && (
           <EmptyState
             icon={Box24Regular}
             title={t('noProducts')}
@@ -407,103 +377,143 @@ export const InventoryModule: React.FC = () => {
           />
         )}
 
-        {!loading && filteredProducts.length > 0 && (
-          <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
-            {filteredProducts.map((prod) => {
-              const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
-              const isOutOfStock = prod.stockQuantity === 0;
-              const margin =
-                prod.retailPriceCents > 0
-                  ? Math.round(
-                      ((prod.retailPriceCents - (prod.costPriceCents || 0)) / prod.retailPriceCents) * 100
-                    )
-                  : 0;
+        {!loading && products.length > 0 && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+              <div className="relative md:col-span-3">
+                <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('searchInventoryPlaceholder')}
+                  className="w-full h-10 pl-9 pr-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
 
-              return (
-                <div
-                  key={prod.id}
-                  onClick={() => openEditDrawer(prod)}
-                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {prod.imageUrl ? (
-                        <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <ShoppingBag24Regular className="w-6 h-6 text-[var(--text-muted)]" />
-                      )}
-                    </div>
+              <div className="w-full md:col-span-1">
+                <CustomSelect
+                  value={selectedCategory}
+                  onChange={setSelectedCategory}
+                  options={CATEGORY_OPTIONS}
+                />
+              </div>
+            </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] transition-colors">
-                          {prod.name}
-                        </h3>
-                        {prod.sku && (
-                          <span className="hidden sm:inline px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-[10px] font-mono text-[var(--text-muted)]">
-                            {prod.sku}
+            {filteredProducts.length === 0 ? (
+              <EmptyState
+                icon={Search24Regular}
+                title={t('noProducts')}
+                description={t('noProductsSub')}
+              />
+            ) : (
+              <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+                {filteredProducts.map((prod) => {
+                  const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
+                  const isOutOfStock = prod.stockQuantity === 0;
+                  const margin =
+                    prod.retailPriceCents > 0
+                      ? Math.round(
+                          ((prod.retailPriceCents - (prod.costPriceCents || 0)) / prod.retailPriceCents) * 100
+                        )
+                      : 0;
+
+                  return (
+                    <div
+                      key={prod.id}
+                      onClick={() => openEditDrawer(prod)}
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          {prod.imageUrl ? (
+                            <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <ShoppingBag24Regular className="w-6 h-6 text-[var(--text-muted)]" />
+                          )}
+                        </div>
+
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] transition-colors">
+                              {prod.name}
+                            </h3>
+                            {prod.sku && (
+                              <span className="hidden sm:inline px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-[10px] font-mono text-[var(--text-muted)]">
+                                {prod.sku}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
+                            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] font-bold text-[10px]">
+                              {prod.category}
+                            </span>
+                            <span className="hidden sm:inline">•</span>
+                            <span className="text-[var(--text-muted)] font-mono">
+                              {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
+                            </span>
+                            <span>•</span>
+                            <span className="text-[var(--text-secondary)] font-mono font-bold">
+                              {t('marginPercent').replace('{margin}', String(margin))}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-4">
+                        <div className="text-left sm:text-right">
+                          <p className="text-sm sm:text-base font-black text-[var(--text-primary)] font-mono">
+                            ${((prod.retailPriceCents || 0) / 100).toFixed(2)}
+                          </p>
+                          <span
+                            className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                              isOutOfStock
+                                ? 'text-red-600 dark:text-red-400'
+                                : isLowStock
+                                ? 'text-amber-600 dark:text-amber-400'
+                                : 'text-emerald-600 dark:text-emerald-400'
+                            }`}
+                          >
+                            {isOutOfStock ? t('outOfStock') : isLowStock ? t('lowStock') : t('inStock')}
                           </span>
-                        )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
+                          <button
+                            type="button"
+                            onClick={(e) => handleQuickStockDelta(prod.id, -1, e)}
+                            className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
+                          >
+                            -
+                          </button>
+                          <span className="w-8 text-center text-xs font-black font-mono text-[var(--text-primary)]">
+                            {prod.stockQuantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => handleQuickStockDelta(prod.id, 1, e)}
+                            className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
-                        <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] font-bold text-[10px]">
-                          {prod.category}
-                        </span>
-                        <span className="hidden sm:inline">•</span>
-                        <span className="text-[var(--text-muted)] font-mono">
-                          {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
-                        </span>
-                        <span>•</span>
-                        <span className="text-[var(--text-secondary)] font-mono font-bold">
-                          {t('marginPercent').replace('{margin}', String(margin))}
-                        </span>
-                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center justify-between sm:justify-end gap-4">
-                    <div className="text-left sm:text-right">
-                      <p className="text-sm sm:text-base font-black text-[var(--text-primary)] font-mono">
-                        ${((prod.retailPriceCents || 0) / 100).toFixed(2)}
-                      </p>
-                      <span
-                        className={`text-[10px] font-extrabold uppercase tracking-wider ${
-                          isOutOfStock
-                            ? 'text-red-600 dark:text-red-400'
-                            : isLowStock
-                            ? 'text-amber-600 dark:text-amber-400'
-                            : 'text-emerald-600 dark:text-emerald-400'
-                        }`}
-                      >
-                        {isOutOfStock ? t('outOfStock') : isLowStock ? t('lowStock') : t('inStock')}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
-                      <button
-                        type="button"
-                        onClick={(e) => handleQuickStockDelta(prod.id, -1, e)}
-                        className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center text-xs font-black font-mono text-[var(--text-primary)]">
-                        {prod.stockQuantity}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleQuickStockDelta(prod.id, 1, e)}
-                        className="w-7 h-7 rounded-xl bg-[var(--bg-primary)] text-[var(--text-primary)] font-bold text-sm flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 transition-all shadow-xs"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </div>
 
