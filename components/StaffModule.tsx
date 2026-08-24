@@ -495,42 +495,55 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         )}
       </div>
 
-      {/* Sub Navigation Tabs */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit">
-        <button
-          type="button"
-          onClick={() => setActiveTab('roster')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'roster'
-              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          <People24Regular className="w-4 h-4" />
-          <span>{t('currentTeam')}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('invites')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'invites'
-              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          <Mail24Regular className="w-4 h-4" />
-          <span>{t('pendingInvites')}</span>
-          {pendingInvitesList.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-accent-primary)] text-white text-[10px] font-extrabold">
-              {pendingInvitesList.length}
-            </span>
-          )}
-        </button>
-      </div>
+      {!loading && staffList.length === 0 && pendingInvitesList.length === 0 ? (
+        <EmptyState
+          icon={People24Regular}
+          title={t('noStaff')}
+          description={t('noStaffSub')}
+          action={{
+            label: t('addStaffMember'),
+            onClick: () => setIsAddModalOpen(true),
+            icon: Add24Filled,
+          }}
+        />
+      ) : (
+        <div className="space-y-6">
+          {/* Sub Navigation Tabs */}
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit">
+            <button
+              type="button"
+              onClick={() => setActiveTab('roster')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'roster'
+                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              <People24Regular className="w-4 h-4" />
+              <span>{t('currentTeam')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('invites')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'invites'
+                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              <Mail24Regular className="w-4 h-4" />
+              <span>{t('pendingInvites')}</span>
+              {pendingInvitesList.length > 0 && (
+                <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-accent-primary)] text-white text-[10px] font-extrabold">
+                  {pendingInvitesList.length}
+                </span>
+              )}
+            </button>
+          </div>
 
-      {/* Roster Tab View */}
-      {activeTab === 'roster' && (
-        <div className="space-y-3.5">
+          {/* Roster Tab View */}
+          {activeTab === 'roster' && (
+            <div className="space-y-3.5">
           {/* Calendar Provider Color Setting Control Banner */}
           <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -764,6 +777,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
               </div>
             )}
           </div>
+        </div>
+      )}
         </div>
       )}
 

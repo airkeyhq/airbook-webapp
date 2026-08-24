@@ -384,11 +384,12 @@ export const PackagesModule: React.FC = () => {
   const activePackagesCount = packagesList.filter((p) => p.isActive).length;
   const activeMembershipsCount = membershipsList.filter((m) => m.isActive).length;
   const estimatedMRR = membershipsList.reduce((acc, m) => acc + (m.isActive ? m.monthlyPriceCents : 0), 0) / 100;
+  const hasAnyItems = giftCards.length > 0 || packagesList.length > 0 || membershipsList.length > 0;
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
@@ -466,104 +467,131 @@ export const PackagesModule: React.FC = () => {
         </div>
       </div>
 
-      {/* Live Metrics Ribbon */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <GiftCard24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span>{t('totalOutstandingBalance')}</span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              ${totalGiftCardBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </p>
-            <span className="text-[11px] font-bold text-[var(--text-muted)]">
-              {activeGiftCardsCount} {t('activeCards')}
-            </span>
-          </div>
-        </div>
+      {!loading && !hasAnyItems ? (
+        <EmptyState
+          icon={GiftCard24Regular}
+          title={t('noGiftCardsFound')}
+          description={t('noGiftCardsSub')}
+          action={{
+            label: t('issueGiftCard'),
+            onClick: () => {
+              setGcRecipientName('');
+              setGcRecipientEmail('');
+              setGcSenderName('');
+              setGcNotes('');
+              setGcExpiresAt('');
+              setIsGiftCardDrawerOpen(true);
+            },
+            icon: Add24Filled,
+          }}
+        />
+      ) : (
+        <div className="space-y-6">
+          {/* Live Metrics Ribbon */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <GiftCard24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('totalOutstandingBalance')}</span>
+              </div>
+              <div className="flex items-baseline justify-between">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  ${totalGiftCardBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+                <span className="text-[11px] font-bold text-[var(--text-muted)]">
+                  {activeGiftCardsCount} {t('activeCards')}
+                </span>
+              </div>
+            </div>
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span>{t('activePackages')}</span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              {activePackagesCount}
-            </p>
-            <span className="text-[11px] font-bold text-[var(--text-muted)]">
-              {t('totalBundlesCount').replace('{count}', String(packagesList.length))}
-            </span>
-          </div>
-        </div>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('activePackages')}</span>
+              </div>
+              <div className="flex items-baseline justify-between">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  {activePackagesCount}
+                </p>
+                <span className="text-[11px] font-bold text-[var(--text-muted)]">
+                  {t('totalBundlesCount').replace('{count}', String(packagesList.length))}
+                </span>
+              </div>
+            </div>
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span>{t('recurringRevenueMRR')}</span>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span>{t('recurringRevenueMRR')}</span>
+              </div>
+              <div className="flex items-baseline justify-between">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  ${Math.round(estimatedMRR).toLocaleString()} {t('perMonthShort')}
+                </p>
+                <span className="text-[11px] font-bold text-[var(--text-muted)]">
+                  {activeMembershipsCount} {t('activeMemberships')}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-baseline justify-between">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              ${Math.round(estimatedMRR).toLocaleString()} {t('perMonthShort')}
-            </p>
-            <span className="text-[11px] font-bold text-[var(--text-muted)]">
-              {activeMembershipsCount} {t('activeMemberships')}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* Sub-Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2 overflow-x-auto scrollbar-none">
-        <button
-          type="button"
-          onClick={() => setActiveTab('gift_cards')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
-            activeTab === 'gift_cards'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
-          }`}
-        >
-          <GiftCard24Regular className="w-4 h-4" />
-          <span>{t('tabGiftCards')}</span>
-          <span className="px-1.5 py-0.2 bg-black/20 dark:bg-white/20 rounded-full text-[10px]">
-            {giftCards.length}
-          </span>
-        </button>
+          <div className="space-y-3.5">
+            {/* Segmented Control */}
+            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setActiveTab('gift_cards')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'gift_cards'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <GiftCard24Regular className="w-4 h-4" />
+                <span>{t('tabGiftCards')}</span>
+                {giftCards.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {giftCards.length}
+                  </span>
+                )}
+              </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('packages')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
-            activeTab === 'packages'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
-          }`}
-        >
-          <Tag24Regular className="w-4 h-4" />
-          <span>{t('tabServicePackages')}</span>
-          <span className="px-1.5 py-0.2 bg-black/20 dark:bg-white/20 rounded-full text-[10px]">
-            {packagesList.length}
-          </span>
-        </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('packages')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'packages'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Tag24Regular className="w-4 h-4" />
+                <span>{t('tabServicePackages')}</span>
+                {packagesList.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {packagesList.length}
+                  </span>
+                )}
+              </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('memberships')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all duration-100 cursor-pointer ${
-            activeTab === 'memberships'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-              : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
-          }`}
-        >
-          <Sparkle24Regular className="w-4 h-4" />
-          <span>{t('tabMemberships')}</span>
-          <span className="px-1.5 py-0.2 bg-black/20 dark:bg-white/20 rounded-full text-[10px]">
-            {membershipsList.length}
-          </span>
-        </button>
-      </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('memberships')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'memberships'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Sparkle24Regular className="w-4 h-4" />
+                <span>{t('tabMemberships')}</span>
+                {membershipsList.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {membershipsList.length}
+                  </span>
+                )}
+              </button>
+            </div>
 
       {/* ─── TAB 1: GIFT CARDS ─── */}
       {activeTab === 'gift_cards' && (
@@ -855,6 +883,9 @@ export const PackagesModule: React.FC = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+          </div>
         </div>
       )}
 
