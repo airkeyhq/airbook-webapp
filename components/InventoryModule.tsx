@@ -355,41 +355,32 @@ export const InventoryModule: React.FC = () => {
       )}
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-          {CATEGORY_OPTIONS.slice(0, 5).map(({ value, label }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setSelectedCategory(value)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold whitespace-nowrap transition-all duration-100 ${
-                selectedCategory === value
-                  ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-                  : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:bg-black/10 dark:hover:bg-white/10'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="relative w-full sm:w-72">
+        <div className="relative flex-1">
           <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchInventoryPlaceholder')}
-            className="w-full pl-9 pr-8 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            className="w-full pl-9 pr-8 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
             >
               <Dismiss24Filled className="w-3.5 h-3.5" />
             </button>
           )}
+        </div>
+
+        <div className="w-full sm:w-56 flex-shrink-0">
+          <CustomSelect
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            options={CATEGORY_OPTIONS}
+          />
         </div>
       </div>
 
