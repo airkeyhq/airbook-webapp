@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Dismiss24Filled,
+  Save24Filled,
   Box24Regular,
   Warning24Regular,
   Search24Regular,
@@ -686,8 +687,8 @@ export const InventoryModule: React.FC = () => {
                     disabled={submitting}
                     className="btn-primary w-full disabled:opacity-50"
                   >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('saveProduct')}</span>
+                    <Save24Filled className="w-4 h-4" />
+                    <span>{submitting ? t('saving') : t('save')}</span>
                   </button>
                 </div>
               </form>
@@ -875,8 +876,8 @@ export const InventoryModule: React.FC = () => {
                     disabled={submitting}
                     className="btn-primary w-full disabled:opacity-50"
                   >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('saveProduct')}</span>
+                    <Save24Filled className="w-4 h-4" />
+                    <span>{submitting ? t('saving') : t('save')}</span>
                   </button>
 
                   <button

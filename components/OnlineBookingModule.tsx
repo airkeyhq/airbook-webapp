@@ -26,6 +26,7 @@ import {
   Cut24Regular,
   Add24Filled,
   Dismiss24Filled,
+  Save24Filled,
   Edit24Filled,
   Delete24Filled,
   Checkmark24Filled,
@@ -894,8 +895,8 @@ export const OnlineBookingModule: React.FC = () => {
             onClick={handleSaveSettings}
             className="w-full btn-primary h-12 text-sm shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
-            <CheckmarkCircle24Filled className="w-4 h-4 text-white" />
-            <span>{saving ? t('saving') : t('saveStudioChanges')}</span>
+            <Save24Filled className="w-4 h-4 text-white" />
+            <span>{saving ? t('saving') : t('save')}</span>
           </motion.button>
         </div>
 

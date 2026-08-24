@@ -13,6 +13,7 @@ import {
   Info24Regular,
   Copy24Filled,
   Delete24Filled,
+  Save24Filled,
   CheckmarkCircle24Filled,
 } from '@fluentui/react-icons';
 
@@ -230,8 +231,8 @@ export const CustomDomainStudio: React.FC = () => {
               disabled={isSaving || !domainInput.trim() || domainInput.trim() === savedDomain}
               className="btn-primary flex-shrink-0"
             >
-              <CheckmarkCircle24Filled className="w-4 h-4" />
-              <span>{isSaving ? '...' : t('saveDomain')}</span>
+              <Save24Filled className="w-4 h-4" />
+              <span>{isSaving ? '...' : t('save')}</span>
             </button>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { EmptyState } from './EmptyState';
 import { useAirBookStore } from '@/lib/store';
-import { Add24Filled, Dismiss24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
+import { Add24Filled, Dismiss24Filled, Save24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
 interface ServiceItem {
   id: string;
@@ -188,7 +188,8 @@ export const ServicesModule: React.FC = () => {
               disabled={submitting}
               className="btn-primary"
             >
-              {submitting ? t('saving') : t('saveService')}
+              <Save24Filled className="w-4 h-4" />
+              <span>{submitting ? t('saving') : t('save')}</span>
             </button>
           </div>
         </motion.form>

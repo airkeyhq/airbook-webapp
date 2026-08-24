@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Dismiss24Filled,
+  Save24Filled,
   Person24Filled,
   Person24Regular,
   Mail24Regular,
@@ -530,8 +531,8 @@ export const ClientsModule: React.FC = () => {
                     disabled={submitting}
                     className="btn-primary w-full disabled:opacity-50"
                   >
-                    <Person24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('saveClient')}</span>
+                    <Save24Filled className="w-4 h-4" />
+                    <span>{submitting ? t('saving') : t('save')}</span>
                   </motion.button>
                 </div>
               </form>

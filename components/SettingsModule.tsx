@@ -402,7 +402,8 @@ export const SettingsModule: React.FC = () => {
                   type="submit"
                   className="btn-primary self-start"
                 >
-                  {t('saveProfile')}
+                  <Save24Filled className="w-4 h-4" />
+                  <span>{t('save')}</span>
                 </motion.button>
               </form>
             </Section>
@@ -569,7 +570,8 @@ export const SettingsModule: React.FC = () => {
                   </Field>
                 </div>
                 <motion.button whileTap={{ scale: 0.97 }} type="submit" className="btn-primary self-start">
-                  {t('saveWorkspace')}
+                  <Save24Filled className="w-4 h-4" />
+                  <span>{t('save')}</span>
                 </motion.button>
               </form>
             </Section>
@@ -694,7 +696,7 @@ export const SettingsModule: React.FC = () => {
                 className="btn-primary"
               >
                 <Save24Filled className="w-4 h-4" />
-                <span>{t('savePolicies')}</span>
+                <span>{t('save')}</span>
               </motion.button>
             </Section>
 
@@ -870,7 +872,7 @@ export const SettingsModule: React.FC = () => {
                   className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save24Filled className="w-4 h-4" />
-                  <span>{t('saveAddons')}</span>
+                  <span>{t('save')}</span>
                 </motion.button>
               </Section>
             </motion.div>
@@ -1469,7 +1471,7 @@ export const SettingsModule: React.FC = () => {
                     type="submit"
                     className="btn-primary flex-1 flex items-center justify-center gap-1.5"
                   >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <Save24Filled className="w-4 h-4" />
                     <span>{t('save')}</span>
                   </button>
                 </div>

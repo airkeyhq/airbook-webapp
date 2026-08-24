@@ -803,7 +803,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
               className="btn-primary"
             >
               <Save24Filled className="w-4 h-4" />
-              <span>{isSaving ? 'Saving…' : t('saveNotes')}</span>
+              <span>{isSaving ? t('saving') : t('save')}</span>
             </motion.button>
           </div>
         </motion.div>

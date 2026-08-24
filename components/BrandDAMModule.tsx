@@ -248,7 +248,7 @@ export const BrandDAMModule: React.FC = () => {
             className="btn-primary px-6"
           >
             <Save24Filled className="w-4 h-4" />
-            <span>{isSaving ? t('savingState') : t('saveBrandKit')}</span>
+            <span>{isSaving ? t('savingState') : t('save')}</span>
           </button>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
 import { EmptyState } from '@/components/EmptyState';
-import { Add24Filled, Add24Regular, Dismiss24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
+import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
   id: string;
@@ -946,8 +946,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   onClick={handleSaveEdit as any}
                   className="btn-primary w-full"
                 >
-                  <CheckmarkCircle24Filled className="w-4 h-4" />
-                  <span>{t('saveStaff')}</span>
+                  <Save24Filled className="w-4 h-4" />
+                  <span>{t('save')}</span>
                 </button>
 
                 {/* Secondary Navigation Shortcut */}
@@ -1153,8 +1153,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                     disabled={submitting}
                     className="btn-primary w-full disabled:opacity-50"
                   >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('saveStaff')}</span>
+                    <Save24Filled className="w-4 h-4" />
+                    <span>{submitting ? t('saving') : t('save')}</span>
                   </button>
                 </div>
               </form>
