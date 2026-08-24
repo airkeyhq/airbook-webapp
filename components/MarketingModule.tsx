@@ -300,7 +300,7 @@ export const MarketingModule: React.FC = () => {
         <button
           type="button"
           onClick={() => setIsCampaignDrawerOpen(true)}
-          className="px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md flex items-center gap-2 transition-all hover:opacity-90 cursor-pointer self-start sm:self-auto flex-shrink-0"
+          className="btn-primary self-start sm:self-auto flex-shrink-0"
         >
           <Add24Filled className="w-4 h-4" />
           <span>{t('newBroadcastCampaign')}</span>

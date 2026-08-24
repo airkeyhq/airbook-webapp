@@ -290,7 +290,7 @@ export const InventoryModule: React.FC = () => {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsAddModalOpen(true)}
-          className="h-10 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity whitespace-nowrap self-start sm:self-auto flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-primary self-start sm:self-auto"
         >
           <Add24Filled className="w-4 h-4 flex-shrink-0" />
           <span>{t('addProduct')}</span>

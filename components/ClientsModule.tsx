@@ -164,7 +164,7 @@ export const ClientsModule: React.FC = () => {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+          className="btn-primary self-start sm:self-auto"
         >
           <Add24Filled className="w-4 h-4" />
           <span>{t('addClient')}</span>
@@ -172,10 +172,10 @@ export const ClientsModule: React.FC = () => {
       </div>
 
       {/* Quick Metrics Header Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <People24Regular className="w-4 h-4 text-blue-500" />
+            <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalClients')}</span>
           </div>
           <p className="text-lg font-black text-[var(--text-primary)]">{totalClientsCount}</p>
