@@ -387,30 +387,50 @@ export const MarketingModule: React.FC = () => {
 
         <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
           {/* Trigger 1: 5-Star Google Reviews */}
-          <div className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
-            <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
-                <Star24Regular className="w-5 h-5" />
+          <div className="p-4 sm:p-5 space-y-3 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+            {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Star24Regular className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
+                    {t('googleReviewTrigger')}
+                  </h4>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+                    {t('googleReviewTriggerDesc')}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
-                  {t('googleReviewTrigger')}
-                </h4>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  {t('googleReviewTriggerDesc')}
-                </p>
-              </div>
+
+              {/* Custom Animated iOS Toggle Switch */}
+              <button
+                type="button"
+                role="switch"
+                aria-checked={autoReviewEnabled}
+                onClick={() => handleToggleAutoReview(!autoReviewEnabled)}
+                className={`w-12 h-7 rounded-full p-1 transition-colors cursor-pointer flex-shrink-0 flex items-center ${
+                  autoReviewEnabled ? 'bg-emerald-500 justify-end' : 'bg-black/10 dark:bg-white/10 justify-start'
+                }`}
+              >
+                <motion.div
+                  layout
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="w-5 h-5 rounded-full bg-white shadow-md"
+                />
+              </button>
             </div>
 
-            {/* Controls + 3-Dots + Switch (Center Aligned) */}
-            <div className="flex items-center gap-2 sm:gap-2.5 w-full lg:w-auto pt-1 lg:pt-0 flex-shrink-0">
+            {/* Vertically Stacked Controls Row: Input + 3-Dots */}
+            <div className="sm:pl-[54px] flex items-center gap-2">
               <input
                 type="url"
                 value={googleReviewUrl}
                 onChange={(e) => setGoogleReviewUrl(e.target.value)}
                 onBlur={() => persistAutomationSettings({ googleReviewUrl })}
                 placeholder="https://g.page/r/your-id/review"
-                className="flex-1 lg:w-64 px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 max-w-md px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
               {/* 3-Dots Action Popover */}
@@ -431,7 +451,7 @@ export const MarketingModule: React.FC = () => {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -4 }}
                       transition={{ duration: 0.1 }}
-                      className="absolute right-0 top-full mt-1.5 min-w-[150px] whitespace-nowrap bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
+                      className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 min-w-[150px] whitespace-nowrap bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-xl p-1.5 z-30 flex flex-col gap-0.5"
                     >
                       <button
                         type="button"
@@ -449,55 +469,25 @@ export const MarketingModule: React.FC = () => {
                   )}
                 </AnimatePresence>
               </div>
-
-              {/* Custom Animated iOS Toggle Switch */}
-              <button
-                type="button"
-                role="switch"
-                aria-checked={autoReviewEnabled}
-                onClick={() => handleToggleAutoReview(!autoReviewEnabled)}
-                className={`w-12 h-7 rounded-full p-1 transition-colors cursor-pointer flex-shrink-0 flex items-center ${
-                  autoReviewEnabled ? 'bg-emerald-500 justify-end' : 'bg-black/10 dark:bg-white/10 justify-start'
-                }`}
-              >
-                <motion.div
-                  layout
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  className="w-5 h-5 rounded-full bg-white shadow-md"
-                />
-              </button>
             </div>
           </div>
 
           {/* Trigger 2: Lapsed Client Re-Engagement */}
-          <div className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
-            <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
-                <ArrowRepeatAll24Regular className="w-5 h-5" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
-                  {t('reengagementTrigger')}
-                </h4>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  {t('reengagementTriggerDesc')}
-                </p>
-              </div>
-            </div>
-
-            {/* Dropdown + Switch (Center Aligned) */}
-            <div className="flex items-center gap-2 sm:gap-2.5 w-full lg:w-auto pt-1 lg:pt-0 flex-shrink-0">
-              <div className="flex-1 lg:w-56">
-                <CustomSelect
-                  value={String(reengagementDays)}
-                  onChange={(val) => handleChangeReengagementDays(Number(val))}
-                  options={[
-                    { value: '14', label: t('days14') },
-                    { value: '21', label: t('days21') },
-                    { value: '30', label: t('days30') },
-                    { value: '60', label: t('days60') },
-                  ]}
-                />
+          <div className="p-4 sm:p-5 space-y-3 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+            {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <ArrowRepeatAll24Regular className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
+                    {t('reengagementTrigger')}
+                  </h4>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
+                    {t('reengagementTriggerDesc')}
+                  </p>
+                </div>
               </div>
 
               {/* Custom Animated iOS Toggle Switch */}
@@ -516,6 +506,22 @@ export const MarketingModule: React.FC = () => {
                   className="w-5 h-5 rounded-full bg-white shadow-md"
                 />
               </button>
+            </div>
+
+            {/* Vertically Stacked Controls Row: CustomSelect */}
+            <div className="sm:pl-[54px]">
+              <div className="w-full sm:max-w-xs">
+                <CustomSelect
+                  value={String(reengagementDays)}
+                  onChange={(val) => handleChangeReengagementDays(Number(val))}
+                  options={[
+                    { value: '14', label: t('days14') },
+                    { value: '21', label: t('days21') },
+                    { value: '30', label: t('days30') },
+                    { value: '60', label: t('days60') },
+                  ]}
+                />
+              </div>
             </div>
           </div>
         </div>
