@@ -108,6 +108,14 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Unified Control Height**: All inputs, `CustomSelect` dropdowns, and buttons MUST share the exact same height (`h-10` / 40px / `--control-height`) and `rounded-2xl` corner radius.
     - **Zero Color Sprinkles**: Metric card icons and total counts MUST use neutral design tokens (`text-[var(--text-secondary)]`, `text-[var(--text-primary)]`). Color is strictly reserved for real, actionable warnings (e.g. `lowStockCount > 0`).
 
+17. **Mandatory Atomic Floating Label & Form Input System (`<FloatingInput />`, `<CustomSelect label="..." />`, `<FloatingTextarea />`)**:
+    - **Zero Raw Form Inputs or Manual `<Field>` Wrappers**: NEVER write raw `<input className="input-base">` or `<textarea className="textarea-base">` with manual separate `<label>` tags inside drawers, modals, or settings forms. ALWAYS use the unified atomic components: `<FloatingInput />`, `<FloatingTextarea />`, and `<CustomSelect label="..." />`.
+    - **True Animated Floating Physics & Zero Redundant Placeholders**:
+      - **Untouched / Empty State**: When empty and unfocused, the label MUST rest vertically centered (`top-1/2 -translate-y-1/2 text-xs font-medium text-[var(--text-muted)]`). Never render redundant placeholder text that duplicates the label when untouched, reducing cognitive load.
+      - **Focused / Filled State**: When focused or containing a value (`value !== '' || isFocused`), the label smoothly animates to the top (`top-2 text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]`), and the value/cursor appears below (`pt-3.5 opacity-100 text-xs font-bold text-[var(--text-primary)]`).
+    - **Uniform Control Height & Design Tokens**: Every floating control MUST share the exact same `h-[52px]` height, `rounded-2xl` corner radius, `bg-[var(--bg-secondary)]` background, `border-[var(--border-subtle)]`, and signature electric blue focus glow (`focus-within:border-[var(--color-accent-primary)] focus-within:ring-2 focus-within:ring-[#1A8EFF]/20`).
+    - **Embedded Vector Icons & Accessories**: Embed input leading vector icons (`icon={<Mail24Regular />}`) or right-side badges (`rightElement={<span className="...">{t('verified')}</span>}`) directly inside `<FloatingInput />`.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
