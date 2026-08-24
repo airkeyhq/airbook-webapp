@@ -47,6 +47,9 @@ export const POSModule: React.FC = () => {
   const [invoices, setInvoices] = useState<InvoiceRecord[]>([]);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
 
+  // Tab Navigation State
+  const [activeTab, setActiveTab] = useState<'queue' | 'invoices'>('queue');
+
   // Active Checkout Modal State
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutAppointment, setCheckoutAppointment] = useState<Appointment | null>(null);
@@ -122,189 +125,232 @@ export const POSModule: React.FC = () => {
         </div>
       </div>
 
-      {/* Daily Metrics Header Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Calendar24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('appointmentsToday')}</span>
-          </div>
-          <p className="text-lg font-black text-[var(--text-primary)] font-mono">{todayApts.length}</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('revenueToday')}</span>
-          </div>
-          <p className="text-lg font-black text-[var(--text-primary)] font-mono">${totalRevenue}</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('completed')}</span>
-          </div>
-          <p className="text-lg font-black text-[var(--text-primary)] font-mono">{completedCount}</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
-          </div>
-          <p className="text-lg font-black text-[var(--text-primary)] font-mono">${avgTicket}</p>
-        </div>
-      </div>
-
-      {/* Main Section: Today's Appointments Queue */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-extrabold text-[var(--text-primary)]">
-            {t('posQueueTitle')}
-          </h3>
-          <span className="text-xs font-semibold text-[var(--text-secondary)]">
-            {t('scheduledCount').replace('{n}', String(todayApts.length))}
-          </span>
-        </div>
-
-        {todayApts.length === 0 ? (
-          <EmptyState
-            icon={Calendar24Regular}
-            title={t('noAppointmentsToday')}
-            description={t('processWalkinPrompt')}
-            action={{
-              label: t('quickWalkinSale'),
-              onClick: handleOpenWalkinCheckout,
-              icon: Add24Filled,
-            }}
-          />
-        ) : (
-          <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
-            {todayApts.map((apt) => {
-              const isPaid = apt.status === 'completed' || apt.paymentStatus === 'paid';
-              return (
-                <div
-                  key={apt.id}
-                  className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    <img
-                      src={getAvatarUrl(apt.clientName)}
-                      alt={apt.clientName}
-                      className="w-11 h-11 rounded-2xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
-                    />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
-                          {apt.clientName}
-                        </h4>
-                        {isPaid ? (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
-                            <CheckmarkCircle24Filled className="w-3 h-3" />
-                            <span>{t('statusPaid')}</span>
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold uppercase tracking-wider">
-                            {t('statusReadyForCheckout')}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 flex items-center gap-2">
-                        <Clock24Regular className="w-3.5 h-3.5" />
-                        <span>{apt.startTime}</span>
-                        <span>·</span>
-                        <span className="font-semibold">{apt.serviceName}</span>
-                        <span>·</span>
-                        <span>{apt.staffName}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
-                    <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
-                      ${apt.price}
-                    </span>
-
-                    {isPaid ? (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenAppointmentCheckout(apt)}
-                        className="px-3.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-xs transition-colors cursor-pointer"
-                      >
-                        {t('viewReceipt')}
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenAppointmentCheckout(apt)}
-                        className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
-                      >
-                        {t('chargeClient')}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Secondary Section: Recent Transactions & Invoices */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-extrabold text-[var(--text-primary)]">
-            {t('recentInvoices')}
-          </h3>
-          <span className="text-xs font-semibold text-[var(--text-secondary)]">
-            {invoices.length} {t('allInvoices')}
-          </span>
-        </div>
-
-        {loadingInvoices ? (
-          <div className="p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center text-xs text-[var(--text-secondary)] animate-pulse">
-            {t('loadingLedger')}
-          </div>
-        ) : invoices.length === 0 ? (
-          <EmptyState
-            icon={Receipt24Regular}
-            title={t('noInvoicesYet')}
-          />
-        ) : (
-          <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden bg-[var(--bg-primary)] shadow-sm">
-            {invoices.slice(0, 8).map((inv) => (
-              <div
-                key={inv.id}
-                className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                    <Receipt24Regular className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-[var(--text-primary)] truncate">
-                      {inv.clientName || t('walkInClientFallback')}
-                    </p>
-                    <p className="text-[10px] font-mono text-[var(--text-secondary)] mt-0.5">
-                      {inv.receiptNumber || `REC-${inv.id.slice(0, 6)}`} · {new Date(inv.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
-                  <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-mono uppercase font-bold text-[var(--text-secondary)]">
-                    {inv.paymentMethod}
-                  </span>
-                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400 text-xs">
-                    ${(inv.totalCents / 100).toFixed(2)}
-                  </span>
-                </div>
+      {!loadingInvoices && todayApts.length === 0 && invoices.length === 0 ? (
+        <EmptyState
+          icon={Calendar24Regular}
+          title={t('noAppointmentsToday')}
+          description={t('processWalkinPrompt')}
+          action={{
+            label: t('quickWalkinSale'),
+            onClick: handleOpenWalkinCheckout,
+            icon: Add24Filled,
+          }}
+        />
+      ) : (
+        <div className="space-y-6">
+          {/* Daily Metrics Header Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                <Calendar24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span className="text-[10px] uppercase font-bold tracking-wider">{t('appointmentsToday')}</span>
               </div>
-            ))}
+              <p className="text-lg font-black text-[var(--text-primary)] font-mono">{todayApts.length}</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span className="text-[10px] uppercase font-bold tracking-wider">{t('revenueToday')}</span>
+              </div>
+              <p className="text-lg font-black text-[var(--text-primary)] font-mono">${totalRevenue}</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span className="text-[10px] uppercase font-bold tracking-wider">{t('completed')}</span>
+              </div>
+              <p className="text-lg font-black text-[var(--text-primary)] font-mono">{completedCount}</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
+              </div>
+              <p className="text-lg font-black text-[var(--text-primary)] font-mono">${avgTicket}</p>
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Segmented Control & Content Area */}
+          <div className="space-y-3.5">
+            {/* Segmented Control Track */}
+            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setActiveTab('queue')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'queue'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Calendar24Regular className="w-4 h-4" />
+                <span>{t('posQueueTitle')}</span>
+                {todayApts.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {todayApts.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('invoices')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'invoices'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Receipt24Regular className="w-4 h-4" />
+                <span>{t('recentInvoices')}</span>
+                {invoices.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {invoices.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* TAB 1: Today's Appointments Queue */}
+            {activeTab === 'queue' && (
+              <div>
+                {todayApts.length === 0 ? (
+                  <EmptyState
+                    icon={Calendar24Regular}
+                    title={t('noAppointmentsToday')}
+                    description={t('processWalkinPrompt')}
+                    action={{
+                      label: t('quickWalkinSale'),
+                      onClick: handleOpenWalkinCheckout,
+                      icon: Add24Filled,
+                    }}
+                  />
+                ) : (
+                  <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
+                    {todayApts.map((apt) => {
+                      const isPaid = apt.status === 'completed' || apt.paymentStatus === 'paid';
+                      return (
+                        <div
+                          key={apt.id}
+                          className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            <img
+                              src={getAvatarUrl(apt.clientName)}
+                              alt={apt.clientName}
+                              className="w-11 h-11 rounded-2xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
+                                  {apt.clientName}
+                                </h4>
+                                {isPaid ? (
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
+                                    <CheckmarkCircle24Filled className="w-3 h-3" />
+                                    <span>{t('statusPaid')}</span>
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold uppercase tracking-wider">
+                                    {t('statusReadyForCheckout')}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 flex items-center gap-2">
+                                <Clock24Regular className="w-3.5 h-3.5" />
+                                <span>{apt.startTime}</span>
+                                <span>·</span>
+                                <span className="font-semibold">{apt.serviceName}</span>
+                                <span>·</span>
+                                <span>{apt.staffName}</span>
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                            <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                              ${apt.price}
+                            </span>
+
+                            {isPaid ? (
+                              <button
+                                type="button"
+                                onClick={() => handleOpenAppointmentCheckout(apt)}
+                                className="px-3.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-xs transition-colors cursor-pointer"
+                              >
+                                {t('viewReceipt')}
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleOpenAppointmentCheckout(apt)}
+                                className="btn-primary"
+                              >
+                                {t('chargeClient')}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 2: Recent Transactions & Invoices */}
+            {activeTab === 'invoices' && (
+              <div>
+                {loadingInvoices ? (
+                  <div className="p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center text-xs text-[var(--text-secondary)] animate-pulse">
+                    {t('loadingLedger')}
+                  </div>
+                ) : invoices.length === 0 ? (
+                  <EmptyState
+                    icon={Receipt24Regular}
+                    title={t('noInvoicesYet')}
+                  />
+                ) : (
+                  <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
+                    {invoices.slice(0, 15).map((inv) => (
+                      <div
+                        key={inv.id}
+                        className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex items-center justify-center flex-shrink-0">
+                            <Receipt24Regular className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-[var(--text-primary)] truncate">
+                              {inv.clientName || t('walkInClientFallback')}
+                            </p>
+                            <p className="text-[10px] font-mono text-[var(--text-secondary)] mt-0.5">
+                              {inv.receiptNumber || `REC-${inv.id.slice(0, 6)}`} · {new Date(inv.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-mono uppercase font-bold text-[var(--text-secondary)]">
+                            {inv.paymentMethod}
+                          </span>
+                          <span className="font-extrabold text-[var(--text-primary)] font-mono text-xs">
+                            ${(inv.totalCents / 100).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* POS Checkout Modal */}
       <POSCheckoutModal
