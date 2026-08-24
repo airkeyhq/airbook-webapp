@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { useAirBookStore } from '@/lib/store';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
@@ -529,67 +530,49 @@ export const WalkInKioskModule: React.FC = () => {
 
               {/* Form Body */}
               <form onSubmit={handleAddWalkIn} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('guestName')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Jordan Miller"
-                      value={clientName}
-                      onChange={(e) => setClientName(e.target.value)}
-                      className="input-base w-full"
-                    />
-                  </div>
+                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('guestName')}
+                    required
+                    placeholder="e.g. Jordan Miller"
+                    value={clientName}
+                    onChange={(e) => setClientName(e.target.value)}
+                  />
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('mobilePhoneAlert')}
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="+1 (555) 234-5678"
-                      value={clientPhone}
-                      onChange={(e) => setClientPhone(e.target.value)}
-                      className="input-base w-full font-mono"
-                    />
-                  </div>
+                  <FloatingInput
+                    label={t('mobilePhoneAlert')}
+                    type="tel"
+                    placeholder="+1 (555) 234-5678"
+                    value={clientPhone}
+                    onChange={(e) => setClientPhone(e.target.value)}
+                    className="font-mono"
+                  />
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('selectService')}
-                    </label>
-                    <CustomSelect
-                      value={selectedServiceId}
-                      onChange={setSelectedServiceId}
-                      options={[
-                        { value: '', label: t('generalWalkInConsultation') },
-                        ...services.map((svc) => ({
-                          value: svc.id,
-                          label: `${svc.name} ($${svc.price} · ${svc.durationMinutes}m)`,
-                        })),
-                      ]}
-                    />
-                  </div>
+                  <CustomSelect
+                    label={t('selectService')}
+                    value={selectedServiceId}
+                    onChange={setSelectedServiceId}
+                    options={[
+                      { value: '', label: t('generalWalkInConsultation') },
+                      ...services.map((svc) => ({
+                        value: svc.id,
+                        label: `${svc.name} ($${svc.price} · ${svc.durationMinutes}m)`,
+                      })),
+                    ]}
+                  />
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('preferredSpecialist')}
-                    </label>
-                    <CustomSelect
-                      value={selectedStaffId}
-                      onChange={setSelectedStaffId}
-                      options={[
-                        { value: '', label: t('firstAvailable') },
-                        ...staffMembers.map((st) => ({
-                          value: st.id,
-                          label: `${st.name} (${st.role || t('staff')})`,
-                        })),
-                      ]}
-                    />
-                  </div>
+                  <CustomSelect
+                    label={t('preferredSpecialist')}
+                    value={selectedStaffId}
+                    onChange={setSelectedStaffId}
+                    options={[
+                      { value: '', label: t('firstAvailable') },
+                      ...staffMembers.map((st) => ({
+                        value: st.id,
+                        label: `${st.name} (${st.role || t('staff')})`,
+                      })),
+                    ]}
+                  />
                 </div>
 
                 {/* Side-to-Side Bottom Action Banner */}

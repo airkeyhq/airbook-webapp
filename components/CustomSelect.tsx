@@ -13,6 +13,7 @@ interface CustomSelectProps {
   options: SelectOption[];
   value: string;
   onChange: (value: string) => void;
+  label?: string;
   placeholder?: string;
   className?: string;
   compact?: boolean;
@@ -22,6 +23,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   options,
   value,
   onChange,
+  label,
   placeholder = 'Select option...',
   className = '',
   compact = false,
@@ -49,16 +51,27 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full ${
-          compact ? 'h-8 px-2.5 rounded-xl text-xs font-mono font-bold' : 'h-10 px-4 rounded-2xl text-xs font-medium'
+          label
+            ? 'px-4 py-2 rounded-2xl flex items-center justify-between gap-2.5'
+            : compact
+            ? 'h-8 px-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-between gap-1.5'
+            : 'h-10 px-4 rounded-2xl text-xs font-medium flex items-center justify-between gap-1.5'
         } bg-[var(--bg-secondary)] border ${
           isOpen
-            ? 'border-[var(--border-subtle)] ring-2 ring-black/10 dark:ring-white/10'
+            ? 'border-[var(--color-accent-primary)] ring-2 ring-[#1A8EFF]/20'
             : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
-        } text-[var(--text-primary)] flex items-center justify-between gap-1.5 transition-all duration-100 ease-out cursor-pointer`}
+        } text-[var(--text-primary)] transition-all duration-100 ease-out cursor-pointer text-left`}
       >
-        <span className="truncate">
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
+        <div className="min-w-0 flex-1 flex flex-col justify-center">
+          {label && (
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] select-none pointer-events-none truncate block">
+              {label}
+            </span>
+          )}
+          <span className={`truncate block ${label ? 'text-xs font-bold text-[var(--text-primary)]' : ''}`}>
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+        </div>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.15 }}

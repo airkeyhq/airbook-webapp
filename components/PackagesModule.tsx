@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from './CustomSelect';
+import { FloatingInput, FloatingTextarea } from './FloatingInput';
 import { EmptyState } from './EmptyState';
 import {
   Tag24Filled,
@@ -960,71 +961,52 @@ export const PackagesModule: React.FC = () => {
                       ))}
                     </div>
                     <div className="pt-1">
-                      <input
+                      <FloatingInput
+                        label={t('customAmount')}
                         type="number"
                         placeholder={t('customAmountPlaceholder')}
                         value={gcCustomAmount}
                         onChange={(e) => setGcCustomAmount(e.target.value)}
-                        className="input-base w-full font-mono"
+                        className="font-mono"
                       />
                     </div>
                   </div>
 
                   {/* Recipient Details */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('recipientName')}
-                      </label>
-                      <input
-                        type="text"
-                        placeholder={t('recipientNamePlaceholder')}
-                        value={gcRecipientName}
-                        onChange={(e) => setGcRecipientName(e.target.value)}
-                        className="input-base w-full"
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <FloatingInput
+                      label={t('recipientName')}
+                      type="text"
+                      placeholder={t('recipientNamePlaceholder')}
+                      value={gcRecipientName}
+                      onChange={(e) => setGcRecipientName(e.target.value)}
+                    />
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('recipientEmail')}
-                      </label>
-                      <input
-                        type="email"
-                        placeholder={t('recipientEmailPlaceholder')}
-                        value={gcRecipientEmail}
-                        onChange={(e) => setGcRecipientEmail(e.target.value)}
-                        className="input-base w-full"
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('recipientEmail')}
+                      type="email"
+                      placeholder={t('recipientEmailPlaceholder')}
+                      value={gcRecipientEmail}
+                      onChange={(e) => setGcRecipientEmail(e.target.value)}
+                    />
                   </div>
 
                   {/* Sender & Notes */}
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('senderName')}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={t('senderNamePlaceholder')}
-                      value={gcSenderName}
-                      onChange={(e) => setGcSenderName(e.target.value)}
-                      className="input-base w-full"
-                    />
-                  </div>
+                  <FloatingInput
+                    label={t('senderName')}
+                    type="text"
+                    placeholder={t('senderNamePlaceholder')}
+                    value={gcSenderName}
+                    onChange={(e) => setGcSenderName(e.target.value)}
+                  />
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('personalGreeting')}
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder={t('personalGreetingPlaceholder')}
-                      value={gcNotes}
-                      onChange={(e) => setGcNotes(e.target.value)}
-                      className="textarea-base w-full resize-none"
-                    />
-                  </div>
+                  <FloatingTextarea
+                    label={t('personalGreeting')}
+                    rows={2}
+                    placeholder={t('personalGreetingPlaceholder')}
+                    value={gcNotes}
+                    onChange={(e) => setGcNotes(e.target.value)}
+                  />
                 </div>
 
                 {/* Side-to-Side Bottom Action Banner */}
@@ -1159,100 +1141,74 @@ export const PackagesModule: React.FC = () => {
 
               {/* Body */}
               <form onSubmit={handleSavePackage} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('packageName')}
-                    </label>
-                    <input
-                      type="text"
+                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('packageName')}
+                    required
+                    placeholder={t('packageNamePlaceholder')}
+                    value={pkgName}
+                    onChange={(e) => setPkgName(e.target.value)}
+                  />
+
+                  <CustomSelect
+                    label={t('serviceCovered')}
+                    value={pkgServiceName}
+                    onChange={setPkgServiceName}
+                    options={
+                      servicesList.length > 0
+                        ? servicesList.map((s) => ({
+                            value: s.name,
+                            label: `${s.name} ($${(s.priceCents / 100).toFixed(2)})`,
+                          }))
+                        : [{ value: 'Haircut & Styling', label: t('haircutStyling') || 'Haircut & Styling' }]
+                    }
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <FloatingInput
+                      label={t('totalSessions')}
+                      type="number"
+                      min="2"
+                      max="50"
                       required
-                      placeholder={t('packageNamePlaceholder')}
-                      value={pkgName}
-                      onChange={(e) => setPkgName(e.target.value)}
-                      className="input-base w-full"
+                      value={pkgTotalSessions}
+                      onChange={(e) => setPkgTotalSessions(Number(e.target.value))}
+                      className="font-mono"
+                    />
+
+                    <FloatingInput
+                      label={t('packagePrice')}
+                      type="number"
+                      step="1"
+                      required
+                      value={pkgPrice}
+                      onChange={(e) => setPkgPrice(e.target.value)}
+                      className="font-mono"
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('serviceCovered')}
-                    </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <FloatingInput
+                      label={t('savingsPercent')}
+                      type="number"
+                      min="0"
+                      max="80"
+                      value={pkgDiscountPercent}
+                      onChange={(e) => setPkgDiscountPercent(Number(e.target.value))}
+                      className="font-mono"
+                    />
+
                     <CustomSelect
-                      value={pkgServiceName}
-                      onChange={setPkgServiceName}
-                      options={
-                        servicesList.length > 0
-                          ? servicesList.map((s) => ({
-                              value: s.name,
-                              label: `${s.name} ($${(s.priceCents / 100).toFixed(2)})`,
-                            }))
-                          : [{ value: 'Haircut & Styling', label: t('haircutStyling') || 'Haircut & Styling' }]
-                      }
+                      label={t('validityDays')}
+                      value={String(pkgValidityDays)}
+                      onChange={(val) => setPkgValidityDays(Number(val))}
+                      options={[
+                        { value: '90', label: t('validity90Days') },
+                        { value: '180', label: t('validity180Days') },
+                        { value: '365', label: t('validity365Days') },
+                        { value: '730', label: t('validity730Days') },
+                      ]}
                     />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('totalSessions')}
-                      </label>
-                      <input
-                        type="number"
-                        min="2"
-                        max="50"
-                        required
-                        value={pkgTotalSessions}
-                        onChange={(e) => setPkgTotalSessions(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('packagePrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="1"
-                        required
-                        value={pkgPrice}
-                        onChange={(e) => setPkgPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('savingsPercent')}
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="80"
-                        value={pkgDiscountPercent}
-                        onChange={(e) => setPkgDiscountPercent(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('validityDays')}
-                      </label>
-                      <CustomSelect
-                        value={String(pkgValidityDays)}
-                        onChange={(val) => setPkgValidityDays(Number(val))}
-                        options={[
-                          { value: '90', label: t('validity90Days') },
-                          { value: '180', label: t('validity180Days') },
-                          { value: '365', label: t('validity365Days') },
-                          { value: '730', label: t('validity730Days') },
-                        ]}
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -1328,77 +1284,54 @@ export const PackagesModule: React.FC = () => {
 
               {/* Body */}
               <form onSubmit={handleSaveMembership} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('tierName')}
-                    </label>
-                    <input
-                      type="text"
+                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('tierName')}
+                    required
+                    placeholder={t('tierNamePlaceholder')}
+                    value={memName}
+                    onChange={(e) => setMemName(e.target.value)}
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <FloatingInput
+                      label={t('monthlyPrice')}
+                      type="number"
+                      step="1"
                       required
-                      placeholder={t('tierNamePlaceholder')}
-                      value={memName}
-                      onChange={(e) => setMemName(e.target.value)}
-                      className="input-base w-full"
+                      value={memPrice}
+                      onChange={(e) => setMemPrice(e.target.value)}
+                      className="font-mono"
+                    />
+
+                    <FloatingInput
+                      label={t('servicesPerMonth')}
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={memIncludedServices}
+                      onChange={(e) => setMemIncludedServices(Number(e.target.value))}
+                      className="font-mono"
+                    />
+
+                    <FloatingInput
+                      label={t('retailDiscountPercent')}
+                      type="number"
+                      min="0"
+                      max="50"
+                      value={memDiscountRetail}
+                      onChange={(e) => setMemDiscountRetail(Number(e.target.value))}
+                      className="font-mono"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('monthlyPrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="1"
-                        required
-                        value={memPrice}
-                        onChange={(e) => setMemPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('servicesPerMonth')}
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="20"
-                        value={memIncludedServices}
-                        onChange={(e) => setMemIncludedServices(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('retailDiscountPercent')}
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="50"
-                        value={memDiscountRetail}
-                        onChange={(e) => setMemDiscountRetail(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('tierPerks')}
-                    </label>
-                    <textarea
-                      rows={3}
-                      placeholder={t('tierPerksPlaceholder')}
-                      value={memPerks}
-                      onChange={(e) => setMemPerks(e.target.value)}
-                      className="textarea-base w-full resize-none"
-                    />
-                  </div>
+                  <FloatingTextarea
+                    label={t('tierPerks')}
+                    rows={3}
+                    placeholder={t('tierPerksPlaceholder')}
+                    value={memPerks}
+                    onChange={(e) => setMemPerks(e.target.value)}
+                  />
                 </div>
 
                 {/* Side-to-Side Bottom Action Banner */}

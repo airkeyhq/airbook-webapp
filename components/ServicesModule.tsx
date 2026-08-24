@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { EmptyState } from './EmptyState';
+import { FloatingInput } from './FloatingInput';
 import { useAirBookStore } from '@/lib/store';
 import { Add24Filled, Dismiss24Filled, Save24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
@@ -145,34 +146,32 @@ export const ServicesModule: React.FC = () => {
             {t('addService')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <input
-              type="text"
+            <FloatingInput
+              label={t('serviceName')}
               required
               placeholder={t('serviceName')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
-            <input
-              type="text"
+            <FloatingInput
+              label={t('category')}
               placeholder={t('category')}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
-            <input
+            <FloatingInput
+              label={t('priceDollars')}
               type="number"
               placeholder={t('priceDollars')}
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
-            <input
+            <FloatingInput
+              label={t('durationMins')}
               type="number"
               placeholder={t('durationMins')}
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="h-10 px-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
             />
           </div>
           <div className="flex justify-end gap-2">

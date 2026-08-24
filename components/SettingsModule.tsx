@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import { AddLocationModal } from '@/components/AddLocationModal';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { EmptyState } from '@/components/EmptyState';
@@ -1317,39 +1318,29 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Form Body */}
-                <div className="p-6 space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      {t('stationNameLabel')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      autoFocus
-                      value={newStationName}
-                      onChange={(e) => setNewStationName(e.target.value)}
-                      placeholder={t('stationNamePlaceholder')}
-                      className={INPUT_CLS}
-                    />
-                  </div>
+                <div className="p-6 space-y-3.5">
+                  <FloatingInput
+                    label={t('stationNameLabel')}
+                    required
+                    autoFocus
+                    value={newStationName}
+                    onChange={(e) => setNewStationName(e.target.value)}
+                    placeholder={t('stationNamePlaceholder')}
+                  />
 
-                  <div>
-                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      {t('stationCategoryLabel')}
-                    </label>
-                    <CustomSelect
-                      value={newStationCategory}
-                      onChange={setNewStationCategory}
-                      options={[
-                        { value: 'Hair & Styling', label: t('catHairStyling') },
-                        { value: 'Color & Wash Bar', label: t('catColorWash') },
-                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
-                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
-                        { value: 'Barbering', label: t('catBarbering') },
-                        { value: 'General / Flex', label: t('catGeneralFlex') },
-                      ]}
-                    />
-                  </div>
+                  <CustomSelect
+                    label={t('stationCategoryLabel')}
+                    value={newStationCategory}
+                    onChange={setNewStationCategory}
+                    options={[
+                      { value: 'Hair & Styling', label: t('catHairStyling') },
+                      { value: 'Color & Wash Bar', label: t('catColorWash') },
+                      { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                      { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                      { value: 'Barbering', label: t('catBarbering') },
+                      { value: 'General / Flex', label: t('catGeneralFlex') },
+                    ]}
+                  />
                 </div>
 
                 {/* Bottom Action Bar */}
@@ -1424,38 +1415,28 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Form Body */}
-                <div className="p-6 space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      {t('stationNameLabel')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      autoFocus
-                      value={editingStationName}
-                      onChange={(e) => setEditingStationName(e.target.value)}
-                      className={INPUT_CLS}
-                    />
-                  </div>
+                <div className="p-6 space-y-3.5">
+                  <FloatingInput
+                    label={t('stationNameLabel')}
+                    required
+                    autoFocus
+                    value={editingStationName}
+                    onChange={(e) => setEditingStationName(e.target.value)}
+                  />
 
-                  <div>
-                    <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">
-                      {t('stationCategoryLabel')}
-                    </label>
-                    <CustomSelect
-                      value={editingStationCategory}
-                      onChange={setEditingStationCategory}
-                      options={[
-                        { value: 'Hair & Styling', label: t('catHairStyling') },
-                        { value: 'Color & Wash Bar', label: t('catColorWash') },
-                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
-                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
-                        { value: 'Barbering', label: t('catBarbering') },
-                        { value: 'General / Flex', label: t('catGeneralFlex') },
-                      ]}
-                    />
-                  </div>
+                  <CustomSelect
+                    label={t('stationCategoryLabel')}
+                    value={editingStationCategory}
+                    onChange={setEditingStationCategory}
+                    options={[
+                      { value: 'Hair & Styling', label: t('catHairStyling') },
+                      { value: 'Color & Wash Bar', label: t('catColorWash') },
+                      { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                      { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                      { value: 'Barbering', label: t('catBarbering') },
+                      { value: 'General / Flex', label: t('catGeneralFlex') },
+                    ]}
+                  />
                 </div>
 
                 {/* Bottom Action Bar */}

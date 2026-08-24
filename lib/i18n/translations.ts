@@ -1003,6 +1003,7 @@ export const translations = {
 
     // Phase 2 i18n — PackagesModule
     clickToCopyCode: 'Click to copy code',
+    customAmount: 'Custom Amount',
     customAmountPlaceholder: 'Or enter custom amount ($)',
     packageBundlePlaceholder: 'e.g. 5x Precision Haircut Bundle',
     validity90Days: '90 Days (3 Months)',
@@ -2156,6 +2157,7 @@ export const translations = {
 
     // Phase 2 i18n — PackagesModule
     clickToCopyCode: 'Clic para copiar código',
+    customAmount: 'Monto personalizado',
     customAmountPlaceholder: 'O ingresa monto personalizado ($)',
     packageBundlePlaceholder: 'ej. Paquete de 5 Cortes de Precisión',
     validity90Days: '90 Días (3 Meses)',
@@ -3309,6 +3311,7 @@ export const translations = {
 
     // Phase 2 i18n — PackagesModule
     clickToCopyCode: 'Klicken zum Kopieren',
+    customAmount: 'Wunschbetrag',
     customAmountPlaceholder: 'Oder Wunschbetrag eingeben ($)',
     packageBundlePlaceholder: 'z.B. 5x Haarschnitt-Paket',
     validity90Days: '90 Tage (3 Monate)',
@@ -4463,6 +4466,7 @@ export const translations = {
 
     // Phase 2 i18n — PackagesModule
     clickToCopyCode: 'Cliquer pour copier le code',
+    customAmount: 'Montant personnalisé',
     customAmountPlaceholder: 'Ou entrez un montant personnalisé ($)',
     packageBundlePlaceholder: 'ex. Forfait 5 Coupes Précision',
     validity90Days: '90 Jours (3 Mois)',

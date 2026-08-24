@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
@@ -552,121 +553,85 @@ export const InventoryModule: React.FC = () => {
                 </div>
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('productName')}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder={t('productNamePlaceholder')}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="input-base w-full"
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('productName')}
+                    required
+                    placeholder={t('productNamePlaceholder')}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <CustomSelect
+                      label={t('category')}
+                      value={category}
+                      onChange={(val) => setCategory(val)}
+                      options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
+                    />
+
+                    <FloatingInput
+                      label={t('skuCode')}
+                      placeholder={t('skuPlaceholder')}
+                      value={sku}
+                      onChange={(e) => setSku(e.target.value)}
+                      className="font-mono"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('category')}
-                      </label>
-                      <CustomSelect
-                        value={category}
-                        onChange={(val) => setCategory(val)}
-                        options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('retailPrice')}
+                      type="number"
+                      step="0.01"
+                      required
+                      value={retailPrice}
+                      onChange={(e) => setRetailPrice(e.target.value)}
+                      className="font-mono"
+                    />
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('skuCode')}
-                      </label>
-                      <input
-                        type="text"
-                        placeholder={t('skuPlaceholder')}
-                        value={sku}
-                        onChange={(e) => setSku(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('costPrice')}
+                      type="number"
+                      step="0.01"
+                      value={costPrice}
+                      onChange={(e) => setCostPrice(e.target.value)}
+                      className="font-mono"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('retailPrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        required
-                        value={retailPrice}
-                        onChange={(e) => setRetailPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('costPrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={costPrice}
-                        onChange={(e) => setCostPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
-                    <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
-                    <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
+                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                    <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
+                    <span className="font-extrabold font-mono text-[var(--text-primary)]">
                       {t('profitMarginPercent').replace('{margin}', String(addMargin))}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('initialStock')}
-                      </label>
-                      <input
-                        type="number"
-                        value={stockQuantity}
-                        onChange={(e) => setStockQuantity(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('initialStock')}
+                      type="number"
+                      value={stockQuantity}
+                      onChange={(e) => setStockQuantity(e.target.value)}
+                      className="font-mono"
+                    />
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('lowStockThreshold')}
-                      </label>
-                      <input
-                        type="number"
-                        value={lowStockThreshold}
-                        onChange={(e) => setLowStockThreshold(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('productImageUrl')}
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://..."
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      className="input-base w-full"
+                    <FloatingInput
+                      label={t('lowStockThreshold')}
+                      type="number"
+                      value={lowStockThreshold}
+                      onChange={(e) => setLowStockThreshold(e.target.value)}
+                      className="font-mono"
                     />
                   </div>
+
+                  <FloatingInput
+                    label={t('productImageUrl')}
+                    type="url"
+                    placeholder="https://..."
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                  />
 
                   <div className="pt-2">
                     <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">
@@ -743,119 +708,83 @@ export const InventoryModule: React.FC = () => {
                 </div>
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('productName')}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="input-base w-full"
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('productName')}
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <CustomSelect
+                      label={t('category')}
+                      value={editCategory}
+                      onChange={(val) => setEditCategory(val)}
+                      options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
+                    />
+
+                    <FloatingInput
+                      label={t('skuCode')}
+                      value={editSku}
+                      onChange={(e) => setEditSku(e.target.value)}
+                      className="font-mono"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('category')}
-                      </label>
-                      <CustomSelect
-                        value={editCategory}
-                        onChange={(val) => setEditCategory(val)}
-                        options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('retailPrice')}
+                      type="number"
+                      step="0.01"
+                      required
+                      value={editRetailPrice}
+                      onChange={(e) => setEditRetailPrice(e.target.value)}
+                      className="font-mono"
+                    />
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('skuCode')}
-                      </label>
-                      <input
-                        type="text"
-                        value={editSku}
-                        onChange={(e) => setEditSku(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('costPrice')}
+                      type="number"
+                      step="0.01"
+                      value={editCostPrice}
+                      onChange={(e) => setEditCostPrice(e.target.value)}
+                      className="font-mono"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('retailPrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        required
-                        value={editRetailPrice}
-                        onChange={(e) => setEditRetailPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('costPrice')}
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={editCostPrice}
-                        onChange={(e) => setEditCostPrice(e.target.value)}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
-                    <span className="text-emerald-800 dark:text-emerald-300 font-bold">{t('profitMargin')}:</span>
-                    <span className="font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
+                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                    <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
+                    <span className="font-extrabold font-mono text-[var(--text-primary)]">
                       {t('profitMarginPercent').replace('{margin}', String(editMargin))}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('initialStock')}
-                      </label>
-                      <input
-                        type="number"
-                        value={editStockQuantity}
-                        onChange={(e) => setEditStockQuantity(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
+                    <FloatingInput
+                      label={t('initialStock')}
+                      type="number"
+                      value={editStockQuantity}
+                      onChange={(e) => setEditStockQuantity(Number(e.target.value))}
+                      className="font-mono"
+                    />
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                        {t('lowStockThreshold')}
-                      </label>
-                      <input
-                        type="number"
-                        value={editLowStockThreshold}
-                        onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
-                        className="input-base w-full font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('productImageUrl')}
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://..."
-                      value={editImageUrl}
-                      onChange={(e) => setEditImageUrl(e.target.value)}
-                      className="input-base w-full"
+                    <FloatingInput
+                      label={t('lowStockThreshold')}
+                      type="number"
+                      value={editLowStockThreshold}
+                      onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
+                      className="font-mono"
                     />
                   </div>
+
+                  <FloatingInput
+                    label={t('productImageUrl')}
+                    type="url"
+                    placeholder="https://..."
+                    value={editImageUrl}
+                    onChange={(e) => setEditImageUrl(e.target.value)}
+                  />
 
                   <div className="pt-2">
                     <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">

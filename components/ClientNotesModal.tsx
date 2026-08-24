@@ -25,6 +25,7 @@ import {
   ShieldCheckmark24Filled,
 } from '@fluentui/react-icons';
 import { WaiverPadModal } from '@/components/WaiverPadModal';
+import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { KYCVerificationModal } from '@/components/KYCVerificationModal';
 
 export interface CustomSpecItem {
@@ -534,45 +535,29 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)] block">
-                    {t('preferencesTitle')}
-                  </label>
-                  <input
-                    type="text"
-                    value={preferences}
-                    onChange={(e) => setPreferences(e.target.value)}
-                    placeholder="e.g. Sparkling water on arrival, room temp 70°F, quiet session"
-                    className="input-base w-full"
-                  />
-                </div>
+                <FloatingInput
+                  label={t('preferencesTitle')}
+                  type="text"
+                  value={preferences}
+                  onChange={(e) => setPreferences(e.target.value)}
+                  placeholder="e.g. Sparkling water on arrival, room temp 70°F, quiet session"
+                />
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 flex items-center gap-1.5">
-                    <Warning24Regular className="w-3.5 h-3.5" />
-                    <span>{t('allergiesTitle')}</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={allergies}
-                    onChange={(e) => setAllergies(e.target.value)}
-                    placeholder="e.g. Allergic to latex, synthetic fragrance, tree nut oils"
-                    className="input-base w-full border-red-500/30 text-red-600 dark:text-red-400 bg-red-500/5"
-                  />
-                </div>
+                <FloatingInput
+                  label={t('allergiesTitle')}
+                  type="text"
+                  value={allergies}
+                  onChange={(e) => setAllergies(e.target.value)}
+                  placeholder="e.g. Allergic to latex, synthetic fragrance, tree nut oils"
+                />
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)] block">
-                    General Practitioner Notes
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Internal practitioner notes, conversation points, client history..."
-                    className="textarea-base w-full resize-none"
-                  />
-                </div>
+                <FloatingTextarea
+                  label={t('notes')}
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Internal practitioner notes, conversation points, client history..."
+                />
               </div>
             )}
 
@@ -671,45 +656,30 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
             )}
 
             {activeTab === 'contact' && (
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-[var(--text-secondary)] block">
-                    {t('fullNameLabel')}
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="input-base w-full"
-                  />
-                </div>
+              <div className="space-y-3.5">
+                <FloatingInput
+                  label={t('fullNameLabel')}
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-black uppercase tracking-wider text-[var(--text-secondary)] block">
-                      {t('emailAddressLabel')}
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="client@gmail.com"
-                      className="input-base w-full"
-                    />
-                  </div>
+                  <FloatingInput
+                    label={t('emailAddressLabel')}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="client@gmail.com"
+                  />
 
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-black uppercase tracking-wider text-[var(--text-secondary)] block">
-                      {t('phoneLabel')}
-                    </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="(555) 019-2834"
-                      className="input-base w-full"
-                    />
-                  </div>
+                  <FloatingInput
+                    label={t('phoneLabel')}
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(555) 019-2834"
+                  />
                 </div>
 
                 {/* Lifetime Metrics Summary Card */}

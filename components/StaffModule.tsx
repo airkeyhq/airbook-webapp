@@ -5,6 +5,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
@@ -859,42 +860,28 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
                 {/* Scrollable Drawer Body */}
                 <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
-
-              {/* Form Content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('fullName')}
-                    </label>
-                    <input
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <FloatingInput
+                      label={t('fullName')}
+                      required
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="input-base w-full"
                     />
-                  </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('role')}
-                    </label>
-                    <input
+                    <FloatingInput
+                      label={t('role')}
                       type="text"
                       value={editRole}
                       onChange={(e) => setEditRole(e.target.value)}
-                      className="input-base w-full"
                     />
                   </div>
-                </div>
 
-                {/* Detailed Working Shifts & Hours Configurator */}
-                <StaffScheduleConfigurator schedule={editSchedule} onChange={setEditSchedule} />
+                  {/* Detailed Working Shifts & Hours Configurator */}
+                  <StaffScheduleConfigurator schedule={editSchedule} onChange={setEditSchedule} />
 
-                <div>
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                    {t('chairStation')}
-                  </label>
                   <CustomSelect
+                    label={t('chairStation')}
                     value={editChair}
                     onChange={(val) => setEditChair(val)}
                     options={[
@@ -902,9 +889,6 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       { value: 'Unassigned / Floating', label: t('unassignedFloating') },
                     ]}
                   />
-                </div>
-
-                {/* Commission Split & Payout Status */}
                 <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[var(--text-primary)]">
@@ -1071,43 +1055,29 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
                 {/* Scrollable Form Body */}
-                <div className="p-5 md:p-6 overflow-y-auto space-y-4 flex-1 scroll-fade-b">
+                <div className="p-5 md:p-6 overflow-y-auto space-y-3.5 flex-1 scroll-fade-b">
+                  <FloatingInput
+                    label={t('fullName')}
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Marcus Vance"
+                  />
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('fullName')} *</label>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Marcus Vance"
-                      className="input-base w-full"
-                    />
-                  </div>
+                  <FloatingInput
+                    label={t('role')}
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    placeholder="e.g. Master Barber / Color Specialist"
+                  />
 
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('role')}</label>
-                    <input
-                      type="text"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      placeholder="e.g. Master Barber / Color Specialist"
-                      className="input-base w-full"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-3.5">
-                    <div>
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">{t('email')}</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="staff@business.com"
-                        className="input-base w-full"
-                      />
-                    </div>
-                  </div>
+                  <FloatingInput
+                    label={t('email')}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="staff@business.com"
+                  />
 
                   {/* Detailed Working Shifts & Hours Configurator */}
                   <StaffScheduleConfigurator schedule={addSchedule} onChange={setAddSchedule} />

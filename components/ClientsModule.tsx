@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { EmptyState } from '@/components/EmptyState';
+import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -453,74 +454,48 @@ export const ClientsModule: React.FC = () => {
                 <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
                 {/* Form Body */}
-                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('fullName')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Alex Rivera"
-                      className="input-base w-full"
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                  <FloatingInput
+                    label={t('fullName')}
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Alex Rivera"
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <FloatingInput
+                      label={t('email')}
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="alex@example.com"
+                    />
+
+                    <FloatingInput
+                      label={t('phoneNumber')}
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="(555) 019-2834"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                        {t('email')}
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="alex@example.com"
-                        className="input-base w-full"
-                      />
-                    </div>
+                  <FloatingInput
+                    label={t('preferencesTitle')}
+                    type="text"
+                    value={preferences}
+                    onChange={(e) => setPreferences(e.target.value)}
+                    placeholder="e.g. Early morning slots, sparkling water, quiet session"
+                  />
 
-                    <div>
-                      <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                        {t('phoneNumber')}
-                      </label>
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="(555) 019-2834"
-                        className="input-base w-full"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('preferencesTitle')}
-                    </label>
-                    <input
-                      type="text"
-                      value={preferences}
-                      onChange={(e) => setPreferences(e.target.value)}
-                      placeholder="e.g. Early morning slots, sparkling water, quiet session"
-                      className="input-base w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] mb-1 block">
-                      {t('notes')}
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder="e.g. Initial consultation notes, service goals, technical specs..."
-                      className="textarea-base w-full resize-none"
-                    />
-                  </div>
+                  <FloatingTextarea
+                    label={t('notes')}
+                    rows={2}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="e.g. Initial consultation notes, service goals, technical specs..."
+                  />
                 </div>
 
                 {/* Side-to-Side Bottom Action Banner */}
