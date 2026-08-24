@@ -49,7 +49,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full ${
-          compact ? 'px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold' : 'px-4 py-2.5 rounded-2xl text-xs font-medium'
+          compact ? 'h-8 px-2.5 rounded-xl text-xs font-mono font-bold' : 'h-10 px-4 rounded-2xl text-xs font-medium'
         } bg-black/5 dark:bg-white/5 border ${
           isOpen
             ? 'border-blue-500 ring-2 ring-blue-500/20'
