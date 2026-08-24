@@ -106,7 +106,7 @@ export const POSModule: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => { setTerminalAmountCents(Math.round(totalRevenue * 100) || 5000); setIsTerminalOpen(true); }}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 dark:bg-white/10 dark:hover:bg-white/15 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+            className="btn-secondary h-10 px-4 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold"
           >
             <Payment24Filled className="w-4 h-4" />
             <span>{t('terminalReader')}</span>
@@ -114,7 +114,7 @@ export const POSModule: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleOpenWalkinCheckout}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+            className="btn-primary self-start sm:self-auto"
           >
             <Payment24Filled className="w-4 h-4" />
             <span>{t('quickWalkinSale')}</span>
@@ -123,37 +123,37 @@ export const POSModule: React.FC = () => {
       </div>
 
       {/* Daily Metrics Header Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Calendar24Regular className="w-4 h-4 text-blue-500" />
+            <Calendar24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('appointmentsToday')}</span>
           </div>
-          <p className="text-lg font-black text-[var(--text-primary)]">{todayApts.length}</p>
+          <p className="text-lg font-black text-[var(--text-primary)] font-mono">{todayApts.length}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Money24Regular className="w-4 h-4 text-emerald-500" />
+            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('revenueToday')}</span>
           </div>
-          <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">${totalRevenue}</p>
+          <p className="text-lg font-black text-[var(--text-primary)] font-mono">${totalRevenue}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <CheckmarkCircle24Regular className="w-4 h-4 text-violet-500" />
+            <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('completed')}</span>
           </div>
-          <p className="text-lg font-black text-violet-600 dark:text-violet-400">{completedCount}</p>
+          <p className="text-lg font-black text-[var(--text-primary)] font-mono">{completedCount}</p>
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Tag24Regular className="w-4 h-4 text-amber-500" />
+            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
           </div>
-          <p className="text-lg font-black text-amber-600 dark:text-amber-400">${avgTicket}</p>
+          <p className="text-lg font-black text-[var(--text-primary)] font-mono">${avgTicket}</p>
         </div>
       </div>
 
