@@ -385,9 +385,9 @@ export const MarketingModule: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-visible divide-y divide-[var(--border-subtle)] shadow-xs">
           {/* Trigger 1: 5-Star Google Reviews */}
-          <div className="p-4 sm:p-5 space-y-3 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+          <div className="p-4 sm:p-5 space-y-3 rounded-t-3xl relative z-20 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
             {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -473,7 +473,7 @@ export const MarketingModule: React.FC = () => {
           </div>
 
           {/* Trigger 2: Lapsed Client Re-Engagement */}
-          <div className="p-4 sm:p-5 space-y-3 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
+          <div className="p-4 sm:p-5 space-y-3 rounded-b-3xl relative z-10 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors">
             {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -509,7 +509,7 @@ export const MarketingModule: React.FC = () => {
             </div>
 
             {/* Vertically Stacked Controls Row: CustomSelect */}
-            <div className="sm:pl-[54px]">
+            <div className="sm:pl-[54px] relative z-20">
               <div className="w-full sm:max-w-xs">
                 <CustomSelect
                   value={String(reengagementDays)}
