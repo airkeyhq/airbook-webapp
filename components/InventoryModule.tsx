@@ -300,7 +300,7 @@ export const InventoryModule: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Box24Regular className="w-4 h-4 text-blue-500" />
+            <Box24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('totalStockUnits')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">{metrics.totalUnits}</p>
@@ -308,7 +308,7 @@ export const InventoryModule: React.FC = () => {
 
         <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Warning24Regular className="w-4 h-4 text-amber-500" />
+            <Warning24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('lowStock')}</span>
           </div>
           <p className={`text-xl font-black font-mono ${metrics.lowStockCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[var(--text-primary)]'}`}>
@@ -318,17 +318,17 @@ export const InventoryModule: React.FC = () => {
 
         <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Money24Regular className="w-4 h-4 text-emerald-500" />
+            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('inventoryValuation')}</span>
           </div>
-          <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+          <p className="text-xl font-black text-[var(--text-primary)] font-mono">
             ${Math.round(metrics.inventoryValuation).toLocaleString()}
           </p>
         </div>
 
         <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <ArrowTrending24Regular className="w-4 h-4 text-purple-500" />
+            <ArrowTrending24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>{t('metricRetailPotential')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -711,7 +711,7 @@ export const InventoryModule: React.FC = () => {
                       {editImageUrl ? (
                         <img src={editImageUrl} alt={editName} className="w-full h-full object-cover" />
                       ) : (
-                        <ShoppingBag24Regular className="w-5 h-5 text-blue-500" />
+                        <ShoppingBag24Regular className="w-5 h-5 text-[var(--text-muted)]" />
                       )}
                     </div>
                     <div>
