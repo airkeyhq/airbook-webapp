@@ -312,7 +312,7 @@ export const MarketingModule: React.FC = () => {
         {/* Metric 1: SMS Credits Balance */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
-            <Phone24Regular className="w-4 h-4 text-blue-500" />
+            <Phone24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               {t('smsCreditsBalance')}
             </span>
@@ -335,7 +335,7 @@ export const MarketingModule: React.FC = () => {
         {/* Metric 2: Email Marketing Engine */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
-            <Mail24Regular className="w-4 h-4 text-purple-500" />
+            <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               {t('emailMarketing')}
             </span>
@@ -370,7 +370,7 @@ export const MarketingModule: React.FC = () => {
             {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
                   <Star24Regular className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
@@ -409,7 +409,7 @@ export const MarketingModule: React.FC = () => {
                 onChange={(e) => setGoogleReviewUrl(e.target.value)}
                 onBlur={() => persistAutomationSettings({ googleReviewUrl })}
                 placeholder="https://g.page/r/your-id/review"
-                className="flex-1 max-w-md px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 max-w-md px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
               />
 
               {/* 3-Dots Action Popover */}
@@ -441,7 +441,7 @@ export const MarketingModule: React.FC = () => {
                         }}
                         className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-left"
                       >
-                        <Send24Filled className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                        <Send24Filled className="w-3.5 h-3.5 text-[var(--text-primary)] flex-shrink-0" />
                         <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
                       </button>
                     </motion.div>
@@ -456,7 +456,7 @@ export const MarketingModule: React.FC = () => {
             {/* Top Row: Icon + Title & Description (Left) vs Toggle Switch (Right) */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
                   <ArrowRepeatAll24Regular className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
@@ -538,21 +538,13 @@ export const MarketingModule: React.FC = () => {
                 className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
               >
                 <div className="flex items-start sm:items-center gap-3.5">
-                  <div
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                      camp.channel === 'sms'
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : camp.channel === 'email'
-                        ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                        : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                    }`}
-                  >
+                  <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
                     {camp.channel === 'sms' ? (
-                      <Phone24Filled className="w-5 h-5" />
+                      <Phone24Regular className="w-5 h-5" />
                     ) : camp.channel === 'email' ? (
-                      <Mail24Filled className="w-5 h-5" />
+                      <Mail24Regular className="w-5 h-5" />
                     ) : (
-                      <Send24Filled className="w-5 h-5" />
+                      <Send24Regular className="w-5 h-5" />
                     )}
                   </div>
 
@@ -562,7 +554,7 @@ export const MarketingModule: React.FC = () => {
                       <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-extrabold text-[var(--text-secondary)] uppercase">
                         {camp.channel.toUpperCase()}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold">
+                      <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-[10px] font-bold">
                         {t('deliveredStatus')}
                       </span>
                     </div>
@@ -814,14 +806,14 @@ export const MarketingModule: React.FC = () => {
                         type="button"
                         disabled={buyingCredits}
                         onClick={() => handleBuyCredits(pack.credits, pack.price)}
-                        className="w-full p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-blue-500/10 border border-[var(--border-subtle)] hover:border-blue-500/30 text-left flex items-center justify-between transition-all cursor-pointer group"
+                        className="w-full p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-[var(--border-subtle)] text-left flex items-center justify-between transition-all cursor-pointer group"
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-extrabold text-[var(--text-primary)] group-hover:text-blue-600">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
                               {t('smsCreditsLabel').replace('{count}', pack.credits.toLocaleString())}
                             </span>
-                            <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-extrabold uppercase">
+                            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-[10px] font-extrabold uppercase">
                               {pack.badge}
                             </span>
                           </div>
@@ -837,7 +829,7 @@ export const MarketingModule: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300">
+                  <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
                     <strong>{t('zeroDebtGuarantee')}:</strong> {t('zeroPlatformDebtNotice')}
                   </div>
                 </motion.div>
