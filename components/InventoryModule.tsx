@@ -354,8 +354,8 @@ export const InventoryModule: React.FC = () => {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="relative flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+        <div className="relative md:col-span-3">
           <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
@@ -375,7 +375,7 @@ export const InventoryModule: React.FC = () => {
           )}
         </div>
 
-        <div className="w-full sm:w-56 flex-shrink-0">
+        <div className="w-full md:col-span-1">
           <CustomSelect
             value={selectedCategory}
             onChange={setSelectedCategory}
