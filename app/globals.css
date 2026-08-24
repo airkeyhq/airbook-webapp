@@ -262,17 +262,31 @@ body {
 }
 
 .btn-secondary {
+  height: var(--size-control-base);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.75rem;
   border-radius: var(--radius-md);
-  transition: all 0.15s ease-in-out;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out;
 }
 .btn-secondary:hover {
   background-color: var(--bg-secondary);
   border-color: rgba(43, 181, 255, 0.3);
+  transform: scale(1.01);
+}
+.btn-secondary:active {
+  transform: scale(0.97);
 }
 
 /* ─── UNIFIED INPUT & CONTROL SYSTEM ─── */

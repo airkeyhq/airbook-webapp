@@ -602,10 +602,14 @@ export const OnlineBookingModule: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleCopySnippet}
-                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                    className="btn-secondary h-8 px-3 text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    {isCopiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
-                    <span>{isCopiedSnippet ? '✓' : t('copySnippet')}</span>
+                    {isCopiedSnippet ? (
+                      <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                    )}
+                    <span>{isCopiedSnippet ? t('snippetCopied') : t('copySnippet')}</span>
                   </button>
                 </div>
               </StudioSection>
@@ -642,15 +646,19 @@ export const OnlineBookingModule: React.FC = () => {
                   </StudioField>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono overflow-x-auto">
+                <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono overflow-x-auto">
                   <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{deepLinkUrl}</span>
                   <button
                     type="button"
                     onClick={handleCopyDeepLink}
-                    className="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                    className="btn-secondary h-9 px-3.5 flex-shrink-0"
                   >
-                    {isCopiedDeepLink ? <Checkmark24Filled className="w-3.5 h-3.5" /> : <Copy24Filled className="w-3.5 h-3.5" />}
-                    <span>{isCopiedDeepLink ? '✓' : t('copyBookingLink')}</span>
+                    {isCopiedDeepLink ? (
+                      <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                    )}
+                    <span>{isCopiedDeepLink ? t('linkCopied') : t('copyBookingLink')}</span>
                   </button>
                 </div>
               </StudioSection>
