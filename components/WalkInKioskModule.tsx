@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { useAirBookStore } from '@/lib/store';
 import { CustomSelect } from '@/components/CustomSelect';
+import { EmptyState } from '@/components/EmptyState';
 import {
   Add24Filled,
   Phone24Filled,
@@ -48,6 +49,7 @@ export const WalkInKioskModule: React.FC = () => {
 
   const [queue, setQueue] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'waiting' | 'in_chair'>('waiting');
 
   // Modals & Drawers
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
@@ -239,202 +241,249 @@ export const WalkInKioskModule: React.FC = () => {
         </div>
       </div>
 
-      {/* Metrics Ribbon */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-              <span>{t('waiting')}</span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
-              {t('metricQueueLength')}
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              {waitingGuests.length}
-            </p>
-            <span className="text-xs font-bold text-[var(--text-muted)]">
-              {t('metricGuestsWaiting')}
-            </span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-              <span>{t('inChair')}</span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
-              {t('metricActiveInService')}
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              {inChairGuests.length}
-            </p>
-            <span className="text-xs font-bold text-[var(--text-muted)]">
-              {t('metricStationsActive')}
-            </span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-              <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-              <span>{t('estWait')}</span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
-              {t('metricRealTimeEst')}
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-              ~{avgWait} min
-            </p>
-            <span className="text-xs font-bold text-[var(--text-muted)]">
-              {t('metricNextOpenSlot')}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Queue Dashboard: Divided Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Column 1: Currently In Chair (Active) */}
-        <div className="lg:col-span-5 space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-              <Sparkle24Filled className="w-4 h-4 text-emerald-500" />
-              <span>{t('statusInChair')} ({inChairGuests.length})</span>
-            </h3>
-          </div>
-
-          {inChairGuests.length === 0 ? (
-            <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-2">
-              <Sparkle24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
-              <p className="text-xs font-bold text-[var(--text-secondary)]">{t('noGuestsInChair')}</p>
-              <p className="text-[11px] text-[var(--text-muted)]">{t('noGuestsInChairSub')}</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {inChairGuests.map((guest) => (
-                <div
-                  key={guest.id}
-                  className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-emerald-500/30 space-y-3 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 font-black flex items-center justify-center text-sm">
-                        {guest.clientName.charAt(0)}
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{guest.clientName}</h4>
-                        <p className="text-[11px] text-[var(--text-secondary)] font-medium">{guest.serviceName}</p>
-                      </div>
-                    </div>
-
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase">
-                      {t('statusInChair')}
-                    </span>
-                  </div>
-
-                  <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between text-xs font-medium">
-                    <span className="text-[var(--text-secondary)]">{t('specialistLabel')}:</span>
-                    <span className="font-bold text-[var(--text-primary)]">{guest.staffName}</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleUpdateStatus(guest.id, 'completed')}
-                    className="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{t('markCompleted')}</span>
-                  </button>
+      {!loading && queue.length === 0 ? (
+        <EmptyState
+          icon={Clock24Regular}
+          title={t('waitlistClear')}
+          description={t('kioskDesc')}
+          action={{
+            label: t('walkInCheckIn'),
+            onClick: () => setIsCheckInOpen(true),
+            icon: Add24Filled,
+          }}
+        />
+      ) : (
+        <div className="space-y-6">
+          {/* Metrics Ribbon */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                  <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <span>{t('waiting')}</span>
                 </div>
-              ))}
+                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                  {t('metricQueueLength')}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-1">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  {waitingGuests.length}
+                </p>
+                <span className="text-xs font-bold text-[var(--text-muted)]">
+                  {t('metricGuestsWaiting')}
+                </span>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Column 2: Waiting in Queue */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-              <Clock24Regular className="w-4 h-4 text-blue-500" />
-              <span>{t('statusWaiting')} ({waitingGuests.length})</span>
-            </h3>
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                  <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <span>{t('inChair')}</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                  {t('metricActiveInService')}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-1">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  {inChairGuests.length}
+                </p>
+                <span className="text-xs font-bold text-[var(--text-muted)]">
+                  {t('metricStationsActive')}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
+                  <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <span>{t('estWait')}</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                  {t('metricRealTimeEst')}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-1">
+                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
+                  ~{avgWait} min
+                </p>
+                <span className="text-xs font-bold text-[var(--text-muted)]">
+                  {t('metricNextOpenSlot')}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {waitingGuests.length === 0 ? (
-            <div className="p-8 text-center bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl space-y-2">
-              <CheckmarkCircle24Regular className="w-8 h-8 text-emerald-500 mx-auto" />
-              <p className="text-xs font-bold text-[var(--text-primary)]">{t('waitlistClear')}</p>
-              <p className="text-[11px] text-[var(--text-secondary)]">{t('waitlistClearSub')}</p>
-            </div>
-          ) : (
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
-              {waitingGuests.map((guest, idx) => (
-                <div
-                  key={guest.id}
-                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
-                >
-                  <div className="flex items-start sm:items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 font-mono font-black flex items-center justify-center text-xs flex-shrink-0">
-                      #{idx + 1}
-                    </div>
+          {/* Segmented Control & Active Tab Content */}
+          <div className="space-y-3.5">
+            {/* Segmented Control Track */}
+            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setActiveTab('waiting')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'waiting'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Clock24Regular className="w-4 h-4" />
+                <span>{t('statusWaiting')}</span>
+                {waitingGuests.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {waitingGuests.length}
+                  </span>
+                )}
+              </button>
 
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{guest.clientName}</h4>
-                        {guest.clientPhone && (
-                          <span className="text-[10px] text-[var(--text-muted)] font-mono">{guest.clientPhone}</span>
-                        )}
+              <button
+                type="button"
+                onClick={() => setActiveTab('in_chair')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'in_chair'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Sparkle24Regular className="w-4 h-4" />
+                <span>{t('statusInChair')}</span>
+                {inChairGuests.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
+                    {inChairGuests.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* TAB 1: Waiting Guests Queue */}
+            {activeTab === 'waiting' && (
+              <div>
+                {waitingGuests.length === 0 ? (
+                  <EmptyState
+                    icon={Clock24Regular}
+                    title={t('waitlistClear')}
+                    description={t('waitlistClearSub')}
+                    action={{
+                      label: t('walkInCheckIn'),
+                      onClick: () => setIsCheckInOpen(true),
+                      icon: Add24Filled,
+                    }}
+                  />
+                ) : (
+                  <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+                    {waitingGuests.map((guest, idx) => (
+                      <div
+                        key={guest.id}
+                        className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                      >
+                        <div className="flex items-start sm:items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 font-mono font-black flex items-center justify-center text-xs flex-shrink-0">
+                            #{idx + 1}
+                          </div>
+
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{guest.clientName}</h4>
+                              {guest.clientPhone && (
+                                <span className="text-[10px] text-[var(--text-muted)] font-mono">{guest.clientPhone}</span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-[var(--text-secondary)]">
+                              {guest.serviceName} · <span className="font-semibold text-blue-600 dark:text-blue-400">{guest.staffName}</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 self-end sm:self-auto">
+                          <button
+                            type="button"
+                            onClick={() => handleSendReadyAlert(guest)}
+                            title={t('sendReadyAlert')}
+                            className="px-2.5 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                          >
+                            <Phone24Filled className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">{t('smsCta')}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateStatus(guest.id, 'in_chair')}
+                            className="btn-primary"
+                          >
+                            <Sparkle24Filled className="w-3.5 h-3.5" />
+                            <span>{t('seatInChair')}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGuest(guest.id)}
+                            className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+                          >
+                            <Dismiss24Filled className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-[var(--text-secondary)]">
-                        {guest.serviceName} · <span className="font-semibold text-blue-600 dark:text-blue-400">{guest.staffName}</span>
-                      </p>
-                    </div>
+                    ))}
                   </div>
+                )}
+              </div>
+            )}
 
-                  <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <button
-                      type="button"
-                      onClick={() => handleSendReadyAlert(guest)}
-                      title={t('sendReadyAlert')}
-                      className="px-2.5 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
-                    >
-                      <Phone24Filled className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">{t('smsCta')}</span>
-                    </button>
+            {/* TAB 2: In-Chair Active Guests */}
+            {activeTab === 'in_chair' && (
+              <div>
+                {inChairGuests.length === 0 ? (
+                  <EmptyState
+                    icon={Sparkle24Regular}
+                    title={t('noGuestsInChair')}
+                    description={t('noGuestsInChairSub')}
+                  />
+                ) : (
+                  <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+                    {inChairGuests.map((guest) => (
+                      <div
+                        key={guest.id}
+                        className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                      >
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-sm flex-shrink-0">
+                            {guest.clientName.charAt(0)}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-xs font-extrabold text-[var(--text-primary)] truncate">{guest.clientName}</h4>
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
+                                {t('statusInChair')}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                              {guest.serviceName} · <span className="font-bold text-[var(--text-primary)]">{guest.staffName}</span>
+                            </p>
+                          </div>
+                        </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(guest.id, 'in_chair')}
-                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
-                    >
-                      <Sparkle24Filled className="w-3.5 h-3.5" />
-                      <span>{t('seatInChair')}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveGuest(guest.id)}
-                      className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
-                    >
-                      <Dismiss24Filled className="w-3.5 h-3.5" />
-                    </button>
+                        <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateStatus(guest.id, 'completed')}
+                            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <CheckmarkCircle24Filled className="w-4 h-4" />
+                            <span>{t('markCompleted')}</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ─── DRAWER 1: MANUAL CHECK-IN DRAWER ─── */}
       <AnimatePresence>
