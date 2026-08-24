@@ -47,9 +47,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             whileHover={{ scale: 1.02 }}
             type="button"
             onClick={action.onClick}
-            className="px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+            className="h-10 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            {action.icon && <action.icon className="w-4 h-4" />}
+            {action.icon && <action.icon className="w-4 h-4 flex-shrink-0" />}
             <span>{action.label}</span>
           </motion.button>
         </div>

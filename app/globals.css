@@ -8,7 +8,8 @@
     /* 1. Component Size Tokens */
     --size-control-sm: 32px;  /* Micro buttons, inline badges, compact inputs */
     --size-control-md: 36px;  /* Header pills, segmented controls, toolbar items */
-    --size-control-lg: 44px;  /* Primary CTAs, modal submit buttons */
+    --size-control-base: 40px;/* Standard unified height for buttons, inputs, selects */
+    --size-control-lg: 44px;  /* Large CTAs, modal submit buttons */
 
     /* 2. Spacing Scale Tokens */
     --space-1: 0.25rem;   /* 4px  - Micro inline gaps */
@@ -32,6 +33,7 @@
     --color-indicator-today: #FF3B30;       /* Signature Apple Red */
 
     /* Legacy CSS Variable Mappings */
+    --control-height: var(--size-control-base);
     --control-height-sm: var(--size-control-sm);
     --control-height-md: var(--size-control-md);
     --control-height-lg: var(--size-control-lg);
