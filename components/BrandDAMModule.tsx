@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Logo, CircleCloudIcon3D, CircleCloudIconFlat, BlueprintBadgeIcon, LogoBadgeStyle, LogoFlatStyle } from './Logo';
+import { Logo, CircleCloudIconFlat, LogoBadgeStyle, LogoFlatStyle } from './Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
@@ -14,18 +14,19 @@ import {
   ArrowDownload24Filled,
   ArrowLeft24Filled,
   Box24Filled,
-  Color24Filled,
   Code24Filled,
   Grid24Filled,
   Save24Filled,
   Globe24Regular,
   Image24Filled,
-  Calendar24Filled,
   Sparkle24Regular,
+  Link24Filled,
+  Open24Filled,
+  Color24Filled,
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
-type StudioTab = 'identity' | 'storefront' | 'badges' | 'glyphs' | 'vector';
+type StudioTab = 'identity' | 'storefront' | 'embed' | 'badges' | 'glyphs' | 'vector';
 
 const CURATED_COVERS = [
   {
@@ -102,6 +103,7 @@ export const BrandDAMModule: React.FC = () => {
   const { addToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<StudioTab>('identity');
+  const [showInternalAssets, setShowInternalAssets] = useState(false);
 
   // Brand State
   const [brandName, setBrandName] = useState(workspaceName || 'AirBook Studio');
@@ -183,6 +185,7 @@ export const BrandDAMModule: React.FC = () => {
   const handleCopy = (content: string, id: string) => {
     navigator.clipboard.writeText(content);
     setCopiedId(id);
+    addToast(t('badgeCopied'), 'success');
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -208,7 +211,24 @@ export const BrandDAMModule: React.FC = () => {
   };
 
   const bookingSlug = workspaceSlug || brandName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-  const embedBadgeHtml = `<a href="https://getairbook.com/book/${bookingSlug}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:${primaryColor};color:#ffffff;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">📅 Book on AirBook</a>`;
+  const fullBookingUrl = `https://getairbook.com/book/${bookingSlug}`;
+  const embedBadgeHtml = `<a href="${fullBookingUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:${primaryColor};color:#ffffff;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">📅 Book on AirBook</a>`;
+
+  // Client-facing tabs for salon & spa owners
+  const clientTabs = [
+    { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
+    { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
+    { id: 'embed' as const, label: t('tabEmbedWidget'), icon: Link24Filled },
+  ];
+
+  // Internal AirBook DAM tabs
+  const internalTabs = [
+    { id: 'badges' as const, label: t('tabAppBadges'), icon: Box24Filled },
+    { id: 'glyphs' as const, label: t('tabVectorGlyphs'), icon: Grid24Filled },
+    { id: 'vector' as const, label: t('tabRawVectorCode'), icon: Code24Filled },
+  ];
+
+  const activeTabsList = showInternalAssets ? [...clientTabs, ...internalTabs] : clientTabs;
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 p-4 sm:p-8">
@@ -220,7 +240,7 @@ export const BrandDAMModule: React.FC = () => {
               <ArrowLeft24Filled className="w-3.5 h-3.5" /> {t('dashboard')}
             </Link>
             <span>/</span>
-            <span>{t('brandDamBreadcrumb')}</span>
+            <span>{t('brandStudioTitle')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--text-primary)] flex items-center gap-3">
             <Logo variant="3d" size={36} />
@@ -235,15 +255,6 @@ export const BrandDAMModule: React.FC = () => {
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
             type="button"
-            onClick={() => handleDownloadSVG('airbook-logo-primary.svg', RAW_SVG_CODE)}
-            className="btn-secondary h-10 px-4 rounded-2xl flex items-center gap-1.5 text-xs font-bold"
-          >
-            <ArrowDownload24Filled className="w-4 h-4" />
-            <span>{t('downloadSvg')}</span>
-          </button>
-
-          <button
-            type="button"
             onClick={handleSaveBrandKit}
             disabled={isSaving}
             className="btn-primary px-6"
@@ -254,32 +265,42 @@ export const BrandDAMModule: React.FC = () => {
         </div>
       </div>
 
-      {/* 5-Tab Navigation Bar */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto">
-        {[
-          { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
-          { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
-          { id: 'badges' as const, label: t('tabAppBadges'), icon: Box24Filled },
-          { id: 'glyphs' as const, label: t('tabVectorGlyphs'), icon: Grid24Filled },
-          { id: 'vector' as const, label: t('tabRawVectorCode'), icon: Code24Filled },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-100 whitespace-nowrap cursor-pointer ${
-                isActive
-                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* Tab Navigation Bar */}
+      <div className="flex items-center justify-between gap-2 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto">
+        <div className="flex items-center gap-1.5">
+          {activeTabsList.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-100 whitespace-nowrap cursor-pointer ${
+                  isActive
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Dev Mode DAM Switch */}
+        <button
+          type="button"
+          onClick={() => setShowInternalAssets(!showInternalAssets)}
+          className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-colors flex-shrink-0 cursor-pointer ${
+            showInternalAssets
+              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+              : 'text-[var(--text-muted)] border-transparent hover:border-[var(--border-subtle)]'
+          }`}
+          title="AirBook Internal Assets"
+        >
+          {showInternalAssets ? 'DAM Assets Active' : '+ Internal DAM'}
+        </button>
       </div>
 
       {/* TAB 1: BRAND IDENTITY STUDIO */}
@@ -303,425 +324,290 @@ export const BrandDAMModule: React.FC = () => {
 
               <FloatingTextarea
                 label={t('taglineLabel')}
-                rows={3}
                 value={tagline}
                 onChange={(e) => setTagline(e.target.value)}
-                placeholder={t('taglinePlaceholder')}
+                rows={3}
               />
 
               <FloatingInput
-                label={`${t('logoUploadLabel')} (Image / SVG URL)`}
-                type="url"
+                label={t('logoUploadLabel')}
+                type="text"
                 value={logoUrl}
                 onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="https://your-domain.com/logo.svg"
+                placeholder="https://..."
               />
+
+              {/* Social Channels */}
+              <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3">
+                <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-secondary)]">
+                  {t('socialLinksLabel')}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <FloatingInput
+                    label="Instagram URL"
+                    type="text"
+                    value={instagramUrl}
+                    onChange={(e) => setInstagramUrl(e.target.value)}
+                    placeholder="https://instagram.com/..."
+                  />
+                  <FloatingInput
+                    label={t('tiktokLabel')}
+                    type="text"
+                    value={tiktokUrl}
+                    onChange={(e) => setTiktokUrl(e.target.value)}
+                    placeholder="https://tiktok.com/@..."
+                  />
+                  <FloatingInput
+                    label="Website URL"
+                    type="text"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    placeholder="https://..."
+                  />
+                  <FloatingInput
+                    label="Google Reviews URL"
+                    type="text"
+                    value={googleReviewUrl}
+                    onChange={(e) => setGoogleReviewUrl(e.target.value)}
+                    placeholder="https://g.page/r/..."
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Right: Color Palette Engine */}
-            <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
-              <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                <Color24Filled className="w-4 h-4 text-pink-500" />
-                <span>Color Palette & Theme</span>
-              </h3>
+            {/* Right: Colors & Cover Gallery */}
+            <div className="space-y-6">
+              {/* Color Customizer */}
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Color24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <span>{t('primaryBrandColor')}</span>
+                </h3>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                    {t('primaryBrandColor')}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
-                    />
-                    <input
-                      type="text"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] uppercase"
-                    />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-[var(--text-secondary)]">{t('primaryBrandColor')}</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="w-10 h-10 rounded-xl cursor-pointer border border-[var(--border-subtle)] bg-transparent"
+                      />
+                      <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase">{primaryColor}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-[var(--text-secondary)]">{t('accentBrandColor')}</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={accentColor}
+                        onChange={(e) => setAccentColor(e.target.value)}
+                        className="w-10 h-10 rounded-xl cursor-pointer border border-[var(--border-subtle)] bg-transparent"
+                      />
+                      <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase">{accentColor}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[var(--text-secondary)] block">
-                    {t('accentBrandColor')}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={accentColor}
-                      onChange={(e) => setAccentColor(e.target.value)}
-                      className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
-                    />
-                    <input
-                      type="text"
-                      value={accentColor}
-                      onChange={(e) => setAccentColor(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] uppercase"
-                    />
+                {/* Preset Palettes */}
+                <div className="pt-3 border-t border-[var(--border-subtle)] space-y-2">
+                  <span className="text-[11px] font-bold text-[var(--text-secondary)]">{t('curatedPalettes')}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {CURATED_PALETTES.map((pal) => (
+                      <button
+                        key={pal.name}
+                        type="button"
+                        onClick={() => {
+                          setPrimaryColor(pal.primary);
+                          setAccentColor(pal.accent);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors cursor-pointer"
+                      >
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: pal.primary }} />
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: pal.accent }} />
+                        <span>{pal.name}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Curated Luxury Palettes */}
-              <div className="space-y-2 pt-2">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--text-muted)] block">
-                  {t('curatedPalettes')}
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {CURATED_PALETTES.map((pal) => (
+              {/* Curated 4K Studio Covers */}
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Image24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <span>{t('curatedCovers')}</span>
+                </h3>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {CURATED_COVERS.map((cov) => (
                     <button
-                      key={pal.name}
+                      key={cov.id}
                       type="button"
-                      onClick={() => {
-                        setPrimaryColor(pal.primary);
-                        setAccentColor(pal.accent);
-                      }}
-                      className="p-2.5 rounded-xl border border-[var(--border-subtle)] bg-black/5 dark:bg-white/5 hover:border-blue-500/50 flex items-center justify-between transition-colors cursor-pointer"
+                      onClick={() => setCoverUrl(cov.url)}
+                      className={`group relative h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                        coverUrl === cov.url ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-transparent opacity-80 hover:opacity-100'
+                      }`}
                     >
-                      <span className="text-xs font-bold text-[var(--text-primary)]">{pal.name}</span>
-                      <div className="flex items-center gap-1">
-                        <span className="w-4 h-4 rounded-full border border-black/10 shadow-xs" style={{ backgroundColor: pal.primary }} />
-                        <span className="w-4 h-4 rounded-full border border-black/10 shadow-xs" style={{ backgroundColor: pal.accent }} />
+                      <img src={cov.url} alt={cov.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-2">
+                        <span className="text-[10px] font-bold text-white leading-tight block text-left">{cov.title}</span>
                       </div>
                     </button>
                   ))}
                 </div>
+
+                <FloatingInput
+                  label="Custom Cover Image URL"
+                  type="text"
+                  value={coverUrl}
+                  onChange={(e) => setCoverUrl(e.target.value)}
+                  placeholder="https://..."
+                />
               </div>
-            </div>
-          </div>
-
-          {/* Curated Hero Covers Selection */}
-          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Image24Filled className="w-4 h-4 text-emerald-500" />
-                  <span>{t('coverBannerLabel')}</span>
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {t('curatedCovers')}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {CURATED_COVERS.map((cov) => (
-                <button
-                  key={cov.id}
-                  type="button"
-                  onClick={() => setCoverUrl(cov.url)}
-                  className={`group relative rounded-2xl overflow-hidden border-2 text-left transition-all cursor-pointer ${
-                    coverUrl === cov.url ? 'border-blue-600 shadow-md ring-2 ring-blue-500/30' : 'border-transparent hover:border-black/20'
-                  }`}
-                >
-                  <img src={cov.url} alt={cov.title} className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end">
-                    <span className="text-[10px] font-extrabold text-white uppercase tracking-wider">{cov.category}</span>
-                    <p className="text-xs font-bold text-white leading-tight">{cov.title}</p>
-                  </div>
-                  {coverUrl === cov.url && (
-                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md">
-                      <Checkmark24Filled className="w-3.5 h-3.5" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Social Channels */}
-          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
-            <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)]">
-              {t('socialLinksLabel')}
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <FloatingInput
-                label="Instagram Profile URL"
-                type="url"
-                value={instagramUrl}
-                onChange={(e) => setInstagramUrl(e.target.value)}
-                placeholder="https://instagram.com/yourhandle"
-              />
-
-              <FloatingInput
-                label={t('tiktokLabel')}
-                type="url"
-                value={tiktokUrl}
-                onChange={(e) => setTiktokUrl(e.target.value)}
-                placeholder="https://tiktok.com/@yourhandle"
-              />
-
-              <FloatingInput
-                label="Official Website URL"
-                type="url"
-                value={websiteUrl}
-                onChange={(e) => setWebsiteUrl(e.target.value)}
-                placeholder="https://yourwebsite.com"
-              />
             </div>
           </div>
         </motion.div>
       )}
 
-      {/* TAB 2: LIVE STOREFRONT SIMULATOR */}
+      {/* TAB 2: LIVE STOREFRONT PREVIEW */}
       {activeTab === 'storefront' && (
-        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
-          <div className="text-center space-y-1">
-            <h3 className="text-lg font-black text-[var(--text-primary)]">{t('tabLiveStorefront')}</h3>
-            <p className="text-xs text-[var(--text-secondary)]">
-              This is how clients experience your branded storefront on mobile and desktop devices.
-            </p>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-bold text-blue-600 dark:text-blue-400">
+            <div className="flex items-center gap-2">
+              <Globe24Regular className="w-4 h-4" />
+              <span>{t('tabLiveStorefront')}: <code>https://getairbook.com/book/{bookingSlug}</code></span>
+            </div>
+            <Link
+              href={`/book/${bookingSlug}`}
+              target="_blank"
+              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors flex items-center gap-1"
+            >
+              <span>{t('viewAll')}</span>
+              <Open24Filled className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          {/* iPhone 16 Mockup Simulator */}
-          <div className="max-w-md mx-auto rounded-[44px] p-3.5 bg-slate-900 border-4 border-slate-700 shadow-2xl overflow-hidden">
-            {/* Dynamic Island */}
-            <div className="w-28 h-5 bg-black rounded-full mx-auto mb-2 flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rounded-full bg-slate-800 ml-auto mr-2" />
-            </div>
-
-            {/* Screen Content */}
-            <div className="rounded-[32px] bg-[var(--bg-primary)] overflow-hidden border border-[var(--border-subtle)] flex flex-col min-h-[580px]">
-              {/* Hero Banner */}
-              <div className="relative h-40 w-full overflow-hidden">
-                <img src={coverUrl} alt="Storefront Cover" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-white p-1 shadow-md border flex items-center justify-center">
-                    {logoUrl ? (
-                      <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
-                    ) : (
-                      <Logo variant="3d" size={32} />
-                    )}
-                  </div>
-                  <div className="text-white min-w-0">
-                    <h4 className="text-sm font-black truncate">{brandName}</h4>
-                    <p className="text-[10px] text-slate-200 line-clamp-1">{tagline}</p>
-                  </div>
+          {/* Interactive Mock Storefront */}
+          <div className="w-full max-w-2xl mx-auto rounded-3xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-primary)] shadow-2xl">
+            <div className="relative h-48 sm:h-56 w-full bg-slate-900">
+              <img src={coverUrl} alt="Storefront Cover" className="w-full h-full object-cover opacity-90" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-4 left-6 right-6 flex items-end gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-white p-1 border-2 border-white/20 shadow-lg flex items-center justify-center flex-shrink-0">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo" className="w-full h-full object-contain rounded-xl" />
+                  ) : (
+                    <Logo variant="flat" flatStyle="solid-black" size={32} />
+                  )}
+                </div>
+                <div className="text-white space-y-0.5">
+                  <h2 className="text-xl font-black">{brandName}</h2>
+                  <p className="text-xs text-white/80 line-clamp-1">{tagline}</p>
                 </div>
               </div>
+            </div>
 
-              {/* Storefront Services Showcase */}
-              <div className="p-4 space-y-3 flex-1">
-                <div className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)]">
-                  <span>{t('popularServices')}</span>
-                  <span className="text-[10px] text-blue-500 font-bold">{t('viewAll')}</span>
-                </div>
+            <div className="p-6 space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+                <span className="text-xs font-black uppercase tracking-wider text-[var(--text-secondary)]">{t('popularServices')}</span>
+                <span className="text-xs font-bold" style={{ color: primaryColor }}>4.9 ★ (120+ Reviews)</span>
+              </div>
 
+              <div className="space-y-3">
                 {[
-                  { name: 'Signature Treatment & Consultation', price: '$120', time: '60 min' },
-                  { name: 'Deluxe Rejuvenation Session', price: '$185', time: '90 min' },
-                  { name: 'Express Touch-Up & Spec Tune', price: '$65', time: '30 min' },
-                ].map((s, idx) => (
-                  <div key={idx} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between">
+                  { name: 'Signature Precision Cut & Styling', price: '$85', duration: '45 min' },
+                  { name: 'Balayage & Color Refresh Therapy', price: '$195', duration: '120 min' },
+                  { name: 'Hydrafacial Luxe Glow Treatment', price: '$140', duration: '60 min' },
+                ].map((s) => (
+                  <div key={s.name} className="flex items-center justify-between p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
                     <div>
-                      <p className="text-xs font-bold text-[var(--text-primary)]">{s.name}</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">{s.time} · {t('instantConfirmation') || 'Instant Confirmation'}</p>
+                      <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{s.name}</h4>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{s.duration}</p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-xs font-extrabold text-[var(--text-primary)]">{s.price}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-black text-[var(--text-primary)]">{s.price}</span>
                       <button
                         type="button"
-                        className="mt-1 px-3 py-1 rounded-lg text-white text-[10px] font-black block cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-extrabold text-white shadow-xs"
                         style={{ backgroundColor: primaryColor }}
                       >
-                        {t('bookNow') || 'Book'}
+                        Book
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Bottom Sticky Action */}
-              <div className="p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)]">
-                <button
-                  type="button"
-                  className="w-full py-3 rounded-2xl text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  <Calendar24Filled className="w-4 h-4" />
-                  <span>{t('bookAppointmentNow')}</span>
-                </button>
-              </div>
             </div>
           </div>
         </motion.div>
       )}
 
-      {/* TAB 3: 3D APP TILES (ALL 5 VARIATIONS) */}
-      {activeTab === 'badges' && (
+      {/* TAB 3: EMBED WIDGET & DIRECT LINKS (CLIENT-FACING) */}
+      {activeTab === 'embed' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          {/* Controls */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-extrabold text-[var(--text-muted)] uppercase tracking-wider">
-                Scale ({previewSize}px):
-              </span>
+          {/* Direct Booking Link Card */}
+          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+            <div>
+              <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Link24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                <span>{t('directBookingUrl')}</span>
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                {t('embedSubtitle')}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3">
               <input
-                type="range"
-                min="24"
-                max="160"
-                step="8"
-                value={previewSize}
-                onChange={(e) => setPreviewSize(Number(e.target.value))}
-                className="w-32 accent-blue-600 cursor-pointer"
+                type="text"
+                readOnly
+                value={fullBookingUrl}
+                className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)] select-all"
               />
-            </div>
 
-            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
-              {(['cream', 'light', 'dark', 'grid'] as const).map((t) => (
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
-                  key={t}
                   type="button"
-                  onClick={() => setBgTheme(t)}
-                  className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
-                    bgTheme === t
-                      ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-xs'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
+                  onClick={() => handleCopy(fullBookingUrl, 'direct-link')}
+                  className="btn-primary h-11 px-4 flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer"
                 >
-                  {t}
+                  <Copy24Filled className="w-4 h-4" />
+                  <span>{copiedId === 'direct-link' ? t('linkCopied') : t('copyLink')}</span>
                 </button>
-              ))}
-            </div>
-          </div>
 
-          {/* 3D Badges Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {BADGE_VARIANTS.map((badge) => (
-              <div
-                key={badge.id}
-                className={`p-6 rounded-3xl border transition-all duration-200 flex flex-col justify-between gap-6 shadow-xs hover:shadow-md ${getCanvasBgClass()}`}
-              >
-                <div className="min-h-[160px] flex items-center justify-center relative p-4">
-                  <Logo variant="badge" badgeStyle={badge.id} size={previewSize} animated />
-                </div>
-
-                <div className="pt-4 border-t border-black/10 dark:border-white/10 space-y-3">
-                  <div>
-                    <h3 className="text-sm font-black text-[var(--text-primary)]">{badge.title}</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">{badge.desc}</p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(`<Logo variant="badge" badgeStyle="${badge.id}" size={${previewSize}} />`, badge.id)}
-                    className="w-full py-2 px-3 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    {copiedId === badge.id ? (
-                      <>
-                        <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>{t('copiedReactCode')}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy24Filled className="w-3.5 h-3.5" />
-                        <span>{t('copyReactCode')}</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* TAB 4: FLAT UI GLYPHS & ICONS (ALL 6 VARIATIONS) */}
-      {activeTab === 'glyphs' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          {/* Controls */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-extrabold text-[var(--text-muted)] uppercase tracking-wider">
-                Scale ({previewSize}px):
-              </span>
-              <input
-                type="range"
-                min="24"
-                max="160"
-                step="8"
-                value={previewSize}
-                onChange={(e) => setPreviewSize(Number(e.target.value))}
-                className="w-32 accent-blue-600 cursor-pointer"
-              />
-            </div>
-
-            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
-              {(['cream', 'light', 'dark', 'grid'] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setBgTheme(t)}
-                  className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
-                    bgTheme === t
-                      ? 'bg-white dark:bg-slate-700 text-black dark:text-white shadow-xs'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
+                <Link
+                  href={`/book/${bookingSlug}`}
+                  target="_blank"
+                  className="h-11 px-4 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center justify-center gap-1.5"
                 >
-                  {t}
-                </button>
-              ))}
+                  <Open24Filled className="w-4 h-4" />
+                  <span>Open</span>
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* 6 Glyphs Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {FLAT_VARIANTS.map((flat) => (
-              <div
-                key={flat.id}
-                className={`p-5 rounded-3xl border flex flex-col items-center justify-between text-center gap-4 transition-all ${getCanvasBgClass()}`}
-              >
-                <div className="min-h-[100px] flex items-center justify-center p-2">
-                  <CircleCloudIconFlat size={previewSize} styleType={flat.id} />
-                </div>
-
-                <div className="w-full pt-3 border-t border-slate-200/60 dark:border-white/10 space-y-2">
-                  <span className="text-xs font-extrabold text-[var(--text-primary)] block truncate">{flat.title}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(`<Logo variant="flat" flatStyle="${flat.id}" size={${previewSize}} />`, flat.id)}
-                    className="w-full py-1.5 px-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 text-[10px] font-extrabold flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                  >
-                    {copiedId === flat.id ? (
-                      <Checkmark24Filled className="w-3 h-3 text-emerald-500" />
-                    ) : (
-                      <Copy24Filled className="w-3 h-3" />
-                    )}
-                    <span>{copiedId === flat.id ? 'Copied' : 'Copy'}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* TAB 5: VECTOR SVG & EMBED BADGE */}
-      {activeTab === 'vector' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           {/* Embed Button Badge Generator */}
           <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)]">
-                  {t('bookOnAirBookBadge')}
+                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Code24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <span>{t('bookOnAirBookBadge')}</span>
                 </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  Embed this responsive button badge into your website header, footer, or Linktree.
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  {t('embedSubtitle')}
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => handleCopy(embedBadgeHtml, 'embed-badge')}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                className="btn-primary h-10 px-4 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
               >
                 {copiedId === 'embed-badge' ? (
                   <>
@@ -742,38 +628,74 @@ export const BrandDAMModule: React.FC = () => {
               <div dangerouslySetInnerHTML={{ __html: embedBadgeHtml }} />
             </div>
 
-            <pre className="p-4 rounded-xl bg-slate-900 text-blue-300 font-mono text-xs overflow-x-auto border border-slate-800">
+            <pre className="p-4 rounded-2xl bg-slate-950 text-blue-300 font-mono text-xs overflow-x-auto border border-slate-800">
               {embedBadgeHtml}
             </pre>
           </div>
+        </motion.div>
+      )}
 
-          {/* Master Vector SVG Code */}
+      {/* TAB 4 (INTERNAL DEV ONLY): 3D APP TILES */}
+      {activeTab === 'badges' && showInternalAssets && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-600 dark:text-amber-400">
+            <span>{t('internalAirBookAssets')}</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {BADGE_VARIANTS.map((badge) => (
+              <div key={badge.id} className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col items-center text-center space-y-4 shadow-xs">
+                <div className="w-24 h-24 rounded-3xl flex items-center justify-center shadow-lg" style={{ background: badge.bg }}>
+                  <Logo variant="3d" size={48} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-[var(--text-primary)]">{badge.title}</h4>
+                  <p className="text-[11px] text-[var(--text-secondary)]">{badge.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* TAB 5 (INTERNAL DEV ONLY): FLAT UI GLYPHS */}
+      {activeTab === 'glyphs' && showInternalAssets && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-600 dark:text-amber-400">
+            <span>{t('internalAirBookAssets')}</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {FLAT_VARIANTS.map((flat) => (
+              <div key={flat.id} className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col items-center text-center space-y-3 shadow-xs">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <CircleCloudIconFlat size={40} styleType={flat.id} />
+                </div>
+                <h4 className="text-[11px] font-bold text-[var(--text-primary)] truncate w-full">{flat.title}</h4>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* TAB 6 (INTERNAL DEV ONLY): RAW VECTOR CODE */}
+      {activeTab === 'vector' && showInternalAssets && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-600 dark:text-amber-400">
+            <span>{t('internalAirBookAssets')}</span>
+          </div>
+
           <div className="p-6 rounded-3xl bg-slate-900 text-slate-100 border border-slate-800 space-y-4">
             <div className="flex items-center justify-between text-xs font-mono text-slate-400 pb-3 border-b border-slate-800">
               <span>public/logo.svg (200x200 Master Vector Spec)</span>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleCopy(RAW_SVG_CODE, 'raw-svg')}
-                  className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
-                >
-                  {copiedId === 'raw-svg' ? (
-                    <Checkmark24Filled className="w-4 h-4 text-emerald-400" />
-                  ) : (
-                    <Copy24Filled className="w-4 h-4" />
-                  )}
-                  <span>{copiedId === 'raw-svg' ? 'Copied SVG Code!' : 'Copy SVG Code'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleDownloadSVG('airbook-logo-raw.svg', RAW_SVG_CODE)}
-                  className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <ArrowDownload24Filled className="w-3.5 h-3.5" />
-                  <span>{t('downloadFile')}</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => handleDownloadSVG('airbook-logo-raw.svg', RAW_SVG_CODE)}
+                className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                <span>{t('downloadFile')}</span>
+              </button>
             </div>
 
             <pre className="text-xs font-mono text-blue-300 overflow-x-auto p-4 bg-slate-950 rounded-2xl border border-slate-800 max-h-48 overflow-y-auto">

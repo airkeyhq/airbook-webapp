@@ -793,6 +793,7 @@ export const translations = {
     brandStudioDesc: 'Customize your visual identity, logo, hero banner, luxury color palette, and preview your live client booking experience.',
     tabBrandIdentity: 'Brand Identity',
     tabLiveStorefront: 'Live Storefront Preview',
+    tabEmbedWidget: 'Embed & Direct Links',
     tabAssetKit: '3D & Vector Asset Kit',
     tabAppBadges: '3D App Tiles',
     tabVectorGlyphs: 'Flat UI Glyphs',
@@ -815,6 +816,10 @@ export const translations = {
     bookOnAirBookBadge: 'Embed "Book on AirBook" Badge',
     copyEmbedBadge: 'Copy Vector Badge HTML',
     badgeCopied: 'Vector badge HTML copied to clipboard!',
+    embedSubtitle: 'Embed responsive button badges and direct booking links into your website header, footer, or Instagram Linktree.',
+    directBookingUrl: 'Direct Booking URL',
+    copyLink: 'Copy Link',
+    internalAirBookAssets: 'AirBook Internal Design Assets (Dev Mode)',
 
     // Enterprise Multi-Location & Franchise
     tabLocations: 'Locations',
@@ -1990,6 +1995,7 @@ export const translations = {
     brandStudioDesc: 'Personaliza tu identidad visual, logotipo, portada, paleta de colores de lujo y previsualiza la experiencia de reserva de tus clientes.',
     tabBrandIdentity: 'Identidad de Marca',
     tabLiveStorefront: 'Vista Previa en Vivo',
+    tabEmbedWidget: 'Incrustar y Enlaces',
     tabAssetKit: 'Kit de Recursos 3D y Vectoriales',
     tabAppBadges: 'Iconos de App 3D',
     tabVectorGlyphs: 'Glifos de Interfaz',
@@ -2012,6 +2018,10 @@ export const translations = {
     bookOnAirBookBadge: 'Incrustar Botón "Reservar en AirBook"',
     copyEmbedBadge: 'Copiar HTML del Botón',
     badgeCopied: '¡Código HTML del botón copiado al portapapeles!',
+    embedSubtitle: 'Incrusta botones de reserva responsivos y enlaces directos en tu sitio web, pie de página o Instagram Linktree.',
+    directBookingUrl: 'Enlace Directo de Reservas',
+    copyLink: 'Copiar Enlace',
+    internalAirBookAssets: 'Recursos Internos de Diseño AirBook (Modo Dev)',
 
     // Enterprise Multi-Location & Franchise
     tabLocations: 'Sedes',
@@ -3186,6 +3196,7 @@ export const translations = {
     brandStudioDesc: 'Passen Sie Ihre visuelle Identität, Logo, Hero-Banner, Luxus-Farbpaletten an und erleben Sie Ihre Live-Buchungsseite in Echtzeit.',
     tabBrandIdentity: 'Markenidentität',
     tabLiveStorefront: 'Live-Storefront-Vorschau',
+    tabEmbedWidget: 'Einbetten & Links',
     tabAssetKit: '3D- & Vektor-Asset-Kit',
     tabAppBadges: '3D-App-Kacheln',
     tabVectorGlyphs: 'UI-Vektorglyphen',
@@ -3208,6 +3219,10 @@ export const translations = {
     bookOnAirBookBadge: '„Auf AirBook Buchen“-Badge Einbetten',
     copyEmbedBadge: 'Badge-HTML Kopieren',
     badgeCopied: 'Badge-HTML in die Zwischenablage kopiert!',
+    embedSubtitle: 'Bette responsive Buchungs-Buttons und Direktlinks in deine Website oder dein Instagram Linktree ein.',
+    directBookingUrl: 'Direkter Buchungslink',
+    copyLink: 'Link kopieren',
+    internalAirBookAssets: 'Interne AirBook-Design-Assets (Dev-Modus)',
 
     // Enterprise Multi-Location & Franchise
     tabLocations: 'Standorte',
@@ -4383,6 +4398,7 @@ export const translations = {
     brandStudioDesc: 'Personnalisez votre identité visuelle, logo, bannière, palette de couleurs de luxe et prévisualisez la page de réservation de vos clients en direct.',
     tabBrandIdentity: 'Identité de Marque',
     tabLiveStorefront: 'Aperçu de la Boutique en Direct',
+    tabEmbedWidget: 'Intégrer et Liens',
     tabAssetKit: 'Kit de Ressources 3D & Vectorielles',
     tabAppBadges: 'Tuiles d’Application 3D',
     tabVectorGlyphs: 'Glyphes d’Interface',
@@ -4405,6 +4421,10 @@ export const translations = {
     bookOnAirBookBadge: 'Intégrer le Badge "Réserver sur AirBook"',
     copyEmbedBadge: 'Copier le Code HTML du Badge',
     badgeCopied: 'Code HTML du badge copié dans le presse-papiers !',
+    embedSubtitle: 'Intégrez des boutons de réservation réactifs et des liens directs dans votre site web ou Instagram Linktree.',
+    directBookingUrl: 'Lien Direct de Réservation',
+    copyLink: 'Copier le Lien',
+    internalAirBookAssets: 'Ressources de Design Internes AirBook (Mode Dev)',
 
     // Enterprise Multi-Location & Franchise
     tabLocations: 'Sites',
