@@ -4,6 +4,29 @@ import { sessions, users } from '@/db/schema';
 import { eq, and, not, desc } from 'drizzle-orm';
 import { parseUserAgent } from '@/lib/user-agent';
 
+function cleanIp(ip?: string | null, req?: NextRequest): string {
+  let raw = ip;
+  if (!raw || raw.includes('0000:0000') || raw === '::1' || raw === '::' || raw === '127.0.0.1' || raw === '::ffff:127.0.0.1') {
+    raw =
+      req?.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+      req?.headers.get('x-real-ip') ||
+      req?.headers.get('cf-connecting-ip') ||
+      '127.0.0.1';
+  }
+  if (raw === '::1' || raw === '::' || raw.includes('0000:0000') || raw === '127.0.0.1' || raw === '::ffff:127.0.0.1') {
+    return '127.0.0.1';
+  }
+  return raw;
+}
+
+function resolveUA(storedUA?: string | null, req?: NextRequest): string {
+  const reqUA = req?.headers.get('user-agent') || '';
+  if (!storedUA || storedUA.trim() === '' || storedUA === 'Unknown' || storedUA.includes('Unknown OS') || storedUA === 'AirBook WebAuthn Client') {
+    return reqUA || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+  }
+  return storedUA;
+}
+
 // GET /api/auth/sessions - List active login sessions for the current operator/user
 export async function GET(req: NextRequest) {
   try {
@@ -43,15 +66,17 @@ export async function GET(req: NextRequest) {
       .where(eq(sessions.userId, targetUserId))
       .orderBy(desc(sessions.createdAt));
 
+    const liveUA = req.headers.get('user-agent') || '';
+    const liveIP = cleanIp(null, req);
+
     // If no sessions in DB yet, create a synthetic entry for the current live device
     if (userSessions.length === 0) {
-      const ua = req.headers.get('user-agent') || '';
       return NextResponse.json({
         sessions: [
           {
             id: 'current-session',
-            device: parseUserAgent(ua),
-            ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+            device: parseUserAgent(liveUA),
+            ipAddress: liveIP,
             createdAt: new Date().toISOString(),
             isCurrent: true,
           },
@@ -59,13 +84,28 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const formatted = userSessions.map((s, idx) => ({
-      id: s.id,
-      device: parseUserAgent(s.userAgent),
-      ipAddress: s.ipAddress || '127.0.0.1',
-      createdAt: s.createdAt,
-      isCurrent: currentToken ? s.token === currentToken : idx === 0,
-    }));
+    const formatted = userSessions.map((s, idx) => {
+      const uaString = resolveUA(s.userAgent, req);
+      const device = parseUserAgent(uaString);
+      const isCurrent = currentToken ? s.token === currentToken : idx === 0;
+      const ip = isCurrent ? liveIP : cleanIp(s.ipAddress, req);
+
+      // Asynchronously update legacy / blank DB session rows with real live browser data
+      if (isCurrent && (!s.userAgent || s.userAgent.includes('Unknown') || s.userAgent === 'AirBook WebAuthn Client' || !s.ipAddress || s.ipAddress.includes('0000:0000'))) {
+        db.update(sessions)
+          .set({ userAgent: uaString, ipAddress: ip })
+          .where(eq(sessions.id, s.id))
+          .catch(() => null);
+      }
+
+      return {
+        id: s.id,
+        device,
+        ipAddress: ip,
+        createdAt: s.createdAt,
+        isCurrent,
+      };
+    });
 
     return NextResponse.json({ sessions: formatted });
   } catch (error: any) {
