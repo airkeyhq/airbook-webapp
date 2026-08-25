@@ -72,18 +72,56 @@ export default function DashboardPage() {
     }
   }, [theme]);
 
-  // Bootstrap workspace context for sessions that skipped onboarding (e.g. demo data)
+  const setStaffMembers = useAirBookStore((s) => s.setStaffMembers);
+  const setServices = useAirBookStore((s) => s.setServices);
+
+  // Bootstrap workspace context, real staff, and real services from DB
   useEffect(() => {
-    if (workspaceId) return;
-    fetch('/api/workspaces')
+    if (!workspaceId) {
+      fetch('/api/workspaces')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.success && Array.isArray(data.workspaces) && data.workspaces[0]?.id) {
+            setWorkspaceId(data.workspaces[0].id);
+          }
+        })
+        .catch((e) => console.warn('Failed to bootstrap workspace context:', e));
+    }
+
+    fetch('/api/staff')
       .then((r) => r.json())
       .then((data) => {
-        if (data?.success && Array.isArray(data.workspaces) && data.workspaces[0]?.id) {
-          setWorkspaceId(data.workspaces[0].id);
+        if (data?.success && Array.isArray(data.staff) && data.staff.length > 0) {
+          const mappedStaff = data.staff.map((st: any) => ({
+            id: st.id,
+            name: st.name,
+            role: st.role || 'Specialist',
+            color: st.color || '#007AFF',
+            avatarUrl: st.avatarUrl || st.avatarEmoji || '',
+            stationName: st.stationName || undefined,
+          }));
+          setStaffMembers(mappedStaff);
         }
       })
-      .catch((e) => console.warn('Failed to bootstrap workspace context:', e));
-  }, [workspaceId, setWorkspaceId]);
+      .catch((e) => console.warn('Failed to bootstrap staff:', e));
+
+    fetch('/api/services')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && Array.isArray(data.services) && data.services.length > 0) {
+          const mappedServices = data.services.map((sv: any) => ({
+            id: sv.id,
+            name: sv.name,
+            category: sv.category,
+            duration: sv.durationMinutes,
+            price: sv.priceCents / 100,
+            color: sv.colorTag || '#00C7BE',
+          }));
+          setServices(mappedServices);
+        }
+      })
+      .catch((e) => console.warn('Failed to bootstrap services:', e));
+  }, [workspaceId, setWorkspaceId, setStaffMembers, setServices]);
 
   return (
     <main className="app-shell bg-[var(--canvas-bg)] text-[var(--canvas-fg)] flex flex-col h-screen w-screen overflow-hidden p-2.5 sm:p-3.5 gap-2.5 sm:gap-3.5">

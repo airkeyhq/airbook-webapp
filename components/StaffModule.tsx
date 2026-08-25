@@ -319,6 +319,15 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       const data = await res.json();
       if (data.success && Array.isArray(data.staff)) {
         setStaffList(data.staff);
+        const mapped = data.staff.map((st: any) => ({
+          id: st.id,
+          name: st.name,
+          role: st.role || 'Specialist',
+          color: st.color || '#007AFF',
+          avatarUrl: st.avatarUrl || st.avatarEmoji || '',
+          stationName: st.stationName || undefined,
+        }));
+        useAirBookStore.getState().setStaffMembers(mapped);
       }
     } catch (err) {
       console.warn('Failed to fetch staff from DB:', err);

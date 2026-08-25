@@ -47,6 +47,15 @@ export const ServicesModule: React.FC = () => {
       const data = await res.json();
       if (data.success && Array.isArray(data.services)) {
         setServiceList(data.services);
+        const mapped = data.services.map((sv: any) => ({
+          id: sv.id,
+          name: sv.name,
+          category: sv.category,
+          duration: sv.durationMinutes,
+          price: sv.priceCents / 100,
+          color: sv.colorTag || '#00C7BE',
+        }));
+        useAirBookStore.getState().setServices(mapped);
       }
     } catch (err) {
       console.warn('Failed to load services from DB:', err);

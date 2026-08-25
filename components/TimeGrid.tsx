@@ -85,7 +85,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
   
   const selectedDate = new Date(selectedDateStr + 'T00:00:00');
 
-  const activeStaffList = isDemoMode || staffMembers.length === 0 ? DEMO_STAFF : staffMembers;
+  const activeStaffList = staffMembers.length > 0 ? staffMembers : (isDemoMode ? DEMO_STAFF : []);
 
   const staffToRender = React.useMemo(() => {
     if (viewMode !== 'day') return [];

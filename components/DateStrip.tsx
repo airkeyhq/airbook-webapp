@@ -21,7 +21,7 @@ export const DateStrip: React.FC = () => {
   const { t } = useTranslation();
   const selectedDate = new Date(selectedDateStr + 'T00:00:00');
 
-  const activeStaff = isDemoMode || staffMembers.length === 0 ? DEMO_STAFF : staffMembers;
+  const activeStaff = staffMembers.length > 0 ? staffMembers : (isDemoMode ? DEMO_STAFF : []);
 
   // Generate current week starting from Monday
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
