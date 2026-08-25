@@ -20,7 +20,6 @@ import {
 } from '@fluentui/react-icons';
 
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
-import AppleMono from '@lobehub/icons/es/Apple/components/Mono';
 
 type AuthMode = 'signin' | 'signup';
 
@@ -180,18 +179,6 @@ export default function LoginPage() {
           >
             <GoogleColor size={16} />
             <span>{t('continueWithGoogle')}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={async () => {
-              const res = await signIn.social({ provider: 'apple', callbackURL: '/dashboard' });
-              if (res?.data?.url) window.location.href = res.data.url;
-            }}
-            className="w-full py-2.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer"
-          >
-            <AppleMono size={16} />
-            <span>{t('continueWithApple')}</span>
           </button>
         </div>
 

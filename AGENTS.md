@@ -146,7 +146,7 @@ All authentication and profile security flows in this application MUST be 100% p
 2. **Approved Auth Methods**: Authentication MUST strictly use:
    - **Passkey & Biometric Authentication** (Touch ID, Face ID, Windows Hello via WebAuthn `navigator.credentials`)
    - **Passwordless Magic Links** (`signIn.magicLink`)
-   - **Social OAuth SSO** (Google SSO, Apple SSO)
+   - **Social OAuth SSO** (Google SSO; Apple SSO enabled only when Apple Developer credentials are configured)
 3. **Active Session Management**: Users MUST be able to view all active login sessions with device metadata (OS, browser, IP) and revoke individual or all other remote sessions at any time.
 4. **Security Messaging**: Settings and login pages MUST display the green status security guarantee: *"AirBook is 100% Passwordless. Zero passwords are stored in our database, protecting your organization from credential leaks."*
 
