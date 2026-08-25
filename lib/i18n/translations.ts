@@ -895,6 +895,13 @@ export const translations = {
     allOtherSessionsRevoked: 'All other device sessions have been closed.',
     ipAddressLabel: 'IP Address',
     noOtherSessions: 'No other active sessions found.',
+    payoutAvailableBalance: 'Available for Payout',
+    payoutPendingBalance: 'Pending Settlement',
+    instantPayoutToCard: 'Instant Payout to Card',
+    openStripeDashboard: 'View Bank Payouts on Stripe',
+    payoutScheduleInfo: 'Automatic 2-day rolling direct deposit to your bank account.',
+    instantPayoutSuccess: 'Instant payout initiated! Funds sent to your debit card.',
+    instantPayoutDesc: 'Transfer your available balance immediately to your linked debit card.',
 
     // v2.1 — Offline-First PWA & Web Push
     pwaInstalled: 'AirBook installed as an app',
@@ -2121,6 +2128,13 @@ export const translations = {
     allOtherSessionsRevoked: '¡Se han cerrado todas las demás sesiones!',
     ipAddressLabel: 'Dirección IP',
     noOtherSessions: 'No hay otras sesiones activas.',
+    payoutAvailableBalance: 'Saldo Disponible para Transferencia',
+    payoutPendingBalance: 'En Tránsito / Liquidación',
+    instantPayoutToCard: 'Pago Instantáneo a Tarjeta',
+    openStripeDashboard: 'Ver Historial en Stripe',
+    payoutScheduleInfo: 'Depósito automático diario en 1-2 días hábiles a tu cuenta bancaria.',
+    instantPayoutSuccess: '¡Pago instantáneo iniciado! Fondos enviados a tu tarjeta de débito.',
+    instantPayoutDesc: 'Transfiere tu saldo disponible de inmediato a tu tarjeta de débito vinculada.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook instalada como app',
@@ -3346,6 +3360,13 @@ export const translations = {
     allOtherSessionsRevoked: 'Alle anderen Gerätesitzungen wurden geschlossen.',
     ipAddressLabel: 'IP-Adresse',
     noOtherSessions: 'Keine weiteren aktiven Sitzungen gefunden.',
+    payoutAvailableBalance: 'Verfügbar für Auszahlung',
+    payoutPendingBalance: 'Ausstehende Abrechnung',
+    instantPayoutToCard: 'Sofortauszahlung auf Karte',
+    openStripeDashboard: 'Auszahlungsverlauf auf Stripe',
+    payoutScheduleInfo: 'Automatische tägliche 2-Tage-Auszahlung auf Ihr Bankkonto.',
+    instantPayoutSuccess: 'Sofortauszahlung veranlasst! Geld wurde an Ihre Debitkarte gesendet.',
+    instantPayoutDesc: 'Überweisen Sie Ihr verfügbares Guthaben sofort auf Ihre verknüpfte Debitkarte.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook als App installiert',
@@ -4572,6 +4593,13 @@ export const translations = {
     allOtherSessionsRevoked: 'Toutes les autres sessions d’appareils ont été fermées.',
     ipAddressLabel: 'Adresse IP',
     noOtherSessions: 'Aucune autre session active trouvée.',
+    payoutAvailableBalance: 'Disponible pour virement',
+    payoutPendingBalance: 'En cours de règlement',
+    instantPayoutToCard: 'Paiement instantané sur carte',
+    openStripeDashboard: 'Voir l’historique sur Stripe',
+    payoutScheduleInfo: 'Virement automatique quotidien sous 1 à 2 jours ouvrés sur votre compte bancaire.',
+    instantPayoutSuccess: 'Paiement instantané initié ! Fonds envoyés sur votre carte de débit.',
+    instantPayoutDesc: 'Transférez immédiatement votre solde disponible vers votre carte de débit associée.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook installée comme application',
