@@ -28,15 +28,15 @@ export function parseUserAgent(ua?: string | null): DeviceInfo {
     deviceType = 'desktop';
   }
 
-  // 2. OS
-  if (/macintosh|mac os x/i.test(ua)) {
-    os = 'macOS';
-  } else if (/iphone|ipad|ipod/i.test(ua)) {
+  // 2. OS (Check mobile OS first to avoid iPhone "like Mac OS X" false match)
+  if (/iphone|ipad|ipod/i.test(ua)) {
     os = 'iOS';
-  } else if (/windows/i.test(ua)) {
-    os = 'Windows';
   } else if (/android/i.test(ua)) {
     os = 'Android';
+  } else if (/macintosh|mac os x/i.test(ua)) {
+    os = 'macOS';
+  } else if (/windows/i.test(ua)) {
+    os = 'Windows';
   } else if (/linux/i.test(ua)) {
     os = 'Linux';
   }

@@ -1218,6 +1218,7 @@ export const translations = {
     managerLabel: 'Manager',
     staffLabel: 'staff',
     stripeConnecting: 'Connecting to Stripe...',
+    en: 'English',
     es: 'Español',
     de: 'Deutsch',
     fr: 'Français',
@@ -2451,6 +2452,7 @@ export const translations = {
     staffLabel: 'personal',
     stripeConnecting: 'Conectando con Stripe...',
     en: 'Inglés',
+    es: 'Español',
     de: 'Alemán',
     fr: 'Francés',
     // Shell & Calendar Audited Keys
@@ -3684,6 +3686,7 @@ export const translations = {
     stripeConnecting: 'Verbinde mit Stripe...',
     en: 'Englisch',
     es: 'Spanisch',
+    de: 'Deutsch',
     fr: 'Französisch',
     // Shell & Calendar Audited Keys
     searchCommandPalette: 'Suchen oder Befehl eingeben (⌘K)',
@@ -4917,6 +4920,7 @@ export const translations = {
     en: 'Anglais',
     es: 'Espagnol',
     de: 'Allemand',
+    fr: 'Français',
     // Shell & Calendar Audited Keys
     searchCommandPalette: 'Rechercher ou taper une commande (⌘K)',
     newBooking: 'Nouvelle Réservation',
