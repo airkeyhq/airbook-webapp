@@ -4,12 +4,7 @@ import { workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 
-function getStripe() {
-  const Stripe = require('stripe').default;
-  return new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
-    apiVersion: '2026-07-29.dahlia',
-  });
-}
+import { stripe } from '@/lib/stripe';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,7 +22,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Stripe Connect not configured.' }, { status: 400 });
     }
 
-    const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create(
       {
         amount: Math.round(amountCents),
@@ -65,7 +59,6 @@ export async function PUT(req: NextRequest) {
     const wsId = await getActiveWorkspaceId(workspaceId);
     const [ws] = await db.select().from(workspaces).where(eq(workspaces.id, wsId)).limit(1);
 
-    const stripe = getStripe();
     const captured = await stripe.paymentIntents.capture(
       paymentIntentId,
       {},

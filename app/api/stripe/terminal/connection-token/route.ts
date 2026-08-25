@@ -4,12 +4,7 @@ import { workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 
-function getStripe() {
-  const Stripe = require('stripe').default;
-  return new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
-    apiVersion: '2026-07-29.dahlia',
-  });
-}
+import { stripe } from '@/lib/stripe';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,7 +16,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Stripe Connect account not configured. Complete Stripe onboarding first.' }, { status: 400 });
     }
 
-    const stripe = getStripe();
     let locationId = ws.stripeTerminalLocationId;
     if (!locationId) {
       const location = await stripe.terminal.locations.create(

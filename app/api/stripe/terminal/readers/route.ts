@@ -4,12 +4,7 @@ import { workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 
-function getStripe() {
-  const Stripe = require('stripe').default;
-  return new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
-    apiVersion: '2026-07-29.dahlia',
-  });
-}
+import { stripe } from '@/lib/stripe';
 
 // GET: list all registered Terminal readers
 export async function GET(req: NextRequest) {
@@ -29,7 +24,6 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const stripe = getStripe();
     const list = await stripe.terminal.readers.list(
       { limit: 20 },
       { stripeAccount: ws.stripeAccountId }
@@ -66,7 +60,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Complete Stripe Connect onboarding before pairing a reader.' }, { status: 400 });
     }
 
-    const stripe = getStripe();
     const reader = await stripe.terminal.readers.create(
       { registration_code: registrationCode.trim(), label: label || 'POS Register', location: ws.stripeTerminalLocationId || undefined },
       { stripeAccount: ws.stripeAccountId }
