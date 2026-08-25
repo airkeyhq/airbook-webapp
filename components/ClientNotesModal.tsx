@@ -14,10 +14,12 @@ import {
   Mail24Filled,
   Phone24Filled,
   Calendar24Filled,
+  Calendar24Regular,
   Delete24Filled,
   Shield24Filled,
   DocumentCheckmark24Filled,
   DocumentSignature24Filled,
+  DocumentBulletList24Regular,
   Add24Filled,
   Warning24Regular,
   Clock24Regular,
@@ -27,6 +29,7 @@ import {
 import { WaiverPadModal } from '@/components/WaiverPadModal';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { KYCVerificationModal } from '@/components/KYCVerificationModal';
+import { EmptyState } from '@/components/EmptyState';
 
 export interface CustomSpecItem {
   id: string;
@@ -55,16 +58,16 @@ interface ClientNotesModalProps {
   onClientUpdated?: () => void;
 }
 
-const PRESET_TAG_SUGGESTIONS = [
-  'VIP',
-  'Prefers Quiet',
-  'Early Bird',
-  'Loyal Member',
-  'Allergy Alert',
-  'Cashless Only',
-  'Executive',
-  'High Sensitivity',
-];
+const PRESET_TAG_KEYS = [
+  { key: 'tagVip', defaultLabel: 'VIP' },
+  { key: 'tagPrefersQuiet', defaultLabel: 'Prefers Quiet' },
+  { key: 'tagEarlyBird', defaultLabel: 'Early Bird' },
+  { key: 'tagLoyalMember', defaultLabel: 'Loyal Member' },
+  { key: 'tagAllergyAlert', defaultLabel: 'Allergy Alert' },
+  { key: 'tagCashlessOnly', defaultLabel: 'Cashless Only' },
+  { key: 'tagExecutive', defaultLabel: 'Executive' },
+  { key: 'tagHighSensitivity', defaultLabel: 'High Sensitivity' },
+] as const;
 
 export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   isOpen,
@@ -395,13 +398,13 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         {t('customSpecsTitle')}
                       </h4>
                       <p className="text-[11px] text-[var(--text-secondary)]">
-                        Technical parameters, formulas, or service notes for this client.
+                        {t('specsSub')}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsAddingSpec(!isAddingSpec)}
-                      className="py-1 px-2.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
+                      className="py-1.5 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Add24Filled className="w-3.5 h-3.5" />
                       <span>{t('addCustomSpec')}</span>
@@ -430,23 +433,24 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setIsAddingSpec(false)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
                         >
                           {t('cancel')}
                         </button>
                         <button
                           type="button"
                           onClick={handleAddSpec}
-                          className="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-bold text-xs shadow-sm hover:bg-blue-700 cursor-pointer"
+                          className="btn-primary py-1 px-3 text-xs"
                         >
-                          {t('addCustomSpec')}
+                          <Add24Filled className="w-3.5 h-3.5" />
+                          <span>{t('addCustomSpec')}</span>
                         </button>
                       </div>
                     </div>
                   )}
 
                   {customSpecs.length > 0 ? (
-                    <div className="divide-y divide-black/5 dark:divide-white/5 border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-black/[0.02] dark:bg-white/[0.02]">
+                    <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)]">
                       {customSpecs.map((spec) => (
                         <div key={spec.id} className="p-3 flex items-start justify-between gap-3">
                           <div className="min-w-0">
@@ -465,7 +469,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                           <button
                             type="button"
                             onClick={() => handleDeleteSpec(spec.id)}
-                            className="p-1 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors flex-shrink-0 cursor-pointer"
+                            className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors flex-shrink-0 cursor-pointer"
                             title="Delete Spec"
                           >
                             <Delete24Filled className="w-3.5 h-3.5" />
@@ -474,9 +478,11 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-[var(--text-secondary)] italic p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)]">
-                      No custom technical specs logged yet. Click &quot;+ Add Spec&quot; to record formulas, settings, or measurements.
-                    </p>
+                    <EmptyState
+                      icon={DocumentBulletList24Regular}
+                      title={t('noSpecsTitle')}
+                      description={t('noSpecsDesc')}
+                    />
                   )}
                 </div>
 
@@ -488,9 +494,10 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsAddingTag(!isAddingTag)}
-                      className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                      className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer inline-flex items-center gap-1"
                     >
-                      + Custom Tag
+                      <Add24Filled className="w-3 h-3" />
+                      <span>{t('addCustomTag')}</span>
                     </button>
                   </div>
 
@@ -500,35 +507,36 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         type="text"
                         value={newTagInput}
                         onChange={(e) => setNewTagInput(e.target.value)}
-                        placeholder="e.g. VIP, Cash Payer"
+                        placeholder={t('tagPlaceholder')}
                         className="bg-transparent text-xs font-semibold text-[var(--text-primary)] focus:outline-none w-full px-2"
                         onKeyDown={(e) => e.key === 'Enter' && handleAddCustomTag()}
                       />
                       <button
                         type="button"
                         onClick={handleAddCustomTag}
-                        className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-bold cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-bold cursor-pointer"
                       >
-                        Add
+                        {t('add')}
                       </button>
                     </div>
                   )}
 
                   <div className="flex flex-wrap gap-1.5">
-                    {PRESET_TAG_SUGGESTIONS.map((tag) => {
-                      const isSelected = tags.includes(tag);
+                    {PRESET_TAG_KEYS.map((tagObj) => {
+                      const tagLabel = (t as any)(tagObj.key) || tagObj.defaultLabel;
+                      const isSelected = tags.includes(tagLabel) || tags.includes(tagObj.defaultLabel);
                       return (
                         <button
-                          key={tag}
+                          key={tagObj.key}
                           type="button"
-                          onClick={() => handleToggleTag(tag)}
-                          className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                          onClick={() => handleToggleTag(tagLabel)}
+                          className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                             isSelected
                               ? 'bg-blue-600 text-white shadow-sm'
                               : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                           }`}
                         >
-                          {tag}
+                          {tagLabel}
                         </button>
                       );
                     })}
@@ -540,7 +548,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   type="text"
                   value={preferences}
                   onChange={(e) => setPreferences(e.target.value)}
-                  placeholder="e.g. Sparkling water on arrival, room temp 70°F, quiet session"
+                  placeholder={t('preferencesPlaceholder')}
                 />
 
                 <FloatingInput
@@ -548,7 +556,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   type="text"
                   value={allergies}
                   onChange={(e) => setAllergies(e.target.value)}
-                  placeholder="e.g. Allergic to latex, synthetic fragrance, tree nut oils"
+                  placeholder={t('allergiesPlaceholder')}
                 />
 
                 <FloatingTextarea
@@ -556,7 +564,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Internal practitioner notes, conversation points, client history..."
+                  placeholder={t('notesPlaceholder')}
                 />
               </div>
             )}
@@ -570,7 +578,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       {t('complianceLog')}
                     </h4>
                     <p className="text-[11px] text-[var(--text-secondary)]">
-                      Signed consent waivers and liability agreements on file.
+                      {t('complianceLogSub')}
                     </p>
                   </div>
 
@@ -748,33 +756,27 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-[var(--text-secondary)] italic p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] text-center">
-                    No past appointments logged for this client yet.
-                  </p>
+                  <EmptyState
+                    icon={Calendar24Regular}
+                    title={t('noPastAppointmentsTitle')}
+                    description={t('noPastAppointmentsDesc')}
+                  />
                 )}
               </div>
             )}
           </div>
 
           {/* Side-to-Side Bottom Action Banner */}
-          <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30 flex items-center justify-between gap-3">
+          <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30">
             <button
-              type="button"
-              onClick={onClose}
-              className="btn-secondary"
-            >
-              {t('cancel')}
-            </button>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
               type="button"
               disabled={isSaving}
               onClick={handleSaveClient}
-              className="btn-primary"
+              className="btn-primary w-full disabled:opacity-50"
             >
               <Save24Filled className="w-4 h-4" />
               <span>{isSaving ? t('saving') : t('save')}</span>
-            </motion.button>
+            </button>
           </div>
         </motion.div>
       </div>
