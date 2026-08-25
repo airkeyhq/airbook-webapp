@@ -886,6 +886,15 @@ export const translations = {
     passkeyVerifying: 'Verifying Passkey…',
     orPasskey: 'Or Passkey & Biometrics',
     orMagicLink: 'Or Passwordless Link',
+    activeSessionsTitle: 'Active Sessions & Device Security',
+    activeSessionsDesc: 'Manage and revoke active login sessions across your devices and browsers.',
+    currentDevice: 'Current Device',
+    revokeSession: 'Sign Out Device',
+    revokeAllOtherSessions: 'Sign Out All Other Devices',
+    sessionRevokedSuccess: 'Session successfully terminated.',
+    allOtherSessionsRevoked: 'All other device sessions have been closed.',
+    ipAddressLabel: 'IP Address',
+    noOtherSessions: 'No other active sessions found.',
 
     // v2.1 — Offline-First PWA & Web Push
     pwaInstalled: 'AirBook installed as an app',
@@ -2103,6 +2112,15 @@ export const translations = {
     passkeyVerifying: 'Verificando Passkey…',
     orPasskey: 'O Passkey y Biometría',
     orMagicLink: 'O Enlace Mágico Sin Contraseña',
+    activeSessionsTitle: 'Sesiones Activas y Seguridad de Dispositivos',
+    activeSessionsDesc: 'Administra y cierra sesiones activas en tus dispositivos y navegadores.',
+    currentDevice: 'Este Dispositivo',
+    revokeSession: 'Cerrar Sesión',
+    revokeAllOtherSessions: 'Cerrar Todas las Demás Sesiones',
+    sessionRevokedSuccess: '¡Sesión cerrada con éxito!',
+    allOtherSessionsRevoked: '¡Se han cerrado todas las demás sesiones!',
+    ipAddressLabel: 'Dirección IP',
+    noOtherSessions: 'No hay otras sesiones activas.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook instalada como app',
@@ -3319,6 +3337,15 @@ export const translations = {
     passkeyVerifying: 'Passkey wird überprüft…',
     orPasskey: 'Oder Passkey & Biometrie',
     orMagicLink: 'Oder Passwortloser Link',
+    activeSessionsTitle: 'Aktive Sitzungen & Gerätesicherheit',
+    activeSessionsDesc: 'Verwalten und beenden Sie aktive Anmeldesitzungen auf Ihren Geräten und Browsern.',
+    currentDevice: 'Dieses Gerät',
+    revokeSession: 'Gerät abmelden',
+    revokeAllOtherSessions: 'Alle anderen Geräte abmelden',
+    sessionRevokedSuccess: 'Sitzung erfolgreich beendet.',
+    allOtherSessionsRevoked: 'Alle anderen Gerätesitzungen wurden geschlossen.',
+    ipAddressLabel: 'IP-Adresse',
+    noOtherSessions: 'Keine weiteren aktiven Sitzungen gefunden.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook als App installiert',
@@ -4536,6 +4563,15 @@ export const translations = {
     passkeyVerifying: 'Vérification du Passkey…',
     orPasskey: 'Ou Passkey & Biométrie',
     orMagicLink: 'Ou Lien Sans Mot de Passe',
+    activeSessionsTitle: 'Sessions Actives & Sécurité des Appareils',
+    activeSessionsDesc: 'Gérez et révoquez les sessions actives sur vos appareils et navigateurs.',
+    currentDevice: 'Cet Appareil',
+    revokeSession: 'Déconnecter l’appareil',
+    revokeAllOtherSessions: 'Déconnecter tous les autres appareils',
+    sessionRevokedSuccess: 'Session fermée avec succès !',
+    allOtherSessionsRevoked: 'Toutes les autres sessions d’appareils ont été fermées.',
+    ipAddressLabel: 'Adresse IP',
+    noOtherSessions: 'Aucune autre session active trouvée.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook installée comme application',

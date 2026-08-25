@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
@@ -54,6 +54,9 @@ import {
   Fingerprint24Regular,
   Chat24Regular,
   Send24Filled,
+  Laptop24Regular,
+  Phone24Regular,
+  Tablet24Regular,
 } from '@fluentui/react-icons';
 import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
 
@@ -251,6 +254,81 @@ export const SettingsModule: React.FC = () => {
       addToast(t('testNotificationSent'), 'success');
     } finally {
       setIsSendingTestNotif(false);
+    }
+  };
+
+  const [sessionsList, setSessionsList] = useState<{
+    id: string;
+    device: {
+      deviceType: 'desktop' | 'mobile' | 'tablet' | 'unknown';
+      os: string;
+      browser: string;
+    };
+    ipAddress: string;
+    createdAt: string;
+    isCurrent: boolean;
+  }[]>([]);
+  const [isRevokingSession, setIsRevokingSession] = useState(false);
+
+  const fetchSessions = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/sessions');
+      const data = await res.json();
+      if (data.sessions) {
+        setSessionsList(data.sessions);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch active sessions:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'profile') {
+      fetchSessions();
+    }
+  }, [activeTab, fetchSessions]);
+
+  const handleRevokeSession = async (sessionId: string) => {
+    setIsRevokingSession(true);
+    try {
+      const res = await fetch('/api/auth/sessions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(t('sessionRevokedSuccess'), 'success');
+        setSessionsList((prev) => prev.filter((s) => s.id !== sessionId));
+      } else {
+        addToast(data.error || 'Failed to revoke session', 'error');
+      }
+    } catch {
+      addToast('Error communicating with session manager', 'error');
+    } finally {
+      setIsRevokingSession(false);
+    }
+  };
+
+  const handleRevokeAllOthers = async () => {
+    setIsRevokingSession(true);
+    try {
+      const res = await fetch('/api/auth/sessions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ revokeOthers: true }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(t('allOtherSessionsRevoked'), 'success');
+        setSessionsList((prev) => prev.filter((s) => s.isCurrent));
+      } else {
+        addToast(data.error || 'Failed to revoke other sessions', 'error');
+      }
+    } catch {
+      addToast('Error communicating with session manager', 'error');
+    } finally {
+      setIsRevokingSession(false);
     }
   };
 
@@ -764,6 +842,83 @@ export const SettingsModule: React.FC = () => {
                     <Send24Filled className="w-4 h-4" />
                     <span>{isSendingTestNotif ? t('loading') : t('sendTestNotification')}</span>
                   </button>
+                </div>
+              </div>
+            </Section>
+
+            {/* Active Sessions & Device Security Card */}
+            <Section title={t('activeSessionsTitle')} icon={ShieldCheckmark24Regular}>
+              <div className="space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    {t('activeSessionsDesc')}
+                  </p>
+                  {sessionsList.length > 1 && (
+                    <button
+                      type="button"
+                      disabled={isRevokingSession}
+                      onClick={handleRevokeAllOthers}
+                      className="px-3 py-1.5 rounded-xl border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-xs font-bold text-red-600 dark:text-red-400 transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                    >
+                      <Dismiss24Filled className="w-3.5 h-3.5" />
+                      <span>{t('revokeAllOtherSessions')}</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Structured Interactive Sessions List */}
+                <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)]">
+                  {sessionsList.length === 0 ? (
+                    <div className="p-4 text-center text-xs text-[var(--text-secondary)]">
+                      {t('noOtherSessions')}
+                    </div>
+                  ) : (
+                    sessionsList.map((s) => {
+                      const isMobile = s.device?.deviceType === 'mobile';
+                      const isTablet = s.device?.deviceType === 'tablet';
+                      const IconComponent = isMobile ? Phone24Regular : isTablet ? Tablet24Regular : Laptop24Regular;
+
+                      return (
+                        <div
+                          key={s.id}
+                          className="p-4 flex items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                        >
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0">
+                              <IconComponent className="w-5 h-5 text-[var(--text-secondary)]" />
+                            </div>
+
+                            <div className="min-w-0 space-y-0.5">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
+                                  {s.device?.os || 'System'} · {s.device?.browser || 'Browser'}
+                                </h4>
+                                {s.isCurrent && (
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
+                                    {t('currentDevice')}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-[var(--text-secondary)] font-mono truncate">
+                                {t('ipAddressLabel')}: {s.ipAddress}
+                              </p>
+                            </div>
+                          </div>
+
+                          {!s.isCurrent && (
+                            <button
+                              type="button"
+                              disabled={isRevokingSession}
+                              onClick={() => handleRevokeSession(s.id)}
+                              className="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] hover:bg-red-500/10 hover:text-red-600 hover:border-red-500/20 text-xs font-bold text-[var(--text-secondary)] transition-all cursor-pointer flex-shrink-0"
+                            >
+                              {t('revokeSession')}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </Section>
