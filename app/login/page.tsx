@@ -1,21 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { FloatingInput } from '@/components/FloatingInput';
+import { isPasskeySupported, signInWithPasskey } from '@/lib/passkey';
 import {
-  ArrowRight24Filled,
   ArrowLeft24Filled,
   Mail24Regular,
   Person24Regular,
-  Shield24Regular,
   ShieldCheckmark24Regular,
   Warning24Regular,
   Sparkle24Filled,
+  Fingerprint24Filled,
 } from '@fluentui/react-icons';
 
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
@@ -30,8 +31,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+  const [passkeyAvailable, setPasskeyAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    isPasskeySupported().then((supported) => setPasskeyAvailable(supported));
+  }, []);
 
   const resetForm = () => {
     setError(null);
@@ -41,6 +48,28 @@ export default function LoginPage() {
   const switchMode = (next: AuthMode) => {
     resetForm();
     setMode(next);
+  };
+
+  const handlePasskeySignIn = async () => {
+    setPasskeyLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      const result = await signInWithPasskey(email.trim() || undefined);
+      if (result.success) {
+        setSuccessMessage(t('passkeyAuthSuccess'));
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 300);
+      } else if (result.error) {
+        setError(result.error);
+      }
+    } catch (err: any) {
+      setError(err?.message || t('passkeyAuthFailed'));
+    } finally {
+      setPasskeyLoading(false);
+    }
   };
 
   const handleMagicLinkSubmit = async (e: React.FormEvent) => {
@@ -76,7 +105,7 @@ export default function LoginPage() {
         className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors z-20"
       >
         <ArrowLeft24Filled className="w-3.5 h-3.5" />
-        <span>Back to home</span>
+        <span>{t('backToHome')}</span>
       </Link>
 
       {/* Animated background orb */}
@@ -99,12 +128,12 @@ export default function LoginPage() {
             <Logo size={48} animated />
           </div>
           <h1 className="text-xl font-extrabold tracking-tight text-[var(--text-primary)]">
-            {mode === 'signin' ? 'Welcome back' : 'Create account'}
+            {mode === 'signin' ? t('welcomeBack') : t('createAccount')}
           </h1>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             {mode === 'signin'
-              ? 'Sign in to your AirBook workspace.'
-              : 'Start your free AirBook workspace.'}
+              ? t('signInSubtitle')
+              : t('signUpSubtitle')}
           </p>
         </div>
 
@@ -114,16 +143,30 @@ export default function LoginPage() {
             <button
               key={m}
               onClick={() => switchMode(m)}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 mode === m
                   ? 'bg-white dark:bg-gray-800 text-[var(--text-primary)] shadow-sm'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              {m === 'signin' ? 'Sign In' : 'Sign Up'}
+              {m === 'signin' ? t('signIn') : t('signUp')}
             </button>
           ))}
         </div>
+
+        {/* Passkey Biometric Sign-In CTA */}
+        {passkeyAvailable && mode === 'signin' && (
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            type="button"
+            onClick={handlePasskeySignIn}
+            disabled={passkeyLoading}
+            className="w-full py-3 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 active:scale-98 border border-[var(--border-subtle)] text-xs font-extrabold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
+          >
+            <Fingerprint24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
+            <span>{passkeyLoading ? t('passkeyVerifying') : t('signInWithPasskey')}</span>
+          </motion.button>
+        )}
 
         {/* OAuth Provider Buttons */}
         <div className="space-y-2">
@@ -136,7 +179,7 @@ export default function LoginPage() {
             className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
           >
             <GoogleColor size={16} />
-            <span>Continue with Google</span>
+            <span>{t('continueWithGoogle')}</span>
           </button>
 
           <button
@@ -148,7 +191,7 @@ export default function LoginPage() {
             className="w-full py-2.5 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer"
           >
             <AppleMono size={16} />
-            <span>Continue with Apple</span>
+            <span>{t('continueWithApple')}</span>
           </button>
         </div>
 
@@ -159,7 +202,7 @@ export default function LoginPage() {
           </div>
           <div className="relative px-3 bg-white dark:bg-gray-900 text-center">
             <span className="text-[10px] uppercase font-extrabold text-[var(--text-secondary)] tracking-wider block">
-              Or Passwordless Link
+              {t('orMagicLink')}
             </span>
           </div>
         </div>
@@ -167,38 +210,24 @@ export default function LoginPage() {
         {/* Passwordless Form */}
         <form onSubmit={handleMagicLinkSubmit} className="space-y-3">
           {mode === 'signup' && (
-            <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">Full Name</label>
-              <div className="relative">
-                <Person24Regular className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  required
-                  autoComplete="name"
-                  placeholder="e.g. Alex Johnson"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60"
-                />
-              </div>
-            </div>
+            <FloatingInput
+              label={t('fullName')}
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              icon={<Person24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+            />
           )}
 
-          <div>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1 block">Work Email</label>
-            <div className="relative">
-              <Mail24Regular className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="name@business.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60"
-              />
-            </div>
-          </div>
+          <FloatingInput
+            label={t('workEmail')}
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            icon={<Mail24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+          />
 
           <StatusBanner error={error} success={successMessage} />
 
@@ -206,17 +235,17 @@ export default function LoginPage() {
             whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-2xl bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-xl shadow-[#2BB5FF]/30 flex items-center justify-center gap-2 transition-all disabled:opacity-70 cursor-pointer"
+            className="btn-primary w-full py-3 h-12 flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkle24Filled className="w-4 h-4" />
-            <span>{loading ? 'Sending link…' : 'Send Magic Link'}</span>
+            <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
           </motion.button>
         </form>
 
         <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5 text-[11px] text-emerald-700 dark:text-emerald-300">
           <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
           <p className="leading-snug">
-            AirBook is 100% Passwordless. Zero passwords are stored in our database, protecting your salon from credential leaks.
+            {t('passwordlessSecurityNotice')}
           </p>
         </div>
       </motion.div>

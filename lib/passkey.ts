@@ -112,3 +112,56 @@ export async function authenticateStationPasskey(): Promise<boolean> {
     return false;
   }
 }
+
+export async function signInWithPasskey(email?: string): Promise<{ success: boolean; error?: string }> {
+  if (typeof window === 'undefined' || !window.PublicKeyCredential) {
+    return { success: false, error: 'WebAuthn passkeys are not supported on this browser.' };
+  }
+
+  const supported = await isPasskeySupported();
+  if (!supported) {
+    return { success: false, error: 'No biometric authenticator (Touch ID / Face ID / Windows Hello) available.' };
+  }
+
+  const challenge = getRandomBuffer(32);
+
+  const requestOptions: PublicKeyCredentialRequestOptions = {
+    challenge: challenge.buffer as ArrayBuffer,
+    rpId: window.location.hostname === 'localhost' ? 'localhost' : window.location.hostname,
+    userVerification: 'preferred',
+    timeout: 60000,
+  };
+
+  try {
+    const assertion = await navigator.credentials.get({
+      publicKey: requestOptions,
+    });
+
+    if (!assertion) {
+      return { success: false, error: 'Passkey verification failed.' };
+    }
+
+    // Call server to establish authenticated session
+    const res = await fetch('/api/auth/passkey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        credentialId: assertion.id,
+        email: email || undefined,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      return { success: true };
+    }
+
+    return { success: false, error: data.error || 'Could not verify session with passkey.' };
+  } catch (err: any) {
+    if (err.name === 'NotAllowedError') {
+      return { success: false, error: 'Passkey verification was cancelled.' };
+    }
+    return { success: false, error: err.message || 'Passkey verification error.' };
+  }
+}
+
