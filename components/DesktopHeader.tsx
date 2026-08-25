@@ -23,12 +23,13 @@ import {
   Checkmark24Filled,
   QrCode24Filled,
   Dismiss24Filled,
+  LockClosed24Filled,
 } from '@fluentui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export const DesktopHeader: React.FC = () => {
-  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isDemoMode, toggleDemoMode, isPricingModalOpen, closePricingModal } = useAirBookStore();
+  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isDemoMode, toggleDemoMode, isPricingModalOpen, closePricingModal, lockPos } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const router = useRouter();
@@ -367,6 +368,15 @@ export const DesktopHeader: React.FC = () => {
             </button>
           )}
 
+          {/* Quick Lock Station Action */}
+          <button
+            type="button"
+            onClick={() => lockPos()}
+            title={t('lockStation')}
+            className="h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center cursor-pointer flex-shrink-0"
+          >
+            <LockClosed24Filled className="w-4 h-4" />
+          </button>
 
           {/* User Profile Pill / Dropdown */}
           <div ref={userDropdownRef} className="relative z-[100]">

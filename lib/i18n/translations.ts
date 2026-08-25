@@ -830,6 +830,24 @@ export const translations = {
     noLocationsTitle: 'No Additional Locations',
     noLocationsDesc: 'Scale your business by provisioning flagship studios, local branches, or seasonal pop-ups.',
 
+    // v2.0 — POS Terminal Auto-Lock & Passcode Security
+    posLockTitle: 'Station Locked',
+    posLockSubtitle: 'Enter 4-digit station PIN to resume',
+    posLockPlaceholder: 'Enter 4-Digit Passcode',
+    posLockIncorrect: 'Incorrect PIN passcode',
+    lockStation: 'Lock Station',
+    posAutoLockTitle: 'POS Passcode & Station Security',
+    posAutoLockDesc: 'Protect checkout data and client records when staff steps away from the terminal.',
+    posAutoLockToggle: 'Auto-Lock on Inactivity',
+    posAutoLockTimeout: 'Inactivity Timeout',
+    posPasscode: '4-Digit Station Passcode',
+    timeout1Min: '1 Minute (High Security)',
+    timeout2Min: '2 Minutes (Recommended)',
+    timeout5Min: '5 Minutes',
+    timeout10Min: '10 Minutes',
+    timeoutOff: 'Never (Disabled)',
+    emergencyUnlock: 'Manager Master Unlock (0000)',
+
     // v2.1 — Offline-First PWA & Web Push
     pwaInstalled: 'AirBook installed as an app',
     pwaOfflineReady: 'Available offline',
@@ -1990,6 +2008,24 @@ export const translations = {
     noLocationsTitle: 'Sin Sedes Adicionales',
     noLocationsDesc: 'Haz crecer tu negocio añadiendo sedes principales, sucursales locales o sedes temporales.',
 
+    // v2.0 — POS Terminal Auto-Lock & Passcode Security
+    posLockTitle: 'Sede Bloqueada',
+    posLockSubtitle: 'Ingresa el PIN de 4 dígitos para continuar',
+    posLockPlaceholder: 'Ingresa el código de 4 dígitos',
+    posLockIncorrect: 'Código PIN incorrecto',
+    lockStation: 'Bloquear Sede',
+    posAutoLockTitle: 'Seguridad y Bloqueo de Terminal POS',
+    posAutoLockDesc: 'Protege cobros y datos de clientes cuando el personal se ausenta del mostrador.',
+    posAutoLockToggle: 'Bloqueo Automático por Inactividad',
+    posAutoLockTimeout: 'Tiempo de Inactividad',
+    posPasscode: 'PIN de Acceso (4 Dígitos)',
+    timeout1Min: '1 Minuto (Alta Seguridad)',
+    timeout2Min: '2 Minutos (Recomendado)',
+    timeout5Min: '5 Minutos',
+    timeout10Min: '10 Minutos',
+    timeoutOff: 'Nunca (Desactivado)',
+    emergencyUnlock: 'Desbloqueo Maestro de Gerencia (0000)',
+
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook instalada como app',
     pwaOfflineReady: 'Disponible sin conexión',
@@ -3148,6 +3184,24 @@ export const translations = {
     addLocation: 'Standort hinzufügen',
     noLocationsTitle: 'Keine weiteren Standorte',
     noLocationsDesc: 'Erweitern Sie Ihr Geschäft mit weiteren Filialen, Studios und Pop-up-Standorten.',
+
+    // v2.0 — POS Terminal Auto-Lock & Passcode Security
+    posLockTitle: 'Station Gesperrt',
+    posLockSubtitle: 'Geben Sie die 4-stellige PIN ein',
+    posLockPlaceholder: '4-stelligen PIN eingeben',
+    posLockIncorrect: 'Falscher PIN-Code',
+    lockStation: 'Station Sperren',
+    posAutoLockTitle: 'POS-PIN & Stationssicherheit',
+    posAutoLockDesc: 'Schützen Sie Kassendaten und Kundendaten bei Abwesenheit.',
+    posAutoLockToggle: 'Automatisches Sperren bei Inaktivität',
+    posAutoLockTimeout: 'Inaktivitäts-Zeitlimit',
+    posPasscode: '4-Stelliger Stations-PIN',
+    timeout1Min: '1 Minute (Hohe Sicherheit)',
+    timeout2Min: '2 Minuten (Empfohlen)',
+    timeout5Min: '5 Minuten',
+    timeout10Min: '10 Minuten',
+    timeoutOff: 'Nie (Deaktiviert)',
+    emergencyUnlock: 'Manager-Master-Entsperrung (0000)',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook als App installiert',
@@ -4308,6 +4362,24 @@ export const translations = {
     addLocation: 'Ajouter un Établissement',
     noLocationsTitle: 'Aucun Autre Établissement',
     noLocationsDesc: 'Développez votre activité en déployant des succursales, des salons ou des pop-ups saisonniers.',
+
+    // v2.0 — POS Terminal Auto-Lock & Passcode Security
+    posLockTitle: 'Station Verrouillée',
+    posLockSubtitle: 'Entrez le code PIN à 4 chiffres pour reprendre',
+    posLockPlaceholder: 'Entrez le code à 4 chiffres',
+    posLockIncorrect: 'Code PIN incorrect',
+    lockStation: 'Verrouiller la Station',
+    posAutoLockTitle: 'Code PIN POS & Sécurité de Station',
+    posAutoLockDesc: 'Protégez les données d’encaissement et les fiches clients en cas d’absence du comptoir.',
+    posAutoLockToggle: 'Verrouillage Automatique après Inactivité',
+    posAutoLockTimeout: 'Délai d’Inactivité',
+    posPasscode: 'Code PIN de Station (4 Chiffres)',
+    timeout1Min: '1 Minute (Haute Sécurité)',
+    timeout2Min: '2 Minutes (Recommandé)',
+    timeout5Min: '5 Minutes',
+    timeout10Min: '10 Minutes',
+    timeoutOff: 'Jamais (Désactivé)',
+    emergencyUnlock: 'Déverrouillage Maître Directeur (0000)',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook installée comme application',

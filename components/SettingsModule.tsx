@@ -30,6 +30,7 @@ import {
   Link24Regular,
   Alert24Regular,
   LockClosed24Regular,
+  LockClosed24Filled,
   LockClosed16Filled,
   Mail24Regular,
   Mail24Filled,
@@ -120,7 +121,30 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
 }
 
 export const SettingsModule: React.FC = () => {
-  const { workspaceName, setWorkspaceName, staffMembers, workspaceSlug, addons, toggleAddon, isBetaAccess, unlockBetaWithCode, timeFormat, setTimeFormat, stations, addStation, updateStation, deleteStation } = useAirBookStore();
+  const {
+    workspaceName,
+    setWorkspaceName,
+    staffMembers,
+    workspaceSlug,
+    addons,
+    toggleAddon,
+    isBetaAccess,
+    unlockBetaWithCode,
+    timeFormat,
+    setTimeFormat,
+    stations,
+    addStation,
+    updateStation,
+    deleteStation,
+    posSecurityEnabled,
+    setPosSecurityEnabled,
+    posPasscode,
+    setPosPasscode,
+    posAutoLockTimeout,
+    setPosAutoLockTimeout,
+    lockPos,
+  } = useAirBookStore();
+  const [tempPasscode, setTempPasscode] = useState(posPasscode);
   const [isAddStationModalOpen, setIsAddStationModalOpen] = useState(false);
   const [newStationName, setNewStationName] = useState('');
   const [newStationCategory, setNewStationCategory] = useState('Hair & Styling');
@@ -676,6 +700,73 @@ export const SettingsModule: React.FC = () => {
                 <Save24Filled className="w-4 h-4" />
                 <span>{t('save')}</span>
               </motion.button>
+            </Section>
+
+            {/* POS Passcode & Station Auto-Lock Security */}
+            <Section title={t('posAutoLockTitle')} icon={LockClosed24Regular}>
+              <p className="text-xs text-[var(--text-secondary)] -mt-1">
+                {t('posAutoLockDesc')}
+              </p>
+
+              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
+                <div>
+                  <p className="text-xs font-bold text-[var(--text-primary)]">{t('posAutoLockToggle')}</p>
+                  <p className="text-[11px] text-[var(--text-secondary)]">{t('posAutoLockDesc')}</p>
+                </div>
+                <Toggle
+                  enabled={posSecurityEnabled}
+                  onToggle={() => {
+                    setPosSecurityEnabled(!posSecurityEnabled);
+                    addToast(t('settingsSaved'), 'success');
+                  }}
+                  color="bg-black dark:bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <CustomSelect
+                  label={t('posAutoLockTimeout')}
+                  value={String(posAutoLockTimeout)}
+                  onChange={(val) => {
+                    setPosAutoLockTimeout(Number(val));
+                    addToast(t('settingsSaved'), 'success');
+                  }}
+                  options={[
+                    { value: '1', label: t('timeout1Min') },
+                    { value: '2', label: t('timeout2Min') },
+                    { value: '5', label: t('timeout5Min') },
+                    { value: '10', label: t('timeout10Min') },
+                    { value: '0', label: t('timeoutOff') },
+                  ]}
+                />
+
+                <FloatingInput
+                  label={t('posPasscode')}
+                  type="password"
+                  maxLength={4}
+                  value={tempPasscode}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    setTempPasscode(cleaned);
+                    if (cleaned.length === 4) {
+                      setPosPasscode(cleaned);
+                      addToast(t('settingsSaved'), 'success');
+                    }
+                  }}
+                  icon={<LockClosed24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                />
+              </div>
+
+              <div className="flex items-center gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => lockPos()}
+                  className="btn-primary"
+                >
+                  <LockClosed24Filled className="w-4 h-4" />
+                  <span>{t('lockStation')}</span>
+                </button>
+              </div>
             </Section>
 
             {/* Danger Zone */}

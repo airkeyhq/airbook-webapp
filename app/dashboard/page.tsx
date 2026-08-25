@@ -27,6 +27,8 @@ import { ClientNotesModal } from '@/components/ClientNotesModal';
 import { AppointmentDetailsModal } from '@/components/AppointmentDetailsModal';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { OfflineSyncBanner } from '@/components/OfflineSyncBanner';
+import { POSLockScreen } from '@/components/POSLockScreen';
+import { useInactivityLock } from '@/lib/useInactivityLock';
 import { motion } from 'framer-motion';
 import {
   Calendar24Filled,
@@ -51,6 +53,7 @@ import type { Appointment } from '@/lib/store';
 
 
 export default function DashboardPage() {
+  useInactivityLock();
   const { theme, workspaceId, setWorkspaceId } = useAirBookStore();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<DashboardTab>('calendar');
@@ -260,6 +263,9 @@ export default function DashboardPage() {
 
       {/* Technical Notes Modal */}
       <ClientNotesModal isOpen={isNotesOpen} onClose={() => setIsNotesOpen(false)} />
+
+      {/* POS Station Inactivity Lock Screen */}
+      <POSLockScreen />
     </main>
   );
 }

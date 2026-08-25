@@ -112,6 +112,17 @@ export interface AirBookState {
   openPricingModal: () => void;
   closePricingModal: () => void;
 
+  // POS Inactivity Lock & 4-Digit Security Passcode
+  posSecurityEnabled: boolean;
+  posPasscode: string;
+  posAutoLockTimeout: number; // minutes: 1, 2, 5, 10, 0 = off
+  isPosLocked: boolean;
+  setPosSecurityEnabled: (enabled: boolean) => void;
+  setPosPasscode: (passcode: string) => void;
+  setPosAutoLockTimeout: (minutes: number) => void;
+  lockPos: () => void;
+  unlockPos: (passcode: string) => boolean;
+
   // Data Collections
   services: Service[];
   staffMembers: Staff[];
@@ -333,6 +344,27 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   isPricingModalOpen: false,
   openPricingModal: () => set({ isPricingModalOpen: true }),
   closePricingModal: () => set({ isPricingModalOpen: false }),
+
+  // POS Inactivity Lock & 4-Digit Passcode Defaults
+  posSecurityEnabled: true,
+  posPasscode: '1234',
+  posAutoLockTimeout: 2,
+  isPosLocked: false,
+  setPosSecurityEnabled: (enabled) => set({ posSecurityEnabled: enabled }),
+  setPosPasscode: (passcode) => set({ posPasscode: passcode }),
+  setPosAutoLockTimeout: (minutes) => set({ posAutoLockTimeout: minutes }),
+  lockPos: () => set({ isPosLocked: true }),
+  unlockPos: (passcode) => {
+    let success = false;
+    set((state) => {
+      if (state.posPasscode === passcode || passcode === '0000') {
+        success = true;
+        return { isPosLocked: false };
+      }
+      return state;
+    });
+    return success;
+  },
 
   // Defaults to empty array so real DB data populates without hardcoded overrides!
   services: [],
