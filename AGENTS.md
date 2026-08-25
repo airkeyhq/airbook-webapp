@@ -144,9 +144,21 @@ All authentication and profile security flows in this application MUST be 100% p
 
 1. **Zero Password Storage or Inputs**: NEVER render password input fields, password-confirmation inputs, or "Forgot Password" links in sign-in, sign-up, or settings forms.
 2. **Approved Auth Methods**: Authentication MUST strictly use:
+   - **Passkey & Biometric Authentication** (Touch ID, Face ID, Windows Hello via WebAuthn `navigator.credentials`)
    - **Passwordless Magic Links** (`signIn.magicLink`)
    - **Social OAuth SSO** (Google SSO, Apple SSO)
-3. **Security Messaging**: Settings and login pages MUST display the green status security guarantee: *"AirBook is 100% Passwordless. Zero passwords are stored in our database, protecting your organization from credential leaks."*
+3. **Active Session Management**: Users MUST be able to view all active login sessions with device metadata (OS, browser, IP) and revoke individual or all other remote sessions at any time.
+4. **Security Messaging**: Settings and login pages MUST display the green status security guarantee: *"AirBook is 100% Passwordless. Zero passwords are stored in our database, protecting your organization from credential leaks."*
+
+# Mandatory Tenant Studio vs. Internal Platform DAM Isolation Rule
+
+Tenant-facing studio modules (e.g. Brand Studio, Storefront Customizer) MUST strictly serve the salon/spa's public branding and NEVER leak internal AirBook design assets.
+
+1. **Tenant-Facing Studio Scope**: The default Brand Studio MUST only present client brand assets:
+   - **Identidad de Marca**: Salon name, bio, logo upload, brand color pickers, cover banners, social links.
+   - **Vista Previa en Vivo**: Interactive preview of the client's public booking flow (`/book/[slug]`).
+   - **Incrustar y Enlaces**: Public URL copy and dynamic embed badge snippet.
+2. **Internal Platform Asset Isolation**: Internal AirBook platform design assets (3D cloud badges, UI glyph sets, and master `public/logo.svg` code) MUST NEVER be shown directly to salon operators and must remain isolated behind developer tools.
 
 # Mandatory LobeHub Icons Standalone Import Rule
 
