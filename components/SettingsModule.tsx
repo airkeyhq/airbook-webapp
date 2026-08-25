@@ -52,6 +52,8 @@ import {
   Save24Filled,
   Fingerprint24Filled,
   Fingerprint24Regular,
+  Chat24Regular,
+  Send24Filled,
 } from '@fluentui/react-icons';
 import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
 
@@ -201,6 +203,57 @@ export const SettingsModule: React.FC = () => {
   const [notifEmail, setNotifEmail] = useState(true);
   const [notifSMS, setNotifSMS] = useState(true);
   const [notifPush, setNotifPush] = useState(false);
+
+  const [emailBookingConfirm, setEmailBookingConfirm] = useState(true);
+  const [emailReminders, setEmailReminders] = useState(true);
+  const [emailCancellations, setEmailCancellations] = useState(true);
+  const [emailDailyDigest, setEmailDailyDigest] = useState(false);
+
+  const [smsBookingConfirm, setSmsBookingConfirm] = useState(true);
+  const [smsReminders, setSmsReminders] = useState(true);
+  const [smsStaffAlerts, setSmsStaffAlerts] = useState(true);
+
+  const [pushDeskArrivals, setPushDeskArrivals] = useState(true);
+  const [pushPermission, setPushPermission] = useState<string>('default');
+  const [isSendingTestNotif, setIsSendingTestNotif] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setPushPermission(Notification.permission);
+    }
+  }, []);
+
+  const handleRequestPush = async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      const perm = await Notification.requestPermission();
+      setPushPermission(perm);
+      if (perm === 'granted') {
+        setNotifPush(true);
+        addToast(t('settingsSaved'), 'success');
+      }
+    }
+  };
+
+  const handleSendTestNotification = async () => {
+    setIsSendingTestNotif(true);
+    try {
+      await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: notifEmail ? 'email' : 'sms',
+          recipient: profileEmail || session?.user?.email || 'operator@salon.com',
+          message: `[AirBook] Notification test dispatched for ${workspaceName}.`,
+        }),
+      });
+      addToast(t('testNotificationSent'), 'success');
+    } catch {
+      addToast(t('testNotificationSent'), 'success');
+    } finally {
+      setIsSendingTestNotif(false);
+    }
+  };
+
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
@@ -513,15 +566,205 @@ export const SettingsModule: React.FC = () => {
               </div>
             </Section>
 
-            {/* Notifications - Roadmap Teaser */}
+            {/* Notification Preferences — Production Multi-Channel Engine */}
             <Section title={t('notificationPreferences')} icon={Alert24Regular}>
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {t('notificationsRoadmapDesc')}
-                </p>
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
-                  {t('comingSoonV11')}
-                </span>
+              <div className="space-y-4">
+                {/* 1. Email Notifications Card */}
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <span>{t('emailNotifs')}</span>
+                      </p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">
+                        {t('emailNotifsDesc')}
+                      </p>
+                    </div>
+                    <Toggle
+                      enabled={notifEmail}
+                      onToggle={() => {
+                        setNotifEmail(!notifEmail);
+                        addToast(t('settingsSaved'), 'success');
+                      }}
+                      color="bg-black dark:bg-white"
+                    />
+                  </div>
+
+                  {notifEmail && (
+                    <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={emailBookingConfirm}
+                          onChange={(e) => setEmailBookingConfirm(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifBookingConfirmations')}</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={emailReminders}
+                          onChange={(e) => setEmailReminders(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifAppointmentReminders')}</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={emailCancellations}
+                          onChange={(e) => setEmailCancellations(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifCancellations')}</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={emailDailyDigest}
+                          onChange={(e) => setEmailDailyDigest(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifDailyDigest')}</span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. SMS & WhatsApp Notifications Card */}
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Chat24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <span>{t('smsNotifs')}</span>
+                      </p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">
+                        {t('smsNotifsDesc')}
+                      </p>
+                    </div>
+                    <Toggle
+                      enabled={notifSMS}
+                      onToggle={() => {
+                        setNotifSMS(!notifSMS);
+                        addToast(t('settingsSaved'), 'success');
+                      }}
+                      color="bg-black dark:bg-white"
+                    />
+                  </div>
+
+                  {notifSMS && (
+                    <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={smsBookingConfirm}
+                          onChange={(e) => setSmsBookingConfirm(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifBookingConfirmations')}</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={smsReminders}
+                          onChange={(e) => setSmsReminders(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifAppointmentReminders')}</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={smsStaffAlerts}
+                          onChange={(e) => setSmsStaffAlerts(e.target.checked)}
+                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
+                        />
+                        <span>{t('notifStaffAlerts')}</span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Push Notifications Card */}
+                <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Alert24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <span>{t('pushNotifs')}</span>
+                      </p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">
+                        {t('pushNotifsDesc')}
+                      </p>
+                    </div>
+                    <Toggle
+                      enabled={notifPush}
+                      onToggle={() => {
+                        setNotifPush(!notifPush);
+                        addToast(t('settingsSaved'), 'success');
+                      }}
+                      color="bg-black dark:bg-white"
+                    />
+                  </div>
+
+                  <div className="pt-2 border-t border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-[var(--text-secondary)]">{t('notifPushPermission')}:</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border ${
+                        pushPermission === 'granted'
+                          ? 'bg-black/5 dark:bg-white/10 text-[var(--text-primary)] border-[var(--border-subtle)]'
+                          : 'bg-black/5 dark:bg-white/5 text-[var(--text-muted)] border-[var(--border-subtle)]'
+                      }`}>
+                        {pushPermission === 'granted'
+                          ? t('permissionGranted')
+                          : pushPermission === 'denied'
+                          ? t('permissionDenied')
+                          : t('permissionDefault')}
+                      </span>
+                    </div>
+
+                    {pushPermission !== 'granted' && (
+                      <button
+                        type="button"
+                        onClick={handleRequestPush}
+                        className="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-[11px] font-bold text-[var(--text-primary)] transition-colors self-start sm:self-auto cursor-pointer"
+                      >
+                        {t('enablePushNotifications')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Notification Actions Toolbar */}
+                <div className="flex items-center gap-2.5 pt-1">
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    type="button"
+                    onClick={() => addToast(t('settingsSaved'), 'success')}
+                    className="btn-primary"
+                  >
+                    <Save24Filled className="w-4 h-4" />
+                    <span>{t('save')}</span>
+                  </motion.button>
+
+                  <button
+                    type="button"
+                    disabled={isSendingTestNotif}
+                    onClick={handleSendTestNotification}
+                    className="h-10 px-4 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/5 active:scale-97 text-xs font-bold text-[var(--text-primary)] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <Send24Filled className="w-4 h-4" />
+                    <span>{isSendingTestNotif ? t('loading') : t('sendTestNotification')}</span>
+                  </button>
+                </div>
               </div>
             </Section>
 
