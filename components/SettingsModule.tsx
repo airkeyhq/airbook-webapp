@@ -767,19 +767,6 @@ export const SettingsModule: React.FC = () => {
                 </div>
               </div>
             </Section>
-
-            {/* Passwordless & OAuth Security Section */}
-            <Section title={t('passwordlessSecurity')} icon={Shield24Regular}>
-              <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 space-y-3">
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  {t('passwordlessDesc')}
-                </p>
-                <div className="flex items-center gap-2 pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                  <ShieldCheckmark24Regular className="w-4 h-4 flex-shrink-0" />
-                  <span>{t('passwordlessBadge')}</span>
-                </div>
-              </div>
-            </Section>
           </motion.div>
         )}
 
