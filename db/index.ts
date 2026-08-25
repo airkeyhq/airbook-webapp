@@ -1,5 +1,5 @@
-import { Pool } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
 
 const connectionString = process.env.DATABASE_URL || (
@@ -12,8 +12,6 @@ if (process.env.NODE_ENV === 'production' && !connectionString) {
   throw new Error('FATAL: DATABASE_URL environment variable is required in production.');
 }
 
-const pool = new Pool({
-  connectionString,
-});
+const client = neon(connectionString);
 
-export const db = drizzle(pool, { schema });
+export const db = drizzle(client, { schema });
