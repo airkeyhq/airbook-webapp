@@ -461,9 +461,12 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setPhone('');
         addToast(t('staffSpecialistAdded'), 'success');
         fetchStaff();
+      } else {
+        addToast(data.error || 'Failed to add staff member', 'error');
       }
     } catch (err) {
       console.error('Failed to add staff:', err);
+      addToast('Failed to add staff member', 'error');
     } finally {
       setSubmitting(false);
     }

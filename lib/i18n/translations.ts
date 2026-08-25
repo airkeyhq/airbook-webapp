@@ -386,6 +386,7 @@ export const translations = {
     availableRetail: 'Available for Retail Sale (uncheck for Back-Bar Internal Use)',
     saveProduct: 'Save Product',
     productSaved: 'Product saved successfully!',
+    serviceSaved: 'Service saved successfully!',
     productDeleted: 'Product removed from catalog!',
 
     // Services Module
@@ -1620,6 +1621,7 @@ export const translations = {
     availableRetail: 'Disponible para venta al público (desmarcar para uso interno)',
     saveProduct: 'Guardar Producto',
     productSaved: '¡Producto guardado con éxito!',
+    serviceSaved: '¡Servicio guardado con éxito!',
     productDeleted: '¡Producto eliminado del catálogo!',
 
     // Services Module
@@ -2853,6 +2855,7 @@ export const translations = {
     availableRetail: 'Für den Verkauf verfügbar (deaktivieren für internen Gebrauch)',
     saveProduct: 'Produkt speichern',
     productSaved: 'Produkt erfolgreich gespeichert!',
+    serviceSaved: 'Dienstleistung erfolgreich gespeichert!',
     productDeleted: 'Produkt aus dem Katalog entfernt!',
 
     // Services Module
@@ -4086,6 +4089,7 @@ export const translations = {
     availableRetail: 'Disponible pour la vente au détail (décocher pour usage interne)',
     saveProduct: 'Enregistrer le produit',
     productSaved: 'Produit enregistré avec succès !',
+    serviceSaved: 'Prestation enregistrée avec succès !',
     productDeleted: 'Produit supprimé du catalogue !',
 
     // Services Module

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useToast } from './Toast';
 import { EmptyState } from './EmptyState';
 import { FloatingInput } from './FloatingInput';
 import { useAirBookStore } from '@/lib/store';
@@ -21,6 +22,7 @@ interface ServiceItem {
 
 export const ServicesModule: React.FC = () => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const [serviceList, setServiceList] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
@@ -84,10 +86,14 @@ export const ServicesModule: React.FC = () => {
       if (data.success) {
         setName('');
         setShowForm(false);
+        addToast(t('serviceSaved') || 'Service saved successfully!', 'success');
         fetchServices();
+      } else {
+        addToast(data.error || 'Failed to create service', 'error');
       }
     } catch (err) {
       console.error('Failed to create service:', err);
+      addToast('Failed to create service', 'error');
     } finally {
       setSubmitting(false);
     }
