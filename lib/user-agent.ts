@@ -54,6 +54,14 @@ export function parseUserAgent(ua?: string | null): DeviceInfo {
     browser = 'Opera';
   }
 
+  // Fallbacks if undetected
+  if (os === 'Unknown OS') {
+    os = deviceType === 'mobile' ? 'iOS' : 'macOS';
+  }
+  if (browser === 'Unknown Browser') {
+    browser = deviceType === 'mobile' ? 'Safari' : 'Chrome';
+  }
+
   return {
     deviceType,
     os,

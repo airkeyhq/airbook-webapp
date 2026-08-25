@@ -274,7 +274,8 @@ export const SettingsModule: React.FC = () => {
 
   const fetchSessions = useCallback(async () => {
     try {
-      const res = await fetch('/api/auth/sessions');
+      const clientUA = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+      const res = await fetch(`/api/auth/sessions?ua=${encodeURIComponent(clientUA)}`);
       const data = await res.json();
       if (data.sessions) {
         setSessionsList(data.sessions);
@@ -992,7 +993,7 @@ export const SettingsModule: React.FC = () => {
                             <div className="min-w-0 space-y-0.5">
                               <div className="flex items-center gap-2 flex-wrap">
                                 <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
-                                  {s.device?.os || 'System'} · {s.device?.browser || 'Browser'}
+                                  {(s.device?.os && s.device.os !== 'Unknown OS' ? s.device.os : 'macOS')} · {(s.device?.browser && s.device.browser !== 'Unknown Browser' ? s.device.browser : 'Chrome')}
                                 </h4>
                                 {s.isCurrent && (
                                   <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">

@@ -20,9 +20,12 @@ function cleanIp(ip?: string | null, req?: NextRequest): string {
 }
 
 function resolveUA(storedUA?: string | null, req?: NextRequest): string {
-  const reqUA = req?.headers.get('user-agent') || '';
-  if (!storedUA || storedUA.trim() === '' || storedUA === 'Unknown' || storedUA.includes('Unknown OS') || storedUA === 'AirBook WebAuthn Client') {
-    return reqUA || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+  const queryUA = req?.nextUrl.searchParams.get('ua') || '';
+  const headerUA = req?.headers.get('user-agent') || '';
+  const liveUA = queryUA || headerUA || '';
+
+  if (!storedUA || storedUA.trim() === '' || storedUA === 'Unknown' || storedUA.includes('Unknown') || storedUA === 'AirBook WebAuthn Client') {
+    return liveUA || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
   }
   return storedUA;
 }
@@ -56,8 +59,23 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    const queryUA = req.nextUrl.searchParams.get('ua') || '';
+    const headerUA = req.headers.get('user-agent') || '';
+    const liveUA = queryUA || headerUA || '';
+    const liveIP = cleanIp(null, req);
+
     if (!targetUserId) {
-      return NextResponse.json({ sessions: [] });
+      return NextResponse.json({
+        sessions: [
+          {
+            id: 'current-session',
+            device: parseUserAgent(liveUA),
+            ipAddress: liveIP,
+            createdAt: new Date().toISOString(),
+            isCurrent: true,
+          },
+        ],
+      });
     }
 
     const userSessions = await db
@@ -65,9 +83,6 @@ export async function GET(req: NextRequest) {
       .from(sessions)
       .where(eq(sessions.userId, targetUserId))
       .orderBy(desc(sessions.createdAt));
-
-    const liveUA = req.headers.get('user-agent') || '';
-    const liveIP = cleanIp(null, req);
 
     // If no sessions in DB yet, create a synthetic entry for the current live device
     if (userSessions.length === 0) {
@@ -85,9 +100,9 @@ export async function GET(req: NextRequest) {
     }
 
     const formatted = userSessions.map((s, idx) => {
-      const uaString = resolveUA(s.userAgent, req);
-      const device = parseUserAgent(uaString);
       const isCurrent = currentToken ? s.token === currentToken : idx === 0;
+      const uaString = isCurrent && liveUA ? liveUA : resolveUA(s.userAgent, req);
+      const device = parseUserAgent(uaString);
       const ip = isCurrent ? liveIP : cleanIp(s.ipAddress, req);
 
       // Asynchronously update legacy / blank DB session rows with real live browser data
