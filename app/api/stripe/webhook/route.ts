@@ -14,8 +14,13 @@ export async function POST(req: NextRequest) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (webhookSecret && signature && !webhookSecret.includes('mock')) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    } else if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { error: 'Missing or invalid Stripe webhook signature.' },
+        { status: 400 }
+      );
     } else {
-      // Mock event parsing for dev testing
+      // Mock event parsing for local offline dev testing
       event = JSON.parse(body);
     }
   } catch (err: any) {

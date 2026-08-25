@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { clients, appointments } from '@/db/schema';
-import { eq, ilike, or, desc } from 'drizzle-orm';
+import { eq, and, ilike, or, desc } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 
 export async function GET(req: Request) {
@@ -12,22 +12,21 @@ export async function GET(req: Request) {
 
     const workspaceId = await getActiveWorkspaceId(workspaceIdParam);
 
-    const conditions = [eq(clients.workspaceId, workspaceId)];
-
-    if (query) {
-      conditions.push(
-        or(
-          ilike(clients.name, `%${query}%`),
-          ilike(clients.email, `%${query}%`),
-          ilike(clients.phone, `%${query}%`)
-        )!
-      );
-    }
+    const whereClause = query
+      ? and(
+          eq(clients.workspaceId, workspaceId),
+          or(
+            ilike(clients.name, `%${query}%`),
+            ilike(clients.email, `%${query}%`),
+            ilike(clients.phone, `%${query}%`)
+          )
+        )
+      : eq(clients.workspaceId, workspaceId);
 
     let clientList = await db
       .select()
       .from(clients)
-      .where(conditions.length === 1 ? conditions[0] : or(...conditions))
+      .where(whereClause)
       .orderBy(desc(clients.createdAt));
 
     // Auto-seed diverse sample clients in development mode if empty
