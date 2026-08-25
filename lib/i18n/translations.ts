@@ -38,6 +38,7 @@ export const translations = {
     cancel: 'Cancel',
     save: 'Save',
     saving: 'Saving…',
+    loading: 'Loading…',
     delete: 'Delete',
     confirm: 'Confirm',
     edit: 'Edit',
@@ -847,6 +848,12 @@ export const translations = {
     timeout10Min: '10 Minutes',
     timeoutOff: 'Never (Disabled)',
     emergencyUnlock: 'Manager Master Unlock (0000)',
+    unlockWithPasskey: 'Unlock with Passkey / Biometrics',
+    passkeyBiometrics: 'Passkey & Biometric Authentication',
+    passkeyBiometricsDesc: 'Use Apple Touch ID, Face ID, or Windows Hello for instant station unlocking.',
+    registerPasskey: 'Register Device Passkey',
+    passkeyRegisteredSuccess: 'Passkey successfully registered on this station!',
+    passkeyAuthFailed: 'Passkey verification cancelled or not recognized.',
 
     // v2.1 — Offline-First PWA & Web Push
     pwaInstalled: 'AirBook installed as an app',
@@ -1216,6 +1223,7 @@ export const translations = {
     cancel: 'Cancelar',
     save: 'Guardar',
     saving: 'Guardando…',
+    loading: 'Cargando…',
     delete: 'Eliminar',
     confirm: 'Confirmar',
     edit: 'Editar',
@@ -2025,6 +2033,12 @@ export const translations = {
     timeout10Min: '10 Minutos',
     timeoutOff: 'Nunca (Desactivado)',
     emergencyUnlock: 'Desbloqueo Maestro de Gerencia (0000)',
+    unlockWithPasskey: 'Desbloquear con Passkey / Face ID',
+    passkeyBiometrics: 'Autenticación Biométrica y Passkey',
+    passkeyBiometricsDesc: 'Usa Apple Touch ID, Face ID o Windows Hello para desbloquear la estación al instante.',
+    registerPasskey: 'Registrar Passkey de Dispositivo',
+    passkeyRegisteredSuccess: '¡Passkey registrada con éxito en esta estación!',
+    passkeyAuthFailed: 'Verificación de Passkey cancelada o no reconocida.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook instalada como app',
@@ -2393,6 +2407,7 @@ export const translations = {
     cancel: 'Abbrechen',
     save: 'Speichern',
     saving: 'Speichern…',
+    loading: 'Laden…',
     delete: 'Löschen',
     confirm: 'Bestätigen',
     edit: 'Bearbeiten',
@@ -3202,6 +3217,12 @@ export const translations = {
     timeout10Min: '10 Minuten',
     timeoutOff: 'Nie (Deaktiviert)',
     emergencyUnlock: 'Manager-Master-Entsperrung (0000)',
+    unlockWithPasskey: 'Mit Passkey / Biometrie entsperren',
+    passkeyBiometrics: 'Passkey & Biometrische Authentifizierung',
+    passkeyBiometricsDesc: 'Nutzen Sie Apple Touch ID, Face ID oder Windows Hello für sofortiges Entsperren.',
+    registerPasskey: 'Geräte-Passkey registrieren',
+    passkeyRegisteredSuccess: 'Passkey erfolgreich für diese Station registriert!',
+    passkeyAuthFailed: 'Passkey-Verifizierung abgebrochen oder nicht erkannt.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook als App installiert',
@@ -3570,6 +3591,7 @@ export const translations = {
     cancel: 'Annuler',
     save: 'Enregistrer',
     saving: 'Enregistrement…',
+    loading: 'Chargement…',
     delete: 'Supprimer',
     confirm: 'Confirmer',
     edit: 'Modifier',
@@ -4380,6 +4402,12 @@ export const translations = {
     timeout10Min: '10 Minutes',
     timeoutOff: 'Jamais (Désactivé)',
     emergencyUnlock: 'Déverrouillage Maître Directeur (0000)',
+    unlockWithPasskey: 'Déverrouiller avec Passkey / Biométrie',
+    passkeyBiometrics: 'Authentification Biométrique & Passkey',
+    passkeyBiometricsDesc: 'Utilisez Apple Touch ID, Face ID ou Windows Hello pour déverrouiller la station instantanément.',
+    registerPasskey: 'Enregistrer la Passkey de l’Appareil',
+    passkeyRegisteredSuccess: 'Passkey enregistrée avec succès pour cette station !',
+    passkeyAuthFailed: 'Vérification Passkey annulée ou non reconnue.',
 
     // v2.1 — PWA & Push
     pwaInstalled: 'AirBook installée comme application',

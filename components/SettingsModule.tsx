@@ -50,7 +50,10 @@ import {
   CheckmarkCircle24Filled,
   Edit24Filled,
   Save24Filled,
+  Fingerprint24Filled,
+  Fingerprint24Regular,
 } from '@fluentui/react-icons';
+import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
 
 type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations' | 'domain';
 
@@ -138,6 +141,8 @@ export const SettingsModule: React.FC = () => {
     deleteStation,
     posSecurityEnabled,
     setPosSecurityEnabled,
+    posPasskeyEnabled,
+    setPosPasskeyEnabled,
     posPasscode,
     setPosPasscode,
     posAutoLockTimeout,
@@ -145,6 +150,27 @@ export const SettingsModule: React.FC = () => {
     lockPos,
   } = useAirBookStore();
   const [tempPasscode, setTempPasscode] = useState(posPasscode);
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
+
+  useEffect(() => {
+    isPasskeySupported().then(setPasskeySupported);
+  }, []);
+
+  const handleRegisterPasskey = async () => {
+    setIsRegisteringPasskey(true);
+    try {
+      const registered = await registerStationPasskey(session?.user?.name || 'Operator', workspaceName);
+      if (registered) {
+        addToast(t('passkeyRegisteredSuccess'), 'success');
+      }
+    } catch (err: any) {
+      addToast(err.message || t('passkeyAuthFailed'), 'error');
+    } finally {
+      setIsRegisteringPasskey(false);
+    }
+  };
+
   const [isAddStationModalOpen, setIsAddStationModalOpen] = useState(false);
   const [newStationName, setNewStationName] = useState('');
   const [newStationCategory, setNewStationCategory] = useState('Hair & Styling');
@@ -756,6 +782,43 @@ export const SettingsModule: React.FC = () => {
                   icon={<LockClosed24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
                 />
               </div>
+
+              {/* Biometric Passkey Setting */}
+              {passkeySupported && (
+                <div className="p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                        <span>{t('passkeyBiometrics')}</span>
+                      </p>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                        {t('passkeyBiometricsDesc')}
+                      </p>
+                    </div>
+                    <Toggle
+                      enabled={posPasskeyEnabled}
+                      onToggle={() => {
+                        setPosPasskeyEnabled(!posPasskeyEnabled);
+                        addToast(t('settingsSaved'), 'success');
+                      }}
+                      color="bg-black dark:bg-white"
+                    />
+                  </div>
+
+                  <div className="pt-2 border-t border-black/5 dark:border-white/5 flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={isRegisteringPasskey}
+                      onClick={handleRegisterPasskey}
+                      className="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Fingerprint24Regular className="w-4 h-4" />
+                      <span>{isRegisteringPasskey ? t('loading') || 'Registering…' : t('registerPasskey')}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center gap-2.5 pt-1">
                 <button

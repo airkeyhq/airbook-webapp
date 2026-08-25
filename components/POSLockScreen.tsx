@@ -5,20 +5,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { CircleCloudIcon } from '@/components/Logo';
+import { isPasskeySupported, authenticateStationPasskey } from '@/lib/passkey';
 import {
   LockClosed24Filled,
   Dismiss24Filled,
   Backspace24Filled,
   ShieldCheckmark24Regular,
+  Fingerprint24Filled,
 } from '@fluentui/react-icons';
 
 export const POSLockScreen: React.FC = () => {
-  const { isPosLocked, unlockPos, workspaceName } = useAirBookStore();
+  const { isPosLocked, unlockPos, unlockPosWithPasskey, posPasskeyEnabled, workspaceName } = useAirBookStore();
   const { t } = useTranslation();
 
   const [pin, setPin] = useState<string>('');
   const [errorShake, setErrorShake] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
+
+  useEffect(() => {
+    isPasskeySupported().then((supported) => setPasskeySupported(supported));
+  }, []);
 
   const handleDigit = useCallback(
     (digit: string) => {
@@ -58,6 +66,24 @@ export const POSLockScreen: React.FC = () => {
     setErrorMsg(null);
   }, []);
 
+  const handlePasskeyAuth = async () => {
+    setIsPasskeyLoading(true);
+    setErrorMsg(null);
+    try {
+      const verified = await authenticateStationPasskey();
+      if (verified) {
+        setPin('');
+        unlockPosWithPasskey();
+      } else {
+        setErrorMsg(t('passkeyAuthFailed'));
+      }
+    } catch {
+      setErrorMsg(t('passkeyAuthFailed'));
+    } finally {
+      setIsPasskeyLoading(false);
+    }
+  };
+
   // Handle Physical Keyboard Inputs
   useEffect(() => {
     if (!isPosLocked) return;
@@ -86,7 +112,7 @@ export const POSLockScreen: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="w-full max-w-sm rounded-[32px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center space-y-6 relative overflow-hidden"
+          className="w-full max-w-sm rounded-[32px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center space-y-5 relative overflow-hidden"
         >
           {/* Top Logo & Station Lock Badge */}
           <div className="flex flex-col items-center space-y-2">
@@ -109,11 +135,25 @@ export const POSLockScreen: React.FC = () => {
             </div>
           </div>
 
+          {/* Biometric Passkey Quick Unlock Button */}
+          {passkeySupported && posPasskeyEnabled && (
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={handlePasskeyAuth}
+              disabled={isPasskeyLoading}
+              className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+              <span>{isPasskeyLoading ? t('loading') || 'Verifying…' : t('unlockWithPasskey')}</span>
+            </motion.button>
+          )}
+
           {/* 4-Digit PIN Visual Indicators with Shake Animation */}
           <motion.div
             animate={errorShake ? { x: [-10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex items-center justify-center gap-4 py-2"
+            className="flex items-center justify-center gap-4 py-1"
           >
             {[0, 1, 2, 3].map((index) => {
               const isFilled = pin.length > index;

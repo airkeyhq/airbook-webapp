@@ -114,14 +114,17 @@ export interface AirBookState {
 
   // POS Inactivity Lock & 4-Digit Security Passcode
   posSecurityEnabled: boolean;
+  posPasskeyEnabled: boolean;
   posPasscode: string;
   posAutoLockTimeout: number; // minutes: 1, 2, 5, 10, 0 = off
   isPosLocked: boolean;
   setPosSecurityEnabled: (enabled: boolean) => void;
+  setPosPasskeyEnabled: (enabled: boolean) => void;
   setPosPasscode: (passcode: string) => void;
   setPosAutoLockTimeout: (minutes: number) => void;
   lockPos: () => void;
   unlockPos: (passcode: string) => boolean;
+  unlockPosWithPasskey: () => void;
 
   // Data Collections
   services: Service[];
@@ -347,10 +350,12 @@ export const useAirBookStore = create<AirBookState>((set) => ({
 
   // POS Inactivity Lock & 4-Digit Passcode Defaults
   posSecurityEnabled: true,
+  posPasskeyEnabled: true,
   posPasscode: '1234',
   posAutoLockTimeout: 2,
   isPosLocked: false,
   setPosSecurityEnabled: (enabled) => set({ posSecurityEnabled: enabled }),
+  setPosPasskeyEnabled: (enabled) => set({ posPasskeyEnabled: enabled }),
   setPosPasscode: (passcode) => set({ posPasscode: passcode }),
   setPosAutoLockTimeout: (minutes) => set({ posAutoLockTimeout: minutes }),
   lockPos: () => set({ isPosLocked: true }),
@@ -365,6 +370,7 @@ export const useAirBookStore = create<AirBookState>((set) => ({
     });
     return success;
   },
+  unlockPosWithPasskey: () => set({ isPosLocked: false }),
 
   // Defaults to empty array so real DB data populates without hardcoded overrides!
   services: [],
