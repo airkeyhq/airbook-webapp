@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { FloatingInput } from '@/components/FloatingInput';
@@ -23,11 +23,17 @@ import GoogleColor from '@lobehub/icons/es/Google/components/Color';
 
 type AuthMode = 'signin' | 'signup';
 
-export default function LoginPage() {
+function LoginFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
-  const [mode, setMode] = useState<AuthMode>('signin');
-  const [email, setEmail] = useState('');
+
+  const urlEmail = searchParams.get('email') || '';
+  const urlMode = searchParams.get('mode') === 'signup' ? 'signup' : 'signin';
+  const urlRedirect = searchParams.get('redirect') || '';
+
+  const [mode, setMode] = useState<AuthMode>(urlMode);
+  const [email, setEmail] = useState(urlEmail);
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
@@ -38,6 +44,11 @@ export default function LoginPage() {
   useEffect(() => {
     isPasskeySupported().then((supported) => setPasskeyAvailable(supported));
   }, []);
+
+  useEffect(() => {
+    if (urlEmail) setEmail(urlEmail);
+    if (searchParams.get('mode') === 'signup') setMode('signup');
+  }, [urlEmail, searchParams]);
 
   const resetForm = () => {
     setError(null);
@@ -80,9 +91,10 @@ export default function LoginPage() {
     setSuccessMessage(null);
 
     try {
+      const targetUrl = urlRedirect || (mode === 'signup' ? '/onboarding' : '/dashboard');
       const res = await signIn.magicLink({
         email,
-        callbackURL: mode === 'signup' ? '/onboarding' : '/dashboard',
+        callbackURL: targetUrl,
       });
       if (res?.error) {
         setError(res.error.message || 'Could not send magic link.');
@@ -172,7 +184,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={async () => {
-              const res = await signIn.social({ provider: 'google', callbackURL: '/dashboard' });
+              const res = await signIn.social({ provider: 'google', callbackURL: urlRedirect || '/dashboard' });
               if (res?.data?.url) window.location.href = res.data.url;
             }}
             className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
@@ -237,6 +249,18 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F5F6FA] dark:bg-[#0C0C10] flex items-center justify-center">
+        <Logo size={48} animated />
+      </div>
+    }>
+      <LoginFormContent />
+    </Suspense>
   );
 }
 

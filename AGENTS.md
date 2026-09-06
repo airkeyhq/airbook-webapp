@@ -147,6 +147,21 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       5. Curated luxury salon DNA presets (`DEFAULT_AIRBOOK_PRESETS`: Electric Sky `#2BB5FF`, Matte Onyx `#0F172A`, Rose Gold `#E07A5F`, Champagne Silk `#D4A373`, Emerald Sage `#2A9D8F`, French Lavender `#8338EC`, Coral Sunset `#FF006E`, Pure Titanium `#64748B`).
       6. Manual HEX validation with auto-formatting and instant visual swatch update.
 
+21. **Mandatory Concentric Nested Capsule Geometry & User Navigation Invariant (`<GoToAppPill />`)**:
+    - **Concentric Radius Formula**: Nested rounded pills and capsules MUST strictly adhere to the geometric concentricity invariant:
+      $$\text{Outer Radius} = \text{Inner Radius} + \text{Padding}$$
+      $$\text{Inner Radius} = \text{Outer Radius} - \text{Padding}$$
+    - **Standard Navigation Capsule Geometry (`40px` Outer / `28px` Inner / `6px` Uniform Padding)**:
+      - **Outer Capsule**: Height `40px` (`h-10`), `rounded-full` $\rightarrow$ $\text{Outer Radius} = 20\text{px}$, uniform padding `p-[6px]` (6px top, bottom, left, right), `bg-[var(--bg-secondary)]`, `border-[var(--border-subtle)]`.
+      - **Nested Inner Action Pill**: Height `28px` (`!h-7 !px-3 !rounded-full text-[11px]`) $\rightarrow$ $\text{Inner Radius} = 14\text{px}$ ($20\text{px} - 6\text{px} = 14\text{px}$). Must use `!` specificity overrides (`!h-7 !rounded-full`) to prevent global button CSS from collapsing nested vertical padding.
+      - **Avatar Placement**: `28px × 28px` (`w-7 h-7 rounded-full object-cover ring-2 ring-[var(--bg-primary)]`) with an active green pulse status dot (`w-2 h-2 bg-emerald-500 ring-1.5`).
+    - **Zero Duplicate CTAs on Marketing Pages**: When a user is authenticated (`session?.user`), marketing headers and landing pages MUST auto-detect active sessions, suppress "Get Started Free" conversion CTAs, and render the authentic `<GoToAppPill />` pointing directly to `/dashboard`.
+
+22. **Mandatory Demo Storefront Protection & Bot Armor Rule**:
+    - **Freemium Identity Gate on Demo Previews**: Public exploration of live demo storefronts (e.g. `/book/eduardos-lounge`, `/book/demo`, `/book/solaris-spa`) MUST strictly require an active or freemium registered session (`session?.user`). Unauthenticated visitors must be prompted with the passwordless Freemium Shield Gate linking to `/onboarding?redirect=...`.
+    - **Real Client Booking Preservation**: Real registered tenant booking pages (`/book/[tenant-slug]`) remain open for actual salon clients to book appointments seamlessly.
+    - **Invisible Anti-Bot Honeypots**: All public booking forms and API handlers (`/api/bookings/create`) MUST implement hidden honeypot traps (`_airbook_hp_check`) to detect and reject automated scrapers and bots immediately with HTTP 403.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

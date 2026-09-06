@@ -502,3 +502,18 @@ export const apiKeys = pgTable('api_keys', {
   revokedAt: timestamp('revoked_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// =============================================================================
+// MODULE 14: MARKETING NEWSLETTER & DISPATCH SUBSCRIBERS
+// =============================================================================
+
+export const newsletterSubscribers = pgTable('newsletter_subscribers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
+  locale: varchar('locale', { length: 10 }).default('en').notNull(),
+  source: varchar('source', { length: 50 }).default('marketing_footer').notNull(),
+  status: varchar('status', { length: 20 }).default('active').notNull(), // 'active' | 'unsubscribed'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

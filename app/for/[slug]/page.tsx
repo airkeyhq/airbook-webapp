@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useSession } from '@/lib/auth-client';
 import { getDemoSpecialists } from '@/lib/i18n/demographics';
 import Logo from '@/components/Logo';
 import {
@@ -566,6 +567,7 @@ export default function IndustryFunnelPage() {
   }
 
   const currentLang = (['en', 'es', 'de', 'fr'].includes(language) ? language : 'en') as 'en' | 'es' | 'de' | 'fr';
+  const { data: session } = useSession();
   const leadSpecialist = getDemoSpecialists(language)[0];
 
   const [demoSlot, setDemoSlot] = useState('11:30 AM');
@@ -605,15 +607,25 @@ export default function IndustryFunnelPage() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
+              {session?.user ? (
+                <Link
+                  href="/dashboard"
+                  className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
+                >
+                  <span>{t('goToDashboard')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <Link
+                  href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
+                  className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
+                >
+                  <span>{t('startFreeTrialBtn')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              )}
               <Link
-                href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
-                className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
-              >
-                <span>{t('startFreeTrialBtn')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
-              </Link>
-              <Link
-                href="/book/eduardos-lounge"
+                href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`}
                 className="px-5 py-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors flex items-center gap-2 shadow-xs"
               >
                 <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
@@ -821,13 +833,23 @@ export default function IndustryFunnelPage() {
             {t('ctaBannerSubtitle')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Link
-              href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
-              className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
-            >
-              <span>{t('startFreeTrialBtn')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
+            {session?.user ? (
+              <Link
+                href="/dashboard"
+                className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
+              >
+                <span>{t('goToDashboard')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <Link
+                href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
+                className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
+              >
+                <span>{t('startFreeTrialBtn')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            )}
           </div>
         </div>
       </section>

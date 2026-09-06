@@ -1,18 +1,113 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Heart24Filled } from '@fluentui/react-icons';
+import { useSession } from '@/lib/auth-client';
+import { Heart24Filled, Mail24Regular, News24Regular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
 import { LanguageSelector } from '@/components/LanguageSelector';
 
 export const MarketingFooter: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { data: session } = useSession();
+  const [dispatchEmail, setDispatchEmail] = useState('');
+  const [hpTrap, setHpTrap] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleDispatchSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!dispatchEmail.trim() || submitting) return;
+
+    try {
+      setSubmitting(true);
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: dispatchEmail.trim(),
+          locale: language,
+          source: 'marketing_footer',
+          _airbook_hp_check: hpTrap,
+        }),
+      });
+      if (res.ok) {
+        setIsSubscribed(true);
+        setDispatchEmail('');
+      }
+    } catch (err) {
+      console.error('Newsletter subscribe error:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)] py-14 relative z-10 text-xs text-[var(--text-secondary)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+        {/* Global Platform Dispatch Newsletter Banner */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xs">
+          <div className="flex items-start gap-3.5 max-w-xl">
+            <span className="w-9 h-9 rounded-xl bg-[#2BB5FF]/10 text-[#2BB5FF] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+              <News24Regular className="w-4.5 h-4.5" />
+            </span>
+            <div className="space-y-1">
+              <h3 className="text-sm sm:text-base font-black tracking-tight text-[var(--text-primary)]">
+                {t('footerDispatchTitle')}
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed">
+                {t('footerDispatchSubtitle')}
+              </p>
+            </div>
+          </div>
+
+          {/* Form / Success State */}
+          <div className="w-full lg:w-auto flex-shrink-0">
+            {isSubscribed ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold shadow-xs">
+                <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500" />
+                <span>{t('subscribedSuccess')}</span>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleDispatchSubmit}
+                className="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-[380px] p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
+              >
+                <div className="flex items-center gap-2 px-3 w-full">
+                  <Mail24Regular className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
+                  <input
+                    type="email"
+                    required
+                    value={dispatchEmail}
+                    onChange={(e) => setDispatchEmail(e.target.value)}
+                    placeholder={t('footerDispatchPlaceholder')}
+                    className="w-full bg-transparent text-xs font-medium text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none py-1.5"
+                  />
+                  {/* Invisible Honeypot Trap */}
+                  <input
+                    type="text"
+                    name="_airbook_hp_check"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={hpTrap}
+                    onChange={(e) => setHpTrap(e.target.value)}
+                    className="hidden opacity-0 pointer-events-none absolute -z-50"
+                    aria-hidden="true"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary w-full sm:w-auto h-9 px-4 rounded-xl text-xs font-extrabold whitespace-nowrap flex-shrink-0 cursor-pointer disabled:opacity-50"
+                >
+                  {submitting ? '...' : t('subscribe')}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Col 1: Brand & Security */}
           <div className="col-span-2 md:col-span-1 space-y-3">
@@ -83,7 +178,7 @@ export const MarketingFooter: React.FC = () => {
             <ul className="space-y-2">
               <li><Link href="/login" className="hover:text-[var(--text-primary)] transition-colors">{t('signIn')}</Link></li>
               <li><Link href="/dashboard" className="hover:text-[var(--text-primary)] transition-colors">{t('openDashboard')}</Link></li>
-              <li><Link href="/book/eduardos-lounge" className="hover:text-[var(--text-primary)] transition-colors">{t('seeLiveDemo')}</Link></li>
+              <li><Link href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`} className="hover:text-[var(--text-primary)] transition-colors">{t('seeLiveDemo')}</Link></li>
               <li><Link href="/#pricing" className="hover:text-[var(--text-primary)] transition-colors">{t('pricingNav')}</Link></li>
             </ul>
           </div>

@@ -7,9 +7,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useSession } from '@/lib/auth-client';
 import { BLOG_POSTS, BlogPost } from '@/lib/blog/articles';
 import {
   Sparkle24Regular,
+  Sparkle24Filled,
   ArrowRight24Filled,
   Clock24Regular,
   Calendar24Regular,
@@ -21,6 +23,7 @@ import {
 
 export default function BlogIndexPage() {
   const { t, language } = useTranslation();
+  const { data: session } = useSession();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const categories = [
@@ -260,13 +263,23 @@ export default function BlogIndexPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/onboarding"
-              className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
-            >
-              <span>{t('getStarted')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
+            {session?.user ? (
+              <Link
+                href="/dashboard"
+                className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
+              >
+                <span>{t('goToDashboard')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <Link
+                href="/onboarding"
+                className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
+              >
+                <span>{t('getStarted')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            )}
             <Link
               href="/help"
               className="btn-secondary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"

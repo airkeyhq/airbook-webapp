@@ -27,6 +27,12 @@ interface GuestInput {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    // Anti-bot honeypot check: If hidden trap is filled by automated scrapers/bots, reject immediately
+    if (body._airbook_hp_check || body.website_url_hp) {
+      console.warn('[Security] Bot booking attempt blocked via honeypot trap.');
+      return NextResponse.json({ error: 'Automated submission rejected.' }, { status: 403 });
+    }
+
     const {
       workspaceId: providedWorkspaceId,
       clientName,

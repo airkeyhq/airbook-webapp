@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '@/components/Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useSession } from '@/lib/auth-client';
+import { getAvatarUrl } from '@/lib/avatars';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { GoToAppPill } from '@/components/GoToAppPill';
 import {
   Sparkle24Filled,
   Sparkle24Regular,
@@ -34,6 +37,7 @@ import {
 
 export const MarketingHeader: React.FC = () => {
   const { t, language, setLanguage, availableLanguages } = useTranslation();
+  const { data: session } = useSession();
 
   const [activeNavDropdown, setActiveNavDropdown] = useState<'product' | 'solutions' | 'resources' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -428,20 +432,30 @@ export const MarketingHeader: React.FC = () => {
             {/* Reusable Circular Vector Flag Language Selector Component */}
             <LanguageSelector direction="down" format="code" size="md" />
 
-            <Link
-              href="/login"
-              className="hidden sm:inline-flex px-4 py-2.5 rounded-2xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-            >
-              {t('signIn')}
-            </Link>
+            {session?.user ? (
+              <GoToAppPill
+                name={session.user.name}
+                image={session.user.image}
+                email={session.user.email}
+              />
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="hidden sm:inline-flex px-4 py-2.5 rounded-2xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+                >
+                  {t('signIn')}
+                </Link>
 
-            <Link
-              href="/onboarding"
-              className="btn-primary flex items-center gap-1.5"
-            >
-              <span>{t('startFreeTrialBtn')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
+                <Link
+                  href="/onboarding"
+                  className="btn-primary flex items-center gap-1.5"
+                >
+                  <span>{t('startFreeTrialBtn')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              </>
+            )}
 
             {/* Mobile Hamburger Drawer Trigger */}
             <button
@@ -672,14 +686,45 @@ export const MarketingHeader: React.FC = () => {
 
               {/* Fast Action CTA */}
               <div className="pt-2">
-                <Link
-                  href="/onboarding"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
-                >
-                  <span>{t('signUpFree')}</span>
-                  <ArrowRight24Filled className="w-4 h-4" />
-                </Link>
+                {session?.user ? (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 shadow-xs group hover:border-[#2BB5FF]/40 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={getAvatarUrl(session.user.name || 'User', session.user.image)}
+                          alt={session.user.name || 'User'}
+                          className="w-10 h-10 rounded-full object-cover ring-2 ring-[var(--bg-primary)]"
+                        />
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[var(--bg-secondary)]" />
+                      </div>
+                      <div className="min-w-0 text-left">
+                        <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                          {session.user.name || 'Operator'}
+                        </p>
+                        <p className="text-[11px] text-[var(--text-secondary)] font-medium truncate">
+                          {session.user.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="btn-primary h-9 px-3.5 rounded-xl text-xs font-black flex items-center gap-1 flex-shrink-0 shadow-xs">
+                      <span>{t('goToApp')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </div>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/onboarding"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
+                  >
+                    <span>{t('signUpFree')}</span>
+                    <ArrowRight24Filled className="w-4 h-4" />
+                  </Link>
+                )}
               </div>
             </motion.div>
           </div>

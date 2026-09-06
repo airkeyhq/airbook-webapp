@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   format,
@@ -18,7 +19,7 @@ import {
 } from 'date-fns';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { signIn } from '@/lib/auth-client';
+import { signIn, useSession } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
 import {
@@ -31,6 +32,7 @@ import {
   PeopleTeam24Regular,
   CheckmarkCircle24Filled,
   Sparkle24Regular,
+  Sparkle24Filled,
   ArrowLeft24Filled,
   ArrowRight24Filled,
   ShieldCheckmark24Regular,
@@ -95,12 +97,14 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
   const slug = unwrappedParams?.slug || 'default';
   const { workspaceName, addAppointment } = useAirBookStore();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
+  const { data: session, isPending: isSessionPending } = useSession();
 
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [dbServices, setDbServices] = useState<PublicService[]>([]);
   const [dbStaff, setDbStaff] = useState<PublicStaff[]>([]);
   const [loadingDb, setLoadingDb] = useState(true);
   const [workspaceNotFound, setWorkspaceNotFound] = useState(false);
+  const [hpTrap, setHpTrap] = useState('');
 
   // Step 1 = Build party, Step 2 = Date & Time, Step 3 = Contact & Confirm
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -313,6 +317,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           workspaceId: workspace.id,
+          _airbook_hp_check: hpTrap,
           dateStr: format(selectedDate, 'yyyy-MM-dd'),
           startTime: selectedSlotTime,
           clientName: clientName.trim(),
@@ -482,6 +487,59 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
         </div>
         <h1 className="text-lg font-bold text-[var(--text-primary)]">{t('bookingPageNotFound')}</h1>
         <p className="text-xs text-[var(--text-secondary)] max-w-sm">{t('bookingPageNotFoundDesc')}</p>
+      </div>
+    );
+  }
+
+  const isDemoSlug = ['eduardos-lounge', 'demo', 'solaris-spa', 'preview', 'default'].includes(slug.toLowerCase());
+
+  // Shield demo exploration from bots & unregistered crawlers: requires freemium or active account
+  if (isDemoSlug && !session?.user && !isSessionPending && !loadingDb) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center justify-center p-4 sm:p-6 relative transition-colors duration-150">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#2BB5FF]/10 dark:bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center flex flex-col items-center gap-5 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center shadow-md">
+            <ShieldCheckmark24Regular className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+              <Sparkle24Filled className="w-3 h-3 text-[#2BB5FF]" />
+              <span>FREEMIUM PASS REQUIRED</span>
+            </div>
+            <h1 className="text-lg sm:text-xl font-black text-[var(--text-primary)] tracking-tight">
+              {t('demoStorefrontProtectedTitle')}
+            </h1>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-sm mx-auto">
+              {t('demoStorefrontProtectedDesc')}
+            </p>
+          </div>
+
+          <div className="w-full space-y-2.5 pt-2">
+            <Link
+              href={`/onboarding?redirect=${encodeURIComponent(`/book/${slug}`)}&reason=demo_storefront`}
+              className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold shadow-md"
+            >
+              <span>{t('unlockDemoBtn')}</span>
+              <ArrowRight24Filled className="w-4 h-4" />
+            </Link>
+
+            <Link
+              href={`/login?redirect=${encodeURIComponent(`/book/${slug}`)}`}
+              className="btn-secondary w-full h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold"
+            >
+              <span>{t('signIn')}</span>
+            </Link>
+          </div>
+
+          <div className="pt-2 border-t border-[var(--border-subtle)] w-full">
+            <p className="text-[10px] text-[var(--text-muted)] font-medium">
+              {t('antiBotProtectedNotice')}
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -1163,6 +1221,18 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                     {bookingError}
                   </div>
                 )}
+
+                {/* Invisible Anti-Bot Honeypot Trap */}
+                <div className="hidden opacity-0 pointer-events-none absolute -z-50" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="_airbook_hp_check"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={hpTrap}
+                    onChange={(e) => setHpTrap(e.target.value)}
+                  />
+                </div>
 
                 {/* Final Submit Button */}
                 <motion.button

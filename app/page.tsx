@@ -10,9 +10,11 @@ import { FeatureBentoGrid } from '@/components/FeatureBentoGrid';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useSession } from '@/lib/auth-client';
 import { getDemoSpecialists, getDemoClient } from '@/lib/i18n/demographics';
 import {
   Sparkle24Regular,
+  Sparkle24Filled,
   ArrowRight24Filled,
   Calendar24Regular,
   Calendar24Filled,
@@ -67,9 +69,9 @@ const AUTO_SCENARIOS = [
 
 export default function MarketingWebsite() {
   const { t, language, setLanguage, availableLanguages } = useTranslation();
+  const { data: session } = useSession();
   const router = useRouter();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const [signupEmail, setSignupEmail] = useState('');
 
   // Interactive Live Hero Booking Simulator State
   const [demoService, setDemoService] = useState(DEMO_SERVICES[0]);
@@ -322,15 +324,6 @@ export default function MarketingWebsite() {
 
   const currentLangObj = availableLanguages.find((l) => l.id === language) || availableLanguages[0];
 
-  const handleHeroSignupSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (signupEmail) {
-      router.push(`/onboarding?email=${encodeURIComponent(signupEmail)}`);
-    } else {
-      router.push('/onboarding');
-    }
-  };
-
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col justify-between selection:bg-[#2BB5FF] selection:text-white relative overflow-x-hidden font-sans">
@@ -418,32 +411,47 @@ export default function MarketingWebsite() {
             {t('heroDesc')}
           </motion.p>
 
-          {/* Email Fast Signup Trigger */}
-          <motion.form
+          {/* Paired Primary & Secondary Action CTAs */}
+          <motion.div
             initial={{ y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.22 }}
-            onSubmit={handleHeroSignupSubmit}
-            className="flex flex-col sm:flex-row items-center gap-2.5 max-w-md mx-auto p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-sm"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto w-full"
           >
-            <div className="flex items-center gap-2 px-3.5 w-full">
-              <Mail24Regular className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
-              <input
-                type="email"
-                value={signupEmail}
-                onChange={(e) => setSignupEmail(e.target.value)}
-                placeholder={t('heroCtaInputPlaceholder')}
-                className="w-full bg-transparent text-xs font-semibold text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none py-2"
-              />
-            </div>
+            {session?.user ? (
+              <Link
+                href="/dashboard"
+                className="btn-primary w-full sm:w-auto h-12 px-7 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <Sparkle24Filled className="w-4 h-4" />
+                <span>{t('goToDashboard')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <Link
+                href="/login?mode=signup"
+                className="btn-primary w-full sm:w-auto h-12 px-7 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <Sparkle24Filled className="w-4 h-4" />
+                <span>{t('getStartedFree')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            )}
+
             <button
-              type="submit"
-              className="btn-primary w-full sm:w-auto h-10 px-6 rounded-xl text-xs font-extrabold whitespace-nowrap flex items-center justify-center gap-1.5 flex-shrink-0"
+              type="button"
+              onClick={() => {
+                const stage = document.getElementById('live-simulation-stage');
+                if (stage) {
+                  stage.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="btn-secondary w-full sm:w-auto h-12 px-6 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             >
-              <span>{t('signUpFree')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
+              <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <span>{t('exploreLiveStorefront')}</span>
             </button>
-          </motion.form>
+          </motion.div>
 
           {/* Trust Guarantee Chips */}
           <motion.div
@@ -469,6 +477,7 @@ export default function MarketingWebsite() {
 
         {/* ─── ABOARD-STYLE PASTEL FRAMED UI CANVAS STAGE ─── */}
         <motion.div
+          id="live-simulation-stage"
           initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.32 }}
@@ -2390,13 +2399,23 @@ export default function MarketingWebsite() {
 
             {/* CTA Button */}
             <div className="pt-8">
-              <Link
-                href="/onboarding"
-                className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-              >
-                <span>{t('startFreeTrial')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
-              </Link>
+              {session?.user ? (
+                <Link
+                  href="/dashboard"
+                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <span>{t('goToDashboard')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <Link
+                  href="/onboarding"
+                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <span>{t('startFreeTrial')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
           </div>
 
@@ -2474,13 +2493,23 @@ export default function MarketingWebsite() {
 
             {/* CTA Button */}
             <div className="pt-8 relative z-10">
-              <Link
-                href="/onboarding"
-                className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
-              >
-                <span>{t('startFreeTrialBtn')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
-              </Link>
+              {session?.user ? (
+                <Link
+                  href="/dashboard"
+                  className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
+                >
+                  <span>{t('goToDashboard')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <Link
+                  href="/onboarding"
+                  className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
+                >
+                  <span>{t('startFreeTrialBtn')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -2551,15 +2580,25 @@ export default function MarketingWebsite() {
             {t('ctaBannerSubtitle')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            {session?.user ? (
+              <Link
+                href="/dashboard"
+                className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
+              >
+                <span>{t('goToDashboard')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <Link
+                href="/onboarding"
+                className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
+              >
+                <span>{t('startFreeTrialBtn')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            )}
             <Link
-              href="/onboarding"
-              className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
-            >
-              <span>{t('startFreeTrialBtn')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              href="/book/eduardos-lounge"
+              href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`}
               className="btn-secondary h-12 px-6 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
             >
               <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />

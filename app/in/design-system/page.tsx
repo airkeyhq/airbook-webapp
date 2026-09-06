@@ -8,6 +8,7 @@ import { FloatingInput } from '@/components/FloatingInput';
 import { CustomSelect } from '@/components/CustomSelect';
 import { ColorPicker } from '@/components/ColorPicker';
 import { EmptyState } from '@/components/EmptyState';
+import { GoToAppPill } from '@/components/GoToAppPill';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -119,6 +120,12 @@ const TREE_DATA: TreeCategory[] = [
         label: 'Tier 3: .btn-tertiary (Ghost Aux)',
         tag: 'Utility',
         description: 'Borderless ghost pill for auxiliary actions, dismissal triggers, and compact utility controls.',
+      },
+      {
+        id: 'gotoapp-pill',
+        label: 'Concentric Capsule: <GoToAppPill />',
+        tag: 'Concentric R',
+        description: 'Concentric nested user navigation capsule adhering to Outer Radius (20px) = Inner Radius (14px) + Padding (6px) geometric harmony.',
       },
     ],
   },
@@ -893,6 +900,148 @@ export default function DesignSystemTokenLabPage() {
                         <span>Revoke Secret Key</span>
                       </button>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {activeItemId === 'gotoapp-pill' && (
+                <div className="space-y-6">
+                  {/* Live Interactive Stage */}
+                  <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
+                    <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
+                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <span>Concentric Nested Capsule Live Stage</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-xl">
+                        R_outer = R_inner + Padding
+                      </span>
+                    </div>
+
+                    {/* Live Demos */}
+                    <div className="p-10 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-around gap-6">
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-[11px] font-bold text-[var(--text-muted)]">Default Authenticated User</span>
+                        <GoToAppPill
+                          name="Elena Rostova"
+                          email="elena@solaris-spa.de"
+                          image="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop"
+                        />
+                      </div>
+
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-[11px] font-bold text-[var(--text-muted)]">Fallback Initials Avatar</span>
+                        <GoToAppPill
+                          name="Marcus Vance"
+                          email="marcus@vance-barbershop.com"
+                          image={null}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Concentric Geometric Formula Anatomy Breakdown */}
+                  <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
+                      <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                      <span>Concentric Geometry Anatomy &amp; Radius Invariant</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {/* Outer Capsule */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[var(--text-primary)]">Outer Capsule</span>
+                          <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500">
+                            Height: 40px
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Height <code className="text-xs font-mono font-bold text-[var(--text-primary)]">40px (h-10)</code> with <code className="text-xs font-mono font-bold text-[var(--text-primary)]">rounded-full</code> yields an Outer Corner Radius of <strong className="text-blue-500">20px</strong>.
+                        </p>
+                      </div>
+
+                      {/* Uniform Inset Padding */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[var(--text-primary)]">Uniform Inset</span>
+                          <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500">
+                            Padding: 6px
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Uniform <code className="text-xs font-mono font-bold text-[var(--text-primary)]">p-[6px]</code> on all 4 sides creates exact mathematical concentric alignment for all inner children.
+                        </p>
+                      </div>
+
+                      {/* Inner Button Pill */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[var(--text-primary)]">Nested CTA Pill</span>
+                          <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-500">
+                            Height: 28px
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Height <code className="text-xs font-mono font-bold text-[var(--text-primary)]">28px (!h-7)</code> with <code className="text-xs font-mono font-bold text-[var(--text-primary)]">!rounded-full</code> yields an Inner Corner Radius of <strong className="text-purple-500">14px</strong>.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Mathematical Formula Proof Card */}
+                    <div className="p-4 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                      <div>
+                        <p className="text-xs font-extrabold text-[#0284C7] dark:text-[#2BB5FF]">
+                          Concentric Radius Formula
+                        </p>
+                        <p className="text-[11px] text-[var(--text-secondary)] font-medium mt-0.5">
+                          Guarantees 1:1 circular curve parallel symmetry with zero optical distortion.
+                        </p>
+                      </div>
+                      <div className="font-mono text-xs font-black px-4 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] whitespace-nowrap shadow-xs">
+                        Outer R (20px) = Inner R (14px) + Padding (6px)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Code Snippet & Implementation Pattern */}
+                  <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <span>Implementation Pattern</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleCopyCode(
+                            `<GoToAppPill\n  name={session.user.name}\n  image={session.user.image}\n  email={session.user.email}\n  href="/dashboard"\n/>`
+                          )
+                        }
+                        className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                      >
+                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
+                      </button>
+                    </div>
+
+                    <pre className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto text-[11px] font-mono text-[var(--text-primary)] leading-relaxed">
+{`import { GoToAppPill } from '@/components/GoToAppPill';
+
+// Rendered in Marketing Header & Public Pages when session?.user is active
+{session?.user ? (
+  <GoToAppPill
+    name={session.user.name}
+    image={session.user.image}
+    email={session.user.email}
+    href="/dashboard"
+  />
+) : (
+  <Link href="/onboarding" className="btn-primary">
+    <span>Get Started Free</span>
+  </Link>
+)}`}
+                    </pre>
                   </div>
                 </div>
               )}
