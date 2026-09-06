@@ -2327,15 +2327,16 @@ export default function MarketingWebsite() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
           {/* Card 1: Solo Pro / Independent Plan (Standard Tier) */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-8 shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+            {/* Upper Content Group */}
             <div className="space-y-6">
-              {/* Header & Price */}
+              {/* Header: Title & Price Row */}
               <div className="flex justify-between items-start gap-4">
-                <div>
+                <div className="space-y-1.5 min-w-0">
                   <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
                     {t('soloPlanTitle')}
                   </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium leading-relaxed max-w-[280px]">
+                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
                     {t('soloPlanDesc')}
                   </p>
                 </div>
@@ -2348,11 +2349,13 @@ export default function MarketingWebsite() {
                       {t('pricingPerMonth')}
                     </span>
                   </div>
-                  {billingCycle === 'annual' && (
-                    <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                      $192 {t('billedYearlyNote')}
-                    </span>
-                  )}
+                  <div className="min-h-[18px] mt-0.5">
+                    {billingCycle === 'annual' ? (
+                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        $192 {t('billedYearlyNote')}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
@@ -2361,55 +2364,63 @@ export default function MarketingWebsite() {
 
               {/* Features List */}
               <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('soloFeat1')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('soloFeat2')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('soloFeat3')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('soloFeat4')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('soloFeat5')}</span>
                 </li>
               </ul>
             </div>
 
-            <Link
-              href="/onboarding"
-              className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-            >
-              <span>{t('startFreeTrial')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
+            {/* CTA Button */}
+            <div className="pt-8">
+              <Link
+                href="/onboarding"
+                className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+              >
+                <span>{t('startFreeTrial')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
           {/* Card 2: Business & Multi-Staff Team Plan (Featured Tier) */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border-2 border-[#2BB5FF] space-y-8 shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(43,181,255,0.3)] transition-all flex flex-col justify-between relative overflow-hidden group ring-4 ring-[#2BB5FF]/10">
+          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border-2 border-[#2BB5FF] shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(43,181,255,0.3)] transition-all flex flex-col justify-between relative overflow-visible group ring-4 ring-[#2BB5FF]/10">
+            {/* Floating Top Badge */}
+            <div className="absolute -top-3.5 left-8 z-20">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#2BB5FF] text-white text-[10px] font-black uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(43,181,255,0.6)] border border-white/40">
+                <Sparkle24Regular className="w-3 h-3 text-white" />
+                {t('mostPopular')}
+              </span>
+            </div>
+
             {/* Ambient Lighting */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
 
+            {/* Upper Content Group */}
             <div className="space-y-6 relative z-10">
-              {/* Header & Price */}
+              {/* Header: Title & Price Row */}
               <div className="flex justify-between items-start gap-4">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] border border-[#2BB5FF]/20 text-[10px] font-black uppercase tracking-wider mb-2 shadow-xs">
-                    <Sparkle24Regular className="w-3 h-3 text-[#2BB5FF]" />
-                    {t('mostPopular')}
-                  </span>
+                <div className="space-y-1.5 min-w-0">
                   <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
                     {t('teamPlanTitle')}
                   </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium leading-relaxed max-w-[280px]">
+                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
                     {t('teamPlanDesc')}
                   </p>
                 </div>
@@ -2422,11 +2433,13 @@ export default function MarketingWebsite() {
                       {t('pricingPerMonth')}
                     </span>
                   </div>
-                  {billingCycle === 'annual' && (
-                    <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                      $384 {t('billedYearlyNote')}
-                    </span>
-                  )}
+                  <div className="min-h-[18px] mt-0.5">
+                    {billingCycle === 'annual' ? (
+                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        $384 {t('billedYearlyNote')}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
@@ -2435,36 +2448,39 @@ export default function MarketingWebsite() {
 
               {/* Features List */}
               <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat1')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat2')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat3')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat4')}</span>
                 </li>
-                <li className="flex items-center gap-2.5">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
                   <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat5')}</span>
                 </li>
               </ul>
             </div>
 
-            <Link
-              href="/onboarding"
-              className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
-            >
-              <span>{t('startFreeTrialBtn')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
-            </Link>
+            {/* CTA Button */}
+            <div className="pt-8 relative z-10">
+              <Link
+                href="/onboarding"
+                className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
+              >
+                <span>{t('startFreeTrialBtn')}</span>
+                <ArrowRight24Filled className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
 
