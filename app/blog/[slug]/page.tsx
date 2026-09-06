@@ -117,20 +117,19 @@ export default function BlogPostReaderPage() {
 
         {/* Article Header & Typography */}
         <header className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold text-[var(--text-muted)]">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] font-black uppercase text-[10px] tracking-wider border border-[#2BB5FF]/20 shadow-xs">
-              <Tag24Regular className="w-3 h-3" />
-              {post.categoryLabel[language]}
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--text-muted)]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] font-black uppercase text-[10px] tracking-wider border border-[#2BB5FF]/20 shadow-xs whitespace-nowrap">
+              <Tag24Regular className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
+              <span>{post.categoryLabel[language]}</span>
             </span>
-            <span className="flex items-center gap-1">
-              <Clock24Regular className="w-3.5 h-3.5" />
-              {post.readTime[language]}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
+              <Clock24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{post.readTime[language]}</span>
             </span>
-            <span>•</span>
-            <time dateTime={post.isoDate} className="flex items-center gap-1">
-              <Calendar24Regular className="w-3.5 h-3.5" />
-              {post.date}
-            </time>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
+              <Calendar24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+              <time dateTime={post.isoDate}>{post.date}</time>
+            </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--text-primary)] leading-[1.15]">
