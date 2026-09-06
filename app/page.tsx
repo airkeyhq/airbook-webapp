@@ -2326,7 +2326,7 @@ export default function MarketingWebsite() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
-          {/* Card 1: Solo Pro / Independent Plan */}
+          {/* Card 1: Solo Pro / Independent Plan (Standard Tier) */}
           <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-8 shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
             <div className="space-y-6">
               {/* Header & Price */}
@@ -2386,44 +2386,44 @@ export default function MarketingWebsite() {
 
             <Link
               href="/onboarding"
-              className="btn-primary w-full h-12 rounded-2xl text-xs font-extrabold tracking-wide flex items-center justify-center gap-2"
+              className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
             >
               <span>{t('startFreeTrial')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {/* Card 2: Business & Multi-Staff Team Plan */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-gradient-to-br from-[#1A8EFF] via-[#0066FF] to-[#6366F1] text-white space-y-8 shadow-[0_20px_60px_-15px_rgba(26,142,255,0.45)] hover:shadow-[0_25px_70px_-15px_rgba(26,142,255,0.6)] transition-all flex flex-col justify-between relative overflow-hidden group border border-white/20">
+          {/* Card 2: Business & Multi-Staff Team Plan (Featured Tier) */}
+          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border-2 border-[#2BB5FF] space-y-8 shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(43,181,255,0.3)] transition-all flex flex-col justify-between relative overflow-hidden group ring-4 ring-[#2BB5FF]/10">
             {/* Ambient Lighting */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="space-y-6 relative z-10">
               {/* Header & Price */}
               <div className="flex justify-between items-start gap-4">
                 <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/30 text-[10px] font-black uppercase tracking-wider mb-2 shadow-xs">
-                    <Sparkle24Regular className="w-3 h-3 text-amber-300" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] border border-[#2BB5FF]/20 text-[10px] font-black uppercase tracking-wider mb-2 shadow-xs">
+                    <Sparkle24Regular className="w-3 h-3 text-[#2BB5FF]" />
                     {t('mostPopular')}
                   </span>
-                  <h3 className="text-xl font-black text-white tracking-tight">
+                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
                     {t('teamPlanTitle')}
                   </h3>
-                  <p className="text-xs text-blue-100/90 mt-1 font-medium leading-relaxed max-w-[280px]">
+                  <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium leading-relaxed max-w-[280px]">
                     {t('teamPlanDesc')}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="flex items-baseline justify-end gap-1">
-                    <span className="text-4xl sm:text-5xl font-black text-white tracking-tight font-mono">
+                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
                       {billingCycle === 'annual' ? '$32' : '$40'}
                     </span>
-                    <span className="text-xs font-bold text-blue-100">
+                    <span className="text-xs font-bold text-[var(--text-secondary)]">
                       {t('pricingPerMonth')}
                     </span>
                   </div>
                   {billingCycle === 'annual' && (
-                    <span className="block text-[10px] font-bold text-amber-300 mt-0.5">
+                    <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
                       $384 {t('billedYearlyNote')}
                     </span>
                   )}
@@ -2431,28 +2431,28 @@ export default function MarketingWebsite() {
               </div>
 
               {/* Divider */}
-              <div className="h-px bg-white/15 w-full" />
+              <div className="h-px bg-[var(--border-subtle)] w-full" />
 
               {/* Features List */}
-              <ul className="text-xs space-y-3.5 text-blue-50 font-semibold">
+              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
                 <li className="flex items-center gap-2.5">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat1')}</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat2')}</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat3')}</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat4')}</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{t('teamFeat5')}</span>
                 </li>
               </ul>
@@ -2460,7 +2460,7 @@ export default function MarketingWebsite() {
 
             <Link
               href="/onboarding"
-              className="btn-secondary-inverted relative z-10 w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
+              className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
             >
               <span>{t('startFreeTrialBtn')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />

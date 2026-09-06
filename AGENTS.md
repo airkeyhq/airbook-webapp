@@ -94,9 +94,8 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - **Visual DNA**: Electric sky blue (`#2BB5FF`), `#1A8EFF` border stroke, inner white ambient light highlight (`inset 0 1px 1px rgba(255,255,255,0.4)`), white text (`#FFFFFF`), and signature electric glow shadow (`shadow-[0_4px_12px_-2px_rgba(43,181,255,0.5)]`).
       - **Micro-Animations**: Hover scale `1.02` with deepened glow (`shadow-[0_6px_16px_-2px_rgba(43,181,255,0.7)]`), active scale `0.97`.
       - **Role**: Strictly reserved for the primary forward action or main conversion CTA (e.g. *Get Started Free*).
-    - **Tier 2: Tactile Surface Secondary Button (`.btn-secondary` & `.btn-secondary-inverted`)**:
-      - **Visual DNA (Standard Surface)**: Clean tactile white/surface pill (`bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-xs hover:bg-[var(--bg-secondary)] hover:border-[#2BB5FF]/40`).
-      - **Visual DNA (Inverted / Dark / Gradient Surface)**: High-contrast solid surface (`.btn-secondary-inverted`: `bg-white text-black font-extrabold shadow-xl hover:bg-slate-50`).
+    - **Tier 2: Tactile Surface Secondary Button (`.btn-secondary`)**:
+      - **Visual DNA**: Clean tactile white/surface pill (`bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-xs hover:bg-[var(--bg-secondary)] hover:border-[#2BB5FF]/40`).
       - **Role**: For secondary, exploratory, or complementary actions paired side-by-side with primary CTAs (e.g. *Explore Live Storefront*).
     - **Tier 3: Ghost/Subtle Tertiary Button (`.btn-tertiary`)**:
       - **Visual DNA**: Borderless ghost pill (`bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] active:scale-97`).
