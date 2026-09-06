@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -50,6 +50,21 @@ type IndustryTabKey =
   | 'petgrooming'
   | 'fitness';
 
+const DEMO_SERVICES = [
+  { id: 'signature', name: 'Signature Consultation & Service', price: 75, duration: 60 },
+  { id: 'express', name: 'Express Session', price: 45, duration: 30 },
+  { id: 'comprehensive', name: 'Comprehensive Appointment', price: 150, duration: 90 },
+  { id: 'followup', name: 'Follow-up & Review', price: 60, duration: 45 },
+];
+
+const DEMO_SLOTS = ['10:00 AM', '11:30 AM', '2:00 PM', '3:30 PM', '5:00 PM'];
+
+const AUTO_SCENARIOS = [
+  { serviceIndex: 0, specialistIndex: 0, slot: '11:30 AM' },
+  { serviceIndex: 2, specialistIndex: 1, slot: '2:00 PM' },
+  { serviceIndex: 1, specialistIndex: 2, slot: '3:30 PM' },
+];
+
 export default function MarketingWebsite() {
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const router = useRouter();
@@ -57,15 +72,24 @@ export default function MarketingWebsite() {
   const [signupEmail, setSignupEmail] = useState('');
 
   // Interactive Live Hero Booking Simulator State
-  const [demoService, setDemoService] = useState<{ id: string; name: string; price: number; duration: number }>({
-    id: 'signature',
-    name: 'Signature Consultation & Service',
-    price: 75,
-    duration: 60,
-  });
-  // Reactive Localized Demo Specialists
+  const [demoService, setDemoService] = useState(DEMO_SERVICES[0]);
   const demoSpecialists = getDemoSpecialists(language);
   const [demoSpecialist, setDemoSpecialist] = useState(demoSpecialists[0]);
+  const [demoSlot, setDemoSlot] = useState('11:30 AM');
+  const [isDemoBooked, setIsDemoBooked] = useState(false);
+
+  // Multi-Step Motion Simulation with Mockup Cursor Engine
+  const [isUserHoveringDemo, setIsUserHoveringDemo] = useState(false);
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 120, y: 130 });
+  const [isCursorVisible, setIsCursorVisible] = useState(false);
+  const [isCursorClicking, setIsCursorClicking] = useState(false);
+  const [motionStepBadge, setMotionStepBadge] = useState<string>('demoCursorSelecting');
+
+  const demoStageRef = useRef<HTMLDivElement>(null);
+  const serviceRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const specialistRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const slotRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const ctaBtnRef = useRef<HTMLButtonElement | null>(null);
 
   // Synchronize specialist profile when language changes
   useEffect(() => {
@@ -74,8 +98,137 @@ export default function MarketingWebsite() {
     setIsDemoBooked(false);
   }, [language]);
 
-  const [demoSlot, setDemoSlot] = useState('11:30 AM');
-  const [isDemoBooked, setIsDemoBooked] = useState(false);
+  // Automated Multi-Step Motion Simulation Timeline Loop
+  useEffect(() => {
+    let isMounted = true;
+    let scenarioIdx = 0;
+    let timerChain: NodeJS.Timeout[] = [];
+
+    const clearAllTimers = () => {
+      timerChain.forEach((t) => clearTimeout(t));
+      timerChain = [];
+    };
+
+    if (isUserHoveringDemo) {
+      setIsCursorVisible(false);
+      setIsCursorClicking(false);
+      return () => clearAllTimers();
+    }
+
+    const addTimer = (fn: () => void, delayMs: number) => {
+      const id = setTimeout(() => {
+        if (isMounted) fn();
+      }, delayMs);
+      timerChain.push(id);
+      return id;
+    };
+
+    const getCenterPos = (el: HTMLElement | null) => {
+      if (!el || !demoStageRef.current) return null;
+      const stageRect = demoStageRef.current.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      return {
+        x: elRect.left - stageRect.left + elRect.width * 0.5,
+        y: elRect.top - stageRect.top + elRect.height * 0.5,
+      };
+    };
+
+    const runMotionSequence = (idx: number) => {
+      if (!isMounted) return;
+      const scenario = AUTO_SCENARIOS[idx % AUTO_SCENARIOS.length];
+      const targetSrv = DEMO_SERVICES[scenario.serviceIndex];
+      const specialists = getDemoSpecialists(language);
+      const targetSpec = specialists[scenario.specialistIndex] || specialists[0];
+      const targetSlot = scenario.slot;
+
+      // ── Step 1: Glide to Selected Service ──
+      setMotionStepBadge('demoCursorSelecting');
+      setIsCursorVisible(true);
+      const srvEl = serviceRefs.current[targetSrv.id];
+      const srvPos = getCenterPos(srvEl);
+      if (srvPos) setCursorPos(srvPos);
+
+      // Click Service
+      addTimer(() => {
+        setIsCursorClicking(true);
+        setDemoService(targetSrv);
+        setIsDemoBooked(false);
+
+        addTimer(() => {
+          setIsCursorClicking(false);
+
+          // ── Step 2: Glide to Specialist ──
+          addTimer(() => {
+            setMotionStepBadge('demoCursorProvider');
+            const specEl = specialistRefs.current[targetSpec.id];
+            const specPos = getCenterPos(specEl);
+            if (specPos) setCursorPos(specPos);
+
+            // Click Specialist
+            addTimer(() => {
+              setIsCursorClicking(true);
+              setDemoSpecialist(targetSpec);
+
+              addTimer(() => {
+                setIsCursorClicking(false);
+
+                // ── Step 3: Glide to Time Slot ──
+                addTimer(() => {
+                  setMotionStepBadge('demoCursorSlot');
+                  const slotEl = slotRefs.current[targetSlot];
+                  const slotPos = getCenterPos(slotEl);
+                  if (slotPos) setCursorPos(slotPos);
+
+                  // Click Time Slot
+                  addTimer(() => {
+                    setIsCursorClicking(true);
+                    setDemoSlot(targetSlot);
+
+                    addTimer(() => {
+                      setIsCursorClicking(false);
+
+                      // ── Step 4: Glide to CTA Button ──
+                      addTimer(() => {
+                        setMotionStepBadge('demoCursorBooking');
+                        const ctaPos = getCenterPos(ctaBtnRef.current);
+                        if (ctaPos) setCursorPos(ctaPos);
+
+                        // Click CTA Button
+                        addTimer(() => {
+                          setIsCursorClicking(true);
+                          setIsDemoBooked(true);
+
+                          addTimer(() => {
+                            setIsCursorClicking(false);
+
+                            // Hold Confirmed View (3.6s) then advance to next scenario
+                            addTimer(() => {
+                              scenarioIdx++;
+                              runMotionSequence(scenarioIdx);
+                            }, 3600);
+                          }, 250);
+                        }, 750);
+                      }, 350);
+                    }, 250);
+                  }, 750);
+                }, 350);
+              }, 250);
+            }, 750);
+          }, 350);
+        }, 250);
+      }, 850);
+    };
+
+    // Initial warm-up start
+    addTimer(() => {
+      runMotionSequence(0);
+    }, 700);
+
+    return () => {
+      isMounted = false;
+      clearAllTimers();
+    };
+  }, [isUserHoveringDemo, language]);
 
   // Retention Simulator Tab State
   const [activeRetentionTab, setActiveRetentionTab] = useState<'rebook' | 'review'>('rebook');
@@ -175,15 +328,6 @@ export default function MarketingWebsite() {
     }
   };
 
-  const DEMO_SERVICES = [
-    { id: 'signature', name: 'Signature Consultation & Service', price: 75, duration: 60 },
-    { id: 'express', name: 'Express Session', price: 45, duration: 30 },
-    { id: 'comprehensive', name: 'Comprehensive Appointment', price: 150, duration: 90 },
-    { id: 'followup', name: 'Follow-up & Review', price: 60, duration: 45 },
-  ];
-
-
-  const DEMO_SLOTS = ['10:00 AM', '11:30 AM', '2:00 PM', '3:30 PM', '5:00 PM'];
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col justify-between selection:bg-[#2BB5FF] selection:text-white relative overflow-x-hidden font-sans">
@@ -329,7 +473,62 @@ export default function MarketingWebsite() {
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             {/* Left Stage: Live Client Booking Flow Simulator */}
-            <div className="lg:col-span-7 bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl space-y-4">
+            <div
+              ref={demoStageRef}
+              onMouseEnter={() => setIsUserHoveringDemo(true)}
+              onMouseLeave={() => setIsUserHoveringDemo(false)}
+              className="lg:col-span-7 bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden"
+            >
+              {/* Animated Mockup Cursor */}
+              <motion.div
+                className="absolute z-30 pointer-events-none -ml-1 -mt-1 flex items-start"
+                animate={{
+                  x: cursorPos.x,
+                  y: cursorPos.y,
+                  opacity: isCursorVisible && !isUserHoveringDemo ? 1 : 0,
+                  scale: isCursorClicking ? 0.86 : 1,
+                }}
+                transition={{
+                  x: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                  y: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                  opacity: { duration: 0.25 },
+                  scale: { duration: 0.12 },
+                }}
+              >
+                {/* Click Ripple Wave */}
+                {isCursorClicking && (
+                  <span className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-[#2BB5FF]/50 border-2 border-[#2BB5FF] animate-ping pointer-events-none" />
+                )}
+
+                {/* Sleek Vector Cursor */}
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)] flex-shrink-0"
+                >
+                  <path
+                    d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.88c.45 0 .67-.54.35-.85L5.85 2.86a.5.5 0 0 0-.35.35Z"
+                    fill="#0F172A"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                {/* Animated Step Badge */}
+                <motion.span
+                  key={motionStepBadge}
+                  initial={{ opacity: 0, scale: 0.85, x: -4 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  className="ml-1.5 -mt-1 px-2 py-0.5 rounded-full bg-black/85 dark:bg-white/90 text-white dark:text-black text-[9px] font-black uppercase tracking-wider shadow-md backdrop-blur-xs whitespace-nowrap"
+                >
+                  {t(motionStepBadge as any)}
+                </motion.span>
+              </motion.div>
+
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3.5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2BB5FF] to-[#AF52DE] flex items-center justify-center text-white font-black text-xs shadow-xs">
@@ -360,6 +559,9 @@ export default function MarketingWebsite() {
                     return (
                       <button
                         key={srv.id}
+                        ref={(el) => {
+                          serviceRefs.current[srv.id] = el;
+                        }}
                         type="button"
                         onClick={() => {
                           setDemoService(srv);
@@ -367,7 +569,7 @@ export default function MarketingWebsite() {
                         }}
                         className={`p-2.5 rounded-2xl text-left border transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs'
+                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
                             : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
                         }`}
                       >
@@ -392,6 +594,9 @@ export default function MarketingWebsite() {
                     return (
                       <button
                         key={stf.id}
+                        ref={(el) => {
+                          specialistRefs.current[stf.id] = el;
+                        }}
                         type="button"
                         onClick={() => {
                           setDemoSpecialist(stf);
@@ -399,7 +604,7 @@ export default function MarketingWebsite() {
                         }}
                         className={`flex-1 flex items-center gap-2 p-2 rounded-2xl border transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs'
+                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
                             : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
                         }`}
                       >
@@ -429,6 +634,9 @@ export default function MarketingWebsite() {
                     return (
                       <button
                         key={slot}
+                        ref={(el) => {
+                          slotRefs.current[slot] = el;
+                        }}
                         type="button"
                         onClick={() => {
                           setDemoSlot(slot);
@@ -462,6 +670,7 @@ export default function MarketingWebsite() {
                   </motion.div>
                 ) : (
                   <button
+                    ref={ctaBtnRef}
                     type="button"
                     onClick={() => setIsDemoBooked(true)}
                     className="btn-primary w-full py-3 text-xs flex items-center justify-center gap-2"
