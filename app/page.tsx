@@ -249,6 +249,9 @@ export default function MarketingWebsite() {
   const [solutionProgress, setSolutionProgress] = useState(0);
   const [isSolutionHovered, setIsSolutionHovered] = useState(false);
 
+  // Pricing Matrix State
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+
   const SOLUTION_TAB_DURATION = 5000;
   const SOLUTION_STEP_MS = 50;
 
@@ -2282,83 +2285,204 @@ export default function MarketingWebsite() {
 
       {/* ─── PRICING MATRIX ─── */}
       <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative z-10">
-        <div className="text-center max-w-xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#2BB5FF]">
+        <div className="text-center max-w-xl mx-auto mb-10 sm:mb-14 space-y-3">
+          <span className="text-xs font-black uppercase tracking-widest text-[#2BB5FF]">
             {t('pricingSubtitle')}
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-[var(--text-primary)] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight">
             {t('pricingTitle')}
           </h2>
+
+          {/* Interactive Tactile Billing Cycle Toggle */}
+          <div className="pt-4 flex justify-center">
+            <div className="inline-flex items-center p-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-inner">
+              <button
+                type="button"
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
+                  billingCycle === 'monthly'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                {t('billingMonthly')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle('annual')}
+                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  billingCycle === 'annual'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <span>{t('billingAnnual')}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  {t('saveTwoMonths')}
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Solo Plan */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-6 shadow-sm hover:shadow-xl transition-all">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-extrabold text-[var(--text-primary)]">{t('soloPlanTitle')}</h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('soloPlanDesc')}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+          {/* Card 1: Solo Pro / Independent Plan */}
+          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-8 shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+            <div className="space-y-6">
+              {/* Header & Price */}
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
+                    {t('soloPlanTitle')}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium leading-relaxed max-w-[280px]">
+                    {t('soloPlanDesc')}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="flex items-baseline justify-end gap-1">
+                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+                      {billingCycle === 'annual' ? '$16' : '$20'}
+                    </span>
+                    <span className="text-xs font-bold text-[var(--text-secondary)]">
+                      {t('pricingPerMonth')}
+                    </span>
+                  </div>
+                  {billingCycle === 'annual' && (
+                    <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                      $192 {t('billedYearlyNote')}
+                    </span>
+                  )}
+                </div>
               </div>
-              <span className="text-3xl font-black text-[var(--text-primary)]">
-                $20 <span className="text-xs font-normal text-[var(--text-secondary)]">/mo</span>
-              </span>
+
+              {/* Divider */}
+              <div className="h-px bg-[var(--border-subtle)] w-full" />
+
+              {/* Features List */}
+              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('soloFeat1')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('soloFeat2')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('soloFeat3')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('soloFeat4')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('soloFeat5')}</span>
+                </li>
+              </ul>
             </div>
-            <ul className="text-xs space-y-3 text-[var(--text-secondary)] font-semibold">
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500" /> Unlimited 24/7 Online Client Bookings
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500" /> Automatic Card Deposits &amp; No-Show Protection
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500" /> Client Formula Notes, Specs &amp; Photo History
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500" /> Instant Daily Cashout to your Debit Card
-              </li>
-            </ul>
+
             <Link
               href="/onboarding"
-              className="btn-primary block w-full py-3.5 text-center text-xs"
+              className="btn-primary block w-full py-4 text-center text-xs font-black tracking-wide"
             >
               {t('startFreeTrial')}
             </Link>
           </div>
 
-          {/* Business Team Plan */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-gradient-to-br from-[#007AFF] to-[#5856D6] text-white space-y-6 shadow-xl relative overflow-hidden">
-            <div className="flex justify-between items-start">
-              <div>
-                <span className="px-3 py-1 rounded-full bg-white/20 text-[10px] font-black uppercase tracking-wider mb-2 inline-block">
-                  {t('mostPopular')}
-                </span>
-                <h3 className="text-lg font-extrabold text-white">{t('teamPlanTitle')}</h3>
-                <p className="text-xs text-blue-100 mt-0.5">{t('teamPlanDesc')}</p>
+          {/* Card 2: Business & Multi-Staff Team Plan */}
+          <div className="p-8 sm:p-10 rounded-[36px] bg-gradient-to-br from-[#1A8EFF] via-[#0066FF] to-[#6366F1] text-white space-y-8 shadow-[0_20px_60px_-15px_rgba(26,142,255,0.45)] hover:shadow-[0_25px_70px_-15px_rgba(26,142,255,0.6)] transition-all flex flex-col justify-between relative overflow-hidden group border border-white/20">
+            {/* Ambient Lighting */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-6 relative z-10">
+              {/* Header & Price */}
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/30 text-[10px] font-black uppercase tracking-wider mb-2 shadow-xs">
+                    <Sparkle24Regular className="w-3 h-3 text-amber-300" />
+                    {t('mostPopular')}
+                  </span>
+                  <h3 className="text-xl font-black text-white tracking-tight">
+                    {t('teamPlanTitle')}
+                  </h3>
+                  <p className="text-xs text-blue-100/90 mt-1 font-medium leading-relaxed max-w-[280px]">
+                    {t('teamPlanDesc')}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="flex items-baseline justify-end gap-1">
+                    <span className="text-4xl sm:text-5xl font-black text-white tracking-tight font-mono">
+                      {billingCycle === 'annual' ? '$32' : '$40'}
+                    </span>
+                    <span className="text-xs font-bold text-blue-100">
+                      {t('pricingPerMonth')}
+                    </span>
+                  </div>
+                  {billingCycle === 'annual' && (
+                    <span className="block text-[10px] font-bold text-amber-300 mt-0.5">
+                      $384 {t('billedYearlyNote')}
+                    </span>
+                  )}
+                </div>
               </div>
-              <span className="text-3xl font-black text-white">
-                $40 <span className="text-xs font-normal text-blue-200">/mo</span>
-              </span>
+
+              {/* Divider */}
+              <div className="h-px bg-white/15 w-full" />
+
+              {/* Features List */}
+              <ul className="text-xs space-y-3.5 text-blue-50 font-semibold">
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <span>{t('teamFeat1')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <span>{t('teamFeat2')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <span>{t('teamFeat3')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <span>{t('teamFeat4')}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                  <span>{t('teamFeat5')}</span>
+                </li>
+              </ul>
             </div>
-            <ul className="text-xs space-y-3 text-blue-100 font-semibold">
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300" /> Everything in Solo + Full Team Scheduling
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300" /> Automated Chair Rent &amp; Commission Payouts
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300" /> Smart 3-Week Client SMS Re-Booking Engine
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-amber-300" /> Digital Consultation Waivers &amp; Client Forms
-              </li>
-            </ul>
+
             <Link
               href="/onboarding"
-              className="block w-full py-3.5 rounded-2xl bg-white text-black font-extrabold text-xs text-center shadow-lg hover:bg-slate-100 transition-colors"
+              className="relative z-10 block w-full py-4 rounded-2xl bg-white text-black font-black text-xs text-center shadow-xl hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
-              {t('getStarted')}
+              {t('startFreeTrialBtn')}
             </Link>
+          </div>
+        </div>
+
+        {/* Bottom Trust & Guarantee Ribbon */}
+        <div className="max-w-4xl mx-auto mt-12 p-4 sm:p-5 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-around gap-4 text-xs font-bold text-[var(--text-secondary)] shadow-xs">
+          <div className="flex items-center gap-2">
+            <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <span>{t('pricingGuarantee1')}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckmarkCircle24Regular className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+            <span>{t('pricingGuarantee2')}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Payment24Regular className="w-4 h-4 text-[#AF52DE] flex-shrink-0" />
+            <span>{t('pricingGuarantee3')}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <LockClosed24Regular className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <span>{t('pricingGuarantee4')}</span>
           </div>
         </div>
       </section>
