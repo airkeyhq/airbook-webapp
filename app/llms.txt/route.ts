@@ -23,8 +23,26 @@ export async function GET() {
 ## Editorial Playbooks & Guides
 ${articlesMarkdown}
 
+## AirBook Native Model Context Protocol (MCP) Server
+AirBook exposes an official, streamable MCP server for autonomous AI agents (Claude, Cursor, ChatGPT, Apple Intelligence, and Voice Receptionists):
+- **MCP Endpoint**: \`https://getairbook.com/api/mcp\` (Transport: \`http-post\` / \`sse\`)
+- **Available MCP Tools**:
+  - \`airbook_list_appointments\`: Query appointments by date, date range, status, or staff specialist.
+  - \`airbook_check_availability\`: Calculate real-time open booking slots for specialists.
+  - \`airbook_create_booking\`: Create confirmed appointments with automatic AirBook smart notifications.
+  - \`airbook_update_appointment\`: Reschedule, update notes, or cancel appointments with cancellation alerts.
+  - \`airbook_list_services\`: Query catalog of services, pricing, durations, and categories.
+  - \`airbook_list_staff\`: Query stylists, barbers, specialties, and schedules.
+  - \`airbook_manage_clients\`: Search clients, lookup formula notes, or register new clients.
+  - \`airbook_manage_waitlist\`: Manage walk-in queue and dispatch "Ready for Chair" SMS alerts.
+  - \`airbook_manage_inventory\`: Check product stock levels, low-stock alerts, or update quantities.
+  - \`airbook_dispatch_notification\`: Send custom SMS/Email alerts via AirBook Smart Notifications.
+  - \`airbook_get_analytics\`: Fetch daily revenue, booking totals, and top-earning staff.
+  - \`airbook_get_workspace_info\`: Retrieve salon profile, policies, hours, and branding.
+
 ## Documentation & Deep Links
 - [Live Platform Overview](https://getairbook.com)
+- [AirBook MCP Server](https://getairbook.com/api/mcp)
 - [Operator Onboarding](https://getairbook.com/onboarding)
 - [Help Center & Guides](https://getairbook.com/help)
 - [Product Changelog](https://getairbook.com/changelog)

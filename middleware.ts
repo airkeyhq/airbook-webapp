@@ -8,7 +8,12 @@ export async function middleware(request: NextRequest) {
     request.cookies.get('better-auth.session_token')?.value ||
     request.cookies.get('__Secure-better-auth.session_token')?.value;
 
-  const isProtectedPath = path.startsWith('/dashboard') || path.startsWith('/onboarding');
+  // Redirect legacy /brand to internal /in/brand
+  if (path === '/brand' || path === '/brand/') {
+    return NextResponse.redirect(new URL('/in/brand', request.url));
+  }
+
+  const isProtectedPath = path.startsWith('/dashboard') || path.startsWith('/onboarding') || path.startsWith('/in');
 
   // If trying to access protected route without session token, redirect to /login
   if (isProtectedPath && !sessionToken) {
@@ -21,5 +26,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/onboarding/:path*'],
+  matcher: ['/dashboard/:path*', '/onboarding/:path*', '/in', '/in/:path*', '/brand'],
 };

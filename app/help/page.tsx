@@ -446,9 +446,95 @@ export default function HelpCenterPage() {
         href: '/dashboard',
       },
     },
+    {
+      id: 'ai-mcp-integration',
+      categoryId: 'ai',
+      categoryName: { en: 'AI & Agentic MCP', es: 'IA y Agentes MCP', de: 'KI & Agenten MCP', fr: 'IA & Agents MCP' },
+      title: {
+        en: 'How to connect AI Agents & MCP to AirBook',
+        es: 'Cómo conectar Agentes de IA y MCP a AirBook',
+        de: 'So verbinden Sie KI-Agenten & MCP mit AirBook',
+        fr: 'Comment connecter des Agents IA et MCP à AirBook',
+      },
+      summary: {
+        en: 'Generate secret API keys and connect Claude Desktop, Cursor, ChatGPT, and AI Voice Receptionists to manage salon bookings, check real-time availability, and dispatch SMS alerts via Model Context Protocol.',
+        es: 'Genera claves secretas de API y conecta Claude Desktop, Cursor, ChatGPT y recepcionistas de voz con IA para gestionar citas, verificar disponibilidad en tiempo real y enviar alertas por SMS mediante Model Context Protocol.',
+        de: 'Generieren Sie geheime API-Schlüssel und verbinden Sie Claude Desktop, Cursor, ChatGPT und telefonische KI-Empfangsdienste, um Termine zu verwalten und SMS-Benachrichtigungen über das Model Context Protocol zu senden.',
+        fr: 'Générez des clés secrètes d’API et connectez Claude Desktop, Cursor, ChatGPT et des réceptionnistes vocaux IA pour gérer vos réservations et envoyer des SMS via le Model Context Protocol.',
+      },
+      readTime: '4 min guide',
+      steps: [
+        {
+          title: {
+            en: '1. Generate your AirBook Secret API Key',
+            es: '1. Genera tu Clave Secreta de API en AirBook',
+            de: '1. Generieren Sie Ihren geheimen AirBook API-Schlüssel',
+            fr: '1. Générez votre clé secrète d’API AirBook',
+          },
+          body: {
+            en: 'Go to Settings → AI & MCP in your AirBook Dashboard. Click "+ Create Secret API Key", assign a name (e.g. "Front-Desk AI Phone"), and copy your unique ab_live_... secret key. For security, keys are hashed and shown only once upon creation.',
+            es: 'Ve a Configuración → IA y MCP en tu Panel de AirBook. Haz clic en "+ Crear Clave Secreta API", asigna un nombre (ej. "Recepcionista Telefónica IA") y copia tu clave secreta ab_live_... Por seguridad, las claves están cifradas y solo se muestran una vez.',
+            de: 'Navigieren Sie in Ihrem AirBook-Dashboard zu Einstellungen → KI & MCP. Klicken Sie auf "+ Geheimen API-Schlüssel erstellen", vergeben Sie einen Namen und kopieren Sie Ihren Schlüssel (ab_live_...). Aus Sicherheitsgründen wird dieser nur einmal angezeigt.',
+            fr: 'Accédez à Paramètres → IA & MCP dans votre tableau de bord AirBook. Cliquez sur "+ Créer une clé secrète API", nommez-la et copiez votre clé ab_live_... Pour des raisons de sécurité, la clé n’est affichée qu’une seule fois.',
+          },
+        },
+        {
+          title: {
+            en: '2. Copy your 1-Click MCP Client Configuration',
+            es: '2. Copia la Configuración de tu Cliente MCP en 1 Clic',
+            de: '2. Kopieren Sie die 1-Klick MCP-Client-Konfiguration',
+            fr: '2. Copiez la configuration client MCP en 1 clic',
+          },
+          body: {
+            en: 'In Settings → AI & MCP, select your platform tab (Claude Desktop, Cursor IDE, or AI Voice Receptionist) to copy the pre-built configuration JSON. Your endpoint is https://getairbook.com/api/mcp with header "Authorization: Bearer ab_live_...".',
+            es: 'En Configuración → IA y MCP, selecciona la pestaña de tu plataforma (Claude Desktop, Cursor IDE o Recepcionista de Voz) para copiar el JSON preconfigurado. Tu endpoint es https://getairbook.com/api/mcp con el encabezado "Authorization: Bearer ab_live_...".',
+            de: 'Wählen Sie unter Einstellungen → KI & MCP Ihren Client (Claude Desktop, Cursor IDE oder Sprachassistent), um das vorbereitete JSON zu kopieren. Ihr Endpunkt lautet https://getairbook.com/api/mcp mit Header "Authorization: Bearer ab_live_...".',
+            fr: 'Dans Paramètres → IA & MCP, sélectionnez votre plateforme (Claude Desktop, Cursor ou Réceptionniste vocal) pour copier la configuration JSON pré-remplie avec le point de terminaison https://getairbook.com/api/mcp et l’en-tête Authorization.',
+          },
+        },
+        {
+          title: {
+            en: '3. Execute 12 Autonomous Salon & Spa Operations',
+            es: '3. Ejecuta 12 Operaciones Autónomas de Salón y Spa',
+            de: '3. Nutzen Sie 12 autonome Salon- und Spa-Funktionen',
+            fr: '3. Exécutez les 12 opérations autonomes de salon et spa',
+          },
+          body: {
+            en: 'Your AI agent can immediately check specialist availability (airbook_check_availability), book appointments (airbook_create_booking), reschedule, lookup client hair formulas, manage walk-in waitlists, inspect stock, and dispatch automated SMS alerts.',
+            es: 'Tu agente de IA puede consultar disponibilidad en vivo (airbook_check_availability), agendar citas (airbook_create_booking), reagendar, consultar fórmulas de clientes, gestionar la lista de espera, revisar inventario y enviar alertas por SMS.',
+            de: 'Ihr KI-Agent kann sofort Termine buchen, freie Zeiten abfragen, Rezepturen nachschlagen, Wartelisten verwalten, Lagerbestände prüfen und automatische SMS-Benachrichtigungen versenden.',
+            fr: 'Votre agent IA peut instantanément vérifier les disponibilités, planifier des rendez-vous, consulter les fiches techniques, gérer les files d’attente et envoyer des alertes SMS automatiques.',
+          },
+        },
+      ],
+      proTip: {
+        en: 'You can test your live MCP connection anytime directly inside Settings → AI & MCP using the "Ping AirBook MCP" button.',
+        es: 'Puedes probar la conexión de tu servidor MCP en cualquier momento desde Configuración → IA y MCP con el botón "Hacer Ping a AirBook MCP".',
+        de: 'Sie können Ihre MCP-Verbindung jederzeit direkt unter Einstellungen → KI & MCP mit dem Button "AirBook MCP anpingen" testen.',
+        fr: 'Vous pouvez tester votre connexion MCP en direct à tout moment dans Paramètres → IA & MCP grâce au bouton de test ping.',
+      },
+      actionLink: {
+        label: { en: 'Open AI & MCP Settings', es: 'Abrir Configuración de IA y MCP', de: 'KI & MCP-Einstellungen öffnen', fr: 'Ouvrir les Paramètres IA & MCP' },
+        href: '/dashboard?tab=settings',
+      },
+    },
   ];
 
   const FAQS = [
+    {
+      q: {
+        en: 'Can AI agents (like Claude or ChatGPT) manage my salon schedule?',
+        es: '¿Pueden los agentes de IA (como Claude o ChatGPT) gestionar la agenda de mi salón?',
+        de: 'Können KI-Agenten (wie Claude oder ChatGPT) meinen Salonplan verwalten?',
+        fr: 'Les agents IA (comme Claude ou ChatGPT) peuvent-ils gérer le planning de mon salon ?',
+      },
+      a: {
+        en: 'Yes! AirBook includes a native Model Context Protocol (MCP) server at /api/mcp. You can connect Claude, Cursor, ChatGPT, or AI phone receptionists to check real-time availability, book clients, reschedule appointments, manage walk-in queues, and send SMS reminders automatically.',
+        es: '¡Sí! AirBook cuenta con un servidor nativo de Model Context Protocol (MCP) en /api/mcp. Puedes conectar Claude, Cursor, ChatGPT o recepcionistas de voz con IA para consultar disponibilidad, agendar citas, gestionar la lista de espera y enviar recordatorios por SMS de forma 100% autónoma.',
+        de: 'Ja! AirBook verfügt über einen nativen Model Context Protocol (MCP) Server unter /api/mcp. Sie können Claude, Cursor, ChatGPT oder telefonische KI-Empfangsdienste anbinden, um Verfügbarkeiten abzufragen, Buchungen vorzunehmen und SMS-Erinnerungen automatisch zu versenden.',
+        fr: 'Oui ! AirBook intègre un serveur natif Model Context Protocol (MCP) sur /api/mcp. Vous pouvez connecter Claude, Cursor, ChatGPT ou des assistants vocaux pour vérifier les créneaux, réserver des prestations et envoyer des rappels SMS automatiquement.',
+      },
+    },
     {
       q: {
         en: 'How quickly can I get my booking link live?',
@@ -510,6 +596,7 @@ export default function HelpCenterPage() {
   const categories = [
     { id: 'all', label: content.allTopics[lang], icon: DocumentBulletList24Regular },
     { id: 'setup', label: { en: 'Getting Started', es: 'Primeros Pasos', de: 'Erste Schritte', fr: 'Premiers Pas' }[lang], icon: Calendar24Regular },
+    { id: 'ai', label: { en: 'AI & Agentic MCP', es: 'IA y Agentes MCP', de: 'KI & Agenten MCP', fr: 'IA & Agents MCP' }[lang], icon: Sparkle24Regular },
     { id: 'payments', label: { en: 'Payments & Stripe', es: 'Pagos y Stripe', de: 'Zahlungen & Stripe', fr: 'Paiements & Stripe' }[lang], icon: Payment24Regular },
     { id: 'team', label: { en: 'Team & Shifts', es: 'Equipo y Turnos', de: 'Team & Pläne', fr: 'Équipe & Plannings' }[lang], icon: PeopleCommunity24Regular },
     { id: 'security', label: { en: 'Security & Passkeys', es: 'Seguridad y Passkeys', de: 'Sicherheit & Passkeys', fr: 'Sécurité & Passkeys' }[lang], icon: Key24Regular },

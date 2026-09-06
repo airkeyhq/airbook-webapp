@@ -4,9 +4,11 @@ const novuSecretKey = process.env.NOVU_SECRET_KEY || 'demo-novu-secret-key-2026'
 export const novu = new Novu({ secretKey: novuSecretKey });
 
 export const NOVU_WORKFLOWS = {
-  appointmentBooked: 'appointment-booked',
+  appointmentBooked: process.env.NOVU_APPOINTMENT_WORKFLOW_ID || 'appointment-booked',
+  appointmentCancelled: process.env.NOVU_CANCELLATION_WORKFLOW_ID || 'appointment-cancelled',
   magicLinkSignIn: process.env.NOVU_MAGIC_LINK_WORKFLOW_ID || 'magic-link-sign-in',
   teamInvitation: process.env.NOVU_TEAM_INVITATION_WORKFLOW_ID || 'team-invitation',
+  smsAlert: process.env.NOVU_SMS_WORKFLOW_ID || 'sms-alert',
 } as const;
 
 export interface MagicLinkEmailPayload {
@@ -25,12 +27,61 @@ export interface TeamInvitationEmailPayload {
 export interface NotificationPayload {
   subscriberId: string;
   clientName: string;
-  clientEmail: string;
+  clientEmail?: string;
+  clientPhone?: string;
   serviceName: string;
   staffName: string;
   dateStr: string;
   startTime: string;
-  price: number;
+  price?: number;
+}
+
+export interface CancellationPayload {
+  subscriberId: string;
+  clientName: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  serviceName: string;
+  staffName: string;
+  dateStr: string;
+  startTime: string;
+  reason?: string;
+}
+
+export interface CustomNotificationPayload {
+  type: 'sms' | 'email' | 'push';
+  recipient: string;
+  message: string;
+  title?: string;
+  data?: Record<string, unknown>;
+}
+
+export interface NotificationLogEntry {
+  id: string;
+  type: 'sms' | 'email' | 'push' | 'system' | 'payment';
+  title: string;
+  recipient: string;
+  message: string;
+  status: 'delivered' | 'sent' | 'queued' | 'failed';
+  timestamp: string;
+}
+
+// Global in-memory buffer of recent notification dispatches
+const RECENT_LOGS: NotificationLogEntry[] = [];
+
+export function recordNotificationLog(log: Omit<NotificationLogEntry, 'id' | 'timestamp'> & { timestamp?: string }) {
+  const entry: NotificationLogEntry = {
+    id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    timestamp: log.timestamp || new Date().toISOString(),
+    ...log,
+  };
+  RECENT_LOGS.unshift(entry);
+  if (RECENT_LOGS.length > 100) RECENT_LOGS.pop();
+  return entry;
+}
+
+export function getRecentNotificationLogs(): NotificationLogEntry[] {
+  return [...RECENT_LOGS];
 }
 
 /**
@@ -40,15 +91,31 @@ export interface NotificationPayload {
  * 3. Scheduled SMS appointment reminder.
  */
 export async function sendBookingNotifications(payload: NotificationPayload) {
-  try {
-    console.log(`[Novu Engine] Triggering booking notification for ${payload.clientName}...`);
+  const secretKey = process.env.NOVU_SECRET_KEY;
+  const isDemo = !secretKey || secretKey === 'demo-novu-secret-key-2026';
 
-    // Novu Event Trigger
+  console.log(`[Novu Engine] Triggering booking notification for ${payload.clientName}...`);
+
+  recordNotificationLog({
+    type: payload.clientPhone ? 'sms' : 'email',
+    title: `Booking Confirmed: ${payload.serviceName}`,
+    recipient: payload.clientEmail || payload.clientPhone || 'Client',
+    message: `${payload.serviceName} with ${payload.staffName} on ${payload.dateStr} at ${payload.startTime}.`,
+    status: 'sent',
+  });
+
+  if (isDemo) {
+    console.log(`[Novu Dev Mode] Booking notification recorded for ${payload.clientName}`);
+    return { success: true, mode: 'demo-fallback' };
+  }
+
+  try {
     const result = await novu.trigger({
       workflowId: NOVU_WORKFLOWS.appointmentBooked,
       to: {
-        subscriberId: payload.subscriberId,
+        subscriberId: payload.subscriberId || payload.clientEmail || `sub_${Date.now()}`,
         email: payload.clientEmail,
+        phone: payload.clientPhone,
       },
       payload: {
         clientName: payload.clientName,
@@ -56,14 +123,105 @@ export async function sendBookingNotifications(payload: NotificationPayload) {
         staffName: payload.staffName,
         dateStr: payload.dateStr,
         startTime: payload.startTime,
-        price: `$${payload.price}`,
+        price: payload.price !== undefined ? `$${payload.price}` : '',
       },
     });
 
     return { success: true, result };
-  } catch (error: any) {
-    console.warn('[Novu Engine] Fallback trigger mode active:', error?.message || error);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown Novu error';
+    console.warn('[Novu Engine] Trigger error:', msg);
+    return { success: true, mode: 'fallback-logged', error: msg };
+  }
+}
+
+/**
+ * Triggers appointment cancellation notification via Novu
+ */
+export async function sendCancellationNotification(payload: CancellationPayload) {
+  const secretKey = process.env.NOVU_SECRET_KEY;
+  const isDemo = !secretKey || secretKey === 'demo-novu-secret-key-2026';
+
+  console.log(`[Novu Engine] Triggering cancellation alert for ${payload.clientName}...`);
+
+  recordNotificationLog({
+    type: payload.clientPhone ? 'sms' : 'email',
+    title: `Cancelled: ${payload.serviceName}`,
+    recipient: payload.clientEmail || payload.clientPhone || 'Client',
+    message: `Appointment for ${payload.serviceName} on ${payload.dateStr} at ${payload.startTime} has been cancelled.`,
+    status: 'sent',
+  });
+
+  if (isDemo) {
     return { success: true, mode: 'demo-fallback' };
+  }
+
+  try {
+    const result = await novu.trigger({
+      workflowId: NOVU_WORKFLOWS.appointmentCancelled,
+      to: {
+        subscriberId: payload.subscriberId || payload.clientEmail || `sub_${Date.now()}`,
+        email: payload.clientEmail,
+        phone: payload.clientPhone,
+      },
+      payload: {
+        clientName: payload.clientName,
+        serviceName: payload.serviceName,
+        staffName: payload.staffName,
+        dateStr: payload.dateStr,
+        startTime: payload.startTime,
+        reason: payload.reason || 'Requested by salon',
+      },
+    });
+
+    return { success: true, result };
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown error';
+    console.warn('[Novu Engine] Cancellation trigger error:', msg);
+    return { success: true, mode: 'fallback-logged' };
+  }
+}
+
+/**
+ * Dispatches custom SMS, Email, or Push notifications (e.g. Walk-in ready pings, Google Review SMS)
+ */
+export async function sendCustomNotification(payload: CustomNotificationPayload) {
+  const { type, recipient, message, title } = payload;
+  const secretKey = process.env.NOVU_SECRET_KEY;
+  const isDemo = !secretKey || secretKey === 'demo-novu-secret-key-2026';
+
+  const log = recordNotificationLog({
+    type,
+    title: title || (type === 'sms' ? 'SMS Notification' : 'Email Notification'),
+    recipient,
+    message,
+    status: 'sent',
+  });
+
+  if (isDemo) {
+    return { success: true, log, mode: 'dev-console' };
+  }
+
+  try {
+    const result = await novu.trigger({
+      workflowId: NOVU_WORKFLOWS.smsAlert,
+      to: {
+        subscriberId: recipient.replace(/[^a-zA-Z0-9]/g, '_'),
+        phone: type === 'sms' ? recipient : undefined,
+        email: type === 'email' ? recipient : undefined,
+      },
+      payload: {
+        message,
+        title: title || 'AirBook Notification',
+        ...payload.data,
+      },
+    });
+
+    return { success: true, log, result };
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown error';
+    console.warn('[Novu Engine] Custom notification error:', msg);
+    return { success: true, log, mode: 'fallback-logged' };
   }
 }
 

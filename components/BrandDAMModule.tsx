@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
+import { ColorPicker } from '@/components/ColorPicker';
 import {
   Sparkle24Filled,
   Copy24Filled,
@@ -23,10 +24,17 @@ import {
   Link24Filled,
   Open24Filled,
   Color24Filled,
+  LockClosed24Filled,
+  Star24Filled,
+  Search24Regular,
+  Bot24Regular,
+  DocumentText24Regular,
+  CheckmarkCircle24Filled,
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
-type StudioTab = 'identity' | 'photography' | 'storefront' | 'opengraph' | 'embed' | 'badges' | 'glyphs' | 'vector';
+type StudioTab = 'identity' | 'photography' | 'storefront' | 'opengraph' | 'schema' | 'embed' | 'badges' | 'glyphs' | 'vector';
+type SchemaType = 'platform' | 'storefront' | 'blog' | 'services';
 
 const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
   {
@@ -227,12 +235,16 @@ const RAW_SVG_CODE = `<svg width="200" height="200" viewBox="0 0 200 200" fill="
   </g>
 </svg>`;
 
-export const BrandDAMModule: React.FC = () => {
+interface BrandDAMModuleProps {
+  initialTab?: StudioTab;
+}
+
+export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'identity' }) => {
   const { t } = useTranslation();
   const { workspaceName, workspaceSlug } = useAirBookStore();
   const { addToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<StudioTab>('identity');
+  const [activeTab, setActiveTab] = useState<StudioTab>(initialTab);
   const [showInternalAssets, setShowInternalAssets] = useState(false);
 
   // Brand State
@@ -253,6 +265,8 @@ export const BrandDAMModule: React.FC = () => {
   const [bgTheme, setBgTheme] = useState<'light' | 'cream' | 'dark' | 'grid'>('cream');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [photoStyle, setPhotoStyle] = useState<'candid' | 'editorial'>('candid');
+  const [selectedSchema, setSelectedSchema] = useState<SchemaType>('platform');
+  const [schemaViewMode, setSchemaViewMode] = useState<'visual' | 'code'>('visual');
 
   // Fetch initial brand settings from API
   useEffect(() => {
@@ -316,8 +330,20 @@ export const BrandDAMModule: React.FC = () => {
   const handleCopy = (content: string, id: string) => {
     navigator.clipboard.writeText(content);
     setCopiedId(id);
-    addToast(t('badgeCopied'), 'success');
+    addToast(id === 'schema-jsonld' ? t('jsonLdCopied') : t('badgeCopied'), 'success');
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleDownloadJSON = (filename: string, jsonContent: string) => {
+    const blob = new Blob([jsonContent], { type: 'application/ld+json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleDownloadSVG = (filename: string, svgContent: string) => {
@@ -345,12 +371,172 @@ export const BrandDAMModule: React.FC = () => {
   const fullBookingUrl = `https://getairbook.com/book/${bookingSlug}`;
   const embedBadgeHtml = `<a href="${fullBookingUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:${primaryColor};color:#ffffff;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">📅 Book on AirBook</a>`;
 
+  // Dynamic Schema.org JSON-LD Objects
+  const platformSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AirBook",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, iOS, macOS, Android, Windows",
+    "description": "Zero-take-rate operating system and booking platform for beauty salons, medspas, barbershops, and independent artists.",
+    "url": "https://getairbook.com",
+    "logo": "https://getairbook.com/logo.png",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD",
+      "description": "Free Forever Standard Plan with 0% booking commission fee"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.98",
+      "reviewCount": "1420",
+      "bestRating": "5"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AirBook Inc.",
+      "url": "https://getairbook.com",
+      "logo": "https://getairbook.com/logo.png",
+      "sameAs": [
+        "https://twitter.com/getairbook",
+        "https://instagram.com/getairbook",
+        "https://github.com/airkeyhq/airbook-webapp"
+      ]
+    }
+  };
+
+  const storefrontSchema = {
+    "@context": "https://schema.org",
+    "@type": "BeautySalon",
+    "name": brandName || "L'Élégance Hair Atelier",
+    "description": tagline || "Bespoke Aesthetics, Hair Artistry & Precision Styling",
+    "url": fullBookingUrl,
+    "telephone": "+1 (555) 234-5678",
+    "priceRange": "$$$",
+    "image": coverUrl || "https://getairbook.com/brand/photos/hair-salon.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "450 Post Street, Suite 300",
+      "addressLocality": "San Francisco",
+      "addressRegion": "CA",
+      "postalCode": "94102",
+      "addressCountry": "US"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "37.7885",
+      "longitude": "-122.4093"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "19:00"
+      }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Salon Booking Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Master Balayage & Gloss",
+            "description": "Signature hand-painted dimensional highlights with gloss glaze and blowout.",
+            "offers": {
+              "@type": "Offer",
+              "price": "260.00",
+              "priceCurrency": "USD"
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Precision Haircut & Style",
+            "description": "Custom scissor cut tailored to facial structure with organic blowout.",
+            "offers": {
+              "@type": "Offer",
+              "price": "95.00",
+              "priceCurrency": "USD"
+            }
+          }
+        }
+      ]
+    }
+  };
+
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Zero Take Rate: Why 0% Booking Fee is the Only Sustainable Salon Model",
+    "description": "Traditional booking platforms extract 20% to 35% on marketplace clients. Learn how zero-commission software protects creator equity.",
+    "author": {
+      "@type": "Person",
+      "name": "AirBook Architecture & Economics Team",
+      "jobTitle": "Lead Platform Economist"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AirBook Inc.",
+      "url": "https://getairbook.com",
+      "logo": "https://getairbook.com/logo.png"
+    },
+    "datePublished": "2026-08-15T08:00:00Z",
+    "dateModified": "2026-09-01T12:00:00Z",
+    "mainEntityOfPage": "https://getairbook.com/blog/zero-take-rate-manifesto",
+    "keywords": [
+      "salon software",
+      "zero take rate",
+      "no marketplace fees",
+      "booking commission",
+      "creator economy"
+    ]
+  };
+
+  const servicesSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Organic Botanical Scalp Elixir (100ml)",
+    "image": "https://getairbook.com/products/scalp-elixir.jpg",
+    "description": "Cold-pressed rosemary and jojoba botanical oil for salon back-bar and retail client care.",
+    "sku": "AB-RET-0042",
+    "brand": {
+      "@type": "Brand",
+      "name": brandName || "AirBook Botanicals"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `${fullBookingUrl}#products`,
+      "priceCurrency": "USD",
+      "price": "38.00",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": brandName || "AirBook Atelier"
+      }
+    }
+  };
+
+  const currentSchemaObject =
+    selectedSchema === 'platform' ? platformSchema :
+    selectedSchema === 'storefront' ? storefrontSchema :
+    selectedSchema === 'blog' ? blogSchema : servicesSchema;
+
+  const currentJsonLdString = JSON.stringify(currentSchemaObject, null, 2);
+  const currentScriptTagString = `<script type="application/ld+json">\n${currentJsonLdString}\n</script>`;
+
   // Client-facing tabs for salon & spa owners
   const clientTabs = [
     { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
     { id: 'photography' as const, label: t('tabBrandPhotography'), icon: Image24Filled },
     { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
     { id: 'opengraph' as const, label: t('tabOpenGraph'), icon: Image24Filled },
+    { id: 'schema' as const, label: t('tabSchemaOrg'), icon: Code24Filled },
     { id: 'embed' as const, label: t('tabEmbedWidget'), icon: Link24Filled },
   ];
 
@@ -517,32 +703,18 @@ export const BrandDAMModule: React.FC = () => {
                   <span>{t('primaryBrandColor')}</span>
                 </h3>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-[var(--text-secondary)]">{t('primaryBrandColor')}</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={primaryColor}
-                        onChange={(e) => setPrimaryColor(e.target.value)}
-                        className="w-10 h-10 rounded-xl cursor-pointer border border-[var(--border-subtle)] bg-transparent"
-                      />
-                      <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase">{primaryColor}</span>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <ColorPicker
+                    label={t('primaryBrandColor')}
+                    value={primaryColor}
+                    onChange={setPrimaryColor}
+                  />
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-[var(--text-secondary)]">{t('accentBrandColor')}</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={accentColor}
-                        onChange={(e) => setAccentColor(e.target.value)}
-                        className="w-10 h-10 rounded-xl cursor-pointer border border-[var(--border-subtle)] bg-transparent"
-                      />
-                      <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase">{accentColor}</span>
-                    </div>
-                  </div>
+                  <ColorPicker
+                    label={t('accentBrandColor')}
+                    value={accentColor}
+                    onChange={setAccentColor}
+                  />
                 </div>
 
                 {/* Preset Palettes */}
@@ -1164,6 +1336,378 @@ export const BrandDAMModule: React.FC = () => {
               {embedBadgeHtml}
             </pre>
           </div>
+        </motion.div>
+      )}
+
+      {/* TAB: SCHEMA.ORG & STRUCTURED DATA INSPECTOR */}
+      {activeTab === 'schema' && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          {/* Header & External Test Suite */}
+          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase tracking-wider">
+                  Semantic SEO & AI Graph
+                </span>
+                <span className="text-[10px] font-bold text-[var(--text-muted)]">
+                  JSON-LD 1.1 Compliant
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black tracking-tight text-[var(--text-primary)]">
+                {t('schemaInspectorTitle')}
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] max-w-2xl">
+                {t('schemaInspectorDesc')}
+              </p>
+            </div>
+
+            {/* Quick External Validation CTAs */}
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+              <a
+                href="https://search.google.com/test/rich-results"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary h-9 px-3.5 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Search24Regular className="w-3.5 h-3.5 text-blue-500" />
+                <span>{t('validateWithGoogle')}</span>
+                <Open24Filled className="w-3 h-3 text-[var(--text-muted)]" />
+              </a>
+              <a
+                href="https://validator.schema.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary h-9 px-3.5 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Code24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                <span>{t('validateWithSchemaOrg')}</span>
+                <Open24Filled className="w-3 h-3 text-[var(--text-muted)]" />
+              </a>
+            </div>
+          </div>
+
+          {/* Schema Type Switcher & View Mode Toggle */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* Schema Selector Pills */}
+            <div className="grid grid-cols-2 sm:flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-full sm:w-auto">
+              {[
+                { id: 'platform' as const, label: t('schemaTypePlatform'), typeTag: 'SoftwareApplication' },
+                { id: 'storefront' as const, label: t('schemaTypeStorefront'), typeTag: 'BeautySalon' },
+                { id: 'blog' as const, label: t('schemaTypeBlog'), typeTag: 'BlogPosting' },
+                { id: 'services' as const, label: t('schemaTypeServices'), typeTag: 'Product & Service' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSelectedSchema(item.id)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-100 flex items-center gap-2 cursor-pointer ${
+                    selectedSchema === item.id
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  <span className="hidden md:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono opacity-60 bg-black/5 dark:bg-white/10">
+                    {item.typeTag}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* View Mode & Actions */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+                <button
+                  type="button"
+                  onClick={() => setSchemaViewMode('visual')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-100 flex items-center gap-1.5 cursor-pointer ${
+                    schemaViewMode === 'visual'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Search24Regular className="w-3.5 h-3.5" />
+                  <span>{t('viewVisualInspector')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSchemaViewMode('code')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-100 flex items-center gap-1.5 cursor-pointer ${
+                    schemaViewMode === 'code'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Code24Filled className="w-3.5 h-3.5" />
+                  <span>{t('viewJsonLdCode')}</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleCopy(currentScriptTagString, 'schema-jsonld')}
+                className="btn-primary h-9 px-3.5 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer flex-shrink-0"
+              >
+                {copiedId === 'schema-jsonld' ? (
+                  <>
+                    <Checkmark24Filled className="w-3.5 h-3.5" />
+                    <span>{t('jsonLdCopied')}</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <span>{t('copyJsonLd')}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* MODE 1: VISUAL INSPECTOR & RICH SNIPPET SIMULATOR */}
+          {schemaViewMode === 'visual' && (
+            <div className="space-y-6">
+              {/* Google Rich Snippet Simulator */}
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2">
+                    <Search24Regular className="w-4 h-4 text-blue-500" />
+                    <span>{t('googlePreviewTitle')}</span>
+                  </h4>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    Rich Result Ready
+                  </span>
+                </div>
+
+                {/* Google Snippet Box */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-800 space-y-2.5 max-w-2xl">
+                  {/* Google Breadcrumb & Favicon */}
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-[#007AFF] text-white flex items-center justify-center text-[10px] font-bold">
+                      A
+                    </div>
+                    <div className="flex flex-col text-[11px] leading-tight">
+                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                        {selectedSchema === 'platform' ? 'AirBook' : brandName || 'AirBook'}
+                      </span>
+                      <span className="text-slate-500 dark:text-slate-400 font-mono text-[10px]">
+                        {selectedSchema === 'platform'
+                          ? 'https://getairbook.com'
+                          : selectedSchema === 'storefront'
+                          ? fullBookingUrl
+                          : selectedSchema === 'blog'
+                          ? 'https://getairbook.com > blog > zero-take-rate'
+                          : `${fullBookingUrl} > products`}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Google Blue Title */}
+                  <h5 className="text-base font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer leading-snug">
+                    {selectedSchema === 'platform' && 'AirBook — 0% Take-Rate Operating System & Booking Platform'}
+                    {selectedSchema === 'storefront' && `${brandName || "L'Élégance Hair Atelier"} · San Francisco, CA | Book 24/7 on AirBook`}
+                    {selectedSchema === 'blog' && 'Zero Take Rate: Why 0% Booking Fee is the Only Sustainable Salon Model'}
+                    {selectedSchema === 'services' && 'Organic Botanical Scalp Elixir (100ml) · Boutique Salon Care'}
+                  </h5>
+
+                  {/* Google Structured Metadata Rating Bar */}
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-0.5 text-amber-500">
+                      <Star24Filled className="w-3.5 h-3.5" />
+                      <Star24Filled className="w-3.5 h-3.5" />
+                      <Star24Filled className="w-3.5 h-3.5" />
+                      <Star24Filled className="w-3.5 h-3.5" />
+                      <Star24Filled className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-bold">4.98</span>
+                    <span className="text-slate-400">·</span>
+                    <span>1,420 reviews</span>
+                    <span className="text-slate-400">·</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                      {selectedSchema === 'platform' ? 'Free Plan ($0)' : selectedSchema === 'storefront' ? 'Price: $$$ · Open Tue–Sat 9AM–7PM' : 'In Stock · $38.00'}
+                    </span>
+                  </div>
+
+                  {/* Snippet Description */}
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {selectedSchema === 'platform' && 'AirBook provides seamless appointments, live calendar dispatch, tap-to-pay checkout, and client CRM for salons and spas with zero commission.'}
+                    {selectedSchema === 'storefront' && 'Book online instantly with real-time specialist availability, custom hair color formulas, and contactless Apple Pay / Google Pay checkout.'}
+                    {selectedSchema === 'blog' && 'Learn why commission-free software is reshaping creator independence in the beauty and wellness industry. Read the comprehensive economic breakdown.'}
+                    {selectedSchema === 'services' && 'Cold-pressed botanical scalp formula with rosemary, jojoba, and organic essential oils. Professional back-bar grade and retail take-home care.'}
+                  </p>
+
+                  {/* Google Sitelinks / Action Badges */}
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 flex flex-wrap gap-2 text-[11px]">
+                    <span className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold">
+                      {selectedSchema === 'platform' ? '✨ Get Started Free' : '📅 Book Appointment'}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      {selectedSchema === 'platform' ? 'Pricing (0% Fee)' : 'Services & Prices'}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      Verified Reviews
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      Directions & Hours
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Knowledge Graph & Entity Nodes */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Node 1: Entity Root */}
+                <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
+                    <Bot24Regular className="w-4 h-4 text-purple-500" />
+                    <span>Entity Root</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                      <span className="text-[var(--text-secondary)] font-mono">@context</span>
+                      <span className="font-bold text-[var(--text-primary)]">https://schema.org</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                      <span className="text-[var(--text-secondary)] font-mono">@type</span>
+                      <span className="font-bold text-blue-500">{String((currentSchemaObject as Record<string, unknown>)['@type'])}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                      <span className="text-[var(--text-secondary)] font-mono">name</span>
+                      <span className="font-bold text-[var(--text-primary)] truncate max-w-[140px]">
+                        {String((currentSchemaObject as Record<string, unknown>)['name'] || (currentSchemaObject as Record<string, unknown>)['headline'])}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Node 2: Rich Semantic Properties */}
+                <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
+                    <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
+                    <span>Semantic Nodes</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    {selectedSchema === 'platform' && (
+                      <>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Pricing Fee</span>
+                          <span className="font-bold text-emerald-500">$0.00 (0% Take-Rate)</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Rating</span>
+                          <span className="font-bold text-amber-500">4.98 / 5.0 (1,420 reviews)</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Supported OS</span>
+                          <span className="font-bold text-[var(--text-primary)]">Web, iOS, macOS</span>
+                        </div>
+                      </>
+                    )}
+                    {selectedSchema === 'storefront' && (
+                      <>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Location</span>
+                          <span className="font-bold text-[var(--text-primary)]">San Francisco, CA</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Geo Coordinates</span>
+                          <span className="font-mono text-[11px] font-bold text-blue-500">37.7885, -122.4093</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Schedule</span>
+                          <span className="font-bold text-emerald-500">Tue–Sat (9:00 - 19:00)</span>
+                        </div>
+                      </>
+                    )}
+                    {selectedSchema === 'blog' && (
+                      <>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Author</span>
+                          <span className="font-bold text-[var(--text-primary)]">Economics Team</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Publisher</span>
+                          <span className="font-bold text-[var(--text-primary)]">AirBook Inc.</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Format</span>
+                          <span className="font-bold text-purple-500">BlogPosting + HowTo</span>
+                        </div>
+                      </>
+                    )}
+                    {selectedSchema === 'services' && (
+                      <>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">SKU</span>
+                          <span className="font-mono text-[11px] font-bold text-[var(--text-primary)]">AB-RET-0042</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Price</span>
+                          <span className="font-bold text-emerald-500">$38.00 USD</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-secondary)]">
+                          <span className="text-[var(--text-secondary)]">Availability</span>
+                          <span className="font-bold text-blue-500">InStock (Real-Time)</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Node 3: AI Crawler Retrieval Readiness */}
+                <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
+                    <CheckmarkCircle24Filled className="w-4 h-4 text-blue-500" />
+                    <span>AI Engine Discovery</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                      <span className="text-[var(--text-primary)] font-bold">Google Rich Results</span>
+                      <span className="font-bold text-emerald-500">✓ Verified</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                      <span className="text-[var(--text-primary)] font-bold">Perplexity / AI Search</span>
+                      <span className="font-bold text-emerald-500">✓ Indexed</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                      <span className="text-[var(--text-primary)] font-bold">ChatGPT & Gemini</span>
+                      <span className="font-bold text-emerald-500">✓ Structured</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MODE 2: RAW JSON-LD SCRIPT CODE VIEWER */}
+          {schemaViewMode === 'code' && (
+            <div className="p-6 rounded-3xl bg-slate-900 text-slate-100 border border-slate-800 space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono text-slate-400 pb-3 border-b border-slate-800">
+                <span>&lt;script type="application/ld+json"&gt; ({selectedSchema} schema)</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadJSON(`airbook-schema-${selectedSchema}.jsonld`, currentJsonLdString)}
+                    className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer text-slate-200"
+                  >
+                    <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                    <span>{t('downloadJsonLd')}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(currentScriptTagString, 'schema-code-copy')}
+                    className="btn-primary h-8 px-3 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <span>{copiedId === 'schema-code-copy' ? t('jsonLdCopied') : t('copyJsonLd')}</span>
+                  </button>
+                </div>
+              </div>
+
+              <pre className="text-xs font-mono text-blue-300 overflow-x-auto p-4 bg-slate-950 rounded-2xl border border-slate-800 max-h-[460px] overflow-y-auto leading-relaxed">
+                {currentScriptTagString}
+              </pre>
+            </div>
+          )}
         </motion.div>
       )}
 

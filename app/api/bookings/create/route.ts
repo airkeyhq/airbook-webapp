@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { appointments, clients, services, staff } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { sendBookingNotifications } from '@/lib/notifications';
 import { randomUUID } from 'crypto';
 
 function addMinutesToTime(hhmm: string, minutes: number): string {
@@ -177,6 +178,26 @@ export async function POST(req: Request) {
 
       return createdAppointments;
     });
+
+    // Dispatch Novu notifications in background
+    if (clientEmail || clientPhone) {
+      for (const b of result) {
+        const staffMember = dbStaff.find((s) => s.id === b.staffId);
+        const serviceItem = dbServices.find((s) => s.id === b.serviceId);
+
+        sendBookingNotifications({
+          subscriberId: clientEmail || clientPhone || `sub_${b.clientId}`,
+          clientName: b.guestName || clientName,
+          clientEmail,
+          clientPhone,
+          serviceName: serviceItem?.name || 'Hair & Styling Service',
+          staffName: staffMember?.name || 'Specialist',
+          dateStr,
+          startTime: b.startTime,
+          price: (b.priceCents || 0) / 100,
+        }).catch((err) => console.warn('Background notification error:', err));
+      }
+    }
 
     return NextResponse.json({
       success: true,

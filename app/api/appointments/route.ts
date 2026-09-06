@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { appointments, clients, services, staff } from '@/db/schema';
 import { eq, and, gte, lte } from 'drizzle-orm';
+import { sendCancellationNotification } from '@/lib/notifications';
 
 export async function GET(req: Request) {
   try {
@@ -93,6 +94,44 @@ export async function PATCH(req: Request) {
       .set(updateFields)
       .where(eq(appointments.id, id))
       .returning();
+
+    // If appointment was cancelled, dispatch Novu notification
+    if (status === 'cancelled' && updated) {
+      (async () => {
+        try {
+          const [details] = await db
+            .select({
+              clientName: clients.name,
+              clientEmail: clients.email,
+              clientPhone: clients.phone,
+              serviceName: services.name,
+              staffName: staff.name,
+            })
+            .from(appointments)
+            .leftJoin(clients, eq(appointments.clientId, clients.id))
+            .leftJoin(services, eq(appointments.serviceId, services.id))
+            .leftJoin(staff, eq(appointments.staffId, staff.id))
+            .where(eq(appointments.id, id))
+            .limit(1);
+
+          if (details && (details.clientEmail || details.clientPhone)) {
+            await sendCancellationNotification({
+              subscriberId: details.clientEmail || details.clientPhone || `sub_${updated.clientId}`,
+              clientName: details.clientName || 'Client',
+              clientEmail: details.clientEmail || undefined,
+              clientPhone: details.clientPhone || undefined,
+              serviceName: details.serviceName || 'Service',
+              staffName: details.staffName || 'Specialist',
+              dateStr: updated.dateStr,
+              startTime: updated.startTime,
+              reason: notes || 'Cancelled by salon',
+            });
+          }
+        } catch (e) {
+          console.warn('Failed to send cancellation notification:', e);
+        }
+      })();
+    }
 
     return NextResponse.json({ success: true, appointment: updated });
   } catch (err: any) {

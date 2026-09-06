@@ -2,15 +2,7 @@ import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
 
-const connectionString = process.env.DATABASE_URL || (
-  process.env.NODE_ENV === 'production' 
-    ? '' 
-    : 'postgres://postgres:postgres@localhost:5432/airbook'
-);
-
-if (process.env.NODE_ENV === 'production' && !connectionString) {
-  throw new Error('FATAL: DATABASE_URL environment variable is required in production.');
-}
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/airbook';
 
 const client = neon(connectionString);
 

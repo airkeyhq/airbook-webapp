@@ -11,6 +11,7 @@ import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { AddLocationModal } from '@/components/AddLocationModal';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
+import { MCPStudio } from '@/components/MCPStudio';
 import { EmptyState } from '@/components/EmptyState';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
@@ -62,11 +63,12 @@ import {
 } from '@fluentui/react-icons';
 import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
 
-type SettingsTab = 'profile' | 'workspace' | 'addons' | 'compliance' | 'locations' | 'domain';
+type SettingsTab = 'profile' | 'workspace' | 'mcp' | 'locations' | 'domain' | 'addons' | 'compliance';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Filled },
   { id: 'workspace', labelKey: 'workspace', icon: Building24Filled },
+  { id: 'mcp', labelKey: 'tabMCP', icon: Sparkle24Filled },
   { id: 'locations', labelKey: 'tabLocations', icon: Location24Filled },
   { id: 'domain', labelKey: 'tabDomain', icon: Globe24Filled },
   { id: 'addons', labelKey: 'addOns', icon: Sparkle24Filled },
@@ -1643,6 +1645,19 @@ export const SettingsModule: React.FC = () => {
                 </div>
               )}
             </div>
+          </motion.div>
+        )}
+
+        {/* ─── TAB: AI AGENTS & DEVELOPER MCP ─── */}
+        {activeTab === 'mcp' && (
+          <motion.div
+            key="mcp"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            <MCPStudio />
           </motion.div>
         )}
 

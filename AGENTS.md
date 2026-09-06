@@ -137,6 +137,16 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Concise Microcopy**: Category tags, status pills, reading times, and station badges MUST use punchy single-word or short phrases (e.g. `Seguridad`, `5 min`, `Live Sync`) rather than long multi-word sentences.
     - **Strict Non-Wrapping**: All badge and tag pills MUST explicitly declare `whitespace-nowrap flex-shrink-0` to prevent awkward multi-line text wrapping inside responsive grid cards.
 
+20. **Mandatory AirBook Color Studio & Custom Color Picker Invariant (`<ColorPicker />`)**:
+    - **Zero Native `<input type="color">` Delegation**: NEVER use raw browser-native `<input type="color">` elements, which trigger unstyled OS popups and violate cross-platform UI invariants.
+    - **Custom HSL Spectrum Physics**: MUST strictly use the custom-coded `<ColorPicker />` component from `@/components/ColorPicker` featuring:
+      1. Tactile `52px` trigger card with dual-ring ambient highlight, uppercase HEX and HSL readouts, and 1-click clipboard copy.
+      2. 2D HSL Saturation & Brightness spectrum pad with draggable crosshair indicator.
+      3. Continuous 360° rainbow hue gradient track with custom tactile thumb handle.
+      4. Integrated `window.EyeDropper` API support for sampling colors directly from the screen.
+      5. Curated luxury salon DNA presets (`DEFAULT_AIRBOOK_PRESETS`: Electric Sky `#2BB5FF`, Matte Onyx `#0F172A`, Rose Gold `#E07A5F`, Champagne Silk `#D4A373`, Emerald Sage `#2A9D8F`, French Lavender `#8338EC`, Coral Sunset `#FF006E`, Pure Titanium `#64748B`).
+      6. Manual HEX validation with auto-formatting and instant visual swatch update.
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:

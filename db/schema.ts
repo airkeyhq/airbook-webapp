@@ -486,5 +486,19 @@ export const kyc_verifications = pgTable('kyc_verifications', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// =============================================================================
+// MODULE 13: DEVELOPER API KEYS & AI AGENTIC ACCESS (MCP)
+// =============================================================================
 
-
+export const apiKeys = pgTable('api_keys', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(), // e.g. "Claude Desktop", "AI Phone Receptionist", "Cursor"
+  keyHash: text('key_hash').notNull(), // SHA-256 hash of secret key
+  keyPrefix: varchar('key_prefix', { length: 30 }).notNull(), // e.g. "ab_live_...4f2a"
+  scopes: text('scopes').default('all').notNull(), // 'all' | 'read' | 'write'
+  lastUsedAt: timestamp('last_used_at'),
+  expiresAt: timestamp('expires_at'),
+  revokedAt: timestamp('revoked_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

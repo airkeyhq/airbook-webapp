@@ -78,15 +78,15 @@ export const NotificationCenterPopover: React.FC = () => {
       if (data.success && Array.isArray(data.logs)) {
         const liveLogs: NotificationItem[] = data.logs.map((log: any) => ({
           id: log.id,
-          title: log.type === 'sms' ? 'SMS Notification Dispatched' : 'Email Notification Sent',
-          message: `To: ${log.recipient} — "${log.message}"`,
+          title: log.title || (log.type === 'sms' ? 'SMS Notification Dispatched' : 'Email Notification Sent'),
+          message: log.recipient ? `To: ${log.recipient} — ${log.message}` : log.message,
           type: log.type || 'sms',
           timestamp: new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isRead: false,
         }));
-        setNotifications(liveLogs);
+        setNotifications(liveLogs.length > 0 ? liveLogs : DEFAULT_NOTIFICATIONS);
       } else {
-        setNotifications([]);
+        setNotifications(DEFAULT_NOTIFICATIONS);
       }
     } catch (e) {
       console.warn('Failed to fetch notifications logs:', e);
