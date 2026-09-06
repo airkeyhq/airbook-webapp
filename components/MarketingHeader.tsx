@@ -29,6 +29,7 @@ import {
   Dismiss24Filled,
   Tag24Regular,
   ArrowRight24Filled,
+  BookOpen24Regular,
 } from '@fluentui/react-icons';
 
 export const MarketingHeader: React.FC = () => {
@@ -370,6 +371,25 @@ export const MarketingHeader: React.FC = () => {
                         </div>
                       </Link>
 
+                      {/* Editorial & Playbooks (Blog) */}
+                      <Link
+                        href="/blog"
+                        onClick={() => setActiveNavDropdown(null)}
+                        className="flex items-start gap-3 p-3 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
+                      >
+                        <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                          <BookOpen24Regular className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-extrabold text-[var(--text-primary)]">
+                            {t('editorialAndGuides')}
+                          </p>
+                          <p className="text-[11px] text-[var(--text-secondary)] font-medium leading-snug">
+                            {t('blogSubtitle')}
+                          </p>
+                        </div>
+                      </Link>
+
                       {/* Data Protection */}
                       <Link
                         href="/data-protection"
@@ -588,6 +608,15 @@ export const MarketingHeader: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-2">
                     <Link
+                      href="/blog"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] flex items-center justify-between"
+                    >
+                      <span>{t('blog')}</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 text-[9px] font-black">AI/RSS</span>
+                    </Link>
+
+                    <Link
                       href="/changelog"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] flex items-center justify-between"
@@ -599,7 +628,7 @@ export const MarketingHeader: React.FC = () => {
                     <Link
                       href="/data-protection"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] col-span-2"
                     >
                       Data Protection
                     </Link>
