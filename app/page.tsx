@@ -2460,7 +2460,7 @@ export default function MarketingWebsite() {
 
             <Link
               href="/onboarding"
-              className="relative z-10 w-full h-12 rounded-2xl bg-white text-black font-extrabold text-xs text-center shadow-xl hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="btn-secondary-inverted relative z-10 w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
             >
               <span>{t('startFreeTrialBtn')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />
@@ -2543,7 +2543,7 @@ export default function MarketingWebsite() {
             </Link>
             <Link
               href="/book/eduardos-lounge"
-              className="h-12 px-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors flex items-center justify-center gap-2 shadow-xs"
+              className="btn-secondary h-12 px-6 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
             >
               <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
               <span>{t('talkToSales')}</span>

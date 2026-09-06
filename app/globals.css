@@ -232,7 +232,7 @@ body {
 .stack-lg { display: flex; flex-direction: column; gap: var(--space-4); }
 .stack-xl { display: flex; flex-direction: column; gap: var(--space-6); }
 
-/* ─── DESIGN DNA BUTTON SYSTEM ─── */
+/* ─── DESIGN DNA BUTTON SYSTEM (PRIMARY, SECONDARY, TERTIARY) ─── */
 .btn-primary {
   height: var(--control-height);
   padding-left: var(--space-4);
@@ -262,13 +262,13 @@ body {
 }
 
 .btn-secondary {
-  height: var(--size-control-base);
+  height: var(--control-height);
   padding-left: var(--space-4);
   padding-right: var(--space-4);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.75rem;
   border-radius: var(--radius-md);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
@@ -278,14 +278,70 @@ body {
   gap: 0.5rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out;
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out, box-shadow 0.1s ease-out;
 }
 .btn-secondary:hover {
   background-color: var(--bg-secondary);
-  border-color: rgba(43, 181, 255, 0.3);
+  border-color: rgba(43, 181, 255, 0.4);
   transform: scale(1.01);
 }
 .btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* Secondary Button on High-Contrast / Inverted surfaces (like dark gradient cards) */
+.btn-secondary-inverted {
+  height: var(--control-height);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  font-weight: 800;
+  font-size: 0.75rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+.btn-secondary-inverted:hover {
+  background-color: #F8FAFC;
+  box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+}
+.btn-secondary-inverted:active {
+  transform: scale(0.97);
+}
+
+.btn-tertiary {
+  height: var(--control-height);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out, color 0.1s ease-out;
+}
+.btn-tertiary:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transform: scale(1.01);
+}
+.btn-tertiary:active {
   transform: scale(0.97);
 }
 
