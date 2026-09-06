@@ -882,91 +882,6 @@ export default function MarketingWebsite() {
                   </AnimatePresence>
                 </div>
               </div>
-
-              {/* Card 2: Client Profile & Technical Formula Ticket */}
-              <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3">
-                {/* Client Ticket Header */}
-                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2.5">
-                  <div className="flex items-center gap-2">
-                    <Person24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-                    <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
-                      {t('demoClientRecordTitle')}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide border border-amber-500/20">
-                      <Star24Regular className="w-3 h-3 text-amber-500" />
-                      {t('demoClientVipBadge')}
-                    </span>
-                    <span className="text-[10px] font-mono font-bold text-[#AF52DE] bg-[#AF52DE]/10 px-2 py-0.5 rounded-full border border-[#AF52DE]/20">
-                      #AB-1042
-                    </span>
-                  </div>
-                </div>
-
-                {/* Client Identity & Loyalty Capsule */}
-                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-                  <div className="flex items-center gap-2.5">
-                    <img
-                      src={getDemoClient(language).avatar}
-                      alt={getDemoClient(language).name}
-                      className="w-9 h-9 rounded-xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
-                    />
-                    <div>
-                      <p className="text-xs font-black text-[var(--text-primary)]">
-                        {getDemoClient(language).name}
-                      </p>
-                      <p className="text-[10px] text-[var(--text-secondary)] font-mono">
-                        +1 •••• 8492
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-black text-[#AF52DE] bg-[#AF52DE]/10 px-2 py-0.5 rounded-full border border-[#AF52DE]/20">
-                      {t('demoLoyaltyBalance')}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Technical Service Spec / Formula Swatch Capsule */}
-                <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-[11px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                      <Tag24Regular className="w-3 h-3 text-[var(--text-secondary)]" />
-                      {t('demoFormulaLabel')}
-                    </span>
-                    {/* Formulation Color Swatch Dots */}
-                    <div className="flex items-center -space-x-1">
-                      <div className="w-3.5 h-3.5 rounded-full bg-[#7A4B3A] border border-white dark:border-black shadow-xs" />
-                      <div className="w-3.5 h-3.5 rounded-full bg-[#D4A373] border border-white dark:border-black shadow-xs" />
-                      <div className="w-3.5 h-3.5 rounded-full bg-[#E8C5A5] border border-white dark:border-black shadow-xs" />
-                    </div>
-                  </div>
-                  <p className="text-xs font-mono font-medium text-[var(--text-secondary)] leading-snug">
-                    {t('demoFormulaCode')}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold border border-emerald-500/20">
-                      {t('demoPatchTested')}
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-primary)] text-[var(--text-secondary)] text-[9px] font-bold border border-[var(--border-subtle)]">
-                      {t('demoPrefQuiet')}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Security & Instant Sync Footer */}
-                <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[10px] font-bold text-[var(--text-secondary)]">
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                    {t('demoStripeProtected')}
-                  </span>
-                  <span className="flex items-center gap-1 text-[#2BB5FF]">
-                    <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
-                    {t('demoCalendarSynced')}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1118,6 +1033,164 @@ export default function MarketingWebsite() {
                 </div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] tracking-tight">{t('step4Title')}</h3>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{t('step4Desc')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION: CLIENT TECHNICAL RECORDS & CRM (WARM AMBER / ROSE STAGE) ─── */}
+      <section id="records" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF8F3] via-[#FAF5FF] to-[#F0F8FF] dark:from-amber-950/20 dark:via-purple-950/15 dark:to-sky-950/20 border border-amber-100/80 dark:border-amber-900/30 shadow-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Editorial Value Proposition & 3 Feature Bullets */}
+            <div className="lg:col-span-6 space-y-6">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-[#AF52DE]">
+                {t('recordsEyebrow')}
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-[var(--text-primary)] tracking-tight">
+                {t('recordsTitle')}
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed font-medium">
+                {t('recordsDesc')}
+              </p>
+
+              {/* 3 Value Pillars */}
+              <div className="space-y-3.5 pt-2">
+                {/* Pillar 1: Formulas & Dwell Times */}
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
+                  <div className="w-9 h-9 rounded-xl bg-[#AF52DE]/10 text-[#AF52DE] flex items-center justify-center flex-shrink-0 mt-0.5 border border-[#AF52DE]/20">
+                    <Tag24Regular className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xs font-black text-[var(--text-primary)]">
+                      {t('recordsFeature1Title')}
+                    </h3>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-snug">
+                      {t('recordsFeature1Desc')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pillar 2: Digital Waivers & Allergy Intake */}
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/20">
+                    <ShieldCheckmark24Regular className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xs font-black text-[var(--text-primary)]">
+                      {t('recordsFeature2Title')}
+                    </h3>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-snug">
+                      {t('recordsFeature2Desc')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pillar 3: Loyalty Credit & VIP Status */}
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-500/20">
+                    <Star24Regular className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xs font-black text-[var(--text-primary)]">
+                      {t('recordsFeature3Title')}
+                    </h3>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-snug">
+                      {t('recordsFeature3Desc')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Tactile Client Technical Ticket Showcase Widget */}
+            <div className="lg:col-span-6 flex justify-center">
+              <div className="w-full max-w-[460px] bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden">
+                {/* Ambient Top Glow */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[#AF52DE]/5 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Client Ticket Header */}
+                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                  <div className="flex items-center gap-2">
+                    <Person24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <span className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      {t('demoClientRecordTitle')}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide border border-amber-500/20 shadow-xs">
+                      <Star24Regular className="w-3.5 h-3.5 text-amber-500" />
+                      {t('demoClientVipBadge')}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-[#AF52DE] bg-[#AF52DE]/10 px-2.5 py-1 rounded-full border border-[#AF52DE]/20">
+                      #AB-1042
+                    </span>
+                  </div>
+                </div>
+
+                {/* Client Identity & Loyalty Capsule */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={getDemoClient(language).avatar}
+                      alt={getDemoClient(language).name}
+                      className="w-11 h-11 rounded-2xl object-cover border border-[var(--border-subtle)] flex-shrink-0 shadow-xs"
+                    />
+                    <div>
+                      <p className="text-xs sm:text-sm font-black text-[var(--text-primary)]">
+                        {getDemoClient(language).name}
+                      </p>
+                      <p className="text-[10px] text-[var(--text-secondary)] font-mono">
+                        +1 •••• 8492 · {getDemoClient(language).note}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0 pl-2">
+                    <span className="text-[10px] font-black text-[#AF52DE] bg-[#AF52DE]/10 px-2.5 py-1 rounded-full border border-[#AF52DE]/20 block">
+                      {t('demoLoyaltyBalance')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Technical Service Spec / Formula Swatch Capsule */}
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5 text-[11px]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+                      <Tag24Regular className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                      {t('demoFormulaLabel')}
+                    </span>
+                    {/* Formulation Color Swatch Dots */}
+                    <div className="flex items-center -space-x-1.5">
+                      <div className="w-4 h-4 rounded-full bg-[#7A4B3A] border-2 border-white dark:border-black shadow-xs" />
+                      <div className="w-4 h-4 rounded-full bg-[#D4A373] border-2 border-white dark:border-black shadow-xs" />
+                      <div className="w-4 h-4 rounded-full bg-[#E8C5A5] border-2 border-white dark:border-black shadow-xs" />
+                    </div>
+                  </div>
+                  <p className="text-xs font-mono font-medium text-[var(--text-secondary)] leading-relaxed">
+                    {t('demoFormulaCode')}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20">
+                      {t('demoPatchTested')}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg bg-[var(--bg-primary)] text-[var(--text-secondary)] text-[10px] font-bold border border-[var(--border-subtle)]">
+                      {t('demoPrefQuiet')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Security & Instant Sync Footer */}
+                <div className="pt-2.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[10px] font-bold text-[var(--text-secondary)]">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                    {t('demoStripeProtected')}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[#2BB5FF]">
+                    <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
+                    {t('demoCalendarSynced')}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
