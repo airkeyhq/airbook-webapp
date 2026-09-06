@@ -21,13 +21,27 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'AirBook — Professional Services Booking SaaS',
-  description: 'Clean, lightweight, mobile-first booking software for Spas, Hair Stylists, Wellness Practitioners, and Professionals.',
+  metadataBase: new URL('https://getairbook.com'),
+  title: 'AirBook — The Frictionless Workspace for Independent Pros',
+  description: 'Clean, lightweight, mobile-first booking & scheduling infrastructure for salons, spas, barbershops, and independent beauty and wellness pros.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'AirBook',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://getairbook.com',
+    siteName: 'AirBook',
+    title: 'AirBook — The Frictionless Workspace for Independent Pros',
+    description: 'Modern booking & scheduling infrastructure with 24/7 online calendar, instant Tap-to-Pay checkout, automated reminders, and client CRM records.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AirBook — The Frictionless Workspace for Independent Pros',
+    description: 'Modern booking & scheduling infrastructure with 24/7 online calendar, instant Tap-to-Pay checkout, automated reminders, and client CRM records.',
   },
 };
 

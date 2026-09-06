@@ -278,7 +278,7 @@ export const MarketingModule: React.FC = () => {
   const previewText = campMessage
     .replace('{clientName}', 'Sarah')
     .replace('{businessName}', 'AirBook Salon')
-    .replace('{bookingUrl}', 'airbook.me/book/demo')
+    .replace('{bookingUrl}', 'getairbook.com/book/demo')
     .replace('{staffName}', 'Elena');
 
   const charCount = previewText.length;

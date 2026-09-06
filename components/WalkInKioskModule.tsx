@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -8,6 +8,8 @@ import { useAirBookStore } from '@/lib/store';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
+import { isPasskeySupported, authenticateStationPasskey } from '@/lib/passkey';
+import { CircleCloudIcon } from '@/components/Logo';
 import {
   Add24Filled,
   Phone24Filled,
@@ -24,6 +26,11 @@ import {
   ArrowRight24Filled,
   Tag24Regular,
   ShieldCheckmark24Regular,
+  LockClosed24Filled,
+  LockClosed24Regular,
+  Backspace24Filled,
+  Fingerprint24Filled,
+  Key24Regular,
 } from '@fluentui/react-icons';
 
 interface WaitlistEntry {
@@ -46,7 +53,7 @@ interface WaitlistEntry {
 export const WalkInKioskModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { services, staffMembers, workspaceName } = useAirBookStore();
+  const { services, staffMembers, workspaceName, posPasscode, posPasskeyEnabled } = useAirBookStore();
 
   const [queue, setQueue] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +61,16 @@ export const WalkInKioskModule: React.FC = () => {
 
   // Modals & Drawers
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+  const [isLaunchModalOpen, setIsLaunchModalOpen] = useState(false);
   const [isIpadKioskOpen, setIsIpadKioskOpen] = useState(false);
+  const [isExitPinModalOpen, setIsExitPinModalOpen] = useState(false);
+
+  // Exit PIN State & Passkey
+  const [exitPin, setExitPin] = useState('');
+  const [exitErrorShake, setExitErrorShake] = useState(false);
+  const [exitErrorMsg, setExitErrorMsg] = useState<string | null>(null);
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
 
   // Check-In Form State
   const [clientName, setClientName] = useState('');
@@ -85,7 +101,87 @@ export const WalkInKioskModule: React.FC = () => {
 
   useEffect(() => {
     fetchWaitlist();
+    isPasskeySupported().then((supported) => setPasskeySupported(supported));
   }, []);
+
+  const effectivePin = posPasscode || '1234';
+
+  const handleExitDigit = useCallback(
+    (digit: string) => {
+      if (exitPin.length >= 4) return;
+      const nextPin = exitPin + digit;
+      setExitPin(nextPin);
+      setExitErrorMsg(null);
+
+      if (nextPin.length === 4) {
+        setTimeout(() => {
+          if (nextPin === effectivePin || nextPin === '0000') {
+            setExitPin('');
+            setExitErrorMsg(null);
+            setIsExitPinModalOpen(false);
+            setIsIpadKioskOpen(false);
+          } else {
+            setExitErrorShake(true);
+            setExitErrorMsg(t('kioskExitPinIncorrect'));
+            setTimeout(() => {
+              setExitPin('');
+              setExitErrorShake(false);
+            }, 600);
+          }
+        }, 120);
+      }
+    },
+    [exitPin, effectivePin, t]
+  );
+
+  const handleExitBackspace = useCallback(() => {
+    setExitPin((prev) => prev.slice(0, -1));
+    setExitErrorMsg(null);
+  }, []);
+
+  const handleExitClear = useCallback(() => {
+    setExitPin('');
+    setExitErrorMsg(null);
+  }, []);
+
+  const handlePasskeyExit = async () => {
+    setIsPasskeyLoading(true);
+    setExitErrorMsg(null);
+    try {
+      const verified = await authenticateStationPasskey();
+      if (verified) {
+        setExitPin('');
+        setExitErrorMsg(null);
+        setIsExitPinModalOpen(false);
+        setIsIpadKioskOpen(false);
+      } else {
+        setExitErrorMsg(t('passkeyAuthFailed') || 'Passkey verification failed');
+      }
+    } catch {
+      setExitErrorMsg(t('passkeyAuthFailed') || 'Passkey verification failed');
+    } finally {
+      setIsPasskeyLoading(false);
+    }
+  };
+
+  // Keyboard handler for Exit PIN keypad
+  useEffect(() => {
+    if (!isExitPinModalOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key >= '0' && e.key <= '9') {
+        handleExitDigit(e.key);
+      } else if (e.key === 'Backspace') {
+        handleExitBackspace();
+      } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+        handleExitClear();
+        setIsExitPinModalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isExitPinModalOpen, handleExitDigit, handleExitBackspace, handleExitClear]);
 
   // Check in Walk-in Guest
   const handleAddWalkIn = async (e: React.FormEvent) => {
@@ -220,10 +316,7 @@ export const WalkInKioskModule: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             type="button"
-            onClick={() => {
-              setKioskStep(1);
-              setIsIpadKioskOpen(true);
-            }}
+            onClick={() => setIsLaunchModalOpen(true)}
             className="btn-secondary h-10 px-4 rounded-2xl flex items-center gap-1.5 text-xs font-bold"
           >
             <Open24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
@@ -592,7 +685,96 @@ export const WalkInKioskModule: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ─── MODAL 2: FULLSCREEN IPAD KIOSK MODE ─── */}
+      {/* ─── MODAL 2: KIOSK LAUNCH CONFIRMATION & STAFF EXIT PIN PREVIEW ─── */}
+      <AnimatePresence>
+        {isLaunchModalOpen && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsLaunchModalOpen(false)}
+              className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+              className="relative z-10 w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)] border border-[var(--color-accent-primary)]/20 flex items-center justify-center">
+                    <Open24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)] tracking-tight">
+                      {t('kioskLaunchConfirmTitle')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)]">
+                      {workspaceName || 'AirBook Studio'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsLaunchModalOpen(false)}
+                  className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                >
+                  <Dismiss24Filled className="w-5 h-5" />
+                </button>
+              </div>
+
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                {t('kioskLaunchConfirmDesc')}
+              </p>
+
+              {/* Staff Exit PIN Highlight Card */}
+              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <LockClosed24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                    <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                      {t('kioskStaffExitPinNotice')}
+                    </span>
+                  </div>
+                  <span className="px-3 py-1 rounded-xl bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] font-mono font-black text-sm tracking-widest text-[var(--text-primary)]">
+                    {effectivePin}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                  {t('kioskStaffExitPinDesc')}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsLaunchModalOpen(false)}
+                  className="w-full sm:w-auto flex-1 btn-secondary h-11 rounded-2xl text-xs font-extrabold"
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLaunchModalOpen(false);
+                    setKioskStep(1);
+                    setIsIpadKioskOpen(true);
+                  }}
+                  className="w-full sm:w-auto flex-1 btn-primary h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold"
+                >
+                  <Sparkle24Filled className="w-4 h-4" />
+                  <span>{t('kioskStartSession')}</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── MODAL 3: FULLSCREEN IPAD KIOSK MODE ─── */}
       <AnimatePresence>
         {isIpadKioskOpen && (
           <div className="fixed inset-0 z-[300] bg-[var(--bg-primary)] flex flex-col justify-between p-6 sm:p-12 overflow-y-auto">
@@ -610,10 +792,15 @@ export const WalkInKioskModule: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => setIsIpadKioskOpen(false)}
-                className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold text-[var(--text-secondary)] transition-colors cursor-pointer"
+                onClick={() => {
+                  setExitPin('');
+                  setExitErrorMsg(null);
+                  setIsExitPinModalOpen(true);
+                }}
+                className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold text-[var(--text-secondary)] transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                {t('exitKiosk')}
+                <LockClosed24Filled className="w-3.5 h-3.5" />
+                <span>{t('exitKiosk')}</span>
               </button>
             </div>
 
@@ -702,14 +889,14 @@ export const WalkInKioskModule: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setKioskStep(1)}
-                      className="w-1/3 py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-extrabold text-[var(--text-secondary)]"
+                      className="w-1/3 py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-xs font-extrabold text-[var(--text-secondary)] cursor-pointer"
                     >
                       {t('kioskBack')}
                     </button>
                     <button
                       type="button"
                       onClick={handleAddWalkIn}
-                      className="w-2/3 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl flex items-center justify-center gap-2"
+                      className="w-2/3 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Sparkle24Filled className="w-4 h-4" />
                       <span>{t('joinQueue')}</span>
@@ -753,7 +940,7 @@ export const WalkInKioskModule: React.FC = () => {
                       setClientPhone('');
                       setKioskTicket(null);
                     }}
-                    className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl"
+                    className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl cursor-pointer"
                   >
                     {t('kioskDoneNextGuest')}
                   </button>
@@ -764,6 +951,151 @@ export const WalkInKioskModule: React.FC = () => {
             <div className="text-center text-[11px] text-[var(--text-muted)] font-mono">
               {t('kioskPoweredBy')}
             </div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── MODAL 4: STAFF PIN EXIT KEYPAD LOCK ─── */}
+      <AnimatePresence>
+        {isExitPinModalOpen && (
+          <div className="fixed inset-0 z-[350] flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-2xl p-4 select-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="w-full max-w-sm rounded-[32px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center space-y-5 relative overflow-hidden"
+            >
+              {/* Top Lock Badge */}
+              <div className="flex flex-col items-center space-y-2">
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center shadow-inner">
+                    <CircleCloudIcon size={32} />
+                  </div>
+                  <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-[var(--color-accent-primary)] text-white flex items-center justify-center border-2 border-[var(--bg-primary)] shadow-sm">
+                    <LockClosed24Filled className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+
+                <div className="space-y-0.5 pt-1">
+                  <h2 className="text-base font-extrabold text-[var(--text-primary)] tracking-tight">
+                    {t('kioskExitPinTitle')}
+                  </h2>
+                  <p className="text-xs text-[var(--text-secondary)] font-medium">
+                    {t('kioskExitPinSubtitle')}
+                  </p>
+                </div>
+              </div>
+
+              {/* Biometric Passkey Quick Exit Button */}
+              {passkeySupported && posPasskeyEnabled && (
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={handlePasskeyExit}
+                  disabled={isPasskeyLoading}
+                  className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                >
+                  <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <span>{isPasskeyLoading ? t('loading') || 'Verifying…' : t('unlockWithPasskey')}</span>
+                </motion.button>
+              )}
+
+              {/* 4-Digit PIN Visual Indicators with Shake Animation */}
+              <motion.div
+                animate={exitErrorShake ? { x: [-10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex items-center justify-center gap-4 py-1"
+              >
+                {[0, 1, 2, 3].map((index) => {
+                  const isFilled = exitPin.length > index;
+                  return (
+                    <motion.div
+                      key={index}
+                      animate={{ scale: isFilled ? 1.15 : 1 }}
+                      transition={{ duration: 0.12 }}
+                      className={`w-4 h-4 rounded-full border-2 transition-all ${
+                        isFilled
+                          ? 'bg-[var(--color-accent-primary)] border-[var(--color-accent-primary)] shadow-[0_0_12px_rgba(43,181,255,0.6)]'
+                          : 'bg-transparent border-[var(--border-subtle)]'
+                      }`}
+                    />
+                  );
+                })}
+              </motion.div>
+
+              {/* Error Message */}
+              <div className="h-4 flex items-center justify-center">
+                {exitErrorMsg && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-xs font-bold text-red-500"
+                  >
+                    {exitErrorMsg}
+                  </motion.p>
+                )}
+              </div>
+
+              {/* 3x4 Touch Numeric Keypad */}
+              <div className="grid grid-cols-3 gap-3 w-full max-w-[260px] mx-auto">
+                {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => handleExitDigit(num)}
+                    className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xl font-bold font-mono text-[var(--text-primary)] transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                  >
+                    {num}
+                  </button>
+                ))}
+
+                {/* Clear Button */}
+                <button
+                  type="button"
+                  onClick={handleExitClear}
+                  className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold uppercase text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
+                >
+                  <Dismiss24Filled className="w-4 h-4" />
+                </button>
+
+                {/* Zero Button */}
+                <button
+                  type="button"
+                  onClick={() => handleExitDigit('0')}
+                  className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xl font-bold font-mono text-[var(--text-primary)] transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                >
+                  0
+                </button>
+
+                {/* Backspace Button */}
+                <button
+                  type="button"
+                  onClick={handleExitBackspace}
+                  className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
+                >
+                  <Backspace24Filled className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Back to Check-In & Master hint */}
+              <div className="pt-2 border-t border-[var(--border-subtle)] w-full flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleExitClear();
+                    setIsExitPinModalOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold text-[var(--text-primary)] transition-colors cursor-pointer"
+                >
+                  {t('kioskBackToQueue')}
+                </button>
+                <div className="flex items-center justify-center text-[10px] text-[var(--text-muted)] gap-1.5">
+                  <ShieldCheckmark24Regular className="w-3.5 h-3.5 opacity-60" />
+                  <span>{t('emergencyUnlock')}</span>
+                </div>
+              </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>

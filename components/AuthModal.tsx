@@ -47,7 +47,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       if (res?.error) {
         setMessage(res.error.message || 'Could not send magic link.');
       } else {
-        setMessage('✨ Passwordless Magic Link sent to your email! Check your inbox to enter.');
+        setMessage('Passwordless Magic Link sent to your email! Check your inbox to enter.');
       }
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not send magic link.');

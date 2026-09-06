@@ -435,3 +435,36 @@ input[type="range"]::-moz-range-thumb:active {
   cursor: grabbing;
   transform: scale(0.97);
 }
+
+/* ─── KINETIC GRADIENT FLASH TO SOLID ANIMATION ─── */
+@keyframes gradientFlashToSolid {
+  0% {
+    background: linear-gradient(90deg, #2BB5FF, #AF52DE, #FF2D55);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 16px rgba(43, 181, 255, 0.7));
+  }
+  28% {
+    background: linear-gradient(90deg, #2BB5FF, #AF52DE, #FF2D55);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 4px rgba(175, 82, 222, 0.3));
+  }
+  48% {
+    background: transparent;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: var(--text-primary);
+    filter: none;
+  }
+  100% {
+    background: transparent;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: var(--text-primary);
+    filter: none;
+  }
+}
+
+.animate-gradient-flash {
+  animation: gradientFlashToSolid 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

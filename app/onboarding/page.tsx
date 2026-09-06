@@ -22,6 +22,10 @@ import {
   Grid24Regular,
   Mail24Regular,
   CheckmarkCircle24Regular,
+  Calendar24Regular,
+  Payment24Regular,
+  People24Regular,
+  DataTrending24Regular,
 } from '@fluentui/react-icons';
 
 type Step = 1 | 2 | 3 | 4;
@@ -431,7 +435,7 @@ export default function OnboardingPage() {
 
                 <div>
                   <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                    You're all set! 🎉
+                    You're all set!
                   </h2>
                   <p className="text-sm text-[var(--text-secondary)] mt-2 max-w-xs mx-auto leading-relaxed">
                     {nameInput ? <><strong>{nameInput}</strong> is ready.</> : 'Your workspace is ready.'}{' '}
@@ -441,16 +445,22 @@ export default function OnboardingPage() {
 
                 <div className="grid grid-cols-2 gap-3 w-full max-w-xs text-xs">
                   {[
-                    { label: '📅 Calendar', desc: 'Real-time booking grid' },
-                    { label: '💳 POS', desc: 'Omnichannel checkout' },
-                    { label: '👥 Team', desc: 'Shifts & commissions' },
-                    { label: '📊 Analytics', desc: 'Revenue dashboard' },
-                  ].map((f) => (
-                    <div key={f.label} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 text-left">
-                      <p className="font-bold text-[var(--text-primary)]">{f.label}</p>
-                      <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">{f.desc}</p>
-                    </div>
-                  ))}
+                    { label: 'Calendar', desc: 'Real-time booking grid', icon: Calendar24Regular },
+                    { label: 'POS', desc: 'Omnichannel checkout', icon: Payment24Regular },
+                    { label: 'Team', desc: 'Shifts & commissions', icon: People24Regular },
+                    { label: 'Analytics', desc: 'Revenue dashboard', icon: DataTrending24Regular },
+                  ].map((f) => {
+                    const Icon = f.icon;
+                    return (
+                      <div key={f.label} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 text-left space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-[var(--text-primary)]">
+                          <Icon className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                          <span>{f.label}</span>
+                        </div>
+                        <p className="text-[10px] text-[var(--text-secondary)]">{f.desc}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}

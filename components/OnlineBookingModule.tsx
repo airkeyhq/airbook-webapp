@@ -161,7 +161,7 @@ export const OnlineBookingModule: React.FC = () => {
   );
   const [bio, setBio] = useState('Premium booking experience powered by AirBook. Reserve appointments with top-rated professionals.');
   const [instagramUrl, setInstagramUrl] = useState('https://instagram.com/airbook');
-  const [websiteUrl, setWebsiteUrl] = useState('https://airbook.me');
+  const [websiteUrl, setWebsiteUrl] = useState('https://getairbook.com');
   const [bookingNotice, setBookingNotice] = useState(
     'Please arrive 5 minutes prior to your appointment. 24-hour advance notice is required for cancellations.'
   );

@@ -26,9 +26,139 @@ import {
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
-type StudioTab = 'identity' | 'storefront' | 'embed' | 'badges' | 'glyphs' | 'vector';
+type StudioTab = 'identity' | 'photography' | 'storefront' | 'opengraph' | 'embed' | 'badges' | 'glyphs' | 'vector';
+
+const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
+  {
+    id: 'hair-salon-candid',
+    title: 'Hair Salon & Color Artistry',
+    subtitle: 'Colorist in vintage denim jacket laughing with client checking fresh balayage in studio mirror.',
+    category: 'Hair Salon',
+    url: '/brand/photos/candid/hair-salon.jpg',
+  },
+  {
+    id: 'barbershop-candid',
+    title: 'Barbershop & Grooming Lounge',
+    subtitle: 'Barber in streetwear tee & apron sharing a genuine laugh with client in vintage leather chair.',
+    category: 'Barbershop',
+    url: '/brand/photos/candid/barbershop.jpg',
+  },
+  {
+    id: 'medspa-esthetician-candid',
+    title: 'MedSpa & Clinical Aesthetics',
+    subtitle: 'Radiant esthetician in cozy sage fleece consulting client with glowing bare skin over tea.',
+    category: 'MedSpa & Esthetics',
+    url: '/brand/photos/candid/medspa-esthetician.jpg',
+  },
+  {
+    id: 'nail-studio-candid',
+    title: 'Nail Art Studio & Manicure Bar',
+    subtitle: 'Nail artist in denim & stacked rings showing off 3D chrome metallic manicure with client.',
+    category: 'Nail Studio',
+    url: '/brand/photos/candid/nail-studio.jpg',
+  },
+  {
+    id: 'tattoo-artist-candid',
+    title: 'Tattoo Atelier & Fine-Line Ink',
+    subtitle: 'Fine-line tattoo artist in beanie & hoodie reviewing iPad botanical stencil with smiling client.',
+    category: 'Tattoo Atelier',
+    url: '/brand/photos/candid/tattoo-artist.jpg',
+  },
+  {
+    id: 'massage-wellness-candid',
+    title: 'Massage & Holistic Wellness Sanctuary',
+    subtitle: 'Holistic therapist in organic linen setting heated basalt stones and aromatherapy in bamboo suite.',
+    category: 'Massage & Spa',
+    url: '/brand/photos/candid/massage-wellness.jpg',
+  },
+  {
+    id: 'pet-grooming-candid',
+    title: 'Pet Grooming & Canine Spa',
+    subtitle: 'Friendly stylist gently grooming fluffy golden doodle on stainless steel table with mint tiles.',
+    category: 'Pet Grooming',
+    url: '/brand/photos/candid/pet-grooming.jpg',
+  },
+  {
+    id: 'fitness-trainer-candid',
+    title: 'Personal Training & Athletic Studio',
+    subtitle: 'Charismatic trainer in slate athletic tee coaching dynamic kettlebell movement in private gym.',
+    category: 'Fitness & Training',
+    url: '/brand/photos/candid/fitness-trainer.jpg',
+  },
+];
+
+const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
+  {
+    id: 'hair-salon-editorial',
+    title: 'Hair Salon & Color Artistry',
+    subtitle: 'Master colorist in warm olive linen presenting glossy balayage finish in bespoke studio.',
+    category: 'Hair Salon',
+    url: '/brand/photos/hair-salon.jpg',
+  },
+  {
+    id: 'barbershop-editorial',
+    title: 'Barbershop & Grooming Lounge',
+    subtitle: 'Master barber in dark craft apron beside classic vintage leather chair with precision skin fade.',
+    category: 'Barbershop',
+    url: '/brand/photos/barbershop.jpg',
+  },
+  {
+    id: 'medspa-esthetician-editorial',
+    title: 'MedSpa & Clinical Aesthetics',
+    subtitle: 'Licensed esthetician in minimalist wrap top conducting skincare consultation in limestone suite.',
+    category: 'MedSpa & Esthetics',
+    url: '/brand/photos/medspa-esthetician.jpg',
+  },
+  {
+    id: 'nail-studio-editorial',
+    title: 'Nail Art Studio & Manicure Bar',
+    subtitle: 'Artistic nail designer at travertine marble workstation crafting bespoke chrome art manicure.',
+    category: 'Nail Studio',
+    url: '/brand/photos/nail-studio.jpg',
+  },
+  {
+    id: 'tattoo-artist-editorial',
+    title: 'Tattoo Atelier & Fine-Line Ink',
+    subtitle: 'Fine-line tattoo artist sketching botanical stencil on iPad in natural sunlit loft studio.',
+    category: 'Tattoo Atelier',
+    url: '/brand/photos/tattoo-artist.jpg',
+  },
+  {
+    id: 'massage-wellness-editorial',
+    title: 'Massage & Holistic Wellness Sanctuary',
+    subtitle: 'Holistic therapist in organic linen setting heated basalt stones and aromatherapy in bamboo suite.',
+    category: 'Massage & Spa',
+    url: '/brand/photos/massage-wellness.jpg',
+  },
+  {
+    id: 'pet-grooming-editorial',
+    title: 'Pet Grooming & Canine Spa',
+    subtitle: 'Friendly stylist gently grooming fluffy golden doodle on stainless steel table with mint tiles.',
+    category: 'Pet Grooming',
+    url: '/brand/photos/pet-grooming.jpg',
+  },
+  {
+    id: 'fitness-trainer-editorial',
+    title: 'Personal Training & Athletic Studio',
+    subtitle: 'Charismatic trainer in slate athletic tee coaching dynamic kettlebell movement in private gym.',
+    category: 'Fitness & Training',
+    url: '/brand/photos/fitness-trainer.jpg',
+  },
+];
 
 const CURATED_COVERS = [
+  ...CANDID_BRAND_PHOTOGRAPHY_GALLERY.map(item => ({
+    id: item.id,
+    title: item.title,
+    url: item.url,
+    category: item.category,
+  })),
+  ...EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY.map(item => ({
+    id: item.id,
+    title: `${item.title} (Editorial)`,
+    url: item.url,
+    category: item.category,
+  })),
   {
     id: 'minimalist-salon',
     title: 'Minimalist Studio Salon',
@@ -122,6 +252,7 @@ export const BrandDAMModule: React.FC = () => {
   const [previewSize, setPreviewSize] = useState<number>(64);
   const [bgTheme, setBgTheme] = useState<'light' | 'cream' | 'dark' | 'grid'>('cream');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [photoStyle, setPhotoStyle] = useState<'candid' | 'editorial'>('candid');
 
   // Fetch initial brand settings from API
   useEffect(() => {
@@ -217,7 +348,9 @@ export const BrandDAMModule: React.FC = () => {
   // Client-facing tabs for salon & spa owners
   const clientTabs = [
     { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
+    { id: 'photography' as const, label: t('tabBrandPhotography'), icon: Image24Filled },
     { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
+    { id: 'opengraph' as const, label: t('tabOpenGraph'), icon: Image24Filled },
     { id: 'embed' as const, label: t('tabEmbedWidget'), icon: Link24Filled },
   ];
 
@@ -473,7 +606,178 @@ export const BrandDAMModule: React.FC = () => {
         </motion.div>
       )}
 
-      {/* TAB 2: LIVE STOREFRONT PREVIEW */}
+      {/* TAB 2: BRAND PHOTOGRAPHY GALLERY */}
+      {activeTab === 'photography' && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
+            {/* Gallery Header & Style Guidelines Callout */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)]">
+              <div className="space-y-1">
+                <h3 className="text-base font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Image24Filled className="w-5 h-5 text-blue-500" />
+                  <span>
+                    {photoStyle === 'candid'
+                      ? t('brandPhotographyCandidTitle')
+                      : t('brandPhotographyEditorialTitle')}
+                  </span>
+                </h3>
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl">
+                  {photoStyle === 'candid'
+                    ? t('brandPhotographyCandidDesc')
+                    : t('brandPhotographyEditorialDesc')}
+                </p>
+              </div>
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold">
+                <Sparkle24Regular className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  {photoStyle === 'candid'
+                    ? t('brandPhotographyCandidGuidelinesNote')
+                    : t('brandPhotographyEditorialGuidelinesNote')}
+                </span>
+              </div>
+            </div>
+
+            {/* Photo Style Collection Toggle Selector */}
+            <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
+                <button
+                  type="button"
+                  onClick={() => setPhotoStyle('candid')}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                    photoStyle === 'candid'
+                      ? 'bg-blue-500 text-white shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Sparkle24Filled className="w-3.5 h-3.5" />
+                  <span>{t('brandPhotographyCandidTab')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPhotoStyle('editorial')}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                    photoStyle === 'editorial'
+                      ? 'bg-blue-500 text-white shadow-xs'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <Color24Filled className="w-3.5 h-3.5" />
+                  <span>{t('brandPhotographyEditorialTab')}</span>
+                </button>
+              </div>
+
+              <span className="text-[11px] font-bold text-[var(--text-secondary)] px-2">
+                {photoStyle === 'candid' ? '8 Bespoke Realism Assets' : '8 Classic Editorial Studio Assets'}
+              </span>
+            </div>
+
+            {/* 8-Photo Curated Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {(photoStyle === 'candid' ? CANDID_BRAND_PHOTOGRAPHY_GALLERY : EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY).map((item) => {
+                const isCurrentCover = coverUrl === item.url;
+                const isCopied = copiedId === item.id;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="group flex flex-col rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-hidden transition-all duration-150 hover:border-blue-500/40 hover:shadow-lg"
+                  >
+                    {/* Image Thumbnail Container */}
+                    <div className="relative aspect-4/3 overflow-hidden bg-black/5 dark:bg-white/5">
+                      <img
+                        src={item.url}
+                        alt={item.title}
+                        className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                      
+                      {/* Category Badge */}
+                      <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-wider text-white">
+                        {item.category}
+                      </div>
+
+                      {/* Open Full Image Action */}
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100"
+                        title="View Full Resolution"
+                      >
+                        <Open24Filled className="w-3.5 h-3.5" />
+                      </a>
+
+                      {/* Active Cover Indicator Badge */}
+                      {isCurrentCover && (
+                        <div className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-xl bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                          <Checkmark24Filled className="w-3 h-3" />
+                          <span>Active Cover</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Metadata & Actions */}
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-black text-[var(--text-primary)] line-clamp-1">
+                          {item.title}
+                        </h4>
+                        <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                          {item.subtitle}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCoverUrl(item.url);
+                            addToast('Set as cover banner! Remember to click Save.', 'info');
+                          }}
+                          className={`flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                            isCurrentCover
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                              : 'bg-[var(--bg-primary)] hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                          }`}
+                        >
+                          {isCurrentCover ? (
+                            <>
+                              <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                              <span>Selected</span>
+                            </>
+                          ) : (
+                            <>
+                              <Image24Filled className="w-3.5 h-3.5" />
+                              <span>{t('useAsCover')}</span>
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item.url, item.id)}
+                          className="p-1.5 rounded-xl bg-[var(--bg-primary)] hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors cursor-pointer"
+                          title={t('copyPhotoUrl')}
+                        >
+                          {isCopied ? (
+                            <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                          ) : (
+                            <Copy24Filled className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* TAB 3: LIVE STOREFRONT PREVIEW */}
       {activeTab === 'storefront' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-bold text-blue-600 dark:text-blue-400">
@@ -546,7 +850,235 @@ export const BrandDAMModule: React.FC = () => {
         </motion.div>
       )}
 
-      {/* TAB 3: EMBED WIDGET & DIRECT LINKS (CLIENT-FACING) */}
+      {/* TAB 3: OPEN GRAPH SOCIAL CARDS (CLIENT-FACING & BRAND) */}
+      {activeTab === 'opengraph' && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
+              <div>
+                <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                  <Image24Filled className="w-4 h-4 text-[#FF6347]" />
+                  <span>{t('ogPreviewTitle')}</span>
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  {t('ogPreviewDesc')}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href="/opengraph-image"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="h-9 px-3.5 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center gap-1.5"
+                >
+                  <Open24Filled className="w-3.5 h-3.5" />
+                  <span>{t('ogDownloadCard')}</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Visual 1200x630 Card Canvas Simulator */}
+            <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[var(--border-subtle)] bg-white text-slate-900 shadow-2xl overflow-hidden relative p-6 sm:p-12 text-center aspect-[1.91/1] flex flex-col items-center justify-center select-none">
+              {/* Diffuse Glow Top-Left */}
+              <div className="absolute -top-12 -left-12 w-64 h-64 rounded-full bg-red-400/30 blur-3xl pointer-events-none" />
+              {/* Diffuse Glow Bottom-Right */}
+              <div className="absolute -bottom-16 -right-12 w-72 h-72 rounded-full bg-pink-400/25 blur-3xl pointer-events-none" />
+              {/* Diffuse Glow Top-Right */}
+              <div className="absolute -top-12 right-12 w-56 h-56 rounded-full bg-sky-400/20 blur-3xl pointer-events-none" />
+
+              {/* Central Copy */}
+              <div className="z-10 space-y-1 sm:space-y-2 mb-6 sm:mb-10">
+                <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+                  The <span className="text-[#FF6347]">frictionless workspace</span>
+                  <br />
+                  for independent pros.
+                </h2>
+              </div>
+
+              {/* Master Tool Dock */}
+              <div className="z-10 inline-flex items-center gap-2 sm:gap-5 p-2.5 sm:p-4 rounded-2xl sm:rounded-[36px] bg-[#18181B] shadow-2xl border border-white/10">
+                {/* 1. Calendar (Scheduling) */}
+                <div className="w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl sm:rounded-2xl md:rounded-[24px] bg-white shadow-md overflow-hidden flex flex-col border border-slate-100 flex-shrink-0 relative">
+                  <div className="w-full h-3.5 sm:h-6 md:h-7 bg-[#0284C7] relative flex items-center justify-center">
+                    <span className="absolute left-2.5 sm:left-4 top-1 w-1 sm:w-1.5 h-1.5 sm:h-2.5 rounded-full bg-white/90 shadow-xs" />
+                    <span className="absolute right-2.5 sm:right-4 top-1 w-1 sm:w-1.5 h-1.5 sm:h-2.5 rounded-full bg-white/90 shadow-xs" />
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center pb-1">
+                    <span className="font-black text-lg sm:text-3xl md:text-4xl text-slate-900 leading-none tracking-tight">01</span>
+                    <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-[#0284C7] mt-0.5 sm:mt-1" />
+                  </div>
+                </div>
+
+                {/* 2. Booking Page (Storefront Sheet with Dog-Ear) */}
+                <div className="w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl sm:rounded-2xl md:rounded-[24px] bg-white shadow-md relative overflow-hidden flex flex-col justify-between p-2 sm:p-3.5 border border-slate-100 flex-shrink-0">
+                  {/* Top Right Dog-Ear Fold */}
+                  <div className="absolute top-0 right-0 w-3.5 sm:w-6 md:w-7 h-3.5 sm:h-6 md:h-7 bg-[#FF6347] rounded-bl-lg sm:rounded-bl-xl shadow-xs" />
+                  
+                  {/* Traffic Dots */}
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-red-400" />
+                    <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-amber-400" />
+                    <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-emerald-400" />
+                  </div>
+
+                  {/* Abstract Layout Bars */}
+                  <div className="space-y-1 sm:space-y-1.5 mt-1 sm:mt-2">
+                    <div className="w-5 sm:w-9 h-1 sm:h-1.5 rounded-full bg-[#FF6347]" />
+                    <div className="w-7 sm:w-12 h-0.5 sm:h-1 rounded-full bg-slate-300" />
+                    <div className="w-6 sm:w-10 h-0.5 sm:h-1 rounded-full bg-slate-200" />
+                    <div className="w-4 sm:w-7 h-1 sm:h-2 rounded-full bg-[#0284C7] mt-1" />
+                  </div>
+                </div>
+
+                {/* 3. POS (Deeply Arched Tap to Pay Terminal) */}
+                <div className="w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl sm:rounded-2xl md:rounded-[24px] bg-gradient-to-br from-[#064E3B] to-[#059669] shadow-md relative flex flex-col justify-between items-center p-1 sm:p-2 border border-emerald-400/40 flex-shrink-0 overflow-hidden">
+                  {/* Top Speaker Slit */}
+                  <div className="w-4 sm:w-7 h-0.5 sm:h-1 rounded-full bg-[#022C22] mt-0.5" />
+
+                  {/* Payment Screen with Deeply Arched Tap to Pay NFC Wave Symbol */}
+                  <div className="w-full h-8 sm:h-12 md:h-14 rounded-md sm:rounded-xl bg-[#065F46] border border-emerald-400/30 flex items-center justify-center relative shadow-inner">
+                    <svg
+                      viewBox="0 0 60 44"
+                      fill="none"
+                      className="w-7 sm:w-11 md:w-12 h-5 sm:h-8 md:h-9"
+                    >
+                      <path
+                        d="M 16,34 A 12,12 0 0,1 16,10"
+                        stroke="#34D399"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M 24,38 A 18,18 0 0,1 24,6"
+                        stroke="#34D399"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M 32,41 A 24,24 0 0,1 32,3"
+                        stroke="#A7F3D0"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M 40,43 A 30,30 0 0,1 40,1"
+                        stroke="#FFFFFF"
+                        strokeWidth="4.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    {/* Status LED */}
+                    <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-[#6EE7B7] shadow-[0_0_6px_#34D399]" />
+                  </div>
+
+                  {/* Bottom Swipe Groove */}
+                  <div className="w-6 sm:w-10 h-0.5 rounded-full bg-[#022C22] mb-0.5" />
+                </div>
+
+                {/* 4. Contact List (CRM / Iconic Leather Agenda with Tabs & Debossed Silhouette) */}
+                <div className="w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl sm:rounded-2xl md:rounded-[24px] overflow-hidden relative flex flex-shrink-0 shadow-md border border-amber-900/30 bg-[#0F172A]">
+                  {/* Left Leather Book Body */}
+                  <div className="flex-1 h-full bg-gradient-to-br from-[#E28C2B] to-[#C26E17] shadow-inner relative flex items-center justify-center border-r border-black/25">
+                    {/* Spine Shadow Crease */}
+                    <div className="absolute left-0 top-0 bottom-0 w-1 sm:w-2 bg-gradient-to-r from-black/25 to-transparent border-r border-black/15" />
+
+                    {/* Debossed Contact Profile Glyph */}
+                    <svg
+                      viewBox="0 0 60 60"
+                      fill="none"
+                      className="w-6 sm:w-11 md:w-13 h-6 sm:h-11 md:h-13 ml-0.5"
+                    >
+                      <circle
+                        cx="30"
+                        cy="30"
+                        r="25"
+                        stroke="#8A4605"
+                        strokeWidth="3"
+                        strokeOpacity="0.65"
+                      />
+                      <circle
+                        cx="30"
+                        cy="31"
+                        r="25"
+                        stroke="#FED7AA"
+                        strokeWidth="1.5"
+                        strokeOpacity="0.45"
+                      />
+                      <circle
+                        cx="30"
+                        cy="23"
+                        r="8.5"
+                        fill="#9A4E06"
+                        fillOpacity="0.6"
+                      />
+                      <path
+                        d="M 16,43 C 16,34 22,33 30,33 C 38,33 44,34 44,43"
+                        fill="#9A4E06"
+                        fillOpacity="0.6"
+                      />
+                    </svg>
+                  </div>
+
+                  {/* Right Vertical Column of 4 Protruding Index Tabs (Contained Inside Squircle) */}
+                  <div className="w-1.5 sm:w-3 md:w-3.5 h-full bg-slate-100 flex flex-col justify-between py-1 sm:py-2 shadow-inner">
+                    <span className="w-full h-1.5 sm:h-3 rounded-r-xs bg-[#CBD5E1] shadow-xs" />
+                    <span className="w-full h-1.5 sm:h-3 rounded-r-xs bg-[#38BDF8] shadow-xs" />
+                    <span className="w-full h-1.5 sm:h-3 rounded-r-xs bg-[#F59E0B] shadow-xs" />
+                    <span className="w-full h-1.5 sm:h-3 rounded-r-xs bg-[#34D399] shadow-xs" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Subtle Brand Mark */}
+              <div className="absolute bottom-3 sm:bottom-6 text-[9px] sm:text-xs font-extrabold uppercase tracking-widest text-slate-400">
+                AirBook • getairbook.com
+              </div>
+            </div>
+
+            {/* Action Buttons & Meta Snippets */}
+            <div className="space-y-4 pt-4 border-t border-[var(--border-subtle)]">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <input
+                  type="text"
+                  readOnly
+                  value="https://getairbook.com/opengraph-image"
+                  className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)] select-all"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => handleCopy('https://getairbook.com/opengraph-image', 'og-url')}
+                  className="btn-primary h-11 px-5 flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap w-full sm:w-auto"
+                >
+                  <Copy24Filled className="w-4 h-4" />
+                  <span>{copiedId === 'og-url' ? t('linkCopied') : t('copyLink')}</span>
+                </button>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <input
+                  type="text"
+                  readOnly
+                  value='<meta property="og:image" content="https://getairbook.com/opengraph-image" />'
+                  className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)] select-all"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => handleCopy('<meta property="og:image" content="https://getairbook.com/opengraph-image" />', 'og-meta')}
+                  className="h-11 px-5 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap w-full sm:w-auto cursor-pointer"
+                >
+                  <Code24Filled className="w-4 h-4" />
+                  <span>{copiedId === 'og-meta' ? t('badgeCopied') : t('ogCopyMetaTag')}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* TAB 4: EMBED WIDGET & DIRECT LINKS (CLIENT-FACING) */}
       {activeTab === 'embed' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           {/* Direct Booking Link Card */}

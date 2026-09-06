@@ -51,3 +51,5 @@ firebase-debug.log
 # generated audit reports
 i18n-audit-report.md
 
+.aidesigner/*
+!.aidesigner/.gitkeep
