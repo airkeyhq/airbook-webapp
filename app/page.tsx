@@ -471,14 +471,27 @@ export default function MarketingWebsite() {
           transition={{ delay: 0.32 }}
           className="p-4 sm:p-8 lg:p-10 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF0F5]/80 via-[#FDF2F8]/60 to-[#F5F3FF]/80 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 shadow-xl"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Left Stage: Live Client Booking Flow Simulator */}
-            <div
-              ref={demoStageRef}
-              onMouseEnter={() => setIsUserHoveringDemo(true)}
-              onMouseLeave={() => setIsUserHoveringDemo(false)}
-              className="lg:col-span-7 bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden"
-            >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Client Storefront Perspective */}
+            <div className="lg:col-span-7 space-y-3">
+              {/* Perspective Header Badge */}
+              <div className="flex items-center justify-between px-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs">
+                  <Globe24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                  <span>{t('demoClientPerspective')}</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] hidden sm:inline-flex items-center gap-1">
+                  <span>getairbook.com/book/lelegance</span>
+                </span>
+              </div>
+
+              {/* Left Stage: Live Client Booking Flow Simulator */}
+              <div
+                ref={demoStageRef}
+                onMouseEnter={() => setIsUserHoveringDemo(true)}
+                onMouseLeave={() => setIsUserHoveringDemo(false)}
+                className="bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden"
+              >
               {/* Animated Mockup Cursor */}
               <motion.div
                 className="absolute z-30 pointer-events-none -ml-1 -mt-1 flex items-start"
@@ -687,11 +700,26 @@ export default function MarketingWebsite() {
                 </p>
               </div>
             </div>
+          </div>
 
-            {/* Right Stage: Floating Operator Schedule & Client Spec Cards */}
-            <div className="lg:col-span-5 space-y-4">
-              {/* Card 1: Live Chair Dispatch & Schedule Roster */}
-              <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3.5">
+          {/* Right Column: Provider Command Center Perspective with Divider */}
+          <div className="lg:col-span-5 space-y-3 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-pink-200/50 dark:border-pink-900/30 lg:pl-8">
+              {/* Perspective Header Badge */}
+              <div className="flex items-center justify-between px-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs">
+                  <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-[#AF52DE]" />
+                  <span>{t('demoOperatorPerspective')}</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  {t('demoRealtimeSyncBadge')}
+                </span>
+              </div>
+
+              {/* Right Stage: Floating Operator Schedule & Client Spec Cards */}
+              <div className="space-y-4">
+                {/* Card 1: Live Chair Dispatch & Schedule Roster */}
+                <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3.5">
                 {/* Live Header with Pulse Radar */}
                 <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
                   <div className="flex items-center gap-2">
@@ -941,7 +969,8 @@ export default function MarketingWebsite() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
       </section>
 
       {/* ─── BUILT FOR PEOPLE SECTION (ABOARD-STYLE CLEAN MINIMALIST SECTION) ─── */}
