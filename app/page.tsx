@@ -438,7 +438,7 @@ export default function MarketingWebsite() {
             </div>
             <button
               type="submit"
-              className="btn-primary w-full sm:w-auto px-6 py-2.5 text-xs whitespace-nowrap flex items-center justify-center gap-1.5"
+              className="btn-primary w-full sm:w-auto h-10 px-6 rounded-xl text-xs font-extrabold whitespace-nowrap flex items-center justify-center gap-1.5 flex-shrink-0"
             >
               <span>{t('signUpFree')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />
@@ -689,7 +689,7 @@ export default function MarketingWebsite() {
                     ref={ctaBtnRef}
                     type="button"
                     onClick={() => setIsDemoBooked(true)}
-                    className="btn-primary w-full py-3 text-xs flex items-center justify-center gap-2"
+                    className="btn-primary w-full h-11 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
                   >
                     <Calendar24Filled className="w-4 h-4" />
                     <span>
@@ -2386,9 +2386,10 @@ export default function MarketingWebsite() {
 
             <Link
               href="/onboarding"
-              className="btn-primary block w-full py-4 text-center text-xs font-black tracking-wide"
+              className="btn-primary w-full h-12 rounded-2xl text-xs font-extrabold tracking-wide flex items-center justify-center gap-2"
             >
-              {t('startFreeTrial')}
+              <span>{t('startFreeTrial')}</span>
+              <ArrowRight24Filled className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -2459,9 +2460,10 @@ export default function MarketingWebsite() {
 
             <Link
               href="/onboarding"
-              className="relative z-10 block w-full py-4 rounded-2xl bg-white text-black font-black text-xs text-center shadow-xl hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="relative z-10 w-full h-12 rounded-2xl bg-white text-black font-extrabold text-xs text-center shadow-xl hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              {t('startFreeTrialBtn')}
+              <span>{t('startFreeTrialBtn')}</span>
+              <ArrowRight24Filled className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -2534,14 +2536,14 @@ export default function MarketingWebsite() {
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
               href="/onboarding"
-              className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
+              className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
             >
               <span>{t('startFreeTrialBtn')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/book/eduardos-lounge"
-              className="px-6 py-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors flex items-center gap-2 shadow-xs"
+              className="h-12 px-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
               <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
               <span>{t('talkToSales')}</span>
