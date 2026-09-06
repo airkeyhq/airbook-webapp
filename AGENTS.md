@@ -89,10 +89,19 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - System Toasts / Alerts: `z-[1000]`
     - **Zero Piercing Rule**: NEVER assign arbitrary runaway z-indexes (e.g. `z-[99999]`) to base layout headers or navigation bars, which pierces through modal blur backdrops and destroys modal visual focus.
 
-13. **Tactile Electric Blue Primary Button System (`.btn-primary`)**:
-    - **Slider Handle DNA**: Primary action buttons MUST match the tactile depth, inner white ambient light highlight, `#1A8EFF` border stroke, and electric sky blue glow of the signature custom range slider handle.
-    - **Standard Styling**: Always use the `.btn-primary` class (or tokens `h-10 px-4 rounded-2xl bg-[var(--color-accent-primary)] text-white border-[1.5px] border-[#1A8EFF] font-extrabold text-xs shadow-[0_4px_12px_-2px_rgba(43,181,255,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)]`).
-    - **Micro-Animations**: Hover scale `1.02` with deepened glow `shadow-[0_6px_16px_-2px_rgba(43,181,255,0.7),inset_0_1px_1px_rgba(255,255,255,0.4)]`, active scale `0.97`.
+13. **Mandatory 3-Tier Button System (`.btn-primary`, `.btn-secondary`, `.btn-tertiary`)**:
+    - **Tier 1: Tactile Electric Blue Primary Button (`.btn-primary`)**:
+      - **Visual DNA**: Electric sky blue (`#2BB5FF`), `#1A8EFF` border stroke, inner white ambient light highlight (`inset 0 1px 1px rgba(255,255,255,0.4)`), white text (`#FFFFFF`), and signature electric glow shadow (`shadow-[0_4px_12px_-2px_rgba(43,181,255,0.5)]`).
+      - **Micro-Animations**: Hover scale `1.02` with deepened glow (`shadow-[0_6px_16px_-2px_rgba(43,181,255,0.7)]`), active scale `0.97`.
+      - **Role**: Strictly reserved for the primary forward action or main conversion CTA (e.g. *Get Started Free*).
+    - **Tier 2: Tactile Surface Secondary Button (`.btn-secondary` & `.btn-secondary-inverted`)**:
+      - **Visual DNA (Standard Surface)**: Clean tactile white/surface pill (`bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-xs hover:bg-[var(--bg-secondary)] hover:border-[#2BB5FF]/40`).
+      - **Visual DNA (Inverted / Dark / Gradient Surface)**: High-contrast solid surface (`.btn-secondary-inverted`: `bg-white text-black font-extrabold shadow-xl hover:bg-slate-50`).
+      - **Role**: For secondary, exploratory, or complementary actions paired side-by-side with primary CTAs (e.g. *Explore Live Storefront*).
+    - **Tier 3: Ghost/Subtle Tertiary Button (`.btn-tertiary`)**:
+      - **Visual DNA**: Borderless ghost pill (`bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] active:scale-97`).
+      - **Role**: For auxiliary actions, dismissal triggers, and compact utility controls.
+    - **Zero Ad-Hoc Styling**: NEVER write arbitrary one-off button color classes. All interactive action triggers MUST strictly use `.btn-primary`, `.btn-secondary`, or `.btn-tertiary`.
 
 14. **Single Icon Invariant & Zero Duplicate Microcopy Icons**:
     - **Exactly One Icon**: Action buttons MUST render exactly ONE vector icon (e.g. `<Add24Filled className="w-4 h-4" />`).
