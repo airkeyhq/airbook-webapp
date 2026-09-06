@@ -101,6 +101,10 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
       - **Visual DNA**: Borderless ghost pill (`bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] active:scale-97`).
       - **Role**: For auxiliary actions, dismissal triggers, and compact utility controls.
     - **Zero Ad-Hoc Styling**: NEVER write arbitrary one-off button color classes. All interactive action triggers MUST strictly use `.btn-primary`, `.btn-secondary`, or `.btn-tertiary`.
+    - **Canonical Placement & Ordering Invariants**:
+      - **Horizontal Paired Marketing CTAs**: MUST place Primary on the **LEFT** and Secondary on the **RIGHT** (`[ .btn-primary ] [ .btn-secondary ]`), stacking on mobile with **Primary on TOP**.
+      - **Modals / Dialogs / Form Footers**: MUST place Secondary/Cancel on the **LEFT** and Primary on the **RIGHT** (`[ Cancel ] ... [ Confirm (.btn-primary) ]`), or use a full-width bottom action banner (`w-full .btn-primary h-12`).
+      - **Multi-Tier Comparative Cards**: Left Card (Standard/Solo) uses `.btn-secondary`; Right Card (Featured/Business Team) uses `.btn-primary`.
 
 14. **Single Icon Invariant & Zero Duplicate Microcopy Icons**:
     - **Exactly One Icon**: Action buttons MUST render exactly ONE vector icon (e.g. `<Add24Filled className="w-4 h-4" />`).
@@ -128,6 +132,10 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Absolute Top Badges**: When one card features a "MOST POPULAR" or "RECOMMENDED" badge, position it as an absolute floating pill on the top border (`absolute -top-3.5 left-8 z-20`). NEVER let badges sit in normal document flow where they vertically displace inner content.
     - **Normalized Baseline Heights**: Multi-language text varies in length. Apply fixed min-height tokens across card baselines (`min-h-[36px]` for descriptions, `min-h-[18px]` for price notes, `min-h-[20px]` for checklist items) to guarantee 1:1 horizontal alignment across all 4 languages.
     - **3-Tier Button Symmetry**: Standard tiers MUST use `.btn-secondary` (`w-full h-12 rounded-2xl`); featured tiers MUST use `.btn-primary` (`w-full h-12 rounded-2xl`), anchored with matching padding (`pt-8`).
+
+19. **Mandatory Non-Wrapping Pill & Badge Microcopy Invariant**:
+    - **Concise Microcopy**: Category tags, status pills, reading times, and station badges MUST use punchy single-word or short phrases (e.g. `Seguridad`, `5 min`, `Live Sync`) rather than long multi-word sentences.
+    - **Strict Non-Wrapping**: All badge and tag pills MUST explicitly declare `whitespace-nowrap flex-shrink-0` to prevent awkward multi-line text wrapping inside responsive grid cards.
 
 # Mandatory UI Integrity & Feature Evaluation System
 
@@ -189,4 +197,5 @@ All public articles, guides, and documentation published on this platform MUST b
 2. **Standard `/llms.txt` Endpoint**: The platform MUST maintain a clean plain-text markdown directory at `/llms.txt` for LLM crawler agents and AI answer engines.
 3. **RSS 2.0 Feed (`/feed.xml`)**: Maintain an automated RSS 2.0 XML endpoint for bot syndication.
 4. **Direct Answer "BLUF" (Bottom Line Up Front)**: Articles MUST begin with a structured "Key Takeaways" summary container to facilitate direct quotation and snippet extraction by generative AI search models.
+5. **Zero Architecture Jargon in Visual UI**: Machine readability specs (such as `schema.org` JSON-LD, `/llms.txt`, and metadata tags) are for automated crawlers and MUST strictly operate in code and HTTP headers/routes. NEVER render technical AI disclaimers as visible text in user-facing marketing or operator UI.
 
