@@ -274,13 +274,6 @@ export default function BlogIndexPage() {
               <span>{t('navHelpCenterTitle')}</span>
             </Link>
           </div>
-
-          <div className="pt-4 border-t border-[var(--border-subtle)] max-w-lg mx-auto">
-            <p className="text-[11px] text-[var(--text-muted)] font-medium flex items-center justify-center gap-1.5">
-              <Bot24Regular className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
-              <span>{t('aiMachineReadableNote')}</span>
-            </p>
-          </div>
         </section>
       </main>
 
