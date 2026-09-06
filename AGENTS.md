@@ -124,6 +124,11 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Uniform Control Height & Design Tokens**: Every floating control MUST share the exact same `h-[52px]` height, `rounded-2xl` corner radius, `bg-[var(--bg-secondary)]` background, `border-[var(--border-subtle)]`, and signature electric blue focus glow (`focus-within:border-[var(--color-accent-primary)] focus-within:ring-2 focus-within:ring-[#1A8EFF]/20`).
     - **Embedded Vector Icons & Accessories**: Embed input leading vector icons (`icon={<Mail24Regular />}`) or right-side badges (`rightElement={<span className="...">{t('verified')}</span>}`) directly inside `<FloatingInput />`.
 
+18. **Mandatory Comparative Card Geometric Balance & Space Token Alignment Invariant**:
+    - **Absolute Top Badges**: When one card features a "MOST POPULAR" or "RECOMMENDED" badge, position it as an absolute floating pill on the top border (`absolute -top-3.5 left-8 z-20`). NEVER let badges sit in normal document flow where they vertically displace inner content.
+    - **Normalized Baseline Heights**: Multi-language text varies in length. Apply fixed min-height tokens across card baselines (`min-h-[36px]` for descriptions, `min-h-[18px]` for price notes, `min-h-[20px]` for checklist items) to guarantee 1:1 horizontal alignment across all 4 languages.
+    - **3-Tier Button Symmetry**: Standard tiers MUST use `.btn-secondary` (`w-full h-12 rounded-2xl`); featured tiers MUST use `.btn-primary` (`w-full h-12 rounded-2xl`), anchored with matching padding (`pt-8`).
+
 # Mandatory UI Integrity & Feature Evaluation System
 
 1. **Honest UI & Zero Dark Patterns**:
@@ -175,3 +180,13 @@ When using `@lobehub/icons` for brand vector logos, NEVER import from the top-le
 1. **Standalone Entrypoint Imports**: ALWAYS import SVG React icon components directly from standalone component paths:
    - **Google**: `import GoogleColor from '@lobehub/icons/es/Google/components/Color';`
    - **Apple**: `import AppleMono from '@lobehub/icons/es/Apple/components/Mono';`
+
+# Mandatory AI-First Machine Readability & Editorial GEO Architecture Rule
+
+All public articles, guides, and documentation published on this platform MUST be optimized for autonomous AI agents, LLM search engines (Perplexity, ChatGPT Search, Claude, Gemini), and traditional crawlers.
+
+1. **Embedded JSON-LD (`schema.org`)**: Every article, playbook, and guide MUST include an embedded `<script type="application/ld+json">` containing `BlogPosting`, `Article`, or `HowTo` structured schema with author, publisher, and timestamps.
+2. **Standard `/llms.txt` Endpoint**: The platform MUST maintain a clean plain-text markdown directory at `/llms.txt` for LLM crawler agents and AI answer engines.
+3. **RSS 2.0 Feed (`/feed.xml`)**: Maintain an automated RSS 2.0 XML endpoint for bot syndication.
+4. **Direct Answer "BLUF" (Bottom Line Up Front)**: Articles MUST begin with a structured "Key Takeaways" summary container to facilitate direct quotation and snippet extraction by generative AI search models.
+
