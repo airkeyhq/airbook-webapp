@@ -10,7 +10,7 @@ import { FeatureBentoGrid } from '@/components/FeatureBentoGrid';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { getDemoSpecialists } from '@/lib/i18n/demographics';
+import { getDemoSpecialists, getDemoClient } from '@/lib/i18n/demographics';
 import {
   Sparkle24Regular,
   ArrowRight24Filled,
@@ -481,49 +481,254 @@ export default function MarketingWebsite() {
 
             {/* Right Stage: Floating Operator Schedule & Client Spec Cards */}
             <div className="lg:col-span-5 space-y-4">
-              {/* Card 1: Staff Live Schedule & Roster */}
-              <div className="bg-[var(--bg-primary)] rounded-3xl border border-[var(--border-subtle)] p-5 shadow-lg space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
-                    Live Schedule &amp; Roster
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                    3 In Session
-                  </span>
+              {/* Card 1: Live Chair Dispatch & Schedule Roster */}
+              <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3.5">
+                {/* Live Header with Pulse Radar */}
+                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                  <div className="flex items-center gap-2">
+                    <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      {t('demoRosterTitle')}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                      {isDemoBooked ? '3' : '2'} {t('demoStationsActive')}
+                    </span>
+                  </div>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-                    <div>
-                      <p className="font-extrabold text-[var(--text-primary)]">Room #1 · Comprehensive Session</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">Sarah · 11:00 - 12:30</p>
+
+                {/* Real-Time Station Rows */}
+                <div className="space-y-2.5">
+                  {/* Station 1: In Progress */}
+                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img
+                          src={demoSpecialists[0].avatar}
+                          alt={demoSpecialists[0].name}
+                          className="w-8 h-8 rounded-xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                              {demoSpecialists[0].station}
+                            </p>
+                            <span className="text-[9px] font-bold text-[var(--text-muted)]">•</span>
+                            <p className="text-[10px] font-semibold text-[var(--text-secondary)] truncate">
+                              {demoSpecialists[0].name}
+                            </p>
+                          </div>
+                          <p className="text-[10px] font-medium text-[var(--text-secondary)] truncate">
+                            {DEMO_SERVICES[2].name} · Elena R.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 pl-2">
+                        <span className="text-xs font-mono font-black text-[var(--text-primary)]">$150</span>
+                        <span className="block text-[9px] font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md mt-0.5">
+                          {t('demoStatusInSession')}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-[11px] font-mono font-bold text-[#2BB5FF]">$150</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-                    <div>
-                      <p className="font-extrabold text-[var(--text-primary)]">Studio #2 · Signature Service</p>
-                      <p className="text-[10px] text-[var(--text-secondary)]">Alex · 11:30 - 12:30</p>
+                    {/* Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="w-full bg-[var(--bg-primary)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                        <div className="bg-gradient-to-r from-[#2BB5FF] to-emerald-400 h-full rounded-full w-[65%]" />
+                      </div>
+                      <div className="flex items-center justify-between text-[9px] text-[var(--text-muted)] font-mono font-medium">
+                        <span>11:00 AM</span>
+                        <span>55 / 90 min</span>
+                        <span>12:30 PM</span>
+                      </div>
                     </div>
-                    <span className="text-[11px] font-mono font-bold text-emerald-500">$75</span>
                   </div>
+
+                  {/* Station 2: Finishing */}
+                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img
+                          src={demoSpecialists[1].avatar}
+                          alt={demoSpecialists[1].name}
+                          className="w-8 h-8 rounded-xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                              {demoSpecialists[1].station}
+                            </p>
+                            <span className="text-[9px] font-bold text-[var(--text-muted)]">•</span>
+                            <p className="text-[10px] font-semibold text-[var(--text-secondary)] truncate">
+                              {demoSpecialists[1].name}
+                            </p>
+                          </div>
+                          <p className="text-[10px] font-medium text-[var(--text-secondary)] truncate">
+                            {DEMO_SERVICES[1].name} · David K.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 pl-2">
+                        <span className="text-xs font-mono font-black text-[var(--text-primary)]">$45</span>
+                        <span className="block text-[9px] font-bold text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-md mt-0.5">
+                          {t('demoStatusFinishing')}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="w-full bg-[var(--bg-primary)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                        <div className="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full w-[85%]" />
+                      </div>
+                      <div className="flex items-center justify-between text-[9px] text-[var(--text-muted)] font-mono font-medium">
+                        <span>11:15 AM</span>
+                        <span>25 / 30 min</span>
+                        <span>11:45 AM</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interactive Reaction: Dynamic Booked Slot */}
+                  <AnimatePresence>
+                    {isDemoBooked && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.96 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="p-3 rounded-2xl bg-sky-500/5 dark:bg-sky-950/20 border-2 border-[#2BB5FF] shadow-[0_4px_16px_-2px_rgba(43,181,255,0.25)] space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <img
+                              src={demoSpecialist.avatar}
+                              alt={demoSpecialist.name}
+                              className="w-8 h-8 rounded-xl object-cover border border-[#2BB5FF]/50 flex-shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                                  {demoSpecialist.station}
+                                </p>
+                                <span className="text-[9px] font-bold text-[#2BB5FF]">•</span>
+                                <p className="text-[10px] font-semibold text-[#2BB5FF] truncate">
+                                  {demoSpecialist.name}
+                                </p>
+                              </div>
+                              <p className="text-[10px] font-medium text-[var(--text-secondary)] truncate">
+                                {demoService.name} · {getDemoClient(language).name}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0 pl-2">
+                            <span className="text-xs font-mono font-black text-[#2BB5FF]">${demoService.price}</span>
+                            <span className="block text-[9px] font-extrabold text-[#2BB5FF] bg-[#2BB5FF]/10 px-1.5 py-0.5 rounded-md mt-0.5 border border-[#2BB5FF]/20">
+                              {demoSlot}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-1 border-t border-[#2BB5FF]/20 text-[10px] font-bold">
+                          <span className="flex items-center gap-1 text-[#2BB5FF]">
+                            <Sparkle24Regular className="w-3 h-3" />
+                            {t('demoUpcomingBooking')}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] border border-emerald-500/20">
+                            {t('demoDepositBadge')}
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
-              {/* Card 2: Technical Client Spec & Notes Card */}
-              <div className="bg-[var(--bg-primary)] rounded-3xl border border-[var(--border-subtle)] p-5 shadow-lg space-y-2 font-mono text-[11px]">
-                <div className="flex items-center justify-between font-sans">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
-                    Client Record &amp; Notes
+              {/* Card 2: Client Profile & Technical Formula Ticket */}
+              <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3">
+                {/* Client Ticket Header */}
+                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Person24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      {t('demoClientRecordTitle')}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide border border-amber-500/20">
+                      <Star24Regular className="w-3 h-3 text-amber-500" />
+                      {t('demoClientVipBadge')}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-[#AF52DE] bg-[#AF52DE]/10 px-2 py-0.5 rounded-full border border-[#AF52DE]/20">
+                      #AB-1042
+                    </span>
+                  </div>
+                </div>
+
+                {/* Client Identity & Loyalty Capsule */}
+                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+                  <div className="flex items-center gap-2.5">
+                    <img
+                      src={getDemoClient(language).avatar}
+                      alt={getDemoClient(language).name}
+                      className="w-9 h-9 rounded-xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
+                    />
+                    <div>
+                      <p className="text-xs font-black text-[var(--text-primary)]">
+                        {getDemoClient(language).name}
+                      </p>
+                      <p className="text-[10px] text-[var(--text-secondary)] font-mono">
+                        +1 •••• 8492
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] font-black text-[#AF52DE] bg-[#AF52DE]/10 px-2 py-0.5 rounded-full border border-[#AF52DE]/20">
+                      {t('demoLoyaltyBalance')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Technical Service Spec / Formula Swatch Capsule */}
+                <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-[11px]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+                      <Tag24Regular className="w-3 h-3 text-[var(--text-secondary)]" />
+                      {t('demoFormulaLabel')}
+                    </span>
+                    {/* Formulation Color Swatch Dots */}
+                    <div className="flex items-center -space-x-1">
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#7A4B3A] border border-white dark:border-black shadow-xs" />
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#D4A373] border border-white dark:border-black shadow-xs" />
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#E8C5A5] border border-white dark:border-black shadow-xs" />
+                    </div>
+                  </div>
+                  <p className="text-xs font-mono font-medium text-[var(--text-secondary)] leading-snug">
+                    {t('demoFormulaCode')}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold border border-emerald-500/20">
+                      {t('demoPatchTested')}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-primary)] text-[var(--text-secondary)] text-[9px] font-bold border border-[var(--border-subtle)]">
+                      {t('demoPrefQuiet')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Security & Instant Sync Footer */}
+                <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[10px] font-bold text-[var(--text-secondary)]">
+                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                    {t('demoStripeProtected')}
                   </span>
-                  <span className="text-[10px] font-bold text-[#AF52DE] bg-[#AF52DE]/10 px-2 py-0.5 rounded-full">
-                    #1042
+                  <span className="flex items-center gap-1 text-[#2BB5FF]">
+                    <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
+                    {t('demoCalendarSynced')}
                   </span>
                 </div>
-                <p className="text-[var(--text-secondary)]">Notes: Preferred morning slot, intake complete</p>
-                <p className="text-[var(--text-secondary)]">Specs: Package Tier #2 (Active credit applied)</p>
-                <p className="text-emerald-500 font-bold font-sans text-[10px]">
-                  Synced automatically post-checkout
-                </p>
               </div>
             </div>
           </div>
