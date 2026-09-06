@@ -478,14 +478,15 @@ export default function MarketingWebsite() {
             {/* Left Column: Client Storefront Perspective */}
             <div className="lg:col-span-7 space-y-3">
               {/* Perspective Header Badge */}
-              <div className="flex items-center justify-between px-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs">
+              <div className="flex items-center justify-between px-1 h-8">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs whitespace-nowrap">
                   <Globe24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
                   <span>{t('demoClientPerspective')}</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] hidden sm:inline-flex items-center gap-1">
+                <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] text-[10px] font-mono font-bold text-[var(--text-secondary)] shadow-2xs whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2BB5FF]" />
                   <span>getairbook.com/book/lelegance</span>
-                </span>
+                </div>
               </div>
 
               {/* Left Stage: Live Client Booking Flow Simulator */}
@@ -708,15 +709,15 @@ export default function MarketingWebsite() {
           {/* Right Column: Provider Command Center Perspective with Divider */}
           <div className="lg:col-span-5 space-y-3 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-pink-200/50 dark:border-pink-900/30 lg:pl-8">
               {/* Perspective Header Badge */}
-              <div className="flex items-center justify-between px-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs">
+              <div className="flex items-center justify-between px-1 h-8">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs whitespace-nowrap">
                   <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-[#AF52DE]" />
                   <span>{t('demoOperatorPerspective')}</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shadow-2xs whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  {t('demoRealtimeSyncBadge')}
-                </span>
+                  <span>{t('demoRealtimeSyncBadge')}</span>
+                </div>
               </div>
 
               {/* Right Stage: Floating Operator Schedule & Client Spec Cards */}
