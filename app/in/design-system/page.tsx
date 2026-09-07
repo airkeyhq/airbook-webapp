@@ -83,13 +83,19 @@ const TREE_DATA: TreeCategory[] = [
   },
   {
     id: 'iconography',
-    label: 'Iconography Rules',
+    label: 'Iconography & Checkmarks',
     items: [
       {
         id: 'icons-rules',
         label: '*Filled (CTAs) vs *Regular (Display)',
         tag: 'Rule',
         description: '*Filled icons are strictly reserved for clickable interactive action triggers. *Regular icons are strictly used for display labels, headers, and metadata.',
+      },
+      {
+        id: 'checkmarks-system',
+        label: 'AirBook Checkmark Taxonomy',
+        tag: 'Standard',
+        description: 'Standardized checkmark taxonomy across 5 core archetypes: Action Confirmation (Checkmark24Filled), Feature Checklists (CheckmarkCircle24Regular), Security & Passkey Guarantees (ShieldCheckmark24Regular), Tactile Spring Checkboxes, and Dropdown Selection Badges.',
       },
       {
         id: 'zero-emojis',
@@ -218,10 +224,18 @@ export default function DesignSystemTokenLabPage() {
   const [statusMode, setStatusMode] = useState<'healthy' | 'warning' | 'critical'>('healthy');
   const [statusHovered, setStatusHovered] = useState(false);
   const [demoPinging, setDemoPinging] = useState(false);
-
   const [inputText, setInputText] = useState('Hair Balayage & Glaze');
   const [emptyInputText, setEmptyInputText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('hair');
+  const [demoChecks, setDemoChecks] = useState<Record<string, boolean>>({
+    smsAlerts: true,
+    passkeyAuth: true,
+    stripeDeposit: true,
+    quietSession: false,
+    googleCalendarSync: true,
+  });
+  const [actionConfirmed, setActionConfirmed] = useState(false);
+  const [selectedPlanTier, setSelectedPlanTier] = useState<'standard' | 'pro'>('pro');
   const [sliderVal, setSliderVal] = useState(45);
   const [btnLoading, setBtnLoading] = useState(false);
   const [demoColor, setDemoColor] = useState('#2BB5FF');
@@ -801,6 +815,259 @@ export default function DesignSystemTokenLabPage() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {activeItemId === 'checkmarks-system' && (
+                <div className="space-y-6">
+                  {/* ─── LIVE STAGE: 4 CORE CHECKMARK ARCHETYPES ─── */}
+                  <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
+                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <span>Interactive Checkmark Taxonomy & Controls</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full uppercase self-start sm:self-auto">
+                        5 Active Archetypes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* ARCHETYPE 1: Action Confirmation Button (*Filled) */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              1. Action Confirmation Pill
+                            </span>
+                            <span className="text-[10px] font-mono font-bold text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-md">
+                              *Filled (CTA)
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                            Strictly reserved for clickable triggers where the checkmark represents an affirmative action (e.g. <em>Mark all read</em>, <em>Copy snippet</em>, <em>Confirm reservation</em>).
+                          </p>
+                        </div>
+
+                        <div className="pt-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActionConfirmed(true);
+                              setTimeout(() => setActionConfirmed(false), 2000);
+                            }}
+                            className={`w-full h-10 px-3.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 ${
+                              actionConfirmed
+                                ? 'bg-emerald-500 text-white shadow-[0_4px_12px_-2px_rgba(16,185,129,0.5)]'
+                                : 'btn-primary'
+                            }`}
+                          >
+                            <Checkmark24Filled className="w-4 h-4" />
+                            <span>{actionConfirmed ? 'All Notifications Marked Read!' : 'Mark All Read (*Filled)'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ARCHETYPE 2: Feature Bullet & Checklist Manifest (*Regular) */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              2. Feature Bullet & Checklist
+                            </span>
+                            <span className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-md">
+                              *Regular (Display)
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                            Used for read-only feature checklists on comparative pricing tiers, package inclusions, and service capabilities with normalized baseline heights.
+                          </p>
+                        </div>
+
+                        <div className="space-y-1.5 pt-1">
+                          {[
+                            'Unlimited 24/7 client online self-booking',
+                            'Automated 2-way SMS reminders & reviews',
+                            'Zero-fee Tap to Pay iPhone/Android POS',
+                          ].map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-xs text-[var(--text-primary)]">
+                              <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                              <span className="truncate">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* ARCHETYPE 3: Security & Passkey Guarantee */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              3. Security & Compliance Seal
+                            </span>
+                            <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                              Trust Shield
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                            Dedicated to biometric WebAuthn passkey identity, Stripe deposit guard, and HIPAA / SOC2 audit compliance seals.
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-[var(--bg-primary)] border border-emerald-500/30 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                              <ShieldCheckmark24Regular className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-xs font-black text-[var(--text-primary)] truncate">
+                                100% Passwordless Security
+                              </h4>
+                              <p className="text-[10px] text-[var(--text-muted)] truncate">
+                                Zero stored credentials in database
+                              </p>
+                            </div>
+                          </div>
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                        </div>
+                      </div>
+
+                      {/* ARCHETYPE 4: Custom Tactile Animated Checkbox */}
+                      <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-[var(--text-primary)]">
+                              4. Tactile Spring Checkbox
+                            </span>
+                            <span className="text-[10px] font-mono font-bold text-sky-600 bg-sky-500/10 px-2 py-0.5 rounded-md">
+                              Custom Coded
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                            100% custom-coded React control with snappy spring animation, electric blue fill (#2BB5FF), and zero browser native delegation.
+                          </p>
+                        </div>
+
+                        <div className="space-y-2 pt-1">
+                          {[
+                            { key: 'smsAlerts', label: 'Automated 24h SMS Reminders' },
+                            { key: 'stripeDeposit', label: 'Stripe Deposit Protection' },
+                            { key: 'quietSession', label: 'Quiet Chair Preference' },
+                          ].map(({ key, label }) => {
+                            const isChecked = Boolean(demoChecks[key]);
+                            return (
+                              <button
+                                key={key}
+                                type="button"
+                                onClick={() =>
+                                  setDemoChecks((prev) => ({ ...prev, [key]: !prev[key] }))
+                                }
+                                className="w-full flex items-center justify-between p-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors text-left cursor-pointer"
+                              >
+                                <span className="text-xs font-bold text-[var(--text-primary)] select-none">
+                                  {label}
+                                </span>
+                                <div
+                                  className={`w-5 h-5 rounded-lg flex items-center justify-center transition-all ${
+                                    isChecked
+                                      ? 'bg-[#2BB5FF] text-white shadow-xs scale-100'
+                                      : 'bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-transparent scale-95'
+                                  }`}
+                                >
+                                  <motion.div
+                                    initial={false}
+                                    animate={{ scale: isChecked ? 1 : 0 }}
+                                    transition={{ type: 'spring', damping: 20, stiffness: 400 }}
+                                  >
+                                    <Checkmark24Filled className="w-3.5 h-3.5 text-white" />
+                                  </motion.div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ─── CHECKMARK TAXONOMY RULES & INVARIANTS ─── */}
+                  <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                    <h3 className="text-sm font-black text-[var(--text-primary)] tracking-tight">
+                      Checkmark Invariant Rules & Guidelines
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                          <Checkmark24Filled className="w-4 h-4" />
+                          <span>Actions & Triggers</span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Always use <code>&lt;Checkmark24Filled /&gt;</code> inside interactive buttons. Translation strings must never contain literal &apos;+&apos; or check symbols.
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-blue-500">
+                          <CheckmarkCircle24Regular className="w-4 h-4" />
+                          <span>Display Manifests</span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Always use <code>&lt;CheckmarkCircle24Regular /&gt;</code> for static feature bullets and pricing checklists to prevent false affordances.
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-purple-500">
+                          <ShieldCheckmark24Regular className="w-4 h-4" />
+                          <span>Trust & Identity</span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                          Always use <code>&lt;ShieldCheckmark24Regular /&gt;</code> for passkey, biometric identity, and zero-password guarantees.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ─── COPYABLE IMPLEMENTATION SNIPPET ─── */}
+                  <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <span>Tactile Custom Checkbox Component Code</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleCopyCode(
+                            `// Tactile Custom Checkbox (Zero Browser Delegation)\n<button type="button" onClick={() => setChecked(!checked)} className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors">\n  <span className="text-xs font-bold text-[var(--text-primary)]">{label}</span>\n  <div className={\`w-5 h-5 rounded-lg flex items-center justify-center transition-all \${checked ? 'bg-[#2BB5FF] text-white shadow-xs' : 'bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)]'}\`}>\n    {checked && <Checkmark24Filled className="w-3.5 h-3.5 text-white" />}\n  </div>\n</button>`
+                          )
+                        }
+                        className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                      >
+                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
+                      </button>
+                    </div>
+
+                    <pre className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto text-[11px] font-mono text-[var(--text-primary)] leading-relaxed">
+{`// AirBook Tactile Checkbox Component Pattern
+<button
+  type="button"
+  onClick={() => setChecked(!checked)}
+  className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors"
+>
+  <span className="text-xs font-bold text-[var(--text-primary)]">{label}</span>
+  <div className={\`w-5 h-5 rounded-lg flex items-center justify-center transition-all \${
+    checked
+      ? 'bg-[#2BB5FF] text-white shadow-xs'
+      : 'bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)]'
+  }\`}>
+    {checked && <Checkmark24Filled className="w-3.5 h-3.5 text-white" />}
+  </div>
+</button>`}
+                    </pre>
                   </div>
                 </div>
               )}
