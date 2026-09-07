@@ -8,6 +8,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { ColorPicker } from '@/components/ColorPicker';
+import { SocialAvatarsStudio } from '@/components/SocialAvatarsStudio';
 import {
   Sparkle24Filled,
   Copy24Filled,
@@ -15,13 +16,18 @@ import {
   ArrowDownload24Filled,
   ArrowLeft24Filled,
   Box24Filled,
+  Box24Regular,
   Code24Filled,
+  Code24Regular,
   Grid24Filled,
+  Grid24Regular,
   Save24Filled,
   Globe24Regular,
   Image24Filled,
+  Image24Regular,
   Sparkle24Regular,
   Link24Filled,
+  Link24Regular,
   Open24Filled,
   Color24Filled,
   LockClosed24Filled,
@@ -33,7 +39,7 @@ import {
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
-type StudioTab = 'identity' | 'photography' | 'storefront' | 'opengraph' | 'schema' | 'embed' | 'badges' | 'glyphs' | 'vector';
+type StudioTab = 'identity' | 'photography' | 'storefront' | 'opengraph' | 'social-avatars' | 'schema' | 'embed' | 'badges' | 'glyphs' | 'vector';
 type SchemaType = 'platform' | 'storefront' | 'blog' | 'services';
 
 const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
@@ -532,19 +538,20 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
 
   // Client-facing tabs for salon & spa owners
   const clientTabs = [
-    { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Filled },
-    { id: 'photography' as const, label: t('tabBrandPhotography'), icon: Image24Filled },
+    { id: 'identity' as const, label: t('tabBrandIdentity'), icon: Sparkle24Regular },
+    { id: 'photography' as const, label: t('tabBrandPhotography'), icon: Image24Regular },
     { id: 'storefront' as const, label: t('tabLiveStorefront'), icon: Globe24Regular },
-    { id: 'opengraph' as const, label: t('tabOpenGraph'), icon: Image24Filled },
-    { id: 'schema' as const, label: t('tabSchemaOrg'), icon: Code24Filled },
-    { id: 'embed' as const, label: t('tabEmbedWidget'), icon: Link24Filled },
+    { id: 'opengraph' as const, label: t('tabOpenGraph'), icon: Image24Regular },
+    { id: 'social-avatars' as const, label: t('tabSocialAvatars'), icon: Sparkle24Regular },
+    { id: 'schema' as const, label: t('tabSchemaOrg'), icon: Code24Regular },
+    { id: 'embed' as const, label: t('tabEmbedWidget'), icon: Link24Regular },
   ];
 
   // Internal AirBook DAM tabs
   const internalTabs = [
-    { id: 'badges' as const, label: t('tabAppBadges'), icon: Box24Filled },
-    { id: 'glyphs' as const, label: t('tabVectorGlyphs'), icon: Grid24Filled },
-    { id: 'vector' as const, label: t('tabRawVectorCode'), icon: Code24Filled },
+    { id: 'badges' as const, label: t('tabAppBadges'), icon: Box24Regular },
+    { id: 'glyphs' as const, label: t('tabVectorGlyphs'), icon: Grid24Regular },
+    { id: 'vector' as const, label: t('tabRawVectorCode'), icon: Code24Regular },
   ];
 
   const activeTabsList = showInternalAssets ? [...clientTabs, ...internalTabs] : clientTabs;
@@ -584,43 +591,49 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         </div>
       </div>
 
-      {/* Tab Navigation Bar */}
-      <div className="flex items-center justify-between gap-2 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-x-auto">
-        <div className="flex items-center gap-1.5">
+      {/* Main 2-Column Responsive Layout: Left Nav Rail + Right Content Surface */}
+      <div className="flex flex-col md:flex-row gap-6 items-start">
+        {/* Left Navigation Rail (Desktop: Vertical Sidebar / Mobile: Horizontal Swipe Strip) */}
+        <nav className="w-full md:w-60 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hide-scrollbar">
           {activeTabsList.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-100 whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left whitespace-nowrap md:w-full cursor-pointer ${
                   isActive
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs'
+                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 flex-shrink-0 text-[var(--text-secondary)]" />
                 <span>{tab.label}</span>
               </button>
             );
           })}
-        </div>
 
-        {/* Dev Mode DAM Switch */}
-        <button
-          type="button"
-          onClick={() => setShowInternalAssets(!showInternalAssets)}
-          className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-colors flex-shrink-0 cursor-pointer ${
-            showInternalAssets
-              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-              : 'text-[var(--text-muted)] border-transparent hover:border-[var(--border-subtle)]'
-          }`}
-          title="AirBook Internal Assets"
-        >
-          {showInternalAssets ? 'DAM Assets Active' : '+ Internal DAM'}
-        </button>
-      </div>
+          {/* Dev Mode DAM Switch */}
+          <div className="pt-2 md:pt-3 md:mt-2 border-t border-[var(--border-subtle)] flex items-center justify-between px-2">
+            <button
+              type="button"
+              onClick={() => setShowInternalAssets(!showInternalAssets)}
+              className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-colors flex-shrink-0 cursor-pointer ${
+                showInternalAssets
+                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                  : 'text-[var(--text-muted)] border-transparent hover:border-[var(--border-subtle)]'
+              }`}
+              title="AirBook Internal Assets"
+            >
+              {showInternalAssets ? 'DAM Assets Active' : '+ Internal DAM'}
+            </button>
+          </div>
+        </nav>
+
+        {/* Right Content Surface */}
+        <div className="flex-1 w-full min-w-0">
 
       {/* TAB 1: BRAND IDENTITY STUDIO */}
       {activeTab === 'identity' && (
@@ -1250,7 +1263,21 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         </motion.div>
       )}
 
-      {/* TAB 4: EMBED WIDGET & DIRECT LINKS (CLIENT-FACING) */}
+      {/* TAB: SOCIAL MEDIA AVATARS & PROFILE PICTURES */}
+      {activeTab === 'social-avatars' && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <SocialAvatarsStudio
+            brandName={brandName}
+            tagline={tagline}
+            logoUrl={logoUrl}
+            primaryColor={primaryColor}
+            accentColor={accentColor}
+            bookingSlug={bookingSlug}
+          />
+        </motion.div>
+      )}
+
+      {/* TAB: EMBED WIDGET & DIRECT LINKS (CLIENT-FACING) */}
       {activeTab === 'embed' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           {/* Direct Booking Link Card */}
@@ -1780,6 +1807,8 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
           </div>
         </motion.div>
       )}
+        </div>
+      </div>
     </div>
   );
 };
