@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Alert24Filled, Alert24Regular, CheckmarkCircle24Regular, Mail24Regular, Dismiss24Filled, Star24Regular, Box24Regular, Payment24Regular } from '@fluentui/react-icons';
+import { Alert24Filled, Alert24Regular, CheckmarkCircle24Regular, Mail24Regular, Dismiss24Filled, Star24Regular, Box24Regular, Payment24Regular, Checkmark24Filled } from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 
@@ -152,20 +152,29 @@ export const NotificationCenterPopover: React.FC = () => {
 
       {/* Desktop Popover (Lightweight anchored dropdown on desktop >= md:) */}
       {isOpen && (
-        <div className="hidden md:flex absolute right-0 top-full mt-2 w-96 max-h-[34rem] rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 shadow-2xl z-[150] animate-in fade-in zoom-in-95 flex-col gap-3 overflow-hidden">
+        <div className="hidden md:flex absolute right-0 top-full mt-2 w-[420px] max-w-[calc(100vw-2rem)] max-h-[34rem] rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 shadow-2xl z-[150] animate-in fade-in zoom-in-95 flex-col gap-3.5 overflow-hidden">
           {/* Popover Header */}
-          <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <Alert24Regular className="w-4 h-4 text-blue-500" />
-              <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <Alert24Regular className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <h3 className="text-sm font-black text-[var(--text-primary)] truncate">
+                {t('notificationsInbox')}
+              </h3>
+              {unreadCount > 0 && (
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/15 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                  {unreadCount}
+                </span>
+              )}
             </div>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={markAllRead}
-                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 cursor-pointer transition-all active:scale-95"
+                title={t('markAllRead')}
               >
-                {t('markAllRead')}
+                <Checkmark24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>{t('markAllRead')}</span>
               </button>
             )}
           </div>
@@ -273,19 +282,28 @@ export const NotificationCenterPopover: React.FC = () => {
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mb-1 flex-shrink-0" />
 
                   {/* Drawer Header */}
-                  <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                      <Alert24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
-                      <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('notificationsInbox')}</h3>
+                  <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Alert24Regular className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                      <h3 className="text-sm font-black text-[var(--text-primary)] truncate">
+                        {t('notificationsInbox')}
+                      </h3>
+                      {unreadCount > 0 && (
+                        <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/15 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                          {unreadCount}
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
                       {unreadCount > 0 && (
                         <button
                           type="button"
                           onClick={markAllRead}
-                          className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                          className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all active:scale-95"
+                          title={t('markAllRead')}
                         >
-                          {t('markAllRead')}
+                          <Checkmark24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span>{t('markAllRead')}</span>
                         </button>
                       )}
                       <button
