@@ -126,17 +126,17 @@ export const FeatureBentoGrid: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* ─── CARD 3: BOTTOM LEFT (SOFT LAVENDER - CLIENT PROFILES & CLOUD MASCOT) ─── */}
+        {/* ─── CARD 3: BOTTOM LEFT (WARM SUNLIGHT YELLOW - CLIENT PROFILES & CLOUD MASCOT) ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.18, duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#F3E8FF] via-[#F8F0FF] to-[#EFE2FE] dark:from-purple-950/30 dark:via-purple-900/20 dark:to-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#FEF08A] via-[#FFF59D] to-[#FDE047] dark:from-yellow-950/30 dark:via-amber-900/20 dark:to-yellow-950/30 border border-yellow-300/80 dark:border-yellow-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
         >
           {/* Top Text */}
           <div className="space-y-3 z-10">
-            <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-purple-900/50 backdrop-blur-md flex items-center justify-center text-[#9333EA] shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-amber-900/50 backdrop-blur-md flex items-center justify-center text-amber-800 shadow-xs">
               <Person24Regular className="w-6 h-6" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -150,7 +150,7 @@ export const FeatureBentoGrid: React.FC = () => {
           {/* Rising Mascot Cloud Illustration */}
           <div className="relative mt-8 z-10 flex flex-col items-center justify-center">
             {/* Background layered cloud contour */}
-            <div className="absolute -bottom-16 w-72 h-44 rounded-full bg-purple-200/60 dark:bg-purple-900/30 blur-sm pointer-events-none" />
+            <div className="absolute -bottom-16 w-72 h-44 rounded-full bg-amber-200/60 dark:bg-amber-900/30 blur-sm pointer-events-none" />
             
             {/* Mascot Character Cloud */}
             <motion.svg
@@ -165,9 +165,9 @@ export const FeatureBentoGrid: React.FC = () => {
             >
               <defs>
                 <linearGradient id="bentoCloudGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-                  <stop offset="0%" stopColor="#D8B4FE" />
-                  <stop offset="60%" stopColor="#C084FC" />
-                  <stop offset="100%" stopColor="#A855F7" />
+                  <stop offset="0%" stopColor="#FEF08A" />
+                  <stop offset="60%" stopColor="#FACC15" />
+                  <stop offset="100%" stopColor="#EAB308" />
                 </linearGradient>
                 <linearGradient id="bentoCloudGlow" x1="50%" y1="0%" x2="50%" y2="100%">
                   <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.8" />
@@ -205,21 +205,21 @@ export const FeatureBentoGrid: React.FC = () => {
               {/* Cute Eyes & Smile */}
               <path
                 d="M 36,46 Q 41,40 46,46"
-                stroke="#3B0764"
+                stroke="#78350F"
                 strokeWidth="3.4"
                 strokeLinecap="round"
                 fill="none"
               />
               <path
                 d="M 54,46 Q 59,40 64,46"
-                stroke="#3B0764"
+                stroke="#78350F"
                 strokeWidth="3.4"
                 strokeLinecap="round"
                 fill="none"
               />
               <path
                 d="M 44,55 Q 50,63 56,55"
-                stroke="#3B0764"
+                stroke="#78350F"
                 strokeWidth="3.4"
                 strokeLinecap="round"
                 fill="none"
@@ -228,28 +228,28 @@ export const FeatureBentoGrid: React.FC = () => {
 
             {/* Client Preference Tags */}
             <div className="flex items-center gap-2 mt-2">
-              <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-800 text-[10px] font-extrabold text-purple-900 dark:text-purple-200 shadow-xs flex items-center gap-1">
-                <Tag24Regular className="w-3 h-3 text-purple-500" />
+              <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-[10px] font-extrabold text-amber-950 dark:text-amber-200 shadow-xs flex items-center gap-1">
+                <Tag24Regular className="w-3 h-3 text-amber-600" />
                 Formula #7B
               </span>
-              <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-800 text-[10px] font-extrabold text-purple-900 dark:text-purple-200 shadow-xs">
+              <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-[10px] font-extrabold text-amber-950 dark:text-amber-200 shadow-xs">
                 No Almond Oil
               </span>
             </div>
           </div>
         </motion.div>
 
-        {/* ─── CARD 4: BOTTOM RIGHT (WARM SUNLIGHT YELLOW - TAP TO PAY PHONE MOCKUP) ─── */}
+        {/* ─── CARD 4: BOTTOM RIGHT (SOFT LAVENDER - TAP TO PAY PHONE MOCKUP) ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.26, duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#FEF08A] via-[#FFF59D] to-[#FDE047] dark:from-yellow-950/30 dark:via-amber-900/20 dark:to-yellow-950/30 border border-yellow-300/80 dark:border-yellow-800/40 p-6 sm:p-10 pb-0 sm:pb-0 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#F3E8FF] via-[#F8F0FF] to-[#EFE2FE] dark:from-purple-950/30 dark:via-purple-900/20 dark:to-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 p-6 sm:p-10 pb-0 sm:pb-0 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
         >
           {/* Top Text */}
           <div className="space-y-3 z-10">
-            <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-amber-900/50 backdrop-blur-md flex items-center justify-center text-amber-800 shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-purple-900/50 backdrop-blur-md flex items-center justify-center text-[#9333EA] shadow-xs">
               <Payment24Regular className="w-6 h-6" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
