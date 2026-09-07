@@ -8974,9 +8974,9 @@ e(() => {
                                       style: {
                                         "--framer-text-color": `var(--token-68c5c5f5-0e58-4492-b1b9-f805d76d95e8, rgb(120, 120, 120))`,
                                       },
-                                      children: `Managing tasks, reminders, and meetings across different apps slows you down. `,
+                                      children: `Juggling bookings, client reminders, and checkout across different apps slows you down. `,
                                     }),
-                                    `Appdrop brings everything into one intelligent workflow.`,
+                                    `AirBook brings your entire studio into one seamless flow.`,
                                   ],
                                 }),
                               }),
