@@ -586,7 +586,7 @@ export default function IndustryFunnelPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF0F5] via-[#FDF2F8] to-[#EFF6FF] dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 shadow-xl space-y-10"
+          className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm space-y-10"
         >
           {/* Top Hero Text */}
           <div className="max-w-3xl space-y-4 text-left">
@@ -825,7 +825,7 @@ export default function IndustryFunnelPage() {
 
       {/* ─── BOTTOM HIGH IMPACT CTA BANNER ─── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF0F5] via-[#FDF2F8] to-[#EFF6FF] dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 text-center space-y-6 shadow-xl">
+        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] text-center space-y-6 shadow-sm">
           <h2 className="text-3xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight max-w-2xl mx-auto">
             {config.badge[currentLang]}
           </h2>

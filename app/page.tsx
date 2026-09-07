@@ -475,13 +475,13 @@ export default function MarketingWebsite() {
           </motion.div>
         </div>
 
-        {/* ─── ABOARD-STYLE PASTEL FRAMED UI CANVAS STAGE ─── */}
+        {/* ─── STUDIO-STYLE MINIMALIST GREY CANVAS STAGE ─── */}
         <motion.div
           id="live-simulation-stage"
           initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.32 }}
-          className="p-4 sm:p-8 lg:p-10 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF0F5]/80 via-[#FDF2F8]/60 to-[#F5F3FF]/80 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 shadow-xl"
+          className="p-4 sm:p-8 lg:p-10 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Client Storefront Perspective */}
@@ -971,9 +971,9 @@ export default function MarketingWebsite() {
       {/* ─── ASYMMETRIC PASTEL FEATURE BENTO SHOWCASE ─── */}
       <FeatureBentoGrid />
 
-      {/* ─── SECTION 1: THE COMPLETE 4-STEP BOOKING JOURNEY (LAVENDER STAGE) ─── */}
+      {/* ─── SECTION 1: THE COMPLETE 4-STEP BOOKING JOURNEY (GREY CANVAS STAGE) ─── */}
       <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#F6F3FF] via-[#FAF8FF] to-[#EFF6FF] dark:from-purple-950/20 dark:via-purple-900/10 dark:to-sky-950/20 border border-purple-100/80 dark:border-purple-900/30 shadow-xl space-y-10">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm space-y-10">
           <div className="max-w-2xl space-y-3 text-left">
             <span className="text-xs font-extrabold uppercase tracking-widest text-[#AF52DE]">
               {t('howItWorksSubtitle')}
@@ -1052,9 +1052,9 @@ export default function MarketingWebsite() {
         </div>
       </section>
 
-      {/* ─── SECTION: CLIENT TECHNICAL RECORDS & CRM (WARM AMBER / ROSE STAGE) ─── */}
+      {/* ─── SECTION: CLIENT TECHNICAL RECORDS & CRM (GREY CANVAS STAGE) ─── */}
       <section id="records" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF8F3] via-[#FAF5FF] to-[#F0F8FF] dark:from-amber-950/20 dark:via-purple-950/15 dark:to-sky-950/20 border border-amber-100/80 dark:border-amber-900/30 shadow-xl">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Editorial Value Proposition & 3 Feature Bullets */}
             <div className="lg:col-span-6 space-y-6">
@@ -1210,9 +1210,9 @@ export default function MarketingWebsite() {
         </div>
       </section>
 
-      {/* ─── SECTION 2: RETENTION & CLIENT SATISFACTION (SKY STAGE) ─── */}
+      {/* ─── SECTION 2: RETENTION & CLIENT SATISFACTION (GREY CANVAS STAGE) ─── */}
       <section id="crm" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#F0F8FF] via-[#F4F9FF] to-[#F5F3FF] dark:from-sky-950/20 dark:via-sky-900/10 dark:to-purple-950/20 border border-sky-100/80 dark:border-sky-900/30 shadow-xl">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Value Proposition & Interactive Triggers */}
             <div className="lg:col-span-6 space-y-5">
@@ -2572,7 +2572,7 @@ export default function MarketingWebsite() {
 
       {/* ─── BOTTOM HIGH IMPACT CTA BANNER ─── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-gradient-to-br from-[#FFF0F5] via-[#FDF2F8] to-[#EFF6FF] dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 text-center space-y-6 shadow-xl">
+        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] text-center space-y-6 shadow-sm">
           <h2 className="text-3xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight max-w-2xl mx-auto">
             {t('ctaBannerTitle')}
           </h2>
