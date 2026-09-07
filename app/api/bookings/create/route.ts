@@ -185,24 +185,23 @@ export async function POST(req: Request) {
       return createdAppointments;
     });
 
-    // Dispatch Novu notifications in background
-    if (clientEmail || clientPhone) {
-      for (const b of result) {
-        const staffMember = dbStaff.find((s) => s.id === b.staffId);
-        const serviceItem = dbServices.find((s) => s.id === b.serviceId);
+    // Dispatch notifications & persist to workspace inbox
+    for (const b of result) {
+      const staffMember = dbStaff.find((s) => s.id === b.staffId);
+      const serviceItem = dbServices.find((s) => s.id === b.serviceId);
 
-        sendBookingNotifications({
-          subscriberId: clientEmail || clientPhone || `sub_${b.clientId}`,
-          clientName: b.guestName || clientName,
-          clientEmail,
-          clientPhone,
-          serviceName: serviceItem?.name || 'Hair & Styling Service',
-          staffName: staffMember?.name || 'Specialist',
-          dateStr,
-          startTime: b.startTime,
-          price: (b.priceCents || 0) / 100,
-        }).catch((err) => console.warn('Background notification error:', err));
-      }
+      sendBookingNotifications({
+        workspaceId,
+        subscriberId: clientEmail || clientPhone || `sub_${b.clientId}`,
+        clientName: b.guestName || clientName,
+        clientEmail,
+        clientPhone,
+        serviceName: serviceItem?.name || 'Hair & Styling Service',
+        staffName: staffMember?.name || 'Specialist',
+        dateStr,
+        startTime: b.startTime,
+        price: (b.priceCents || 0) / 100,
+      }).catch((err) => console.warn('Background notification error:', err));
     }
 
     return NextResponse.json({

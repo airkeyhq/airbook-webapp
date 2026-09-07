@@ -517,3 +517,19 @@ export const newsletterSubscribers = pgTable('newsletter_subscribers', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// =============================================================================
+// MODULE 15: WORKSPACE NOTIFICATIONS & INBOX SYSTEM
+// =============================================================================
+
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  title: text('title').notNull(),
+  message: text('message').notNull(),
+  type: varchar('type', { length: 30 }).default('system').notNull(), // 'sms' | 'email' | 'booking' | 'payment' | 'system'
+  recipient: varchar('recipient', { length: 255 }),
+  metadata: jsonb('metadata'),
+  isRead: boolean('is_read').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

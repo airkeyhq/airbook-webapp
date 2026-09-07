@@ -1,4 +1,6 @@
 import { Novu } from '@novu/api';
+import { db } from '@/db';
+import { notifications } from '@/db/schema';
 
 const novuSecretKey = process.env.NOVU_SECRET_KEY || 'demo-novu-secret-key-2026';
 export const novu = new Novu({ secretKey: novuSecretKey });
@@ -25,6 +27,7 @@ export interface TeamInvitationEmailPayload {
 }
 
 export interface NotificationPayload {
+  workspaceId?: string;
   subscriberId: string;
   clientName: string;
   clientEmail?: string;
@@ -37,6 +40,7 @@ export interface NotificationPayload {
 }
 
 export interface CancellationPayload {
+  workspaceId?: string;
   subscriberId: string;
   clientName: string;
   clientEmail?: string;
@@ -49,11 +53,43 @@ export interface CancellationPayload {
 }
 
 export interface CustomNotificationPayload {
-  type: 'sms' | 'email' | 'push';
+  workspaceId?: string;
+  type: 'sms' | 'email' | 'push' | 'system' | 'payment';
   recipient: string;
   message: string;
   title?: string;
   data?: Record<string, unknown>;
+}
+
+export interface CreateNotificationParams {
+  workspaceId: string;
+  title: string;
+  message: string;
+  type?: 'sms' | 'email' | 'push' | 'booking' | 'payment' | 'system';
+  recipient?: string | null;
+  metadata?: Record<string, unknown> | null;
+  isRead?: boolean;
+}
+
+export async function createWorkspaceNotification(params: CreateNotificationParams) {
+  try {
+    const [inserted] = await db
+      .insert(notifications)
+      .values({
+        workspaceId: params.workspaceId as any,
+        title: params.title,
+        message: params.message,
+        type: params.type || 'system',
+        recipient: params.recipient || null,
+        metadata: params.metadata || null,
+        isRead: params.isRead ?? false,
+      })
+      .returning();
+    return inserted;
+  } catch (error) {
+    console.warn('[Notifications] Failed to write DB notification:', error);
+    return null;
+  }
 }
 
 export interface NotificationLogEntry {
@@ -104,6 +140,24 @@ export async function sendBookingNotifications(payload: NotificationPayload) {
     status: 'sent',
   });
 
+  if (payload.workspaceId) {
+    createWorkspaceNotification({
+      workspaceId: payload.workspaceId,
+      title: `Booking Confirmed: ${payload.serviceName}`,
+      message: `${payload.clientName} booked with ${payload.staffName} on ${payload.dateStr} at ${payload.startTime}.`,
+      type: 'booking',
+      recipient: payload.clientEmail || payload.clientPhone || null,
+      metadata: {
+        clientName: payload.clientName,
+        serviceName: payload.serviceName,
+        staffName: payload.staffName,
+        dateStr: payload.dateStr,
+        startTime: payload.startTime,
+        price: payload.price,
+      },
+    }).catch((err) => console.warn('[Notifications] DB insert error on booking:', err));
+  }
+
   if (isDemo) {
     console.log(`[Novu Dev Mode] Booking notification recorded for ${payload.clientName}`);
     return { success: true, mode: 'demo-fallback' };
@@ -152,6 +206,21 @@ export async function sendCancellationNotification(payload: CancellationPayload)
     status: 'sent',
   });
 
+  if (payload.workspaceId) {
+    createWorkspaceNotification({
+      workspaceId: payload.workspaceId,
+      title: `Cancelled: ${payload.serviceName}`,
+      message: `Appointment for ${payload.clientName} on ${payload.dateStr} at ${payload.startTime} was cancelled.`,
+      type: 'booking',
+      recipient: payload.clientEmail || payload.clientPhone || null,
+      metadata: {
+        reason: payload.reason,
+        clientName: payload.clientName,
+        serviceName: payload.serviceName,
+      },
+    }).catch((err) => console.warn('[Notifications] DB insert error on cancellation:', err));
+  }
+
   if (isDemo) {
     return { success: true, mode: 'demo-fallback' };
   }
@@ -197,6 +266,17 @@ export async function sendCustomNotification(payload: CustomNotificationPayload)
     message,
     status: 'sent',
   });
+
+  if (payload.workspaceId) {
+    createWorkspaceNotification({
+      workspaceId: payload.workspaceId,
+      title: title || (type === 'sms' ? 'SMS Dispatched' : 'Email Sent'),
+      message: `${recipient}: ${message}`,
+      type: type || 'sms',
+      recipient,
+      metadata: payload.data,
+    }).catch((err) => console.warn('[Notifications] DB insert error on custom alert:', err));
+  }
 
   if (isDemo) {
     return { success: true, log, mode: 'dev-console' };

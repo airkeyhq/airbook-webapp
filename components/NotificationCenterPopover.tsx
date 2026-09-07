@@ -3,59 +3,55 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Alert24Filled, Alert24Regular, CheckmarkCircle24Regular, Mail24Regular, Dismiss24Filled, Star24Regular, Box24Regular, Payment24Regular, Checkmark24Filled } from '@fluentui/react-icons';
+import {
+  Alert24Filled,
+  Alert24Regular,
+  Mail24Regular,
+  Dismiss24Filled,
+  Payment24Regular,
+  Checkmark24Filled,
+  Calendar24Regular,
+  Delete24Regular,
+} from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { useAirBookStore } from '@/lib/store';
 
 export interface NotificationItem {
   id: string;
   title: string;
   message: string;
-  type: 'sms' | 'email' | 'system' | 'payment';
-  timestamp: string;
+  type: 'sms' | 'email' | 'booking' | 'payment' | 'system';
+  recipient?: string | null;
+  metadata?: Record<string, unknown> | null;
+  createdAt: string;
   isRead: boolean;
 }
 
-const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: 'n1',
-    title: 'SMS Reminder Sent',
-    message: 'Sent 24h appointment reminder to Sarah Jenkins (+1 555-0199).',
-    type: 'sms',
-    timestamp: '2 mins ago',
-    isRead: false,
-  },
-  {
-    id: 'n2',
-    title: 'Google Review Request',
-    message: 'Automated 5-star review request sent to Dennis Müller via SMS.',
-    type: 'sms',
-    timestamp: '1 hour ago',
-    isRead: false,
-  },
-  {
-    id: 'n3',
-    title: 'Low Stock Alert',
-    message: 'Kerastase Nutritive Shampoo reached low stock threshold (2 left).',
-    type: 'system',
-    timestamp: '3 hours ago',
-    isRead: false,
-  },
-  {
-    id: 'n4',
-    title: 'Stripe Deposit Confirmed',
-    message: '$25 deposit received for Hair Color & Style with Eduardo.',
-    type: 'payment',
-    timestamp: 'Yesterday',
-    isRead: true,
-  },
-];
+function formatRelativeTime(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHours = Math.floor(diffMin / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffSec < 45) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  } catch {
+    return dateString;
+  }
+}
 
 export const NotificationCenterPopover: React.FC = () => {
   const { t } = useTranslation();
-  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'unread' | 'logs'>('all');
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
@@ -65,38 +61,38 @@ export const NotificationCenterPopover: React.FC = () => {
     setMounted(true);
   }, []);
 
-  // Fetch real logs from /api/notifications when opened (or use demo entries if isDemoMode is on)
-  const fetchLogs = async () => {
-    if (isDemoMode) {
-      setNotifications(DEFAULT_NOTIFICATIONS);
-      return;
-    }
-
+  // Fetch real notifications from database
+  const fetchNotifications = async () => {
     try {
       const res = await fetch('/api/notifications');
       const data = await res.json();
-      if (data.success && Array.isArray(data.logs)) {
-        const liveLogs: NotificationItem[] = data.logs.map((log: any) => ({
-          id: log.id,
-          title: log.title || (log.type === 'sms' ? 'SMS Notification Dispatched' : 'Email Notification Sent'),
-          message: log.recipient ? `To: ${log.recipient} — ${log.message}` : log.message,
-          type: log.type || 'sms',
-          timestamp: new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          isRead: false,
-        }));
-        setNotifications(liveLogs.length > 0 ? liveLogs : DEFAULT_NOTIFICATIONS);
+      if (data.success && Array.isArray(data.notifications)) {
+        setNotifications(
+          data.notifications.map((n: any) => ({
+            id: n.id,
+            title: n.title,
+            message: n.message,
+            type: n.type || 'system',
+            recipient: n.recipient || null,
+            metadata: n.metadata || null,
+            createdAt: n.createdAt,
+            isRead: Boolean(n.isRead),
+          }))
+        );
       } else {
-        setNotifications(DEFAULT_NOTIFICATIONS);
+        setNotifications([]);
       }
     } catch (e) {
-      console.warn('Failed to fetch notifications logs:', e);
+      console.warn('Failed to fetch notifications:', e);
       setNotifications([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLogs();
-  }, [isOpen, isDemoMode]);
+    fetchNotifications();
+  }, [isOpen]);
 
   // Click outside listener
   useEffect(() => {
@@ -110,13 +106,43 @@ export const NotificationCenterPopover: React.FC = () => {
   }, []);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const readCount = notifications.filter((n) => n.isRead).length;
 
-  const markAllRead = () => {
+  const markAllRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ all: true }),
+      });
+    } catch (e) {
+      console.warn('Failed to mark all notifications as read:', e);
+    }
   };
 
-  const markAsRead = (id: string) => {
+  const markAsRead = async (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, isRead: true }),
+      });
+    } catch (e) {
+      console.warn('Failed to mark notification as read:', e);
+    }
+  };
+
+  const clearReadNotifications = async () => {
+    setNotifications((prev) => prev.filter((n) => !n.isRead));
+    try {
+      await fetch('/api/notifications?clearAllRead=true', {
+        method: 'DELETE',
+      });
+    } catch (e) {
+      console.warn('Failed to clear read notifications:', e);
+    }
   };
 
   const filteredNotifications = notifications.filter((n) => {
@@ -124,6 +150,20 @@ export const NotificationCenterPopover: React.FC = () => {
     if (activeFilter === 'logs') return n.type === 'sms' || n.type === 'email';
     return true;
   });
+
+  const renderIcon = (type: string) => {
+    switch (type) {
+      case 'booking':
+        return <Calendar24Regular className="w-4 h-4 text-blue-500" />;
+      case 'payment':
+        return <Payment24Regular className="w-4 h-4 text-emerald-500" />;
+      case 'sms':
+      case 'email':
+        return <Mail24Regular className="w-4 h-4 text-purple-500" />;
+      default:
+        return <Alert24Regular className="w-4 h-4 text-amber-500" />;
+    }
+  };
 
   return (
     <div ref={containerRef} className="relative z-[100] group">
@@ -166,31 +206,47 @@ export const NotificationCenterPopover: React.FC = () => {
                 </span>
               )}
             </div>
-            {unreadCount > 0 && (
-              <button
-                type="button"
-                onClick={markAllRead}
-                className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 cursor-pointer transition-all active:scale-95"
-                title={t('markAllRead')}
-              >
-                <Checkmark24Filled className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>{t('markAllRead')}</span>
-              </button>
-            )}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={markAllRead}
+                  className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 cursor-pointer transition-all active:scale-95"
+                  title={t('markAllRead')}
+                >
+                  <Checkmark24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>{t('markAllRead')}</span>
+                </button>
+              )}
+              {unreadCount === 0 && readCount > 0 && (
+                <button
+                  type="button"
+                  onClick={clearReadNotifications}
+                  className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 cursor-pointer transition-all active:scale-95"
+                  title={t('clearAllRead')}
+                >
+                  <Delete24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>{t('clearAllRead')}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Filter Tabs */}
           <div className="flex items-center gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-bold flex-shrink-0">
             {[
-              { id: 'all', label: t('filterAll') },
+              { id: 'all', label: `${t('filterAll')} (${notifications.length})` },
               { id: 'unread', label: `${t('filterUnread')} (${unreadCount})` },
-              { id: 'logs', label: t('filterLogs') },
+              {
+                id: 'logs',
+                label: `${t('filterLogs')} (${notifications.filter((n) => n.type === 'sms' || n.type === 'email').length})`,
+              },
             ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveFilter(tab.id as any)}
-                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer truncate ${
                   activeFilter === tab.id
                     ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -224,24 +280,20 @@ export const NotificationCenterPopover: React.FC = () => {
                   onClick={() => markAsRead(item.id)}
                   className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                     item.isRead
-                      ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
-                      : 'bg-blue-500/5 border-blue-500/20'
+                      ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75 hover:opacity-100'
+                      : 'bg-blue-500/5 border-blue-500/20 hover:border-blue-500/40'
                   }`}
                 >
                   <div className="flex items-start gap-2.5">
                     <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] mt-0.5 flex-shrink-0">
-                      {item.type === 'sms' || item.type === 'email' ? (
-                        <Mail24Regular className="w-4 h-4" />
-                      ) : item.type === 'payment' ? (
-                        <Payment24Regular className="w-4 h-4" />
-                      ) : (
-                        <Box24Regular className="w-4 h-4" />
-                      )}
+                      {renderIcon(item.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{item.title}</h4>
-                        <span className="text-[10px] font-mono text-[var(--text-muted)]">{item.timestamp}</span>
+                        <span className="text-[10px] font-mono text-[var(--text-muted)] flex-shrink-0">
+                          {formatRelativeTime(item.createdAt)}
+                        </span>
                       </div>
                       <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug line-clamp-2">
                         {item.message}
@@ -306,6 +358,17 @@ export const NotificationCenterPopover: React.FC = () => {
                           <span>{t('markAllRead')}</span>
                         </button>
                       )}
+                      {unreadCount === 0 && readCount > 0 && (
+                        <button
+                          type="button"
+                          onClick={clearReadNotifications}
+                          className="btn-tertiary !h-7 !px-2.5 !rounded-xl text-[11px] font-bold text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all active:scale-95"
+                          title={t('clearAllRead')}
+                        >
+                          <Delete24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span>{t('clearAllRead')}</span>
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => setIsOpen(false)}
@@ -320,15 +383,18 @@ export const NotificationCenterPopover: React.FC = () => {
                   {/* Filter Tabs */}
                   <div className="flex items-center gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-bold flex-shrink-0">
                     {[
-                      { id: 'all', label: t('filterAll') },
+                      { id: 'all', label: `${t('filterAll')} (${notifications.length})` },
                       { id: 'unread', label: `${t('filterUnread')} (${unreadCount})` },
-                      { id: 'logs', label: t('filterLogs') },
+                      {
+                        id: 'logs',
+                        label: `${t('filterLogs')} (${notifications.filter((n) => n.type === 'sms' || n.type === 'email').length})`,
+                      },
                     ].map((tab) => (
                       <button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveFilter(tab.id as any)}
-                        className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-colors cursor-pointer truncate ${
                           activeFilter === tab.id
                             ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
                             : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -359,31 +425,23 @@ export const NotificationCenterPopover: React.FC = () => {
                       filteredNotifications.map((item) => (
                         <div
                           key={item.id}
-                          onClick={() => {
-                            setNotifications((prev) =>
-                              prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
-                            );
-                          }}
+                          onClick={() => markAsRead(item.id)}
                           className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                             item.isRead
-                              ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75'
-                              : 'bg-blue-500/5 border-blue-500/20'
+                              ? 'bg-black/2 dark:bg-white/2 border-black/5 dark:border-white/5 opacity-75 hover:opacity-100'
+                              : 'bg-blue-500/5 border-blue-500/20 hover:border-blue-500/40'
                           }`}
                         >
                           <div className="flex items-start gap-2.5">
                             <div className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] mt-0.5 flex-shrink-0">
-                              {item.type === 'sms' || item.type === 'email' ? (
-                                <Mail24Regular className="w-4 h-4" />
-                              ) : item.type === 'payment' ? (
-                                <Payment24Regular className="w-4 h-4" />
-                              ) : (
-                                <Box24Regular className="w-4 h-4" />
-                              )}
+                              {renderIcon(item.type)}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between gap-2">
                                 <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{item.title}</h4>
-                                <span className="text-[10px] font-mono text-[var(--text-muted)]">{item.timestamp}</span>
+                                <span className="text-[10px] font-mono text-[var(--text-muted)] flex-shrink-0">
+                                  {formatRelativeTime(item.createdAt)}
+                                </span>
                               </div>
                               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug line-clamp-2">
                                 {item.message}
@@ -403,3 +461,4 @@ export const NotificationCenterPopover: React.FC = () => {
     </div>
   );
 };
+
