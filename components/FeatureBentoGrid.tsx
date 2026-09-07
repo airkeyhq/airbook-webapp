@@ -39,7 +39,7 @@ export const FeatureBentoGrid: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#E0F2FE] via-[#EBF6FF] to-[#DDF0FE] dark:from-sky-950/30 dark:via-sky-900/20 dark:to-sky-950/30 border border-sky-200/80 dark:border-sky-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#E0F2FE] via-[#EBF6FF] to-[#DDF0FE] dark:from-sky-950/30 dark:via-sky-900/20 dark:to-sky-950/30 border border-sky-200/80 dark:border-sky-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-none min-h-[460px]"
         >
           {/* Top Text */}
           <div className="space-y-3 z-10">
@@ -56,7 +56,7 @@ export const FeatureBentoGrid: React.FC = () => {
 
           {/* Tangible Floating UI Mockup */}
           <div className="mt-8 z-10 transform translate-y-2">
-            <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-lg border border-slate-100 dark:border-slate-800 space-y-3.5">
+            <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-none border border-slate-200/80 dark:border-slate-800 space-y-3.5">
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
                 <span className="flex items-center gap-1">
                   <Clock24Regular className="w-3.5 h-3.5 text-[#0284C7]" />
@@ -97,7 +97,7 @@ export const FeatureBentoGrid: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white p-6 sm:p-10 flex flex-col justify-end overflow-hidden relative shadow-lg min-h-[460px] group"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white p-6 sm:p-10 flex flex-col justify-end overflow-hidden relative shadow-none min-h-[460px] group"
         >
           {/* Ambient Lighting & Texture Background */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
@@ -132,7 +132,7 @@ export const FeatureBentoGrid: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.18, duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#FEF08A] via-[#FFF59D] to-[#FDE047] dark:from-yellow-950/30 dark:via-amber-900/20 dark:to-yellow-950/30 border border-yellow-300/80 dark:border-yellow-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#FEF08A] via-[#FFF59D] to-[#FDE047] dark:from-yellow-950/30 dark:via-amber-900/20 dark:to-yellow-950/30 border border-yellow-300/80 dark:border-yellow-800/40 p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative shadow-none min-h-[460px]"
         >
           {/* Top Text */}
           <div className="space-y-3 z-10">
@@ -245,7 +245,7 @@ export const FeatureBentoGrid: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.26, duration: 0.3 }}
-          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#F3E8FF] via-[#F8F0FF] to-[#EFE2FE] dark:from-purple-950/30 dark:via-purple-900/20 dark:to-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 p-6 sm:p-10 pb-0 sm:pb-0 flex flex-col justify-between overflow-hidden relative shadow-sm min-h-[460px]"
+          className="rounded-[32px] sm:rounded-[36px] bg-gradient-to-br from-[#F3E8FF] via-[#F8F0FF] to-[#EFE2FE] dark:from-purple-950/30 dark:via-purple-900/20 dark:to-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 p-6 sm:p-10 pb-0 sm:pb-0 flex flex-col justify-between overflow-hidden relative shadow-none min-h-[460px]"
         >
           {/* Top Text */}
           <div className="space-y-3 z-10">

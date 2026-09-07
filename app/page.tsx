@@ -481,7 +481,7 @@ export default function MarketingWebsite() {
           initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.32 }}
-          className="p-4 sm:p-8 lg:p-10 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm"
+          className="p-4 sm:p-8 lg:p-10 rounded-[36px] sm:rounded-[48px] bg-[#F8F8F9] dark:bg-[#141720]/60 border border-slate-200/70 dark:border-white/[0.06] shadow-none"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Client Storefront Perspective */}
@@ -503,7 +503,7 @@ export default function MarketingWebsite() {
                 ref={demoStageRef}
                 onMouseEnter={() => setIsUserHoveringDemo(true)}
                 onMouseLeave={() => setIsUserHoveringDemo(false)}
-                className="bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden"
+                className="bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-none space-y-4 relative overflow-hidden"
               >
               {/* Animated Mockup Cursor */}
               <motion.div
@@ -716,7 +716,7 @@ export default function MarketingWebsite() {
           </div>
 
           {/* Right Column: Provider Command Center Perspective with Divider */}
-          <div className="lg:col-span-5 space-y-3 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-pink-200/50 dark:border-pink-900/30 lg:pl-8">
+          <div className="lg:col-span-5 space-y-3 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-200/70 dark:border-white/[0.06] lg:pl-8">
               {/* Perspective Header Badge */}
               <div className="flex items-center justify-between px-1 h-8">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs whitespace-nowrap">
@@ -732,7 +732,7 @@ export default function MarketingWebsite() {
               {/* Right Stage: Floating Operator Schedule & Client Spec Cards */}
               <div className="space-y-4">
                 {/* Card 1: Live Chair Dispatch & Schedule Roster */}
-                <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-xl space-y-3.5">
+                <div className="bg-[var(--bg-primary)] rounded-[28px] border border-[var(--border-subtle)] p-4 sm:p-5 shadow-none space-y-3.5">
                 {/* Live Header with Pulse Radar */}
                 <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
                   <div className="flex items-center gap-2">
@@ -973,7 +973,7 @@ export default function MarketingWebsite() {
 
       {/* ─── SECTION 1: THE COMPLETE 4-STEP BOOKING JOURNEY (GREY CANVAS STAGE) ─── */}
       <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm space-y-10">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F8F8F9] dark:bg-[#141720]/60 border border-slate-200/70 dark:border-white/[0.06] shadow-none space-y-10">
           <div className="max-w-2xl space-y-3 text-left">
             <span className="text-xs font-extrabold uppercase tracking-widest text-[#AF52DE]">
               {t('howItWorksSubtitle')}
@@ -993,7 +993,7 @@ export default function MarketingWebsite() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
               {/* Step 01 */}
-              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-sm hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-none hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
                 <div className="flex items-center justify-between">
                   <span className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/10 text-[#2BB5FF] font-black text-xs flex items-center justify-center border border-[#2BB5FF]/20 shadow-xs">
                     01
@@ -1007,7 +1007,7 @@ export default function MarketingWebsite() {
               </div>
 
               {/* Step 02 */}
-              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-sm hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-none hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
                 <div className="flex items-center justify-between">
                   <span className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/10 text-[#2BB5FF] font-black text-xs flex items-center justify-center border border-[#2BB5FF]/20 shadow-xs">
                     02
@@ -1021,7 +1021,7 @@ export default function MarketingWebsite() {
               </div>
 
               {/* Step 03 */}
-              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-sm hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-none hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
                 <div className="flex items-center justify-between">
                   <span className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/10 text-[#2BB5FF] font-black text-xs flex items-center justify-center border border-[#2BB5FF]/20 shadow-xs">
                     03
@@ -1035,7 +1035,7 @@ export default function MarketingWebsite() {
               </div>
 
               {/* Step 04 */}
-              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-sm hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
+              <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-none hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
                 <div className="flex items-center justify-between">
                   <span className="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-500 font-black text-xs flex items-center justify-center border border-amber-500/20 shadow-xs">
                     04
@@ -1054,7 +1054,7 @@ export default function MarketingWebsite() {
 
       {/* ─── SECTION: CLIENT TECHNICAL RECORDS & CRM (GREY CANVAS STAGE) ─── */}
       <section id="records" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F8F8F9] dark:bg-[#141720]/60 border border-slate-200/70 dark:border-white/[0.06] shadow-none">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Editorial Value Proposition & 3 Feature Bullets */}
             <div className="lg:col-span-6 space-y-6">
@@ -1212,7 +1212,7 @@ export default function MarketingWebsite() {
 
       {/* ─── SECTION 2: RETENTION & CLIENT SATISFACTION (GREY CANVAS STAGE) ─── */}
       <section id="crm" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] shadow-sm">
+        <div className="p-6 sm:p-12 lg:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F8F8F9] dark:bg-[#141720]/60 border border-slate-200/70 dark:border-white/[0.06] shadow-none">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Value Proposition & Interactive Triggers */}
             <div className="lg:col-span-6 space-y-5">
@@ -2572,7 +2572,7 @@ export default function MarketingWebsite() {
 
       {/* ─── BOTTOM HIGH IMPACT CTA BANNER ─── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F5F5F7] dark:bg-[#141720]/70 border border-slate-200/80 dark:border-[var(--border-subtle)] text-center space-y-6 shadow-sm">
+        <div className="p-8 sm:p-14 rounded-[36px] sm:rounded-[48px] bg-[#F8F8F9] dark:bg-[#141720]/60 border border-slate-200/70 dark:border-white/[0.06] text-center space-y-6 shadow-none">
           <h2 className="text-3xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight max-w-2xl mx-auto">
             {t('ctaBannerTitle')}
           </h2>
