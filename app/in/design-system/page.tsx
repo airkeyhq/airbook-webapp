@@ -240,6 +240,8 @@ export default function DesignSystemTokenLabPage() {
   const [sliderVal, setSliderVal] = useState(45);
   const [btnLoading, setBtnLoading] = useState(false);
   const [demoColor, setDemoColor] = useState('#2BB5FF');
+  const [checkboxShape, setCheckboxShape] = useState<'square-rounded' | 'rounded' | 'circle'>('square-rounded');
+  const [checkboxAccent, setCheckboxAccent] = useState<'primary' | 'emerald' | 'dark'>('primary');
 
   const categories = [
     { value: 'hair', label: 'Hair & Color' },
@@ -936,21 +938,46 @@ export default function DesignSystemTokenLabPage() {
 
                       {/* ARCHETYPE 4: Custom Tactile Animated Checkbox */}
                       <div className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between">
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-extrabold text-[var(--text-primary)]">
-                              4. Tactile Spring Checkbox
+                              4. Tactile Square-Rounded Checkbox
                             </span>
                             <span className="text-[10px] font-mono font-bold text-sky-600 bg-sky-500/10 px-2 py-0.5 rounded-md">
-                              Custom Coded
+                              {checkboxShape}
                             </span>
                           </div>
                           <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
-                            100% custom-coded React control with snappy spring animation, electric blue fill (#2BB5FF), and zero browser native delegation.
+                            100% custom-coded React control with crisp square-rounded geometry (<code>rounded-[6.5px]</code>), spring scale bounce, and zero browser native delegation.
                           </p>
+
+                          {/* Shape & Accent Switcher Controls */}
+                          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mr-1">
+                              Shape:
+                            </span>
+                            {[
+                              { id: 'square-rounded', label: 'Square-Rounded' },
+                              { id: 'rounded', label: 'Rounded' },
+                              { id: 'circle', label: 'Circle' },
+                            ].map((s) => (
+                              <button
+                                key={s.id}
+                                type="button"
+                                onClick={() => setCheckboxShape(s.id as any)}
+                                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                                  checkboxShape === s.id
+                                    ? 'bg-[var(--bg-primary)] text-blue-500 shadow-xs border border-[var(--border-subtle)]'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                }`}
+                              >
+                                {s.label}
+                              </button>
+                            ))}
+                          </div>
                         </div>
 
-                        <div className="space-y-2 pt-1">
+                        <div className="space-y-2 pt-2">
                           {[
                             { key: 'smsAlerts', label: 'Automated 24h SMS Reminders' },
                             { key: 'stripeDeposit', label: 'Stripe Deposit Protection' },
@@ -965,6 +992,8 @@ export default function DesignSystemTokenLabPage() {
                                 onChange={(checked) =>
                                   setDemoChecks((prev) => ({ ...prev, [key]: checked }))
                                 }
+                                variant={checkboxShape}
+                                accent={checkboxAccent}
                                 label={label}
                               />
                             </div>

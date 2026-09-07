@@ -11,6 +11,8 @@ export interface CheckboxProps {
   description?: React.ReactNode;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'square-rounded' | 'rounded' | 'circle';
+  accent?: 'primary' | 'emerald' | 'dark';
   className?: string;
   id?: string;
   name?: string;
@@ -23,14 +25,35 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   description,
   disabled = false,
   size = 'md',
+  variant = 'square-rounded',
+  accent = 'primary',
   className = '',
   id,
   name,
 }) => {
+  // Geometric variant corner radiuses
+  const radiusClasses = {
+    'square-rounded': {
+      sm: 'rounded-[5px]',
+      md: 'rounded-[6.5px]',
+      lg: 'rounded-[8px]',
+    },
+    rounded: {
+      sm: 'rounded-md',
+      md: 'rounded-lg',
+      lg: 'rounded-xl',
+    },
+    circle: {
+      sm: 'rounded-full',
+      md: 'rounded-full',
+      lg: 'rounded-full',
+    },
+  }[variant][size];
+
   const sizeClasses = {
-    sm: 'w-4 h-4 rounded-md',
-    md: 'w-5 h-5 rounded-lg',
-    lg: 'w-6 h-6 rounded-xl',
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
+    lg: 'w-6 h-6',
   }[size];
 
   const iconSizes = {
@@ -38,6 +61,24 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     md: 'w-3.5 h-3.5',
     lg: 'w-4 h-4',
   }[size];
+
+  const accentStyles = {
+    primary: {
+      active: 'bg-[#2BB5FF] border-[#1A8EFF] text-white shadow-[0_2px_8px_-1px_rgba(43,181,255,0.45)] hover:bg-[#1A8EFF]',
+      focusRing: 'focus-visible:ring-[#2BB5FF]/40',
+      hoverBorder: 'hover:border-[#2BB5FF]/50',
+    },
+    emerald: {
+      active: 'bg-emerald-500 border-emerald-600 text-white shadow-[0_2px_8px_-1px_rgba(16,185,129,0.45)] hover:bg-emerald-600',
+      focusRing: 'focus-visible:ring-emerald-500/40',
+      hoverBorder: 'hover:border-emerald-500/50',
+    },
+    dark: {
+      active: 'bg-slate-900 dark:bg-white border-slate-950 dark:border-white text-white dark:text-black shadow-xs hover:opacity-90',
+      focusRing: 'focus-visible:ring-slate-500/40',
+      hoverBorder: 'hover:border-slate-500/50',
+    },
+  }[accent];
 
   const handleToggle = () => {
     if (!disabled) {
@@ -61,12 +102,12 @@ export const Checkbox: React.FC<CheckboxProps> = ({
       tabIndex={disabled ? -1 : 0}
       onKeyDown={handleKeyDown}
       onClick={handleToggle}
-      className={`${sizeClasses} flex items-center justify-center transition-all cursor-pointer select-none flex-shrink-0 relative outline-none focus-visible:ring-2 focus-visible:ring-[#2BB5FF]/40 ${
+      className={`${sizeClasses} ${radiusClasses} flex items-center justify-center transition-all cursor-pointer select-none flex-shrink-0 relative outline-none focus-visible:ring-2 ${accentStyles.focusRing} ${
         disabled
           ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]'
           : checked
-          ? 'bg-[#2BB5FF] border border-[#1A8EFF] text-white shadow-[0_2px_8px_-1px_rgba(43,181,255,0.45)] hover:bg-[#1A8EFF]'
-          : 'bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[#2BB5FF]/50 text-transparent'
+          ? accentStyles.active
+          : `bg-[var(--bg-primary)] border border-[var(--border-subtle)] ${accentStyles.hoverBorder} text-transparent`
       }`}
     >
       <input
