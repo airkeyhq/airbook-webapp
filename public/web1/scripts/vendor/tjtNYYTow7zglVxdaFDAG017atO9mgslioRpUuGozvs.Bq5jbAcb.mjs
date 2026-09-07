@@ -5729,8 +5729,8 @@ var ca,
                         rendersWithMotion: !0,
                         scopeId: `inZCqZKR0`,
                         children: l(aa, {
-                          doKANJkve: `Appdrop replaced three apps in my workflow.
-It’s simple, smart, and actually helps me stay ahead.`,
+                          doKANJkve: `AirBook replaced three separate apps in my salon.
+It’s clean, fast, and protects our deposit revenue.`,
                           height: `100%`,
                           id: `FkEaklOea`,
                           Jm0KJRPZz: `Sarah Jenkins`,
@@ -5743,14 +5743,14 @@ It’s simple, smart, and actually helps me stay ahead.`,
                             },
                             ``
                           ),
-                          PMXxemU17: `Creative Director`,
+                          PMXxemU17: `Salon Owner & Stylist`,
                           style: { width: `100%` },
                           variant: ha(_),
                           width: `100%`,
                           ...sa(
                             {
                               ImMNkO02D: {
-                                doKANJkve: `The interface is stunningly minimal. It feels like an extension of my mental space rather than a cluttered tool.`,
+                                doKANJkve: `The interface is stunningly clean. It feels like a high-end luxury client experience from day one.`,
                                 Jm0KJRPZz: `James Wilson`,
                                 pGjgeieHw: ma(
                                   {
@@ -5761,16 +5761,16 @@ It’s simple, smart, and actually helps me stay ahead.`,
                                   },
                                   ``
                                 ),
-                                PMXxemU17: `Product Designer`,
+                                PMXxemU17: `Spa Director & Founder`,
                               },
                               IqglZg770: {
-                                doKANJkve: `The 'AI Reminder' system is genius. It cut my planning time in half and keeps me focused on what matters.`,
+                                doKANJkve: `The automated reminder system is genius. It cut our no-shows to zero and keeps our chairs booked solid.`,
                                 Jm0KJRPZz: `Marcus Liao`,
                                 pGjgeieHw: void 0,
-                                PMXxemU17: `Software Engineer`,
+                                PMXxemU17: `Master Barber`,
                               },
                               vyeDTBnEX: {
-                                doKANJkve: `Finally, a productivity app that doesn't feel like another job. Simple, elegant, and powerful. Love it!`,
+                                doKANJkve: `Finally, a booking studio that doesn't feel clunky. Simple, elegant, and fast. My clients love it!`,
                                 Jm0KJRPZz: `Elena Rodriguez`,
                                 pGjgeieHw: ma(
                                   {
@@ -5781,7 +5781,7 @@ It’s simple, smart, and actually helps me stay ahead.`,
                                   },
                                   ``
                                 ),
-                                PMXxemU17: `Student`,
+                                PMXxemU17: `Independent Esthetician`,
                               },
                             },
                             b,
@@ -9939,7 +9939,7 @@ e(() => {
                                         },
                                         children: `Trusted by `,
                                       }),
-                                      `focused professionals.`,
+                                      `top studio owners.`,
                                     ],
                                   }),
                                 }),
