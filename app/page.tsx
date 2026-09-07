@@ -1037,10 +1037,10 @@ export default function MarketingWebsite() {
               {/* Step 04 */}
               <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3.5 shadow-none hover:border-[#2BB5FF]/50 transition-all flex flex-col justify-start group">
                 <div className="flex items-center justify-between">
-                  <span className="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-500 font-black text-xs flex items-center justify-center border border-amber-500/20 shadow-xs">
+                  <span className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/10 text-[#2BB5FF] font-black text-xs flex items-center justify-center border border-[#2BB5FF]/20 shadow-xs">
                     04
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-amber-500 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[#2BB5FF] transition-colors">
                     <Star24Regular className="w-4 h-4" />
                   </div>
                 </div>
