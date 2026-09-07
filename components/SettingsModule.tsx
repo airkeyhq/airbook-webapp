@@ -13,6 +13,7 @@ import { AddLocationModal } from '@/components/AddLocationModal';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { MCPStudio } from '@/components/MCPStudio';
 import { EmptyState } from '@/components/EmptyState';
+import { Checkbox } from '@/components/Checkbox';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
   Person24Filled,
@@ -774,46 +775,31 @@ export const SettingsModule: React.FC = () => {
                   </div>
 
                   {notifEmail && (
-                    <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={emailBookingConfirm}
-                          onChange={(e) => setEmailBookingConfirm(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifBookingConfirmations')}</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={emailReminders}
-                          onChange={(e) => setEmailReminders(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifAppointmentReminders')}</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={emailCancellations}
-                          onChange={(e) => setEmailCancellations(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifCancellations')}</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={emailDailyDigest}
-                          onChange={(e) => setEmailDailyDigest(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifDailyDigest')}</span>
-                      </label>
+                    <div className="pt-2.5 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Checkbox
+                        checked={emailBookingConfirm}
+                        onChange={setEmailBookingConfirm}
+                        label={t('notifBookingConfirmations')}
+                        size="sm"
+                      />
+                      <Checkbox
+                        checked={emailReminders}
+                        onChange={setEmailReminders}
+                        label={t('notifAppointmentReminders')}
+                        size="sm"
+                      />
+                      <Checkbox
+                        checked={emailCancellations}
+                        onChange={setEmailCancellations}
+                        label={t('notifCancellations')}
+                        size="sm"
+                      />
+                      <Checkbox
+                        checked={emailDailyDigest}
+                        onChange={setEmailDailyDigest}
+                        label={t('notifDailyDigest')}
+                        size="sm"
+                      />
                     </div>
                   )}
                 </div>
@@ -841,36 +827,25 @@ export const SettingsModule: React.FC = () => {
                   </div>
 
                   {notifSMS && (
-                    <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={smsBookingConfirm}
-                          onChange={(e) => setSmsBookingConfirm(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifBookingConfirmations')}</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={smsReminders}
-                          onChange={(e) => setSmsReminders(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifAppointmentReminders')}</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={smsStaffAlerts}
-                          onChange={(e) => setSmsStaffAlerts(e.target.checked)}
-                          className="w-4 h-4 rounded-md accent-[var(--color-accent-primary)] cursor-pointer"
-                        />
-                        <span>{t('notifStaffAlerts')}</span>
-                      </label>
+                    <div className="pt-2.5 border-t border-black/5 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Checkbox
+                        checked={smsBookingConfirm}
+                        onChange={setSmsBookingConfirm}
+                        label={t('notifBookingConfirmations')}
+                        size="sm"
+                      />
+                      <Checkbox
+                        checked={smsReminders}
+                        onChange={setSmsReminders}
+                        label={t('notifAppointmentReminders')}
+                        size="sm"
+                      />
+                      <Checkbox
+                        checked={smsStaffAlerts}
+                        onChange={setSmsStaffAlerts}
+                        label={t('notifStaffAlerts')}
+                        size="sm"
+                      />
                     </div>
                   )}
                 </div>

@@ -9,6 +9,7 @@ import { CustomSelect } from '@/components/CustomSelect';
 import { ColorPicker } from '@/components/ColorPicker';
 import { EmptyState } from '@/components/EmptyState';
 import { GoToAppPill } from '@/components/GoToAppPill';
+import { Checkbox } from '@/components/Checkbox';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -954,38 +955,20 @@ export default function DesignSystemTokenLabPage() {
                             { key: 'smsAlerts', label: 'Automated 24h SMS Reminders' },
                             { key: 'stripeDeposit', label: 'Stripe Deposit Protection' },
                             { key: 'quietSession', label: 'Quiet Chair Preference' },
-                          ].map(({ key, label }) => {
-                            const isChecked = Boolean(demoChecks[key]);
-                            return (
-                              <button
-                                key={key}
-                                type="button"
-                                onClick={() =>
-                                  setDemoChecks((prev) => ({ ...prev, [key]: !prev[key] }))
+                          ].map(({ key, label }) => (
+                            <div
+                              key={key}
+                              className="p-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors"
+                            >
+                              <Checkbox
+                                checked={Boolean(demoChecks[key])}
+                                onChange={(checked) =>
+                                  setDemoChecks((prev) => ({ ...prev, [key]: checked }))
                                 }
-                                className="w-full flex items-center justify-between p-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors text-left cursor-pointer"
-                              >
-                                <span className="text-xs font-bold text-[var(--text-primary)] select-none">
-                                  {label}
-                                </span>
-                                <div
-                                  className={`w-5 h-5 rounded-lg flex items-center justify-center transition-all ${
-                                    isChecked
-                                      ? 'bg-[#2BB5FF] text-white shadow-xs scale-100'
-                                      : 'bg-black/5 dark:bg-white/10 border border-[var(--border-subtle)] text-transparent scale-95'
-                                  }`}
-                                >
-                                  <motion.div
-                                    initial={false}
-                                    animate={{ scale: isChecked ? 1 : 0 }}
-                                    transition={{ type: 'spring', damping: 20, stiffness: 400 }}
-                                  >
-                                    <Checkmark24Filled className="w-3.5 h-3.5 text-white" />
-                                  </motion.div>
-                                </div>
-                              </button>
-                            );
-                          })}
+                                label={label}
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>

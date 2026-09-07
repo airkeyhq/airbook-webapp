@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
+import { Checkbox } from '@/components/Checkbox';
 import {
   Dismiss24Filled,
   CheckmarkCircle24Filled,
@@ -351,46 +352,34 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                 </div>
               </div>
 
-              {/* Consent Clauses */}
+              {/* Agreement Checkboxes */}
               <div className="space-y-2.5 pt-1">
-                <label className="flex items-start gap-2.5 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] cursor-pointer hover:border-blue-500/40 transition-colors">
-                  <input
-                    type="checkbox"
+                <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors">
+                  <Checkbox
                     checked={termsAgreed}
-                    onChange={(e) => setTermsAgreed(e.target.checked)}
-                    className="w-4 h-4 mt-0.5 rounded text-blue-600 focus:ring-0 cursor-pointer"
+                    onChange={setTermsAgreed}
+                    label={t('termsAgreementClause')}
                   />
-                  <span className="text-xs font-semibold text-[var(--text-primary)]">
-                    {t('termsAgreementClause')}
-                  </span>
-                </label>
+                </div>
 
                 {currentTemplate?.requirePhotoConsent && (
-                  <label className="flex items-start gap-2.5 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] cursor-pointer hover:border-blue-500/40 transition-colors">
-                    <input
-                      type="checkbox"
+                  <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors">
+                    <Checkbox
                       checked={photoConsent}
-                      onChange={(e) => setPhotoConsent(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 rounded text-blue-600 focus:ring-0 cursor-pointer"
+                      onChange={setPhotoConsent}
+                      label={t('photoConsentClause')}
                     />
-                    <span className="text-xs font-semibold text-[var(--text-primary)]">
-                      {t('photoConsentClause')}
-                    </span>
-                  </label>
+                  </div>
                 )}
 
                 {currentTemplate?.requireAllergyDeclaration && (
-                  <label className="flex items-start gap-2.5 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] cursor-pointer hover:border-blue-500/40 transition-colors">
-                    <input
-                      type="checkbox"
+                  <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors">
+                    <Checkbox
                       checked={allergiesDeclared}
-                      onChange={(e) => setAllergiesDeclared(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 rounded text-blue-600 focus:ring-0 cursor-pointer"
+                      onChange={setAllergiesDeclared}
+                      label={t('allergyDeclarationClause')}
                     />
-                    <span className="text-xs font-semibold text-[var(--text-primary)]">
-                      {t('allergyDeclarationClause')}
-                    </span>
-                  </label>
+                  </div>
                 )}
               </div>
 

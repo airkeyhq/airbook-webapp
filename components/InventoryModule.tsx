@@ -7,6 +7,7 @@ import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
+import { Checkbox } from '@/components/Checkbox';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -634,15 +635,11 @@ export const InventoryModule: React.FC = () => {
                   />
 
                   <div className="pt-2">
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">
-                      <input
-                        type="checkbox"
-                        checked={isRetail}
-                        onChange={(e) => setIsRetail(e.target.checked)}
-                        className="w-4 h-4 rounded text-blue-600 border-black/10 focus:ring-blue-500"
-                      />
-                      <span>{t('availableRetail')}</span>
-                    </label>
+                    <Checkbox
+                      checked={isRetail}
+                      onChange={setIsRetail}
+                      label={t('availableRetail')}
+                    />
                   </div>
                 </div>
 
@@ -787,15 +784,11 @@ export const InventoryModule: React.FC = () => {
                   />
 
                   <div className="pt-2">
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-[var(--text-primary)]">
-                      <input
-                        type="checkbox"
-                        checked={editIsRetail}
-                        onChange={(e) => setEditIsRetail(e.target.checked)}
-                        className="w-4 h-4 rounded text-blue-600 border-black/10 focus:ring-blue-500"
-                      />
-                      <span>{t('availableRetail')}</span>
-                    </label>
+                    <Checkbox
+                      checked={editIsRetail}
+                      onChange={setEditIsRetail}
+                      label={t('availableRetail')}
+                    />
                   </div>
                 </div>
 
