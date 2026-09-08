@@ -24,12 +24,13 @@ import {
   QrCode24Filled,
   Dismiss24Filled,
   LockClosed24Filled,
+  Navigation24Filled,
 } from '@fluentui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export const DesktopHeader: React.FC = () => {
-  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isDemoMode, toggleDemoMode, isPricingModalOpen, closePricingModal, lockPos } = useAirBookStore();
+  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isPricingModalOpen, closePricingModal, lockPos } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const router = useRouter();
@@ -40,6 +41,7 @@ export const DesktopHeader: React.FC = () => {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [workspaces, setWorkspaces] = useState<any[]>([]);
 
@@ -157,12 +159,22 @@ export const DesktopHeader: React.FC = () => {
         </div>
 
         {/* Right Action Pills */}
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative">
-          {/* Notifications Inbox Popover */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative">
+          {/* Notifications Inbox Popover (Visible on both mobile & desktop) */}
           <NotificationCenterPopover />
 
-          {/* Share Booking Trigger (Icon Only, next to Notifications) */}
-          <div ref={shareMenuRef} className="relative z-[100] group">
+          {/* Mobile Menu Trigger Button (md:hidden) */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label={t('menu')}
+            className="md:hidden w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 active:scale-95 transition-all text-[var(--text-primary)] cursor-pointer flex-shrink-0"
+          >
+            <Navigation24Filled className="w-4 h-4" />
+          </button>
+
+          {/* Desktop Only: Share Booking Trigger */}
+          <div ref={shareMenuRef} className="hidden md:block relative z-[100] group">
             <button
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
               className="w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] relative flex-shrink-0 cursor-pointer"
@@ -178,9 +190,9 @@ export const DesktopHeader: React.FC = () => {
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
               </div>
             )}
-            {/* Desktop Popover (Lightweight anchored dropdown on desktop >= md:) */}
+            {/* Desktop Popover */}
             {isShareMenuOpen && (
-              <div className="hidden md:flex absolute right-0 top-full mt-2 w-56 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex-col gap-0.5">
+              <div className="absolute right-0 top-full mt-2 w-56 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-0.5">
                 {/* Option 1: Open Live Page */}
                 <a
                   href={`/book/${currentSlug}`}
@@ -223,95 +235,8 @@ export const DesktopHeader: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile/Tablet Bottom Sheet Drawer (Portaled to document.body, md:hidden) */}
-          {mounted &&
-            createPortal(
-              <AnimatePresence>
-                {isShareMenuOpen && (
-                  <div className="fixed inset-0 z-[300] flex flex-col justify-end p-0 pointer-events-none md:hidden">
-                    {/* Backdrop Blur Overlay covering viewport on mobile/tablet */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onClick={() => setIsShareMenuOpen(false)}
-                      className="fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto"
-                    />
-
-                    {/* Bottom Sheet Drawer Panel */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 40 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 40 }}
-                      transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-                      className="relative pointer-events-auto w-full rounded-t-[32px] rounded-b-none border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 shadow-2xl flex flex-col gap-2.5 overflow-hidden z-10"
-                    >
-                      {/* Drag Handle on mobile */}
-                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mb-1 flex-shrink-0" />
-
-                      {/* Header on mobile */}
-                      <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)] flex-shrink-0">
-                        <div className="flex items-center gap-2">
-                          <Share24Regular className="w-4 h-4 text-blue-500" />
-                          <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{t('shareLink')}</h3>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setIsShareMenuOpen(false)}
-                          className="w-7 h-7 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors flex items-center justify-center text-[var(--text-secondary)] cursor-pointer"
-                          aria-label={t('close')}
-                        >
-                          <Dismiss24Filled className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      {/* Option 1: Open Live Page */}
-                      <a
-                        href={`/book/${currentSlug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsShareMenuOpen(false)}
-                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                      >
-                        <Globe24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                        <span>{t('openLiveBookingPage')}</span>
-                      </a>
-
-                      {/* Option 2: Copy Link */}
-                      <button
-                        type="button"
-                        onClick={handleCopyDirectLink}
-                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                      >
-                        {copied ? (
-                          <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        ) : (
-                          <Copy24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        )}
-                        <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
-                      </button>
-
-                      {/* Option 3: QR Code */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsShareMenuOpen(false);
-                          setIsQrModalOpen(true);
-                        }}
-                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                      >
-                        <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
-                        <span>{t('qrCodeModalTitle')}</span>
-                      </button>
-                    </motion.div>
-                  </div>
-                )}
-              </AnimatePresence>,
-              document.body
-            )}
-
-          {/* Language Switcher Pill */}
-          <div ref={langMenuRef} className="relative z-[100]">
+          {/* Desktop Only: Language Switcher Pill */}
+          <div ref={langMenuRef} className="hidden md:block relative z-[100]">
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
               className="h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
@@ -321,7 +246,7 @@ export const DesktopHeader: React.FC = () => {
                 alt={language}
                 className="w-4 h-4 rounded-full object-cover flex-shrink-0"
               />
-              <span className="uppercase text-[10px] tracking-wider hidden sm:inline">{language}</span>
+              <span className="uppercase text-[10px] tracking-wider">{language}</span>
               <ChevronDown24Filled className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
             </button>
 
@@ -352,34 +277,18 @@ export const DesktopHeader: React.FC = () => {
             )}
           </div>
 
-          {/* Demo Mode Toggle Pill (ONLY rendered in Local Dev environment) */}
-          {mounted && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
-            <button
-              onClick={toggleDemoMode}
-              className={`h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full transition-all text-xs font-extrabold border ${
-                isDemoMode
-                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
-                  : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border-transparent hover:bg-black/10'
-              }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${isDemoMode ? 'bg-amber-500 animate-pulse' : 'bg-gray-400'}`} />
-              <span className="hidden sm:inline">{isDemoMode ? t('demoModeOn') : t('demoMode')}</span>
-              <span className="sm:hidden text-[10px]">{isDemoMode ? '⚡ Demo' : 'Demo'}</span>
-            </button>
-          )}
-
-          {/* Quick Lock Station Action */}
+          {/* Desktop Only: Quick Lock Station Action */}
           <button
             type="button"
             onClick={() => lockPos()}
             title={t('lockStation')}
-            className="h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center cursor-pointer flex-shrink-0"
+            className="hidden md:flex h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] items-center justify-center cursor-pointer flex-shrink-0"
           >
             <LockClosed24Filled className="w-4 h-4" />
           </button>
 
-          {/* User Profile Pill / Dropdown */}
-          <div ref={userDropdownRef} className="relative z-[100]">
+          {/* Desktop Only: User Profile Pill / Dropdown */}
+          <div ref={userDropdownRef} className="hidden md:block relative z-[100]">
             <button
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
               className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
@@ -401,7 +310,7 @@ export const DesktopHeader: React.FC = () => {
                 {session ? (
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                   >
                     <SignOut24Filled className="w-4 h-4" />
                     <span>{t('signOut')}</span>
@@ -412,7 +321,7 @@ export const DesktopHeader: React.FC = () => {
                       setIsUserDropdownOpen(false);
                       setIsAuthOpen(true);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <Person24Filled className="w-4 h-4" />
                     <span>{t('signIn')}</span>
@@ -423,6 +332,216 @@ export const DesktopHeader: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Mobile All-Options Bottom Sheet Drawer (Portaled to document.body, md:hidden) */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <div className="fixed inset-0 z-[300] flex flex-col justify-end p-0 pointer-events-none md:hidden">
+                {/* Backdrop Blur Overlay */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto"
+                />
+
+                {/* Bottom Sheet Drawer Panel */}
+                <motion.div
+                  initial={{ opacity: 0, y: '100%' }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: '100%' }}
+                  transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+                  className="relative pointer-events-auto w-full max-h-[85vh] overflow-y-auto rounded-t-[32px] rounded-b-none border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 shadow-2xl flex flex-col gap-4 z-10"
+                >
+                  {/* Drag Handle on mobile */}
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mb-1 flex-shrink-0" />
+
+                  {/* Header / User Profile Ribbon */}
+                  <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] flex-shrink-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={getAvatarUrl(userName || 'Operator', session?.user?.image)}
+                        alt={userName || 'User'}
+                        className="w-10 h-10 rounded-full object-cover ring-2 ring-[var(--border-subtle)] flex-shrink-0"
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-sm font-extrabold text-[var(--text-primary)] truncate">
+                          {userName || workspaceName}
+                        </p>
+                        {userEmail ? (
+                          <p className="text-xs text-[var(--text-secondary)] truncate">{userEmail}</p>
+                        ) : (
+                          <span className="text-[11px] text-blue-500 font-bold truncate">{workspaceName}</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 active:scale-95 transition-all flex items-center justify-center text-[var(--text-secondary)] cursor-pointer flex-shrink-0"
+                      aria-label={t('close')}
+                    >
+                      <Dismiss24Filled className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Quick Actions List */}
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-muted)] px-1">
+                      {t('quickActions')}
+                    </p>
+
+                    <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl bg-[var(--bg-secondary)] overflow-hidden">
+                      {/* Action 1: Lock Station */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          lockPos();
+                        }}
+                        className="w-full flex items-center justify-between p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-[var(--text-primary)] flex-shrink-0">
+                            <LockClosed24Filled className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-[var(--text-primary)]">{t('lockStation')}</p>
+                            <p className="text-[11px] text-[var(--text-secondary)]">{t('lockStationDesc')}</p>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Action 2: Open Live Booking Page */}
+                      <a
+                        href={`/book/${currentSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full flex items-center justify-between p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+                            <Globe24Filled className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-[var(--text-primary)]">{t('openLiveBookingPage')}</p>
+                            <p className="text-[11px] text-[var(--text-secondary)]">getairbook.com/book/{currentSlug}</p>
+                          </div>
+                        </div>
+                        <Open24Filled className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+                      </a>
+
+                      {/* Action 3: Copy Booking Link */}
+                      <button
+                        type="button"
+                        onClick={handleCopyDirectLink}
+                        className="w-full flex items-center justify-between p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center flex-shrink-0">
+                            {copied ? <Checkmark24Filled className="w-4 h-4" /> : <Copy24Filled className="w-4 h-4" />}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-[var(--text-primary)]">
+                              {copied ? t('linkCopied') : t('copyBookingLink')}
+                            </p>
+                            <p className="text-[11px] text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Action 4: QR Code Modal */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsQrModalOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center flex-shrink-0">
+                            <QrCode24Filled className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-[var(--text-primary)]">{t('qrCodeModalTitle')}</p>
+                            <p className="text-[11px] text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Language Selection Grid */}
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-muted)] px-1">
+                      {t('language')}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {availableLanguages.map((lang) => {
+                        const isSelected = language === lang.id;
+                        return (
+                          <button
+                            key={lang.id}
+                            type="button"
+                            onClick={() => setLanguage(lang.id)}
+                            className={`flex items-center gap-2.5 p-2.5 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/40 font-extrabold shadow-xs'
+                                : 'bg-[var(--bg-secondary)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
+                            }`}
+                          >
+                            <img
+                              src={`https://hatscripts.github.io/circle-flags/flags/${lang.flagCode}.svg`}
+                              alt={lang.label}
+                              className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+                            />
+                            <span className="truncate">{lang.label}</span>
+                            {isSelected && <Checkmark24Filled className="w-3.5 h-3.5 ml-auto text-blue-500 flex-shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Account / Session Action */}
+                  <div className="pt-2 border-t border-[var(--border-subtle)]">
+                    {session ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full h-11 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 active:scale-97 transition-all flex items-center justify-center gap-2 text-xs font-bold border border-red-500/20 cursor-pointer"
+                      >
+                        <SignOut24Filled className="w-4 h-4" />
+                        <span>{t('signOut')}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsAuthOpen(true);
+                        }}
+                        className="w-full btn-primary h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold cursor-pointer"
+                      >
+                        <Person24Filled className="w-4 h-4" />
+                        <span>{t('signIn')}</span>
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
 
       {/* QR Code Modal */}
       <AnimatePresence>

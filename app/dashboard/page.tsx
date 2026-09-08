@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useAirBookStore } from '@/lib/store';
+import { useAirBookStore, DEMO_STAFF, DEMO_SERVICES } from '@/lib/store';
 import { DesktopHeader } from '@/components/DesktopHeader';
 import { DesktopSidebar, DashboardTab } from '@/components/DesktopSidebar';
 import { DateStrip } from '@/components/DateStrip';
@@ -29,6 +29,8 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { OfflineSyncBanner } from '@/components/OfflineSyncBanner';
 import { POSLockScreen } from '@/components/POSLockScreen';
 import { useInactivityLock } from '@/lib/useInactivityLock';
+import { useDemoShortcut } from '@/lib/useDemoShortcut';
+import { Toast, useToast } from '@/components/Toast';
 import { motion } from 'framer-motion';
 import {
   Calendar24Filled,
@@ -50,12 +52,20 @@ import {
 } from '@fluentui/react-icons';
 import type { Appointment } from '@/lib/store';
 
-
-
 export default function DashboardPage() {
   useInactivityLock();
-  const { theme, workspaceId, setWorkspaceId } = useAirBookStore();
+  const { toasts, addToast, dismiss } = useToast();
+  const { theme, workspaceId, setWorkspaceId, isDemoMode } = useAirBookStore();
   const { t } = useTranslation();
+
+  useDemoShortcut((nextDemo) => {
+    if (nextDemo) {
+      addToast(`${t('demoModeOn')} — Glow Esthetics Studio`, 'success');
+    } else {
+      addToast(`${t('demoMode')}: OFF`, 'info');
+    }
+  });
+
   const [activeTab, setActiveTab] = useState<DashboardTab>('calendar');
 
   const [isPOSOpen, setIsPOSOpen] = useState(false);
@@ -77,6 +87,12 @@ export default function DashboardPage() {
 
   // Bootstrap workspace context, real staff, and real services from DB
   useEffect(() => {
+    if (isDemoMode) {
+      setStaffMembers(DEMO_STAFF);
+      setServices(DEMO_SERVICES);
+      return;
+    }
+
     if (!workspaceId) {
       fetch('/api/workspaces')
         .then((r) => r.json())
@@ -91,6 +107,7 @@ export default function DashboardPage() {
     fetch('/api/staff')
       .then((r) => r.json())
       .then((data) => {
+        if (useAirBookStore.getState().isDemoMode) return;
         if (data?.success && Array.isArray(data.staff) && data.staff.length > 0) {
           const mappedStaff = data.staff.map((st: any) => ({
             id: st.id,
@@ -108,6 +125,7 @@ export default function DashboardPage() {
     fetch('/api/services')
       .then((r) => r.json())
       .then((data) => {
+        if (useAirBookStore.getState().isDemoMode) return;
         if (data?.success && Array.isArray(data.services) && data.services.length > 0) {
           const mappedServices = data.services.map((sv: any) => ({
             id: sv.id,
@@ -121,7 +139,7 @@ export default function DashboardPage() {
         }
       })
       .catch((e) => console.warn('Failed to bootstrap services:', e));
-  }, [workspaceId, setWorkspaceId, setStaffMembers, setServices]);
+  }, [workspaceId, setWorkspaceId, setStaffMembers, setServices, isDemoMode]);
 
   return (
     <main className="app-shell bg-[var(--canvas-bg)] text-[var(--canvas-fg)] flex flex-col h-screen w-screen overflow-hidden p-2.5 sm:p-3.5 gap-2.5 sm:gap-3.5">
@@ -304,6 +322,9 @@ export default function DashboardPage() {
 
       {/* POS Station Inactivity Lock Screen */}
       <POSLockScreen />
+
+      {/* Global Toast Notifications */}
+      <Toast toasts={toasts} onDismiss={dismiss} />
     </main>
   );
 }

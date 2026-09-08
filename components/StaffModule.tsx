@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { useAirBookStore } from '@/lib/store';
+import { useAirBookStore, DEMO_STAFF } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
@@ -267,6 +267,11 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
   );
 };
 
+const DEMO_INVITATIONS = [
+  { id: 'inv-1', email: 'clara.valdez@glowstudio.com', role: 'staff', status: 'pending', createdAt: new Date().toISOString() },
+  { id: 'inv-2', email: 'marco.reus@glowstudio.com', role: 'receptionist', status: 'pending', createdAt: new Date().toISOString() },
+];
+
 interface StaffModuleProps {
   onNavigateToCalendar?: () => void;
 }
@@ -275,8 +280,21 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const { t } = useTranslation();
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<'roster' | 'invites'>('roster');
-  const [staffList, setStaffList] = useState<StaffItem[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const demoStaff = useAirBookStore((s) => s.staffMembers);
+  const setSelectedStaffId = useAirBookStore((s) => s.setSelectedStaffId);
+  const setViewMode = useAirBookStore((s) => s.setViewMode);
+  const providerColorMode = useAirBookStore((s) => s.providerColorMode);
+  const setProviderColorMode = useAirBookStore((s) => s.setProviderColorMode);
+  const stations = useAirBookStore((s) => s.stations);
+
+  const initialStaff = isDemoMode
+    ? (demoStaff && demoStaff.length > 0 && demoStaff.some((s) => s.id.startsWith('stf-')) ? (demoStaff as any) : DEMO_STAFF)
+    : [];
+
+  const [staffList, setStaffList] = useState<StaffItem[]>(initialStaff);
+  const [loading, setLoading] = useState(!isDemoMode);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedStaffForEdit, setSelectedStaffForEdit] = useState<StaffItem | null>(null);
   const [showMoreActions, setShowMoreActions] = useState(false);
@@ -284,7 +302,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   // Invite Team State
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'staff' | 'manager' | 'receptionist'>('staff');
-  const [pendingInvitesList, setPendingInvitesList] = useState<any[]>([]);
+  const [pendingInvitesList, setPendingInvitesList] = useState<any[]>(isDemoMode ? DEMO_INVITATIONS : []);
   const [sendingInvite, setSendingInvite] = useState(false);
 
   // Add Staff Form State
@@ -302,21 +320,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const [editRole, setEditRole] = useState('');
   const [editCommission, setEditCommission] = useState(70);
   const [editSchedule, setEditSchedule] = useState<ShiftDayConfig[]>(INITIAL_SCHEDULE);
-  const [editChair, setEditChair] = useState('Sillón #1 / Station 1');
-
-  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
-  const demoStaff = useAirBookStore((s) => s.staffMembers);
-  const setSelectedStaffId = useAirBookStore((s) => s.setSelectedStaffId);
-  const setViewMode = useAirBookStore((s) => s.setViewMode);
-  const providerColorMode = useAirBookStore((s) => s.providerColorMode);
-  const setProviderColorMode = useAirBookStore((s) => s.setProviderColorMode);
-  const stations = useAirBookStore((s) => s.stations);
+  const [editChair, setEditChair] = useState('Station 1 (Hair & Styling)');
 
   const fetchStaff = async () => {
     try {
       setLoading(true);
       const res = await fetch('/api/staff');
       const data = await res.json();
+      if (useAirBookStore.getState().isDemoMode) return;
       if (data.success && Array.isArray(data.staff)) {
         setStaffList(data.staff);
         const mapped = data.staff.map((st: any) => ({
@@ -326,6 +337,9 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           color: st.color || '#007AFF',
           avatarUrl: st.avatarUrl || st.avatarEmoji || '',
           stationName: st.stationName || undefined,
+          workingHours: st.workingHours || undefined,
+          commissionPercent: st.commissionPercent || 70,
+          isActive: st.isActive ?? true,
         }));
         useAirBookStore.getState().setStaffMembers(mapped);
       }
@@ -340,6 +354,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     try {
       const res = await fetch('/api/invitations');
       const data = await res.json();
+      if (useAirBookStore.getState().isDemoMode) return;
       if (data.success) {
         setPendingInvitesList(data.invitations || []);
       }
@@ -350,7 +365,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
   useEffect(() => {
     if (isDemoMode) {
-      setStaffList(demoStaff as any);
+      const isDemoValid = demoStaff && demoStaff.length > 0 && demoStaff.some((s) => s.id.startsWith('stf-'));
+      const activeStaff = isDemoValid ? (demoStaff as any) : DEMO_STAFF;
+      if (!isDemoValid) {
+        useAirBookStore.getState().setStaffMembers(DEMO_STAFF);
+      }
+      setStaffList(activeStaff);
+      setPendingInvitesList(DEMO_INVITATIONS);
+      setLoading(false);
     } else {
       fetchStaff();
       fetchInvitations();
@@ -361,12 +383,26 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     e.preventDefault();
     if (!inviteEmail || !inviteEmail.includes('@')) return;
 
+    if (isDemoMode) {
+      const newInv = {
+        id: `inv-${Date.now()}`,
+        email: inviteEmail.trim(),
+        role: inviteRole,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      setPendingInvitesList((prev) => [newInv, ...prev]);
+      setInviteEmail('');
+      addToast(t('inviteSentSuccess'), 'success');
+      return;
+    }
+
     try {
       setSendingInvite(true);
       const res = await fetch('/api/invitations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
+        body: JSON.stringify({ email: inviteEmail.trim(), role: inviteRole }),
       });
       const data = await res.json();
       if (data.success) {
@@ -384,6 +420,12 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   };
 
   const handleRevokeInvite = async (id: string) => {
+    if (isDemoMode) {
+      setPendingInvitesList((prev) => prev.filter((i) => i.id !== id));
+      addToast(t('inviteRevokedSuccess'), 'success');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/invitations?id=${id}`, { method: 'DELETE' });
       const data = await res.json();
@@ -402,7 +444,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     setEditRole(stf.role);
     setEditCommission(stf.commissionPercent ?? 70);
     setEditSchedule(workingHoursToSchedule(stf.workingHours));
-    setEditChair(stf.stationName || 'Station 1 (Master Suite)');
+    setEditChair(stf.stationName || (stations[0]?.name || 'Station 1 (Hair & Styling)'));
+    setShowMoreActions(false);
   };
 
   const handleViewCalendar = (staffId: string) => {
@@ -416,17 +459,36 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
     e.preventDefault();
     if (!selectedStaffForEdit) return;
 
+    const newWorkingHours = scheduleToWorkingHours(editSchedule);
+    const updatedStaffItem: StaffItem = {
+      ...selectedStaffForEdit,
+      name: editName.trim() || selectedStaffForEdit.name,
+      role: editRole.trim() || selectedStaffForEdit.role,
+      commissionPercent: editCommission,
+      stationName: editChair,
+      workingHours: newWorkingHours,
+    };
+
+    if (isDemoMode) {
+      const updatedList = staffList.map((s) => (s.id === selectedStaffForEdit.id ? updatedStaffItem : s));
+      setStaffList(updatedList);
+      useAirBookStore.getState().setStaffMembers(updatedList as any);
+      setSelectedStaffForEdit(null);
+      addToast(t('staffScheduleUpdated'), 'success');
+      return;
+    }
+
     try {
       const res = await fetch('/api/staff', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: selectedStaffForEdit.id,
-          name: editName,
-          role: editRole,
+          name: editName.trim() || selectedStaffForEdit.name,
+          role: editRole.trim() || selectedStaffForEdit.role,
           commissionPercent: editCommission,
           stationName: editChair,
-          workingHours: scheduleToWorkingHours(editSchedule),
+          workingHours: newWorkingHours,
         }),
       });
 
@@ -435,15 +497,112 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setSelectedStaffForEdit(null);
         addToast(t('staffScheduleUpdated'), 'success');
         fetchStaff();
+      } else {
+        const updatedList = staffList.map((s) => (s.id === selectedStaffForEdit.id ? updatedStaffItem : s));
+        setStaffList(updatedList);
+        useAirBookStore.getState().setStaffMembers(updatedList as any);
+        setSelectedStaffForEdit(null);
+        addToast(t('staffScheduleUpdated'), 'success');
       }
     } catch (err) {
       console.error('Failed to update staff:', err);
+      const updatedList = staffList.map((s) => (s.id === selectedStaffForEdit.id ? updatedStaffItem : s));
+      setStaffList(updatedList);
+      useAirBookStore.getState().setStaffMembers(updatedList as any);
+      setSelectedStaffForEdit(null);
+      addToast(t('staffScheduleUpdated'), 'success');
     }
+  };
+
+  const handleDeleteStaff = async () => {
+    if (!selectedStaffForEdit) return;
+    const targetId = selectedStaffForEdit.id;
+
+    if (isDemoMode) {
+      const updated = staffList.filter((s) => s.id !== targetId);
+      setStaffList(updated);
+      useAirBookStore.getState().setStaffMembers(updated as any);
+      setSelectedStaffForEdit(null);
+      setShowMoreActions(false);
+      addToast(t('staffRemoved'), 'info');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/staff?id=${targetId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSelectedStaffForEdit(null);
+        setShowMoreActions(false);
+        addToast(t('staffRemoved'), 'info');
+        fetchStaff();
+      } else {
+        const updated = staffList.filter((s) => s.id !== targetId);
+        setStaffList(updated);
+        useAirBookStore.getState().setStaffMembers(updated as any);
+        setSelectedStaffForEdit(null);
+        setShowMoreActions(false);
+        addToast(t('staffRemoved'), 'info');
+      }
+    } catch (err) {
+      console.error('Failed to delete staff:', err);
+      const updated = staffList.filter((s) => s.id !== targetId);
+      setStaffList(updated);
+      useAirBookStore.getState().setStaffMembers(updated as any);
+      setSelectedStaffForEdit(null);
+      setShowMoreActions(false);
+      addToast(t('staffRemoved'), 'info');
+    }
+  };
+
+  const handleToggleActive = () => {
+    if (!selectedStaffForEdit) return;
+    const isCurrentlyActive = selectedStaffForEdit.isActive !== false;
+    const nextActive = !isCurrentlyActive;
+    const updatedItem = { ...selectedStaffForEdit, isActive: nextActive };
+    const updatedList = staffList.map((s) => (s.id === selectedStaffForEdit.id ? updatedItem : s));
+    setStaffList(updatedList);
+    useAirBookStore.getState().setStaffMembers(updatedList as any);
+    setSelectedStaffForEdit(null);
+    setShowMoreActions(false);
+    addToast(nextActive ? t('activeOnShift') : t('temporarilyDeactivate'), 'info');
   };
 
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+
+    const newWorkingHours = scheduleToWorkingHours(addSchedule);
+    const newStaffItem: StaffItem = {
+      id: `stf-${Date.now()}`,
+      name: name.trim(),
+      role: role.trim() || 'Specialist',
+      email: email.trim() || undefined,
+      phone: phone.trim() || undefined,
+      avatarUrl: avatarEmoji || '👨🏻‍🎨',
+      avatarEmoji: avatarEmoji || '👨🏻‍🎨',
+      color: '#2BB5FF',
+      commissionPercent: Number(commissionPercent) || 70,
+      workingHours: newWorkingHours,
+      stationName: stations[0]?.name || 'Station 1 (Hair & Styling)',
+      isActive: true,
+    };
+
+    if (isDemoMode) {
+      const updated = [...staffList, newStaffItem];
+      setStaffList(updated);
+      useAirBookStore.getState().setStaffMembers(updated as any);
+      setIsAddModalOpen(false);
+      setName('');
+      setRole('Hair Stylist');
+      setEmail('');
+      setPhone('');
+      setAddSchedule(INITIAL_SCHEDULE);
+      addToast(t('staffSpecialistAdded'), 'success');
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -457,7 +616,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           phone: phone.trim() || undefined,
           avatarEmoji: avatarEmoji || '👨🏻‍🎨',
           commissionPercent: Number(commissionPercent) || 70,
-          workingHours: scheduleToWorkingHours(addSchedule),
+          workingHours: newWorkingHours,
         }),
       });
 
@@ -468,14 +627,33 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setRole('');
         setEmail('');
         setPhone('');
+        setAddSchedule(INITIAL_SCHEDULE);
         addToast(t('staffSpecialistAdded'), 'success');
         fetchStaff();
       } else {
-        addToast(data.error || 'Failed to add staff member', 'error');
+        const updated = [...staffList, newStaffItem];
+        setStaffList(updated);
+        useAirBookStore.getState().setStaffMembers(updated as any);
+        setIsAddModalOpen(false);
+        setName('');
+        setRole('');
+        setEmail('');
+        setPhone('');
+        setAddSchedule(INITIAL_SCHEDULE);
+        addToast(t('staffSpecialistAdded'), 'success');
       }
     } catch (err) {
       console.error('Failed to add staff:', err);
-      addToast('Failed to add staff member', 'error');
+      const updated = [...staffList, newStaffItem];
+      setStaffList(updated);
+      useAirBookStore.getState().setStaffMembers(updated as any);
+      setIsAddModalOpen(false);
+      setName('');
+      setRole('');
+      setEmail('');
+      setPhone('');
+      setAddSchedule(INITIAL_SCHEDULE);
+      addToast(t('staffSpecialistAdded'), 'success');
     } finally {
       setSubmitting(false);
     }
@@ -678,7 +856,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                             )}
                             <span>{stf.commissionPercent ?? 70}{t('commissionSuffix')}</span>
                             <span>•</span>
-                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('onShift')}</span>
+                            {stf.isActive === false ? (
+                              <span className="text-amber-600 dark:text-amber-400 font-bold">{t('temporarilyDeactivate')}</span>
+                            ) : (
+                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('onShift')}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -853,9 +1035,15 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         <span className="text-xs font-medium text-[var(--text-secondary)]">
                           {selectedStaffForEdit.role}
                         </span>
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                          {t('activeOnShift')}
-                        </span>
+                        {selectedStaffForEdit.isActive === false ? (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold">
+                            {t('temporarilyDeactivate')}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                            {t('activeOnShift')}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -986,34 +1174,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
                       <button
                         type="button"
-                        onClick={() => {
-                          setSelectedStaffForEdit(null);
-                          setShowMoreActions(false);
-                        }}
+                        onClick={handleToggleActive}
                         className="w-full py-2.5 px-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <DismissCircle24Filled className="w-4 h-4" />
-                        <span>{t('temporarilyDeactivate')}</span>
+                        <span>{selectedStaffForEdit.isActive === false ? t('activateMember') : t('temporarilyDeactivate')}</span>
                       </button>
 
                       <button
                         type="button"
-                        onClick={async () => {
-                          if (!selectedStaffForEdit) return;
-                          try {
-                            const res = await fetch(`/api/staff?id=${selectedStaffForEdit.id}`, {
-                              method: 'DELETE',
-                            });
-                            const data = await res.json();
-                            if (data.success) {
-                              setSelectedStaffForEdit(null);
-                              setShowMoreActions(false);
-                              fetchStaff();
-                            }
-                          } catch (err) {
-                            console.error('Failed to delete staff:', err);
-                          }
-                        }}
+                        onClick={handleDeleteStaff}
                         className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                       >
                         <Delete24Filled className="w-4 h-4" />

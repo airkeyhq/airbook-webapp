@@ -15,8 +15,8 @@ export async function getActiveWorkspaceId(providedId?: string | null): Promise<
   const [created] = await db
     .insert(workspaces)
     .values({
-      name: "AirBook Business Workspace",
-      slug: 'airbook-workspace',
+      name: "Glow Esthetics Studio",
+      slug: 'glow-esthetics-studio',
       currency: 'USD',
       brandColor: '#007AFF',
     })

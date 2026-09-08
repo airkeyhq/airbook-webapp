@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useAirBookStore } from '@/lib/store';
 import { EmptyState } from '@/components/EmptyState';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import {
@@ -64,6 +65,69 @@ export const ClientsModule: React.FC = () => {
   const [initialTag, setInitialTag] = useState('VIP');
   const [submitting, setSubmitting] = useState(false);
 
+  const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+
+  const DEMO_CLIENTS: ClientItem[] = useMemo(
+    () => [
+      {
+        id: 'cli-1',
+        name: 'Mikael from Amie',
+        email: 'mikael@example.com',
+        phone: '+1 (555) 234-5678',
+        totalVisits: 14,
+        totalSpentCents: 105000,
+        tags: ['VIP', 'Regular'],
+        notes: 'Prefers quiet morning sessions and precision cuts.',
+        isKycVerified: true,
+      },
+      {
+        id: 'cli-2',
+        name: 'Agnes x Dennis',
+        email: 'agnes@example.com',
+        phone: '+1 (555) 876-5432',
+        totalVisits: 8,
+        totalSpentCents: 176000,
+        tags: ['VIP', 'Spa Member'],
+        notes: 'Consultation for wellness glow and HydraFacial.',
+        isKycVerified: true,
+      },
+      {
+        id: 'cli-3',
+        name: 'Ivo Silva',
+        email: 'ivo@example.com',
+        phone: '+1 (555) 345-6789',
+        totalVisits: 6,
+        totalSpentCents: 96000,
+        tags: ['Regular'],
+        notes: 'Focus on skin hydration and recovery therapy.',
+        isKycVerified: true,
+      },
+      {
+        id: 'cli-4',
+        name: 'Kim Nguyen',
+        email: 'kim@example.com',
+        phone: '+1 (555) 987-6543',
+        totalVisits: 3,
+        totalSpentCents: 39000,
+        tags: ['New Client'],
+        notes: 'Deep tissue therapy focus on neck & shoulders.',
+        isKycVerified: false,
+      },
+      {
+        id: 'cli-5',
+        name: 'Sarah Jenkins',
+        email: 'sarah.j@example.com',
+        phone: '+1 (555) 456-7890',
+        totalVisits: 5,
+        totalSpentCents: 42000,
+        tags: ['Regular'],
+        notes: 'Balayage & precision styling.',
+        isKycVerified: true,
+      },
+    ],
+    []
+  );
+
   const fetchClients = async () => {
     try {
       setLoading(true);
@@ -80,8 +144,13 @@ export const ClientsModule: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchClients();
-  }, []);
+    if (isDemoMode) {
+      setClients(DEMO_CLIENTS);
+      setLoading(false);
+    } else {
+      fetchClients();
+    }
+  }, [isDemoMode, DEMO_CLIENTS]);
 
   // Compute Unique Tags from Clients
   const allUniqueTags = useMemo(() => {

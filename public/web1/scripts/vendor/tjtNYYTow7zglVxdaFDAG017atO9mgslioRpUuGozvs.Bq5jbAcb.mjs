@@ -2690,13 +2690,13 @@ var Tn,
                             loading: D(
                               (u?.y || 0) + -63 + 0 + ((u?.height || 414) - -63 - 0 - 476) + 10
                             ),
-                            pixelHeight: 4252,
-                            pixelWidth: 1968,
+                            pixelHeight: 1024,
+                            pixelWidth: 473,
                             positionX: `center`,
                             positionY: `top`,
                             sizes: `231px`,
-                            src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252`,
-                            srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 947w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252 1968w`,
+                            src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png`,
+                            srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 473w`,
                           },
                           className: `framer-173ye88`,
                           "data-framer-name": `Image`,
@@ -2730,13 +2730,13 @@ var Tn,
                                   loading: D(
                                     (u?.y || 0) + (u?.height || 1403) - 415 + 0 + 9 + 8.21
                                   ),
-                                  pixelHeight: 4252,
-                                  pixelWidth: 1968,
+                                  pixelHeight: 1024,
+                                  pixelWidth: 473,
                                   positionX: `center`,
                                   positionY: `top`,
                                   sizes: `202.17px`,
-                                  src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252`,
-                                  srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 947w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252 1968w`,
+                                  src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png`,
+                                  srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 473w`,
                                 },
                               },
                               g8SSeaWc8: {
@@ -2748,13 +2748,13 @@ var Tn,
                                   loading: D(
                                     (u?.y || 0) + (u?.height || 1403) - 415 + 0 + 9 + 8.21
                                   ),
-                                  pixelHeight: 4252,
-                                  pixelWidth: 1968,
+                                  pixelHeight: 1024,
+                                  pixelWidth: 473,
                                   positionX: `center`,
                                   positionY: `top`,
                                   sizes: `202.17px`,
-                                  src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252`,
-                                  srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 947w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png?width=1968&height=4252 1968w`,
+                                  src: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png`,
+                                  srcSet: `/web1/assets/images/tqqaymrX5zjGQ6nIyrWDOKkclDM.png 473w`,
                                 },
                               },
                             },
@@ -3993,10 +3993,10 @@ var Ur,
                             layoutId: `UGX0qePi9`,
                             PO4j7wCaW: pi(
                               {
-                                pixelHeight: 1063,
-                                pixelWidth: 492,
+                                pixelHeight: 1024,
+                                pixelWidth: 473,
                                 src: `/web1/assets/images/nctV9TWaHDgryi86HnRAfqdLjA.png`,
-                                srcSet: `/web1/assets/images/nctV9TWaHDgryi86HnRAfqdLjA.png 492w`,
+                                srcSet: `/web1/assets/images/nctV9TWaHDgryi86HnRAfqdLjA.png 473w`,
                               },
                               ``
                             ),
@@ -8861,10 +8861,10 @@ e(() => {
                                         layoutId: `LvtXZVmXT`,
                                         PO4j7wCaW: Qs(
                                           {
-                                            pixelHeight: 4252,
-                                            pixelWidth: 1968,
-                                            src: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?width=1968&height=4252`,
-                                            srcSet: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png 947w,/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?width=1968&height=4252 1968w`,
+                                            pixelHeight: 1024,
+                                            pixelWidth: 473,
+                                            src: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png`,
+                                            srcSet: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png 473w`,
                                           },
                                           ``
                                         ),
@@ -8906,10 +8906,10 @@ e(() => {
                                         layoutId: `Ge1clQ8RG`,
                                         PO4j7wCaW: Qs(
                                           {
-                                            pixelHeight: 1063,
-                                            pixelWidth: 492,
+                                            pixelHeight: 1024,
+                                            pixelWidth: 473,
                                             src: `/web1/assets/images/ROIk4ZUDVQvbkfcxPMbVYDKtTV0.png`,
-                                            srcSet: `/web1/assets/images/ROIk4ZUDVQvbkfcxPMbVYDKtTV0.png 492w`,
+                                            srcSet: `/web1/assets/images/ROIk4ZUDVQvbkfcxPMbVYDKtTV0.png 473w`,
                                           },
                                           ``
                                         ),
@@ -9100,36 +9100,78 @@ e(() => {
                                       }),
                                     ],
                                   }),
-                                  l(`div`, {
-                                    className: `framer-1rqwy26`,
-                                    "data-framer-name": `Screen Wrapper`,
-                                    children: l(H, {
-                                      height: 556,
-                                      width: `273px`,
-                                      children: l(R, {
-                                        className: `framer-l4llxm-container`,
-                                        nodeId: `AWet07OnS`,
-                                        scopeId: `augiA20Il`,
-                                        children: l(X, {
-                                          height: `100%`,
-                                          hzMx0XMvl: `44px`,
-                                          id: `AWet07OnS`,
-                                          layoutId: `AWet07OnS`,
-                                          PO4j7wCaW: Qs(
-                                            {
-                                              pixelHeight: 4252,
-                                              pixelWidth: 1968,
-                                              src: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?width=1968&height=4252`,
-                                              srcSet: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png 947w,/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png?width=1968&height=4252 1968w`,
-                                            },
-                                            ``
-                                          ),
-                                          style: { height: `100%`, width: `100%` },
-                                          width: `100%`,
-                                        }),
-                                      }),
-                                    }),
-                                  }),
+                                  f(`div`, {
+                                     className: `framer-1rqwy26`,
+                                     "data-framer-name": `Screen Wrapper`,
+                                     style: { overflow: `visible` },
+                                     children: [
+                                       l(H, {
+                                         height: 556,
+                                         width: `273px`,
+                                         children: l(R, {
+                                           className: `framer-l4llxm-container`,
+                                           nodeId: `AWet07OnS`,
+                                           scopeId: `augiA20Il`,
+                                           children: l(X, {
+                                             height: `100%`,
+                                             hzMx0XMvl: `44px`,
+                                             id: `AWet07OnS`,
+                                             layoutId: `AWet07OnS`,
+                                             PO4j7wCaW: Qs(
+                                               {
+                                                 pixelHeight: 1024,
+                                                 pixelWidth: 478,
+                                                 src: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png`,
+                                                 srcSet: `/web1/assets/images/ZAGmE9Elu4B1Thfoz84pJUOo.png 478w`,
+                                               },
+                                               ``
+                                             ),
+                                             style: { height: `100%`, width: `100%` },
+                                             width: `100%`,
+                                           }),
+                                         }),
+                                       }),
+                                       f(`div`, {
+                                         className: `airbook-sms-banner-float`,
+                                         style: {
+                                           position: `absolute`,
+                                           top: `26px`,
+                                           left: `50%`,
+                                           transform: `translateX(-50%)`,
+                                           width: `242px`,
+                                           maxWidth: `88%`,
+                                           zIndex: 100,
+                                           pointerEvents: `auto`,
+                                           cursor: `pointer`,
+                                           lineHeight: 0,
+                                           animation: `airbookNotificationDrop 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards, airbookNotificationFloat 4s ease-in-out 1.2s infinite, airbookPulseGlow 3s ease-in-out 1.2s infinite`,
+                                         },
+                                         children: [
+                                           l(`style`, {
+                                             children: `@keyframes airbookNotificationDrop { 0% { opacity: 0; transform: translate(-50%, -32px) scale(0.92); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25)); } 60% { opacity: 1; transform: translate(-50%, 4px) scale(1.02); filter: drop-shadow(0 20px 32px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 20px rgba(43, 181, 255, 0.5)); } 100% { opacity: 1; transform: translate(-50%, 0) scale(1); filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25)) drop-shadow(0 0 16px rgba(43, 181, 255, 0.35)); } } @keyframes airbookNotificationFloat { 0%, 100% { transform: translate(-50%, 0) scale(1); } 50% { transform: translate(-50%, -5px) scale(1.012); } } @keyframes airbookPulseGlow { 0%, 100% { filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 16px rgba(43, 181, 255, 0.35)) drop-shadow(0 0 28px rgba(43, 181, 255, 0.2)); } 50% { filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 24px rgba(43, 181, 255, 0.6)) drop-shadow(0 0 44px rgba(43, 181, 255, 0.4)); } } @keyframes airbookAuraPulse { 0%, 100% { opacity: 0.45; transform: scale(1); } 50% { opacity: 0.85; transform: scale(1.06); } } .airbook-sms-banner-float:hover { transform: translate(-50%, -8px) scale(1.035) !important; filter: drop-shadow(0 24px 44px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 32px rgba(43, 181, 255, 0.75)) drop-shadow(0 0 56px rgba(43, 181, 255, 0.5)) !important; }`,
+                                           }),
+                                           l(`div`, {
+                                             className: `airbook-sms-glow-aura`,
+                                             style: {
+                                               position: `absolute`,
+                                               inset: `-14px -10px`,
+                                               background: `radial-gradient(ellipse at center, rgba(43, 181, 255, 0.45) 0%, rgba(43, 181, 255, 0.2) 42%, transparent 72%)`,
+                                               borderRadius: `32px`,
+                                               pointerEvents: `none`,
+                                               zIndex: -1,
+                                               filter: `blur(10px)`,
+                                               animation: `airbookAuraPulse 3s ease-in-out 1.2s infinite`,
+                                             },
+                                           }),
+                                           l(`img`, {
+                                             src: `/web1/assets/images/sms-notification-banner.png`,
+                                             alt: `Smart SMS Notification`,
+                                             style: { width: `100%`, height: `auto`, display: `block`, position: `relative`, zIndex: 1 },
+                                           }),
+                                         ],
+                                       }),
+                                     ],
+                                   }),
                                 ],
                               }),
                               f(Z, {
@@ -9161,10 +9203,10 @@ e(() => {
                                           layoutId: `BjqRO7w6o`,
                                           PO4j7wCaW: Qs(
                                             {
-                                              pixelHeight: 4252,
-                                              pixelWidth: 1968,
-                                              src: `/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png?width=1968&height=4252`,
-                                              srcSet: `/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png 947w,/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png?scale-down-to=4096&width=1968&height=4252 1895w,/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png?width=1968&height=4252 1968w`,
+                                              pixelHeight: 1024,
+                                              pixelWidth: 478,
+                                              src: `/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png`,
+                                              srcSet: `/web1/assets/images/ZswnfNDOfSLw0IUo2wdNg2Raosk.png 478w`,
                                             },
                                             ``
                                           ),
@@ -9287,10 +9329,10 @@ e(() => {
                                           layoutId: `Y1KNvi3LT`,
                                           PO4j7wCaW: Qs(
                                             {
-                                              pixelHeight: 1063,
-                                              pixelWidth: 492,
+                                              pixelHeight: 1024,
+                                              pixelWidth: 473,
                                               src: `/web1/assets/images/EbNCjy888IKCxKUAIOvVa5Zkw6w.png`,
-                                              srcSet: `/web1/assets/images/EbNCjy888IKCxKUAIOvVa5Zkw6w.png 492w`,
+                                              srcSet: `/web1/assets/images/EbNCjy888IKCxKUAIOvVa5Zkw6w.png 473w`,
                                             },
                                             ``
                                           ),
@@ -10765,8 +10807,11 @@ e(() => {
         `.framer-K05zN .framer-1nn9chm { display: grid; flex: none; gap: 18px 18px; grid-auto-rows: minmax(0, 1fr); grid-template-columns: repeat(3, minmax(50px, 1fr)); grid-template-rows: repeat(1, minmax(0, 1fr)); height: 420px; justify-content: center; overflow: visible; padding: 0px; position: relative; width: 100%; }`,
         `.framer-K05zN .framer-18yfnuu, .framer-K05zN .framer-tj1127, .framer-K05zN .framer-7e1ut5 { --corner-shape-fallback: 0.752; align-content: center; align-items: center; align-self: start; background-color: var(--token-ead78c25-61c2-4dbd-ab91-81844bb73469, #d9d9d9); border-bottom-left-radius: calc(40px*var(--one-if-corner-shape-supported,var(--corner-shape-fallback,1))); border-bottom-right-radius: calc(40px*var(--one-if-corner-shape-supported,var(--corner-shape-fallback,1))); border-top-left-radius: calc(40px*var(--one-if-corner-shape-supported,var(--corner-shape-fallback,1))); border-top-right-radius: calc(40px*var(--one-if-corner-shape-supported,var(--corner-shape-fallback,1))); corner-shape: superellipse(1.5); display: flex; flex: none; flex-direction: column; flex-wrap: nowrap; gap: 0px; height: 100%; justify-content: flex-start; justify-self: start; overflow: var(--overflow-clip-fallback, clip); padding: 0px; position: relative; width: 100%; will-change: var(--framer-will-change-override, transform); }`,
         `.framer-K05zN .framer-1n68old, .framer-K05zN .framer-1h5w82j, .framer-K05zN .framer-28y1gn { align-content: center; align-items: center; display: flex; flex: none; flex-direction: column; flex-wrap: nowrap; gap: 8px; height: min-content; justify-content: center; max-width: 400px; overflow: var(--overflow-clip-fallback, clip); padding: 40px; position: relative; width: 100%; }`,
-        `.framer-K05zN .framer-1rqwy26, .framer-K05zN .framer-1ldfcwz { -webkit-mask: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; flex: 1 0 0px; height: 1px; mask: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; overflow: var(--overflow-clip-fallback, clip); position: relative; width: 100%; }`,
-        `.framer-K05zN .framer-l4llxm-container, .framer-K05zN .framer-1bn1d0q-container { aspect-ratio: 0.4903175832687839 / 1; flex: none; height: var(--framer-aspect-ratio-supported, 557px); left: 50%; position: absolute; top: 0px; transform: translateX(-50%); width: 273px; }`,
+        `.framer-K05zN .framer-1rqwy26 { flex: 1 0 0px; height: 1px; overflow: visible; position: relative; width: 100%; }`,
+        `.framer-K05zN .framer-1ldfcwz { -webkit-mask: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; flex: 1 0 0px; height: 1px; mask: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; overflow: var(--overflow-clip-fallback, clip); position: relative; width: 100%; }`,
+        `@keyframes airbookNotificationDrop { 0% { opacity: 0; transform: translate(-50%, -32px) scale(0.9); filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2)); } 60% { opacity: 1; transform: translate(-50%, 4px) scale(1.02); filter: drop-shadow(0 20px 36px rgba(0, 0, 0, 0.45)); } 100% { opacity: 1; transform: translate(-50%, 0) scale(1); filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.35)); } } @keyframes airbookNotificationFloat { 0%, 100% { transform: translate(-50%, 0) scale(1); } 50% { transform: translate(-50%, -5px) scale(1.015); } } @keyframes airbookPulseGlow { 0%, 100% { box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 20px 2px rgba(43, 181, 255, 0.15); } 50% { box-shadow: 0 18px 42px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.35), 0 0 28px 6px rgba(43, 181, 255, 0.35); } } .airbook-sms-banner-float { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); width: 88%; max-width: 248px; z-index: 100; pointer-events: auto; border-radius: 18px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); animation: airbookNotificationDrop 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards, airbookNotificationFloat 4s ease-in-out 1.2s infinite, airbookPulseGlow 3.5s ease-in-out 1.2s infinite; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease; cursor: pointer; } .airbook-sms-banner-float:hover { transform: translate(-50%, -8px) scale(1.04) !important; box-shadow: 0 24px 48px -4px rgba(0, 0, 0, 0.6), 0 0 0 1.5px rgba(255, 255, 255, 0.45), 0 0 32px 8px rgba(43, 181, 255, 0.5) !important; }`,
+        `.framer-K05zN .framer-l4llxm-container { -webkit-mask: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; mask: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; aspect-ratio: 0.4903175832687839 / 1; flex: none; height: var(--framer-aspect-ratio-supported, 557px); left: 50%; position: absolute; top: 0px; transform: translateX(-50%); width: 273px; }`,
+        `.framer-K05zN .framer-1bn1d0q-container { aspect-ratio: 0.4903175832687839 / 1; flex: none; height: var(--framer-aspect-ratio-supported, 557px); left: 50%; position: absolute; top: 0px; transform: translateX(-50%); width: 273px; }`,
         `.framer-K05zN .framer-1rqeyav { -webkit-mask: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; flex: 1 0 0px; height: 1px; mask: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 33.33333333333333%) add; overflow: var(--overflow-clip-fallback, clip); position: relative; width: 100%; }`,
         `.framer-K05zN .framer-1whemev-container { aspect-ratio: 0.4903175832687839 / 1; bottom: 0px; flex: none; height: var(--framer-aspect-ratio-supported, 557px); left: 50%; position: absolute; transform: translateX(-50%); width: 273px; }`,
         `.framer-K05zN .framer-1xx1fod { align-content: center; align-items: center; display: flex; flex: none; flex-direction: column; flex-wrap: nowrap; gap: 20px; height: min-content; justify-content: flex-start; overflow: visible; padding: 20px; position: relative; scroll-margin-top: 100px; width: 100%; }`,

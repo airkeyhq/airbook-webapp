@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore, Appointment } from '@/lib/store';
@@ -42,7 +42,58 @@ interface InvoiceRecord {
 
 export const POSModule: React.FC = () => {
   const { t } = useTranslation();
-  const { appointments, selectedDateStr, openBookingDrawer } = useAirBookStore();
+  const { appointments, selectedDateStr, openBookingDrawer, isDemoMode } = useAirBookStore();
+
+  const DEMO_INVOICES: InvoiceRecord[] = useMemo(
+    () => [
+      {
+        id: 'inv-101',
+        clientId: 'cli-1',
+        clientName: 'Mikael from Amie',
+        clientEmail: 'mikael@example.com',
+        subtotalCents: 7500,
+        tipCents: 1500,
+        taxCents: 600,
+        discountCents: 0,
+        totalCents: 9600,
+        paymentMethod: 'card_tap',
+        receiptNumber: 'REC-8041',
+        status: 'paid',
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'inv-102',
+        clientId: 'cli-2',
+        clientName: 'Agnes x Dennis',
+        clientEmail: 'agnes@example.com',
+        subtotalCents: 22000,
+        tipCents: 4400,
+        taxCents: 1760,
+        discountCents: 0,
+        totalCents: 28160,
+        paymentMethod: 'card_terminal',
+        receiptNumber: 'REC-8042',
+        status: 'paid',
+        createdAt: new Date(Date.now() - 3600000).toISOString(),
+      },
+      {
+        id: 'inv-103',
+        clientId: 'cli-3',
+        clientName: 'Carlos Rossi',
+        clientEmail: 'carlos@example.com',
+        subtotalCents: 4500,
+        tipCents: 1000,
+        taxCents: 360,
+        discountCents: 0,
+        totalCents: 5860,
+        paymentMethod: 'cash',
+        receiptNumber: 'REC-8043',
+        status: 'paid',
+        createdAt: new Date(Date.now() - 7200000).toISOString(),
+      },
+    ],
+    []
+  );
 
   const [invoices, setInvoices] = useState<InvoiceRecord[]>([]);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
@@ -74,8 +125,13 @@ export const POSModule: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRecentInvoices();
-  }, []);
+    if (isDemoMode) {
+      setInvoices(DEMO_INVOICES);
+      setLoadingInvoices(false);
+    } else {
+      fetchRecentInvoices();
+    }
+  }, [isDemoMode, DEMO_INVOICES]);
 
   const todayApts = appointments.filter((a) => a.dateStr === selectedDateStr);
   const totalRevenue = todayApts.reduce((sum, a) => sum + a.price, 0);

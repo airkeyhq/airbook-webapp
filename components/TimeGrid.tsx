@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useAirBookStore, Appointment, DEMO_STAFF, Staff } from '@/lib/store';
+import { useAirBookStore, Appointment, DEMO_STAFF, Staff, getFreshDemoAppointments } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { format, addDays, startOfWeek, isSameDay, parseISO } from 'date-fns';
@@ -85,7 +85,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
   
   const selectedDate = new Date(selectedDateStr + 'T00:00:00');
 
-  const activeStaffList = staffMembers.length > 0 ? staffMembers : (isDemoMode ? DEMO_STAFF : []);
+  const activeStaffList = isDemoMode
+    ? (staffMembers.length > 0 && staffMembers.some((s) => s.id.startsWith('stf-')) ? staffMembers : DEMO_STAFF)
+    : staffMembers;
 
   const staffToRender = React.useMemo(() => {
     if (viewMode !== 'day') return [];
@@ -106,7 +108,13 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
   // Fetch real appointments from Neon DB when selected date changes
   useEffect(() => {
     async function loadDbAppointments() {
-      if (useAirBookStore.getState().isDemoMode) return;
+      if (useAirBookStore.getState().isDemoMode) {
+        const cur = useAirBookStore.getState().appointments;
+        if (!cur || cur.length === 0) {
+          setAppointments(getFreshDemoAppointments());
+        }
+        return;
+      }
       try {
         const res = await fetch(`/api/appointments?dateStr=${selectedDateStr}`);
         const data = await res.json();
@@ -142,7 +150,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
       }
     }
     loadDbAppointments();
-  }, [selectedDateStr, setAppointments]);
+  }, [selectedDateStr, setAppointments, isDemoMode]);
 
   // Auto-switch to single day view on narrow mobile & tablet screens
   useEffect(() => {
@@ -278,9 +286,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
         
         {/* STICKY HEADER ROW (Corner + Day / Staff Headers) */}
         {viewMode === 'week' && (
-          <div className="sticky top-0 z-10 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-sm">
+          <div className="sticky top-0 z-40 flex w-full bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] shadow-sm">
             {/* Corner Cell (Sticky Left inside Sticky Top) */}
-            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-20 bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
+            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-50 bg-[var(--bg-primary)] border-r border-[var(--border-subtle)]" />
             
             {/* Day Headers (7 Columns Responsively Filling Viewport) */}
             <div className="flex flex-1 min-w-[380px] sm:min-w-0">
@@ -313,8 +321,8 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
 
         {/* Multi-Staff Day View Sticky Header */}
         {viewMode === 'day' && (
-          <div className="sticky top-0 z-10 flex w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 shadow-sm">
-            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-20 bg-white dark:bg-[#141720] border-r border-slate-200/80 dark:border-white/10" />
+          <div className="sticky top-0 z-40 flex w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 shadow-sm">
+            <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-50 bg-white dark:bg-[#141720] border-r border-slate-200/80 dark:border-white/10" />
 
             <div className="flex flex-1 min-w-[320px] sm:min-w-0">
               {staffToRender.map((staff, idx) => {
