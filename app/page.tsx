@@ -74,6 +74,7 @@ export default function MarketingWebsite() {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   // Interactive Live Hero Booking Simulator State
+  const [demoStep, setDemoStep] = useState<1 | 2 | 3 | 4>(1);
   const [demoService, setDemoService] = useState(DEMO_SERVICES[0]);
   const demoSpecialists = getDemoSpecialists(language);
   const [demoSpecialist, setDemoSpecialist] = useState(demoSpecialists[0]);
@@ -98,6 +99,7 @@ export default function MarketingWebsite() {
     const specialists = getDemoSpecialists(language);
     setDemoSpecialist(specialists[0]);
     setIsDemoBooked(false);
+    setDemoStep(1);
   }, [language]);
 
   // Automated Multi-Step Motion Simulation Timeline Loop
@@ -130,9 +132,29 @@ export default function MarketingWebsite() {
       const stageRect = demoStageRef.current.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
       return {
-        x: elRect.left - stageRect.left + elRect.width * 0.5,
-        y: elRect.top - stageRect.top + elRect.height * 0.5,
+        x: elRect.left - stageRect.left + elRect.width * 0.5 - 6,
+        y: elRect.top - stageRect.top + elRect.height * 0.5 - 4,
       };
+    };
+
+    const moveToElement = (
+      getEl: () => HTMLElement | null,
+      onArrived: () => void,
+      retries = 5
+    ) => {
+      if (!isMounted) return;
+      const el = getEl();
+      const pos = getCenterPos(el);
+      if (pos) {
+        setCursorPos(pos);
+        addTimer(onArrived, 550);
+      } else if (retries > 0) {
+        addTimer(() => {
+          moveToElement(getEl, onArrived, retries - 1);
+        }, 50);
+      } else {
+        onArrived();
+      }
     };
 
     const runMotionSequence = (idx: number) => {
@@ -143,82 +165,90 @@ export default function MarketingWebsite() {
       const targetSpec = specialists[scenario.specialistIndex] || specialists[0];
       const targetSlot = scenario.slot;
 
-      // ── Step 1: Glide to Selected Service ──
+      // ── Step 1: Render Services Step ──
+      setDemoStep(1);
+      setIsDemoBooked(false);
       setMotionStepBadge('demoCursorSelecting');
       setIsCursorVisible(true);
-      const srvEl = serviceRefs.current[targetSrv.id];
-      const srvPos = getCenterPos(srvEl);
-      if (srvPos) setCursorPos(srvPos);
 
-      // Click Service
-      addTimer(() => {
-        setIsCursorClicking(true);
-        setDemoService(targetSrv);
-        setIsDemoBooked(false);
+      // Glide to target service button
+      moveToElement(
+        () => serviceRefs.current[targetSrv.id],
+        () => {
+          // Tap Service Button
+          setIsCursorClicking(true);
+          setDemoService(targetSrv);
 
-        addTimer(() => {
-          setIsCursorClicking(false);
-
-          // ── Step 2: Glide to Specialist ──
           addTimer(() => {
-            setMotionStepBadge('demoCursorProvider');
-            const specEl = specialistRefs.current[targetSpec.id];
-            const specPos = getCenterPos(specEl);
-            if (specPos) setCursorPos(specPos);
+            setIsCursorClicking(false);
 
-            // Click Specialist
+            // ── Step 2: Advance to Specialist Step ──
             addTimer(() => {
-              setIsCursorClicking(true);
-              setDemoSpecialist(targetSpec);
+              setDemoStep(2);
+              setMotionStepBadge('demoCursorProvider');
 
-              addTimer(() => {
-                setIsCursorClicking(false);
+              // Glide to target specialist button
+              moveToElement(
+                () => specialistRefs.current[targetSpec.id],
+                () => {
+                  // Tap Specialist Button
+                  setIsCursorClicking(true);
+                  setDemoSpecialist(targetSpec);
 
-                // ── Step 3: Glide to Time Slot ──
-                addTimer(() => {
-                  setMotionStepBadge('demoCursorSlot');
-                  const slotEl = slotRefs.current[targetSlot];
-                  const slotPos = getCenterPos(slotEl);
-                  if (slotPos) setCursorPos(slotPos);
-
-                  // Click Time Slot
                   addTimer(() => {
-                    setIsCursorClicking(true);
-                    setDemoSlot(targetSlot);
+                    setIsCursorClicking(false);
 
+                    // ── Step 3: Advance to Time Slot Step ──
                     addTimer(() => {
-                      setIsCursorClicking(false);
+                      setDemoStep(3);
+                      setMotionStepBadge('demoCursorSlot');
 
-                      // ── Step 4: Glide to CTA Button ──
-                      addTimer(() => {
-                        setMotionStepBadge('demoCursorBooking');
-                        const ctaPos = getCenterPos(ctaBtnRef.current);
-                        if (ctaPos) setCursorPos(ctaPos);
-
-                        // Click CTA Button
-                        addTimer(() => {
+                      // Glide to target slot pill
+                      moveToElement(
+                        () => slotRefs.current[targetSlot],
+                        () => {
+                          // Tap Time Slot Pill
                           setIsCursorClicking(true);
-                          setIsDemoBooked(true);
+                          setDemoSlot(targetSlot);
 
                           addTimer(() => {
                             setIsCursorClicking(false);
 
-                            // Hold Confirmed View (3.6s) then advance to next scenario
+                            // ── Step 4: Glide to Confirm Booking CTA Button ──
                             addTimer(() => {
-                              scenarioIdx++;
-                              runMotionSequence(scenarioIdx);
-                            }, 3600);
-                          }, 250);
-                        }, 750);
-                      }, 350);
-                    }, 250);
-                  }, 750);
-                }, 350);
-              }, 250);
-            }, 750);
-          }, 350);
-        }, 250);
-      }, 850);
+                              setMotionStepBadge('demoCursorBooking');
+
+                              moveToElement(
+                                () => ctaBtnRef.current,
+                                () => {
+                                  // Tap Confirm CTA Button
+                                  setIsCursorClicking(true);
+                                  setIsDemoBooked(true);
+                                  setDemoStep(4);
+
+                                  addTimer(() => {
+                                    setIsCursorClicking(false);
+
+                                    // Hold Confirmed View (3.8s) then advance to next scenario
+                                    addTimer(() => {
+                                      scenarioIdx++;
+                                      runMotionSequence(scenarioIdx);
+                                    }, 3800);
+                                  }, 220);
+                                }
+                              );
+                            }, 300);
+                          }, 200);
+                        }
+                      );
+                    }, 300);
+                  }, 200);
+                }
+              );
+            }, 300);
+          }, 200);
+        }
+      );
     };
 
     // Initial warm-up start
@@ -503,219 +533,470 @@ export default function MarketingWebsite() {
                 ref={demoStageRef}
                 onMouseEnter={() => setIsUserHoveringDemo(true)}
                 onMouseLeave={() => setIsUserHoveringDemo(false)}
-                className="bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-none space-y-4 relative overflow-hidden"
+                className="bg-[var(--bg-primary)] rounded-[32px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-none space-y-4 relative overflow-hidden min-h-[440px] flex flex-col justify-between"
               >
-              {/* Animated Mockup Cursor */}
-              <motion.div
-                className="absolute z-30 pointer-events-none -ml-1 -mt-1 flex items-start"
-                animate={{
-                  x: cursorPos.x,
-                  y: cursorPos.y,
-                  opacity: isCursorVisible && !isUserHoveringDemo ? 1 : 0,
-                  scale: isCursorClicking ? 0.86 : 1,
-                }}
-                transition={{
-                  x: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-                  y: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-                  opacity: { duration: 0.25 },
-                  scale: { duration: 0.12 },
-                }}
-              >
-                {/* Click Ripple Wave */}
-                {isCursorClicking && (
-                  <span className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-[#2BB5FF]/50 border-2 border-[#2BB5FF] animate-ping pointer-events-none" />
-                )}
-
-                {/* Sleek Vector Cursor */}
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)] flex-shrink-0"
+                {/* Animated Mockup Cursor */}
+                <motion.div
+                  className="absolute z-30 pointer-events-none -ml-1 -mt-1 flex items-start"
+                  animate={{
+                    x: cursorPos.x,
+                    y: cursorPos.y,
+                    opacity: isCursorVisible && !isUserHoveringDemo ? 1 : 0,
+                    scale: isCursorClicking ? 0.86 : 1,
+                  }}
+                  transition={{
+                    x: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                    y: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.12 },
+                  }}
                 >
-                  <path
-                    d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.88c.45 0 .67-.54.35-.85L5.85 2.86a.5.5 0 0 0-.35.35Z"
-                    fill="#0F172A"
-                    stroke="#FFFFFF"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                  {/* Click Ripple Wave directly on arrow tip */}
+                  {isCursorClicking && (
+                    <span className="absolute top-1 left-1.5 w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2BB5FF]/40 border-2 border-[#2BB5FF] animate-ping pointer-events-none" />
+                  )}
 
-                {/* Animated Step Badge */}
-                <motion.span
-                  key={motionStepBadge}
-                  initial={{ opacity: 0, scale: 0.85, x: -4 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  className="ml-1.5 -mt-1 px-2 py-0.5 rounded-full bg-black/85 dark:bg-white/90 text-white dark:text-black text-[9px] font-black uppercase tracking-wider shadow-md backdrop-blur-xs whitespace-nowrap"
-                >
-                  {t(motionStepBadge as any)}
-                </motion.span>
-              </motion.div>
+                  {/* Sleek Vector Cursor */}
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)] flex-shrink-0"
+                  >
+                    <path
+                      d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.88c.45 0 .67-.54.35-.85L5.85 2.86a.5.5 0 0 0-.35.35Z"
+                      fill="#0F172A"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
 
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3.5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2BB5FF] to-[#AF52DE] flex items-center justify-center text-white font-black text-xs shadow-xs">
-                    AB
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
-                      L&apos;Élégance Studio &amp; Spa
-                    </h3>
-                    <p className="text-[11px] text-[var(--text-secondary)] font-semibold">
-                      {t('demoInteractiveTitle')}
-                    </p>
-                  </div>
-                </div>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20">
-                  {t('openStatus')}
-                </span>
-              </div>
+                  {/* Animated Step Badge */}
+                  <motion.span
+                    key={motionStepBadge}
+                    initial={{ opacity: 0, scale: 0.85, x: -4 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    className="ml-1.5 -mt-1 px-2 py-0.5 rounded-full bg-black/85 dark:bg-white/90 text-white dark:text-black text-[9px] font-black uppercase tracking-wider shadow-md backdrop-blur-xs whitespace-nowrap"
+                  >
+                    {t(motionStepBadge as any)}
+                  </motion.span>
+                </motion.div>
 
-              {/* Service Pills */}
-              <div className="space-y-1.5">
-                <p className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
-                  1. {t('demoSelectedService')}
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {DEMO_SERVICES.map((srv) => {
-                    const isSelected = demoService.id === srv.id;
-                    return (
-                      <button
-                        key={srv.id}
-                        ref={(el) => {
-                          serviceRefs.current[srv.id] = el;
-                        }}
-                        type="button"
-                        onClick={() => {
-                          setDemoService(srv);
-                          setIsDemoBooked(false);
-                        }}
-                        className={`p-2.5 rounded-2xl text-left border transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
-                            : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
-                        }`}
-                      >
-                        <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">{srv.name}</p>
-                        <p className="text-[11px] font-mono font-bold text-[var(--text-secondary)] mt-0.5">
-                          ${srv.price} · {srv.duration}m
+                {/* Top Section: Salon Header & Multi-Step Breadcrumb Progress */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2BB5FF] to-[#AF52DE] flex items-center justify-center text-white font-black text-xs shadow-xs flex-shrink-0">
+                        AB
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
+                          L&apos;Élégance Studio &amp; Spa
+                        </h3>
+                        <p className="text-[11px] text-[var(--text-secondary)] font-semibold">
+                          {t('demoInteractiveTitle')}
                         </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Specialist Selection */}
-              <div className="space-y-1.5">
-                <p className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
-                  2. {t('demoSpecialistLabel')}
-                </p>
-                <div className="flex items-center gap-2">
-                  {demoSpecialists.map((stf) => {
-                    const isSelected = demoSpecialist.id === stf.id;
-                    return (
-                      <button
-                        key={stf.id}
-                        ref={(el) => {
-                          specialistRefs.current[stf.id] = el;
-                        }}
-                        type="button"
-                        onClick={() => {
-                          setDemoSpecialist(stf);
-                          setIsDemoBooked(false);
-                        }}
-                        className={`flex-1 flex items-center gap-2 p-2 rounded-2xl border transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
-                            : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
-                        }`}
-                      >
-                        <img
-                          src={stf.avatar}
-                          alt={stf.name}
-                          className="w-7 h-7 rounded-xl object-cover"
-                        />
-                        <div className="min-w-0 text-left">
-                          <p className="text-xs font-bold text-[var(--text-primary)] truncate">{stf.name}</p>
-                          <p className="text-[9px] text-[var(--text-secondary)] truncate">{stf.role}</p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Time Slots */}
-              <div className="space-y-1.5">
-                <p className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
-                  3. {t('demoAvailableTimes')}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {DEMO_SLOTS.map((slot) => {
-                    const isSelected = demoSlot === slot;
-                    return (
-                      <button
-                        key={slot}
-                        ref={(el) => {
-                          slotRefs.current[slot] = el;
-                        }}
-                        type="button"
-                        onClick={() => {
-                          setDemoSlot(slot);
-                          setIsDemoBooked(false);
-                        }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-[var(--text-primary)] text-[var(--bg-primary)] shadow-xs'
-                            : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:text-[var(--text-primary)]'
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Booking Trigger CTA */}
-              <div className="pt-2">
-                {isDemoBooked ? (
-                  <motion.div
-                    initial={{ scale: 0.96, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-2.5"
-                  >
-                    <CheckmarkCircle24Filled className="w-5 h-5 flex-shrink-0" />
-                    <p className="text-xs font-extrabold leading-tight">
-                      {t('demoBookingSuccess')}
-                    </p>
-                  </motion.div>
-                ) : (
-                  <button
-                    ref={ctaBtnRef}
-                    type="button"
-                    onClick={() => setIsDemoBooked(true)}
-                    className="btn-primary w-full h-11 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
-                  >
-                    <Calendar24Filled className="w-4 h-4" />
-                    <span>
-                      {t('demoSimulateBook')} (${(demoService.price * 0.25).toFixed(2)} Deposit)
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20">
+                      {t('openStatus')}
                     </span>
-                  </button>
-                )}
-                <p className="text-[10px] text-center text-[var(--text-muted)] font-semibold mt-2 flex items-center justify-center gap-1">
-                  <LockClosed24Regular className="w-3 h-3 text-[var(--text-muted)]" />
-                  <span>{t('demoDepositProtected')} • Apple Pay &amp; Google Pay</span>
-                </p>
+                  </div>
+
+                  {/* Multi-Step Breadcrumb Indicator & Animated Progress Track */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDemoStep(1);
+                            setIsDemoBooked(false);
+                          }}
+                          className={`px-2.5 py-1 rounded-full transition-all text-[10px] sm:text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
+                            demoStep === 1
+                              ? 'bg-[#2BB5FF] text-white shadow-xs'
+                              : demoStep > 1
+                              ? 'bg-[var(--bg-secondary)] text-emerald-600 dark:text-emerald-400 border border-[var(--border-subtle)] hover:border-[#2BB5FF]'
+                              : 'text-[var(--text-muted)] bg-[var(--bg-secondary)]'
+                          }`}
+                        >
+                          {demoStep > 1 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          <span>{t('demoStepService')}</span>
+                        </button>
+
+                        <span className="text-[var(--text-muted)] text-[10px]">/</span>
+
+                        <button
+                          type="button"
+                          disabled={demoStep < 2}
+                          onClick={() => {
+                            if (demoStep >= 2) {
+                              setDemoStep(2);
+                              setIsDemoBooked(false);
+                            }
+                          }}
+                          className={`px-2.5 py-1 rounded-full transition-all text-[10px] sm:text-[11px] font-bold flex items-center gap-1 ${
+                            demoStep === 2
+                              ? 'bg-[#2BB5FF] text-white shadow-xs cursor-pointer'
+                              : demoStep > 2
+                              ? 'bg-[var(--bg-secondary)] text-emerald-600 dark:text-emerald-400 border border-[var(--border-subtle)] hover:border-[#2BB5FF] cursor-pointer'
+                              : 'text-[var(--text-muted)] opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          {demoStep > 2 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          <span>{t('demoStepSpecialist')}</span>
+                        </button>
+
+                        <span className="text-[var(--text-muted)] text-[10px]">/</span>
+
+                        <button
+                          type="button"
+                          disabled={demoStep < 3}
+                          onClick={() => {
+                            if (demoStep >= 3) {
+                              setDemoStep(3);
+                            }
+                          }}
+                          className={`px-2.5 py-1 rounded-full transition-all text-[10px] sm:text-[11px] font-bold flex items-center gap-1 ${
+                            demoStep === 3
+                              ? 'bg-[#2BB5FF] text-white shadow-xs cursor-pointer'
+                              : demoStep === 4
+                              ? 'bg-[var(--bg-secondary)] text-emerald-600 dark:text-emerald-400 border border-[var(--border-subtle)] hover:border-[#2BB5FF] cursor-pointer'
+                              : 'text-[var(--text-muted)] opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          {demoStep === 4 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          <span>{t('demoStepTime')}</span>
+                        </button>
+                      </div>
+
+                      <span className="text-[10px] font-mono font-bold text-[var(--text-muted)] hidden sm:inline">
+                        {t('demoStepProgress', { current: Math.min(demoStep, 3), total: 3 })}
+                      </span>
+                    </div>
+
+                    {/* Progress Track */}
+                    <div className="w-full bg-[var(--bg-secondary)] h-1 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-[#2BB5FF] to-[#AF52DE] rounded-full"
+                        animate={{
+                          width: demoStep === 1 ? '33.33%' : demoStep === 2 ? '66.66%' : '100%',
+                        }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step Content Panels (Multi-Step: One Step Shows at a Time) */}
+                <div className="py-1">
+                  <AnimatePresence mode="wait">
+                    {demoStep === 1 && (
+                      <motion.div
+                        key="demo-step-1"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
+                            1. {t('demoSelectedService')}
+                          </p>
+                          <p className="text-[10px] text-[var(--text-muted)] font-medium hidden sm:inline">
+                            {t('demoSelectServicePrompt')}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {DEMO_SERVICES.map((srv) => {
+                            const isSelected = demoService.id === srv.id;
+                            return (
+                              <button
+                                key={srv.id}
+                                ref={(el) => {
+                                  serviceRefs.current[srv.id] = el;
+                                }}
+                                type="button"
+                                onClick={() => {
+                                  setDemoService(srv);
+                                  setDemoStep(2);
+                                  setIsDemoBooked(false);
+                                }}
+                                className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between min-h-[74px] ${
+                                  isSelected
+                                    ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
+                                    : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)] hover:bg-[var(--bg-secondary)]/50'
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <p className="text-xs font-extrabold text-[var(--text-primary)] leading-tight">
+                                    {srv.name}
+                                  </p>
+                                  {isSelected && (
+                                    <CheckmarkCircle24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+                                  )}
+                                </div>
+                                <div className="flex items-center justify-between mt-1.5">
+                                  <p className="text-xs font-mono font-black text-[#2BB5FF]">
+                                    ${srv.price}
+                                  </p>
+                                  <p className="text-[10px] font-mono text-[var(--text-secondary)]">
+                                    {srv.duration} min
+                                  </p>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {demoStep === 2 && (
+                      <motion.div
+                        key="demo-step-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setDemoStep(1)}
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
+                            >
+                              <ChevronLeft24Filled className="w-3.5 h-3.5" />
+                              <span>{t('demoBack')}</span>
+                            </button>
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
+                              • 2. {t('demoSpecialistLabel')}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] truncate max-w-[160px]">
+                            {demoService.name} · ${demoService.price}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          {demoSpecialists.map((stf) => {
+                            const isSelected = demoSpecialist.id === stf.id;
+                            return (
+                              <button
+                                key={stf.id}
+                                ref={(el) => {
+                                  specialistRefs.current[stf.id] = el;
+                                }}
+                                type="button"
+                                onClick={() => {
+                                  setDemoSpecialist(stf);
+                                  setDemoStep(3);
+                                  setIsDemoBooked(false);
+                                }}
+                                className={`w-full flex items-center justify-between p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-[var(--bg-secondary)] border-[#2BB5FF] shadow-xs ring-1 ring-[#2BB5FF]/30'
+                                    : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)] hover:bg-[var(--bg-secondary)]/50'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <img
+                                    src={stf.avatar}
+                                    alt={stf.name}
+                                    className="w-9 h-9 rounded-xl object-cover border border-[var(--border-subtle)] flex-shrink-0"
+                                  />
+                                  <div className="min-w-0 text-left">
+                                    <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                                      {stf.name}
+                                    </p>
+                                    <p className="text-[10px] text-[var(--text-secondary)] truncate font-medium">
+                                      {stf.role}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 flex-shrink-0">
+                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                    {stf.station}
+                                  </span>
+                                  {isSelected && (
+                                    <CheckmarkCircle24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {demoStep === 3 && (
+                      <motion.div
+                        key="demo-step-3"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="space-y-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setDemoStep(2)}
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
+                            >
+                              <ChevronLeft24Filled className="w-3.5 h-3.5" />
+                              <span>{t('demoBack')}</span>
+                            </button>
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
+                              • 3. {t('demoAvailableTimes')}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] flex items-center gap-1">
+                            <img src={demoSpecialist.avatar} alt={demoSpecialist.name} className="w-3.5 h-3.5 rounded-full object-cover" />
+                            <span>{demoSpecialist.name}</span>
+                          </span>
+                        </div>
+
+                        {/* Slots Grid */}
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                          {DEMO_SLOTS.map((slot) => {
+                            const isSelected = demoSlot === slot;
+                            return (
+                              <button
+                                key={slot}
+                                ref={(el) => {
+                                  slotRefs.current[slot] = el;
+                                }}
+                                type="button"
+                                onClick={() => {
+                                  setDemoSlot(slot);
+                                }}
+                                className={`flex-1 min-w-[70px] py-1.5 px-2.5 rounded-xl text-xs font-mono font-bold transition-all text-center cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-[var(--text-primary)] text-[var(--bg-primary)] shadow-xs ring-2 ring-[var(--text-primary)]/20'
+                                    : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:text-[var(--text-primary)]'
+                                }`}
+                              >
+                                {slot}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Appointment Summary Box */}
+                        <div className="p-3 rounded-2xl bg-[var(--bg-secondary)]/80 border border-[var(--border-subtle)] space-y-1 text-left">
+                          <div className="flex items-center justify-between text-xs font-bold text-[var(--text-primary)]">
+                            <span className="truncate">{demoService.name}</span>
+                            <span className="font-mono text-[#2BB5FF] flex-shrink-0">${demoService.price}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-[var(--text-secondary)] font-medium">
+                            <span>{demoSpecialist.name} ({demoSpecialist.role})</span>
+                            <span className="font-mono font-bold text-[var(--text-primary)]">{demoSlot} (Today)</span>
+                          </div>
+                        </div>
+
+                        {/* Booking Trigger CTA */}
+                        <div>
+                          <button
+                            ref={ctaBtnRef}
+                            type="button"
+                            onClick={() => {
+                              setIsDemoBooked(true);
+                              setDemoStep(4);
+                            }}
+                            className="btn-primary w-full h-11 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <Calendar24Filled className="w-4 h-4" />
+                            <span>
+                              {t('demoSimulateBook')} (${(demoService.price * 0.25).toFixed(2)} Deposit)
+                            </span>
+                          </button>
+                          <p className="text-[10px] text-center text-[var(--text-muted)] font-semibold mt-2 flex items-center justify-center gap-1">
+                            <LockClosed24Regular className="w-3 h-3 text-[var(--text-muted)]" />
+                            <span>{t('demoDepositProtected')} • Apple Pay &amp; Google Pay</span>
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {demoStep === 4 && (
+                      <motion.div
+                        key="demo-step-4"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.25 }}
+                        className="space-y-3 text-center py-1"
+                      >
+                        <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-3 text-left">
+                          <CheckmarkCircle24Filled className="w-6 h-6 flex-shrink-0 text-emerald-500" />
+                          <div>
+                            <p className="text-xs font-black leading-tight">
+                              {t('demoBookingSuccess')}
+                            </p>
+                            <p className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">
+                              {t('demoCalendarSynced')}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Confirmed Details Ticket */}
+                        <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-left">
+                          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2">
+                            <div>
+                              <p className="text-xs font-black text-[var(--text-primary)]">{demoService.name}</p>
+                              <p className="text-[10px] font-mono text-[var(--text-secondary)]">{demoService.duration} min session</p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs font-mono font-black text-[#2BB5FF]">${demoService.price}</span>
+                              <span className="block text-[9px] font-bold text-emerald-500">{t('demoDepositBadge')}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-[var(--text-secondary)] pt-0.5 font-medium">
+                            <div className="flex items-center gap-2">
+                              <img src={demoSpecialist.avatar} alt={demoSpecialist.name} className="w-5 h-5 rounded-full object-cover" />
+                              <span>{demoSpecialist.name}</span>
+                            </div>
+                            <span className="font-mono font-bold text-[var(--text-primary)]">Today, {demoSlot}</span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDemoStep(1);
+                            setIsDemoBooked(false);
+                          }}
+                          className="btn-secondary w-full h-10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Sparkle24Filled className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                          <span>{t('demoBookAnother')}</span>
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Footer Assurance */}
+                <div className="border-t border-[var(--border-subtle)] pt-2.5 flex items-center justify-between text-[10px] text-[var(--text-muted)] font-medium">
+                  <span className="flex items-center gap-1">
+                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>{t('demoDepositProtected')}</span>
+                  </span>
+                  <span className="font-mono">{t('demoDepositBadge')}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Right Column: Provider Command Center Perspective with Divider */}
+            {/* Right Column: Provider Command Center Perspective with Divider */}
           <div className="lg:col-span-5 space-y-3 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-200/70 dark:border-white/[0.06] lg:pl-8">
               {/* Perspective Header Badge */}
               <div className="flex items-center justify-between px-1 h-8">
@@ -2335,7 +2616,7 @@ export default function MarketingWebsite() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto items-stretch">
           {/* Card 1: Solo Pro / Independent Plan (Standard Tier) */}
           <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
             {/* Upper Content Group */}
@@ -2353,7 +2634,7 @@ export default function MarketingWebsite() {
                 <div className="text-right flex-shrink-0">
                   <div className="flex items-baseline justify-end gap-1">
                     <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
-                      {billingCycle === 'annual' ? '$16' : '$20'}
+                      {billingCycle === 'annual' ? '$24' : '$29'}
                     </span>
                     <span className="text-xs font-bold text-[var(--text-secondary)]">
                       {t('pricingPerMonth')}
@@ -2362,7 +2643,7 @@ export default function MarketingWebsite() {
                   <div className="min-h-[18px] mt-0.5">
                     {billingCycle === 'annual' ? (
                       <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        $192 {t('billedYearlyNote')}
+                        $288 {t('billedYearlyNote')}
                       </span>
                     ) : null}
                   </div>
@@ -2447,7 +2728,7 @@ export default function MarketingWebsite() {
                 <div className="text-right flex-shrink-0">
                   <div className="flex items-baseline justify-end gap-1">
                     <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
-                      {billingCycle === 'annual' ? '$32' : '$40'}
+                      {billingCycle === 'annual' ? '$64' : '$79'}
                     </span>
                     <span className="text-xs font-bold text-[var(--text-secondary)]">
                       {t('pricingPerMonth')}
@@ -2456,7 +2737,7 @@ export default function MarketingWebsite() {
                   <div className="min-h-[18px] mt-0.5">
                     {billingCycle === 'annual' ? (
                       <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        $384 {t('billedYearlyNote')}
+                        $768 {t('billedYearlyNote')}
                       </span>
                     ) : null}
                   </div>
@@ -2507,6 +2788,89 @@ export default function MarketingWebsite() {
                   className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
                 >
                   <span>{t('startFreeTrialBtn')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Card 3: Scale & Multi-Location Plan (Enterprise Tier) */}
+          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+            {/* Upper Content Group */}
+            <div className="space-y-6">
+              {/* Header: Title & Price Row */}
+              <div className="flex justify-between items-start gap-4">
+                <div className="space-y-1.5 min-w-0">
+                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
+                    {t('scalePlanTitle')}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
+                    {t('scalePlanDesc')}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="flex items-baseline justify-end gap-1">
+                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+                      {billingCycle === 'annual' ? '$159' : '$199'}
+                    </span>
+                    <span className="text-xs font-bold text-[var(--text-secondary)]">
+                      {t('pricingPerMonth')}
+                    </span>
+                  </div>
+                  <div className="min-h-[18px] mt-0.5">
+                    {billingCycle === 'annual' ? (
+                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        $1,908 {t('billedYearlyNote')}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-[var(--border-subtle)] w-full" />
+
+              {/* Features List */}
+              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
+                <li className="flex items-center gap-2.5 min-h-[20px]">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('scaleFeat1')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 min-h-[20px]">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('scaleFeat2')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 min-h-[20px]">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('scaleFeat3')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 min-h-[20px]">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('scaleFeat4')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 min-h-[20px]">
+                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{t('scaleFeat5')}</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* CTA Button */}
+            <div className="pt-8">
+              {session?.user ? (
+                <Link
+                  href="/dashboard"
+                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <span>{t('goToDashboard')}</span>
+                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <Link
+                  href="/onboarding"
+                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <span>{t('startFreeTrial')}</span>
                   <ArrowRight24Filled className="w-3.5 h-3.5" />
                 </Link>
               )}

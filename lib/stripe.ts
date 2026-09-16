@@ -10,28 +10,58 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock_
 });
 
 export const AIRBOOK_PLANS = {
-  pro: {
-    name: 'Pro',
-    priceMonthly: 20,
-    priceYearly: 16,
+  solo: {
+    id: 'solo',
+    name: 'Solo Pro',
+    priceMonthly: 29,
+    priceYearly: 24,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_SOLO_MONTHLY || 'price_solo_monthly',
+    stripePriceIdYearly: process.env.STRIPE_PRICE_SOLO_YEARLY || 'price_solo_yearly',
     features: [
-      'Unlimited bookings per month',
-      'Bot-free appointment scheduling',
-      'AI Notes & Client Preferences',
-      'Upload client photos & intake forms',
+      'Unlimited client bookings & deposits',
+      'AI Receptionist & smart intake forms',
+      'Stripe Instant Payouts (+45 bps processing)',
       'Automated SMS & Email Reminders',
+      'Digital E-Sign waivers & medical forms',
     ],
   },
-  business: {
-    name: 'Business',
-    priceMonthly: 40,
-    priceYearly: 32,
+  team: {
+    id: 'team',
+    name: 'Team & Boutique',
+    priceMonthly: 79,
+    priceYearly: 64,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_TEAM_MONTHLY || 'price_team_monthly',
+    stripePriceIdYearly: process.env.STRIPE_PRICE_TEAM_YEARLY || 'price_team_yearly',
     features: [
-      'Everything in Pro, plus:',
-      'Custom branding on shared booking pages',
-      'Staff chair commission splitting',
-      'Multi-location support',
-      'Advanced POS & Deposit payouts',
+      'Everything in Solo Pro, plus:',
+      'Up to 10 staff members & chair commission splits',
+      'Multi-resource room & equipment scheduling',
+      'Retail inventory & automated low-stock POs',
+      'Loyalty memberships, packages & gift cards',
+      'Branded client booking portal & embed widget',
     ],
+  },
+  scale: {
+    id: 'scale',
+    name: 'Scale & Multi-Location',
+    priceMonthly: 199,
+    priceYearly: 159,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_SCALE_MONTHLY || 'price_scale_monthly',
+    stripePriceIdYearly: process.env.STRIPE_PRICE_SCALE_YEARLY || 'price_scale_yearly',
+    features: [
+      'Everything in Team, plus:',
+      'Unlimited locations & multi-salon dashboard',
+      'Custom White-Label domain with auto-SSL',
+      'Stripe Terminal card reader integration',
+      'HIPAA / KYC audit compliance ledger',
+      'Dedicated API access & webhook integrations',
+      '24/7 Priority Concierge migration support',
+    ],
+  },
+  get pro() {
+    return this.solo;
+  },
+  get business() {
+    return this.team;
   },
 };

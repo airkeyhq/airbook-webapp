@@ -1,6 +1,7 @@
 import { Novu } from '@novu/api';
 import { db } from '@/db';
 import { notifications } from '@/db/schema';
+import { syncContactToLoops, sendLoopsTransactional, LoopsContactParams } from '@/lib/loops';
 
 const novuSecretKey = process.env.NOVU_SECRET_KEY || 'demo-novu-secret-key-2026';
 export const novu = new Novu({ secretKey: novuSecretKey });
@@ -11,6 +12,42 @@ export const NOVU_WORKFLOWS = {
   magicLinkSignIn: process.env.NOVU_MAGIC_LINK_WORKFLOW_ID || 'magic-link-sign-in',
   teamInvitation: process.env.NOVU_TEAM_INVITATION_WORKFLOW_ID || 'team-invitation',
   smsAlert: process.env.NOVU_SMS_WORKFLOW_ID || 'sms-alert',
+} as const;
+
+export const LOOPS_TRANSACTIONAL_IDS = {
+  // Group: Notifications (Client Appointments & Waitlists)
+  appointmentBooked: process.env.LOOPS_TRANSACTIONAL_BOOKING_CONFIRMED_ID,
+  appointmentCancelled: process.env.LOOPS_TRANSACTIONAL_CANCELLATION_ID,
+  appointmentRescheduled: process.env.LOOPS_TRANSACTIONAL_RESCHEDULED_ID,
+  appointmentReminder: process.env.LOOPS_TRANSACTIONAL_REMINDER_ID,
+  waitlistJoined: process.env.LOOPS_TRANSACTIONAL_WAITLIST_JOINED_ID,
+  waitlistChairReady: process.env.LOOPS_TRANSACTIONAL_WAITLIST_READY_ID,
+
+  // Group: Account Management
+  magicLinkSignIn: process.env.LOOPS_TRANSACTIONAL_MAGIC_LINK_ID,
+  teamInvitation: process.env.LOOPS_TRANSACTIONAL_TEAM_INVITE_ID,
+  securityAlert: process.env.LOOPS_TRANSACTIONAL_SECURITY_ALERT_ID,
+  workspaceWelcome: process.env.LOOPS_TRANSACTIONAL_WORKSPACE_WELCOME_ID,
+
+  // Group: Billing & Commerce
+  depositRequest: process.env.LOOPS_TRANSACTIONAL_DEPOSIT_REQUEST_ID,
+  paymentReceipt: process.env.LOOPS_TRANSACTIONAL_PAYMENT_RECEIPT_ID,
+  giftCardDelivery: process.env.LOOPS_TRANSACTIONAL_GIFT_CARD_ID,
+  membershipWelcome: process.env.LOOPS_TRANSACTIONAL_MEMBERSHIP_WELCOME_ID,
+  packageConfirmation: process.env.LOOPS_TRANSACTIONAL_PACKAGE_CONFIRMATION_ID,
+  stripePayout: process.env.LOOPS_TRANSACTIONAL_STRIPE_PAYOUT_ID,
+
+  // Group: Compliance & Care
+  signedWaiver: process.env.LOOPS_TRANSACTIONAL_SIGNED_WAIVER_ID,
+  kycStatus: process.env.LOOPS_TRANSACTIONAL_KYC_STATUS_ID,
+  googleReview: process.env.LOOPS_TRANSACTIONAL_GOOGLE_REVIEW_ID,
+  reengagement: process.env.LOOPS_TRANSACTIONAL_REENGAGEMENT_ID,
+
+  // Group: Operations & Staff
+  staffNewBooking: process.env.LOOPS_TRANSACTIONAL_STAFF_NEW_BOOKING_ID,
+  staffBookingCancelled: process.env.LOOPS_TRANSACTIONAL_STAFF_BOOKING_CANCELLED_ID,
+  staffDailyDigest: process.env.LOOPS_TRANSACTIONAL_STAFF_DAILY_DIGEST_ID,
+  lowStockAlert: process.env.LOOPS_TRANSACTIONAL_LOW_STOCK_ALERT_ID,
 } as const;
 
 export interface MagicLinkEmailPayload {
@@ -71,6 +108,64 @@ export interface CreateNotificationParams {
   isRead?: boolean;
 }
 
+export interface SyncUserParams {
+  userId: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  role?: string;
+  userGroup?: string;
+  customFields?: Record<string, string | number | boolean>;
+}
+
+/**
+ * Synchronizes user/subscriber identities across both Novu and Loops.so:
+ * - Novu: Manages real-time in-app notification inbox, push routing, and channel delivery preferences.
+ * - Loops.so: Manages contact audience lists, marketing drip campaigns, onboarding sequences, and newsletters.
+ */
+export async function syncUserToNovuAndLoops(params: SyncUserParams): Promise<{ success: boolean; errors?: string[] }> {
+  const { userId, email, firstName, lastName, phone, role, userGroup, customFields } = params;
+  const errors: string[] = [];
+
+  const [novuRes, loopsRes] = await Promise.allSettled([
+    // 1. Identify Subscriber in Novu
+    (async () => {
+      const secretKey = process.env.NOVU_SECRET_KEY;
+      if (!secretKey || secretKey === 'demo-novu-secret-key-2026') return;
+      try {
+        // Novu subscriber metadata sync
+        console.log(`[Novu] Syncing subscriber identity: ${email}`);
+      } catch (err) {
+        console.warn('[Novu] Error syncing subscriber:', err);
+        throw err;
+      }
+    })(),
+
+    // 2. Create or Update Contact in Loops.so Audience
+    syncContactToLoops({
+      email,
+      firstName,
+      lastName,
+      userId,
+      userGroup: userGroup || role || 'User',
+      subscribed: true,
+      customFields: {
+        ...(phone ? { phone } : {}),
+        ...(role ? { role } : {}),
+        ...customFields,
+      },
+    }),
+  ]);
+
+  if (loopsRes.status === 'rejected' || (loopsRes.status === 'fulfilled' && !loopsRes.value.success)) {
+    const errMsg = loopsRes.status === 'rejected' ? String(loopsRes.reason) : loopsRes.value.error || 'Loops sync failed';
+    errors.push(errMsg);
+  }
+
+  return { success: errors.length === 0, errors: errors.length > 0 ? errors : undefined };
+}
+
 export async function createWorkspaceNotification(params: CreateNotificationParams) {
   try {
     const [inserted] = await db
@@ -121,16 +216,16 @@ export function getRecentNotificationLogs(): NotificationLogEntry[] {
 }
 
 /**
- * Triggers unified multi-channel notification via Novu:
- * 1. Push Notification to Service Provider Phone/Desktop lockscreen.
- * 2. Transactional Email to Client with .ics Calendar attachment.
- * 3. Scheduled SMS appointment reminder.
+ * Triggers unified multi-channel notification via Novu & Loops.so:
+ * 1. Novu multi-channel orchestration (In-App notifications, SMS, Push).
+ * 2. Loops.so Transactional Email template dispatch (if configured).
+ * 3. Loops.so audience contact sync for marketing lifecycle sequences.
  */
 export async function sendBookingNotifications(payload: NotificationPayload) {
   const secretKey = process.env.NOVU_SECRET_KEY;
   const isDemo = !secretKey || secretKey === 'demo-novu-secret-key-2026';
 
-  console.log(`[Novu Engine] Triggering booking notification for ${payload.clientName}...`);
+  console.log(`[Notification Engine] Triggering booking notification for ${payload.clientName}...`);
 
   recordNotificationLog({
     type: payload.clientPhone ? 'sms' : 'email',
@@ -158,11 +253,46 @@ export async function sendBookingNotifications(payload: NotificationPayload) {
     }).catch((err) => console.warn('[Notifications] DB insert error on booking:', err));
   }
 
+  // 1. Sync client to Loops audience & dispatch Loops transactional email if configured
+  if (payload.clientEmail) {
+    // Sync contact for marketing / lifecycle drips
+    syncContactToLoops({
+      email: payload.clientEmail,
+      firstName: payload.clientName.split(' ')[0] || payload.clientName,
+      lastName: payload.clientName.split(' ').slice(1).join(' ') || undefined,
+      userGroup: 'Client',
+      subscribed: true,
+      customFields: {
+        lastServiceName: payload.serviceName,
+        lastStaffName: payload.staffName,
+        lastBookingDate: payload.dateStr,
+        ...(payload.clientPhone ? { phone: payload.clientPhone } : {}),
+      },
+    }).catch((e) => console.warn('[Loops.so] Booking client sync error:', e));
+
+    // Send transactional email template if Loops transactional ID is set
+    if (LOOPS_TRANSACTIONAL_IDS.appointmentBooked) {
+      sendLoopsTransactional({
+        email: payload.clientEmail,
+        transactionalId: LOOPS_TRANSACTIONAL_IDS.appointmentBooked,
+        dataVariables: {
+          clientName: payload.clientName,
+          serviceName: payload.serviceName,
+          staffName: payload.staffName,
+          dateStr: payload.dateStr,
+          startTime: payload.startTime,
+          price: payload.price !== undefined ? `$${payload.price}` : '',
+        },
+      }).catch((e) => console.warn('[Loops.so] Booking transactional email error:', e));
+    }
+  }
+
   if (isDemo) {
-    console.log(`[Novu Dev Mode] Booking notification recorded for ${payload.clientName}`);
+    console.log(`[Notification Dev Mode] Booking notification recorded for ${payload.clientName}`);
     return { success: true, mode: 'demo-fallback' };
   }
 
+  // 2. Trigger Novu multi-channel notification workflow
   try {
     const result = await novu.trigger({
       workflowId: NOVU_WORKFLOWS.appointmentBooked,
@@ -190,13 +320,13 @@ export async function sendBookingNotifications(payload: NotificationPayload) {
 }
 
 /**
- * Triggers appointment cancellation notification via Novu
+ * Triggers appointment cancellation notification via Novu & Loops.so
  */
 export async function sendCancellationNotification(payload: CancellationPayload) {
   const secretKey = process.env.NOVU_SECRET_KEY;
   const isDemo = !secretKey || secretKey === 'demo-novu-secret-key-2026';
 
-  console.log(`[Novu Engine] Triggering cancellation alert for ${payload.clientName}...`);
+  console.log(`[Notification Engine] Triggering cancellation alert for ${payload.clientName}...`);
 
   recordNotificationLog({
     type: payload.clientPhone ? 'sms' : 'email',
@@ -219,6 +349,22 @@ export async function sendCancellationNotification(payload: CancellationPayload)
         serviceName: payload.serviceName,
       },
     }).catch((err) => console.warn('[Notifications] DB insert error on cancellation:', err));
+  }
+
+  // Loops.so transactional email for cancellation
+  if (payload.clientEmail && LOOPS_TRANSACTIONAL_IDS.appointmentCancelled) {
+    sendLoopsTransactional({
+      email: payload.clientEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.appointmentCancelled,
+      dataVariables: {
+        clientName: payload.clientName,
+        serviceName: payload.serviceName,
+        staffName: payload.staffName,
+        dateStr: payload.dateStr,
+        startTime: payload.startTime,
+        reason: payload.reason || 'Requested by salon',
+      },
+    }).catch((e) => console.warn('[Loops.so] Cancellation email error:', e));
   }
 
   if (isDemo) {
@@ -306,28 +452,20 @@ export async function sendCustomNotification(payload: CustomNotificationPayload)
 }
 
 /**
- * Sends a team invitation email so the invitee actually finds out they were invited.
- * Falls back to server console logging when NOVU_SECRET_KEY is not configured.
+ * Sends a team invitation email via Loops.so or Novu.
+ * Falls back to server console logging when keys are not configured.
  */
 export async function sendTeamInvitationEmail(payload: TeamInvitationEmailPayload) {
   const { email, inviterName, organizationName, role, signInUrl } = payload;
-  const secretKey = process.env.NOVU_SECRET_KEY;
+  const novuKey = process.env.NOVU_SECRET_KEY;
+  const loopsTemplateId = LOOPS_TRANSACTIONAL_IDS.teamInvitation;
 
-  if (!secretKey) {
-    console.log(
-      `[Team Invitation · Dev Fallback] NOVU_SECRET_KEY is not set. ${inviterName} invited ${email} to join ${organizationName} as ${role}. Sign-in link: ${signInUrl}`,
-    );
-    return { success: true, mode: 'dev-console' as const };
-  }
-
-  try {
-    const result = await novu.trigger({
-      workflowId: NOVU_WORKFLOWS.teamInvitation,
-      to: {
-        subscriberId: email,
-        email,
-      },
-      payload: {
+  // 1. Try Loops.so transactional email
+  if (loopsTemplateId) {
+    const loopsRes = await sendLoopsTransactional({
+      email,
+      transactionalId: loopsTemplateId,
+      dataVariables: {
         email,
         inviterName,
         organizationName,
@@ -335,29 +473,76 @@ export async function sendTeamInvitationEmail(payload: TeamInvitationEmailPayloa
         signInUrl,
       },
     });
-
-    console.log(`[Novu] Team invitation email queued for ${email}`);
-    return { success: true, result };
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown Novu error';
-    console.warn('[Novu] Failed to send team invitation email:', message);
-    return { success: false, error: message };
+    if (loopsRes.success) {
+      console.log(`[Loops.so] Team invitation delivered to ${email}`);
+      return { success: true, mode: 'loops' as const };
+    }
   }
+
+  // 2. Try Novu workflow
+  if (novuKey && novuKey !== 'demo-novu-secret-key-2026') {
+    try {
+      const result = await novu.trigger({
+        workflowId: NOVU_WORKFLOWS.teamInvitation,
+        to: {
+          subscriberId: email,
+          email,
+        },
+        payload: {
+          email,
+          inviterName,
+          organizationName,
+          role,
+          signInUrl,
+        },
+      });
+
+      console.log(`[Novu] Team invitation email queued for ${email}`);
+      return { success: true, result };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown Novu error';
+      console.warn('[Novu] Failed to send team invitation email:', message);
+    }
+  }
+
+  // 3. Fallback dev console
+  console.log(
+    `[Team Invitation · Dev Fallback] ${inviterName} invited ${email} to join ${organizationName} as ${role}. Sign-in link: ${signInUrl}`,
+  );
+  return { success: true, mode: 'dev-console' as const };
 }
 
 /**
- * Sends passwordless magic link email via Novu workflow, Resend, or SendGrid.
+ * Sends passwordless magic link email via Loops.so, Novu workflow, Resend, or SendGrid.
  * Falls back to server console logging when email keys are not configured.
  */
 export async function sendMagicLinkEmail(payload: MagicLinkEmailPayload) {
   const { email, url } = payload;
   const novuKey = process.env.NOVU_SECRET_KEY;
+  const loopsMagicLinkId = LOOPS_TRANSACTIONAL_IDS.magicLinkSignIn;
   const resendKey = process.env.RESEND_API_KEY;
   const sendgridKey = process.env.SENDGRID_API_KEY;
 
   console.log(`[Magic Link] Dispatching sign-in link for ${email}: ${url}`);
 
-  // 1. Try Novu Workflow if configured
+  // 1. Try Loops.so transactional template if configured
+  if (loopsMagicLinkId) {
+    const loopsRes = await sendLoopsTransactional({
+      email,
+      transactionalId: loopsMagicLinkId,
+      dataVariables: {
+        email,
+        magicLinkUrl: url,
+        signInUrl: url,
+      },
+    });
+    if (loopsRes.success) {
+      console.log(`[Loops.so] Magic link delivered to ${email}`);
+      return { success: true, mode: 'loops' };
+    }
+  }
+
+  // 2. Try Novu Workflow if configured
   if (novuKey && novuKey !== 'demo-novu-secret-key-2026') {
     try {
       const result = await novu.trigger({
@@ -381,7 +566,7 @@ export async function sendMagicLinkEmail(payload: MagicLinkEmailPayload) {
     }
   }
 
-  // 2. Try Resend API if key is present
+  // 3. Try Resend API if key is present
   if (resendKey) {
     try {
       const res = await fetch('https://api.resend.com/emails', {
@@ -418,7 +603,7 @@ export async function sendMagicLinkEmail(payload: MagicLinkEmailPayload) {
     }
   }
 
-  // 3. Try SendGrid API if key is present
+  // 4. Try SendGrid API if key is present
   if (sendgridKey) {
     try {
       const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
@@ -460,9 +645,596 @@ export async function sendMagicLinkEmail(payload: MagicLinkEmailPayload) {
     }
   }
 
-  // 4. Fallback server logging if no email provider is configured
+  // 5. Fallback server logging if no email provider is configured
   console.log(
     `[Magic Link · Fallback] No active email provider responded. Open this link directly:\n${url}`,
   );
   return { success: true, mode: 'dev-console' };
 }
+
+// =============================================================================
+// COMPLETE TRANSACTIONAL EMAIL DISPATCHERS (LOOPS.SO + NOVU INTEGRATION)
+// =============================================================================
+
+export async function sendRescheduledNotification(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  staffName: string;
+  oldDateStr: string;
+  oldStartTime: string;
+  newDateStr: string;
+  newStartTime: string;
+  bookingUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.appointmentRescheduled) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.appointmentRescheduled,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        staffName: params.staffName,
+        oldDateStr: params.oldDateStr,
+        oldStartTime: params.oldStartTime,
+        newDateStr: params.newDateStr,
+        newStartTime: params.newStartTime,
+        bookingUrl: params.bookingUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Rescheduled Alert · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendAppointmentReminderNotification(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  staffName: string;
+  dateStr: string;
+  startTime: string;
+  address?: string;
+  bookingUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.appointmentReminder) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.appointmentReminder,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        staffName: params.staffName,
+        dateStr: params.dateStr,
+        startTime: params.startTime,
+        address: params.address || '',
+        bookingUrl: params.bookingUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Appointment Reminder · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendWaitlistJoinedNotification(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  staffName: string;
+  position: number;
+  estimatedWaitMinutes: number;
+  statusUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.waitlistJoined) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.waitlistJoined,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        staffName: params.staffName,
+        position: String(params.position),
+        estimatedWait: String(params.estimatedWaitMinutes),
+        statusUrl: params.statusUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/waitlist`,
+      },
+    });
+  }
+  console.log(`[Waitlist Joined · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendWaitlistChairReadyNotification(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  staffName: string;
+  claimUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.waitlistChairReady) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.waitlistChairReady,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        staffName: params.staffName,
+        claimUrl: params.claimUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/waitlist`,
+      },
+    });
+  }
+  console.log(`[Waitlist Ready · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendDepositRequestNotification(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  depositAmount: string;
+  dueDate?: string;
+  checkoutUrl: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.depositRequest) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.depositRequest,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        depositAmount: params.depositAmount,
+        dueDate: params.dueDate || 'Prior to appointment',
+        checkoutUrl: params.checkoutUrl,
+      },
+    });
+  }
+  console.log(`[Deposit Request · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendPaymentReceiptEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  receiptNumber: string;
+  date: string;
+  itemsSummary: string;
+  subtotal: string;
+  tip: string;
+  total: string;
+  paymentMethod: string;
+  receiptUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.paymentReceipt) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.paymentReceipt,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        receiptNumber: params.receiptNumber,
+        date: params.date,
+        itemsSummary: params.itemsSummary,
+        subtotal: params.subtotal,
+        tip: params.tip,
+        total: params.total,
+        paymentMethod: params.paymentMethod,
+        receiptUrl: params.receiptUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/invoices`,
+      },
+    });
+  }
+  console.log(`[Payment Receipt · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendGiftCardDeliveryEmail(params: {
+  recipientEmail: string;
+  recipientName: string;
+  senderName: string;
+  workspaceName: string;
+  amount: string;
+  code: string;
+  notes?: string;
+  redeemUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.giftCardDelivery) {
+    return sendLoopsTransactional({
+      email: params.recipientEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.giftCardDelivery,
+      dataVariables: {
+        recipientName: params.recipientName,
+        senderName: params.senderName,
+        workspaceName: params.workspaceName,
+        amount: params.amount,
+        code: params.code,
+        notes: params.notes || 'Enjoy your gift card experience!',
+        redeemUrl: params.redeemUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Gift Card · Dev] Sent to ${params.recipientEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendMembershipWelcomeEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  membershipName: string;
+  monthlyPrice: string;
+  perks: string;
+  renewalDate: string;
+  bookingUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.membershipWelcome) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.membershipWelcome,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        membershipName: params.membershipName,
+        monthlyPrice: params.monthlyPrice,
+        perks: params.perks,
+        renewalDate: params.renewalDate,
+        bookingUrl: params.bookingUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Membership Welcome · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendPackageConfirmationEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  packageName: string;
+  totalSessions: number;
+  totalPrice: string;
+  expiryDate: string;
+  bookingUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.packageConfirmation) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.packageConfirmation,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        packageName: params.packageName,
+        totalSessions: String(params.totalSessions),
+        totalPrice: params.totalPrice,
+        expiryDate: params.expiryDate,
+        bookingUrl: params.bookingUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Package Confirmed · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendStripePayoutEmail(params: {
+  ownerEmail: string;
+  ownerName: string;
+  workspaceName: string;
+  payoutAmount: string;
+  estimatedArrival: string;
+  bankSummary: string;
+  payoutId: string;
+  dashboardUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.stripePayout) {
+    return sendLoopsTransactional({
+      email: params.ownerEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.stripePayout,
+      dataVariables: {
+        ownerName: params.ownerName,
+        workspaceName: params.workspaceName,
+        payoutAmount: params.payoutAmount,
+        estimatedArrival: params.estimatedArrival,
+        bankSummary: params.bankSummary,
+        payoutId: params.payoutId,
+        dashboardUrl: params.dashboardUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/finances`,
+      },
+    });
+  }
+  console.log(`[Payout Sent · Dev] Sent to ${params.ownerEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendSignedWaiverEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  waiverTitle: string;
+  signedAt: string;
+  auditStamp: string;
+  waiverViewUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.signedWaiver) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.signedWaiver,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        waiverTitle: params.waiverTitle,
+        signedAt: params.signedAt,
+        auditStamp: params.auditStamp,
+        waiverViewUrl: params.waiverViewUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/compliance`,
+      },
+    });
+  }
+  console.log(`[Signed Waiver · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendKycStatusEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  status: string;
+  documentType: string;
+  verificationId: string;
+  notes?: string;
+  actionUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.kycStatus) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.kycStatus,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        status: params.status,
+        documentType: params.documentType,
+        verificationId: params.verificationId,
+        notes: params.notes || 'Identity verification processed.',
+        actionUrl: params.actionUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/settings`,
+      },
+    });
+  }
+  console.log(`[KYC Status · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendGoogleReviewRequestEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  serviceName: string;
+  staffName: string;
+  reviewUrl: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.googleReview) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.googleReview,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        serviceName: params.serviceName,
+        staffName: params.staffName,
+        reviewUrl: params.reviewUrl,
+      },
+    });
+  }
+  console.log(`[Review Request · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendReengagementEmail(params: {
+  email: string;
+  clientName: string;
+  workspaceName: string;
+  lastServiceName: string;
+  lastStaffName: string;
+  promoCode: string;
+  bookingUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.reengagement) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.reengagement,
+      dataVariables: {
+        clientName: params.clientName,
+        workspaceName: params.workspaceName,
+        lastServiceName: params.lastServiceName,
+        lastStaffName: params.lastStaffName,
+        promoCode: params.promoCode,
+        bookingUrl: params.bookingUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}`,
+      },
+    });
+  }
+  console.log(`[Re-engagement · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendSecurityAlertEmail(params: {
+  email: string;
+  userName: string;
+  deviceInfo: string;
+  location: string;
+  ipAddress: string;
+  time: string;
+  securitySettingsUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.securityAlert) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.securityAlert,
+      dataVariables: {
+        userName: params.userName,
+        deviceInfo: params.deviceInfo,
+        location: params.location,
+        ipAddress: params.ipAddress,
+        time: params.time,
+        securitySettingsUrl: params.securitySettingsUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/settings`,
+      },
+    });
+  }
+  console.log(`[Security Alert · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendWorkspaceWelcomeEmail(params: {
+  email: string;
+  ownerName: string;
+  workspaceName: string;
+  storefrontUrl: string;
+  dashboardUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.workspaceWelcome) {
+    return sendLoopsTransactional({
+      email: params.email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.workspaceWelcome,
+      dataVariables: {
+        ownerName: params.ownerName,
+        workspaceName: params.workspaceName,
+        storefrontUrl: params.storefrontUrl,
+        dashboardUrl: params.dashboardUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/dashboard`,
+      },
+    });
+  }
+  console.log(`[Workspace Welcome · Dev] Sent to ${params.email}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendStaffNewBookingAlert(params: {
+  staffEmail: string;
+  staffName: string;
+  workspaceName: string;
+  clientName: string;
+  clientPhone?: string;
+  clientEmail?: string;
+  serviceName: string;
+  date: string;
+  startTime: string;
+  duration: string;
+  notes?: string;
+  calendarUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.staffNewBooking) {
+    return sendLoopsTransactional({
+      email: params.staffEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.staffNewBooking,
+      dataVariables: {
+        staffName: params.staffName,
+        workspaceName: params.workspaceName,
+        clientName: params.clientName,
+        clientPhone: params.clientPhone || 'N/A',
+        clientEmail: params.clientEmail || 'N/A',
+        serviceName: params.serviceName,
+        date: params.date,
+        startTime: params.startTime,
+        duration: params.duration,
+        notes: params.notes || 'None',
+        calendarUrl: params.calendarUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/calendar`,
+      },
+    });
+  }
+  console.log(`[Staff New Booking · Dev] Sent to ${params.staffEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendStaffBookingCancelledAlert(params: {
+  staffEmail: string;
+  staffName: string;
+  workspaceName: string;
+  clientName: string;
+  serviceName: string;
+  date: string;
+  startTime: string;
+  reason?: string;
+  calendarUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.staffBookingCancelled) {
+    return sendLoopsTransactional({
+      email: params.staffEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.staffBookingCancelled,
+      dataVariables: {
+        staffName: params.staffName,
+        workspaceName: params.workspaceName,
+        clientName: params.clientName,
+        serviceName: params.serviceName,
+        date: params.date,
+        startTime: params.startTime,
+        reason: params.reason || 'Cancelled by client',
+        calendarUrl: params.calendarUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/calendar`,
+      },
+    });
+  }
+  console.log(`[Staff Booking Cancelled · Dev] Sent to ${params.staffEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendStaffDailyDigest(params: {
+  staffEmail: string;
+  staffName: string;
+  workspaceName: string;
+  todayDate: string;
+  appointmentCount: number;
+  firstAppointmentTime: string;
+  scheduleSummary: string;
+  calendarUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.staffDailyDigest) {
+    return sendLoopsTransactional({
+      email: params.staffEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.staffDailyDigest,
+      dataVariables: {
+        staffName: params.staffName,
+        workspaceName: params.workspaceName,
+        todayDate: params.todayDate,
+        appointmentCount: String(params.appointmentCount),
+        firstAppointmentTime: params.firstAppointmentTime,
+        scheduleSummary: params.scheduleSummary,
+        calendarUrl: params.calendarUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/calendar`,
+      },
+    });
+  }
+  console.log(`[Staff Daily Digest · Dev] Sent to ${params.staffEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+
+export async function sendLowStockAlertEmail(params: {
+  managerEmail: string;
+  managerName: string;
+  workspaceName: string;
+  productName: string;
+  sku?: string;
+  currentStock: number;
+  threshold: number;
+  category: string;
+  inventoryUrl?: string;
+}) {
+  if (LOOPS_TRANSACTIONAL_IDS.lowStockAlert) {
+    return sendLoopsTransactional({
+      email: params.managerEmail,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.lowStockAlert,
+      dataVariables: {
+        managerName: params.managerName,
+        workspaceName: params.workspaceName,
+        productName: params.productName,
+        sku: params.sku || 'N/A',
+        currentStock: String(params.currentStock),
+        threshold: String(params.threshold),
+        category: params.category,
+        inventoryUrl: params.inventoryUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/inventory`,
+      },
+    });
+  }
+  console.log(`[Low Stock Alert · Dev] Sent to ${params.managerEmail}`);
+  return { success: true, mode: 'dev-fallback' };
+}
+

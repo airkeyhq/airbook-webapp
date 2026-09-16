@@ -116,6 +116,7 @@ export default function OnboardingPage() {
           slug: slugValue,
           businessType: selectedType || 'salon',
           ownerName: session?.user?.name || 'Owner',
+          email: session?.user?.email,
         }),
       });
       const data = await res.json();

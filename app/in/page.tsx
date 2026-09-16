@@ -8,12 +8,52 @@ import {
   Code24Regular,
   Grid24Regular,
   Server24Regular,
+  DocumentBulletList24Regular,
+  AppsListDetail24Regular,
+  Tag24Regular,
+  BuildingShop24Regular,
   ArrowRight24Filled,
   LockClosed24Regular,
 } from '@fluentui/react-icons';
 
 export default function InternalHubPage() {
   const internalModules = [
+    {
+      title: 'Attio-Style CRM & Sales Pipeline',
+      href: '/in/crm',
+      description: 'Relational CRM tracking salon inbound pilots, competitor replacements (Fresha, Vagaro, Boulevard), and Stripe Connect GMV activation.',
+      icon: BuildingShop24Regular,
+      accent: 'from-blue-500/20 to-cyan-500/20',
+      tag: 'Attio CRM',
+      badgeColor: 'text-cyan-500 border-cyan-500/20',
+    },
+    {
+      title: '100tasks Venture Building Framework',
+      href: '/in/100tasks',
+      description: 'Martin Bell’s 100-step venture blueprint to systematically validate, engineer, launch, and scale AirBook to market leadership.',
+      icon: DocumentBulletList24Regular,
+      accent: 'from-blue-600/20 to-indigo-600/20',
+      tag: '100 Tasks',
+      badgeColor: 'text-blue-500 border-blue-500/20',
+    },
+    {
+      title: 'Competitor Landscape & Feature Teardown',
+      href: '/in/competitors',
+      description: 'Deep teardown of 8 competitors (Fresha, Mindbody, Vagaro, Boulevard, Square) analyzing fee traps, dark patterns, and AirBook’s 10x moat.',
+      icon: AppsListDetail24Regular,
+      accent: 'from-emerald-600/20 to-teal-600/20',
+      tag: '8 Teardowns',
+      badgeColor: 'text-emerald-500 border-emerald-500/20',
+    },
+    {
+      title: 'Linear Roadmap & GitHub Issues',
+      href: '/in/roadmap',
+      description: 'Linear-inspired sprint cycles, milestone epics (v1.2 to v3.0), and bi-directional architecture specifications synced to the GitHub repository (airkeyhq/airbook-webapp).',
+      icon: Tag24Regular,
+      accent: 'from-purple-600/20 to-pink-600/20',
+      tag: 'GitHub Sync',
+      badgeColor: 'text-purple-500 border-purple-500/20',
+    },
     {
       title: 'Brand DAM & Visual Assets',
       href: '/in/brand',

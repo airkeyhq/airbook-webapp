@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const activeWorkspaceId = await getActiveWorkspaceId(workspaceId);
 
     if (type === 'subscription') {
-      const planKey = plan as 'pro' | 'business';
+      const planKey = (plan as keyof typeof AIRBOOK_PLANS) || 'team';
       const planConfig = AIRBOOK_PLANS[planKey];
       if (!planConfig) {
         return NextResponse.json({ error: 'Unknown plan selected.' }, { status: 400 });

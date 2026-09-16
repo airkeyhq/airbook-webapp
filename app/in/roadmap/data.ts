@@ -1,0 +1,695 @@
+export type IssueStatus = 'backlog' | 'todo' | 'in_progress' | 'in_review' | 'done';
+export type IssuePriority = 'urgent' | 'high' | 'medium' | 'low';
+
+export interface GitHubSpecRef {
+  title: string;
+  repoPath: string;
+  url: string;
+  section: string;
+  branch?: string;
+  commitSha?: string;
+}
+
+export interface RoadmapSubtask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+export interface RoadmapIssue {
+  id: string;
+  key: string; // e.g. AIR-101
+  title: string;
+  description: string;
+  milestone: string; // e.g. 'v2.3'
+  cycle: string; // e.g. 'Cycle 14'
+  status: IssueStatus;
+  priority: IssuePriority;
+  estimate: number; // Fibonacci story points (1, 2, 3, 5, 8)
+  assignee: {
+    name: string;
+    avatar: string;
+    role: string;
+  };
+  tags: string[];
+  githubSpec?: GitHubSpecRef;
+  subtasks: RoadmapSubtask[];
+}
+
+export interface MilestoneEpic {
+  id: string;
+  version: string;
+  name: string;
+  description: string;
+  status: 'released' | 'active' | 'upcoming' | 'planned';
+  progress: number;
+}
+
+export const MILESTONE_EPICS: MilestoneEpic[] = [
+  {
+    id: 'v1.2',
+    version: 'v1.2',
+    name: 'Core SaaS & Booking Studio',
+    description: 'Agnostic Client CRM, Calendar Grid, Express POS Checkout, and Services Catalog.',
+    status: 'released',
+    progress: 100,
+  },
+  {
+    id: 'v1.3',
+    version: 'v1.3',
+    name: 'Industry Add-ons & Brand DAM',
+    description: 'eSign liability waivers, HIPAA BAA audit logs, KYC biometrics, and Brand Studio.',
+    status: 'released',
+    progress: 100,
+  },
+  {
+    id: 'v2.0',
+    version: 'v2.0',
+    name: 'Enterprise Multi-Location',
+    description: 'Multi-branch provisioning, location switcher, and consolidated network revenue.',
+    status: 'released',
+    progress: 100,
+  },
+  {
+    id: 'v2.1',
+    version: 'v2.1',
+    name: 'Offline-First PWA & Web Push',
+    description: 'Service worker offline calendar caching, sync queue, and Web Push VAPID.',
+    status: 'released',
+    progress: 100,
+  },
+  {
+    id: 'v2.2',
+    version: 'v2.2',
+    name: 'White-Label Custom Domain CNAME',
+    description: 'Custom domain DNS verification, automated SSL certificates, and tenant routing.',
+    status: 'released',
+    progress: 100,
+  },
+  {
+    id: 'v2.3',
+    version: 'v2.3',
+    name: 'Stripe Terminal In-Person POS',
+    description: 'WisePad 3 hardware pairing, tap/chip/PIN payments, waitlists, and duration stacking.',
+    status: 'active',
+    progress: 85,
+  },
+  {
+    id: 'v2.4',
+    version: 'v2.4',
+    name: 'Marketing Automation & 2-Way SMS',
+    description: '2-way text reminders, Google review booster, recurring memberships, and cart recovery.',
+    status: 'upcoming',
+    progress: 45,
+  },
+  {
+    id: 'v2.5',
+    version: 'v2.5',
+    name: 'Inventory Barcode POS & Commission Splits',
+    description: 'Hardware barcode scanner, auto purchase orders, booth rent calculator, and tiered payroll.',
+    status: 'planned',
+    progress: 20,
+  },
+  {
+    id: 'v3.0',
+    version: 'v3.0',
+    name: 'AI Copilot & Agentic MCP Scheduling',
+    description: 'Autonomous voice phone agent, natural language re-booking, and dynamic yield pricing.',
+    status: 'planned',
+    progress: 15,
+  },
+];
+
+export const ROADMAP_ISSUES: RoadmapIssue[] = [
+  {
+    id: 'AIR-101',
+    key: 'AIR-101',
+    title: 'Implement Stripe Terminal WisePad 3 Reader Discovery & Pair',
+    description: 'Build Bluetooth/Internet discovery flow for Stripe Terminal WisePad 3 readers with connection token caching.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'done',
+    priority: 'urgent',
+    estimate: 5,
+    assignee: {
+      name: 'Eduardo & AI Team',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Lead Architect',
+    },
+    tags: ['Payments', 'Stripe Terminal', 'Hardware'],
+    githubSpec: {
+      title: 'Stripe Terminal Architecture & SDK Integration RFC',
+      repoPath: 'app/api/stripe/terminal/connection-token/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/stripe/terminal',
+      section: 'Hardware Pairing & Token Relay',
+      branch: 'main',
+      commitSha: 'a4e912c',
+    },
+    subtasks: [
+      { id: '1', title: 'Create /api/stripe/terminal/connection-token route', completed: true },
+      { id: '2', title: 'Build Reader Discovery modal UI in POS checkout drawer', completed: true },
+      { id: '3', title: 'Simulated reader mock for local dev testing', completed: true },
+    ],
+  },
+  {
+    id: 'AIR-102',
+    key: 'AIR-102',
+    title: 'Terminal Collect Payment & Reader Display Flow',
+    description: 'Send cart totals to paired physical terminal reader with instant tip prompting and receipt generation.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'high',
+    estimate: 8,
+    assignee: {
+      name: 'Core Engineering',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Payments Engineer',
+    },
+    tags: ['Payments', 'POS', 'Hardware'],
+    githubSpec: {
+      title: 'Card-Present Payment Processing Protocol',
+      repoPath: 'app/api/stripe/terminal/collect-payment/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/stripe/terminal',
+      section: 'PaymentIntent Capture & Tip Settlement',
+      branch: 'main',
+      commitSha: 'd8f201b',
+    },
+    subtasks: [
+      { id: '1', title: 'Create /api/stripe/terminal/collect-payment endpoint', completed: true },
+      { id: '2', title: 'Handle card tap/swipe fallback states', completed: true },
+      { id: '3', title: 'Print & email digital receipt integration', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-103',
+    key: 'AIR-103',
+    title: 'Custom Domain White-Label CNAME Automated SSL Engine',
+    description: 'Allow salons to point book.brand.com with automatic DNS resolution checks and edge routing.',
+    milestone: 'v2.2',
+    cycle: 'Cycle 13',
+    status: 'done',
+    priority: 'high',
+    estimate: 5,
+    assignee: {
+      name: 'Eduardo & AI Team',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Lead Architect',
+    },
+    tags: ['Infrastructure', 'DNS', 'White-Label'],
+    githubSpec: {
+      title: 'White-Label Multi-Tenant CNAME Routing Guide',
+      repoPath: 'middleware.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/blob/main/middleware.ts',
+      section: 'Automated Wildcard SSL & Edge Middleware',
+      branch: 'main',
+      commitSha: '7c3e109',
+    },
+    subtasks: [
+      { id: '1', title: 'Build /api/domain/configure & verify endpoints', completed: true },
+      { id: '2', title: 'Live DNS verification badge UI in settings', completed: true },
+      { id: '3', title: 'Multi-tenant host header rewriting in middleware', completed: true },
+    ],
+  },
+  {
+    id: 'AIR-104',
+    key: 'AIR-104',
+    title: 'Offline-First Service Worker & PWA Caching Layer',
+    description: 'Ensure salon calendar and appointment grid work seamlessly through salon internet dropouts.',
+    milestone: 'v2.1',
+    cycle: 'Cycle 13',
+    status: 'done',
+    priority: 'urgent',
+    estimate: 5,
+    assignee: {
+      name: 'Frontend Team',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Senior Frontend',
+    },
+    tags: ['PWA', 'Offline', 'Service Worker'],
+    githubSpec: {
+      title: 'Offline Architecture & Sync Queue RFC',
+      repoPath: 'public/sw.js',
+      url: 'https://github.com/airkeyhq/airbook-webapp/blob/main/public/sw.js',
+      section: 'IndexedDB Offline Cache & Sync Strategy',
+      branch: 'main',
+      commitSha: 'bf4091a',
+    },
+    subtasks: [
+      { id: '1', title: 'Register Service Worker in Next.js', completed: true },
+      { id: '2', title: 'Offline connection status pill in Header', completed: true },
+      { id: '3', title: 'Sync queue for offline created appointments', completed: true },
+    ],
+  },
+  {
+    id: 'AIR-105',
+    key: 'AIR-105',
+    title: 'AI Copilot & Natural Language Client Re-Booking Agent',
+    description: 'Enable autonomous AI voice and chat assistants to query calendar availability and book appointments via Model Context Protocol (MCP).',
+    milestone: 'v3.0',
+    cycle: 'Cycle 15',
+    status: 'todo',
+    priority: 'medium',
+    estimate: 8,
+    assignee: {
+      name: 'AI Engineering',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'AI Agent Architect',
+    },
+    tags: ['AI Agents', 'MCP', 'Voice'],
+    githubSpec: {
+      title: 'Model Context Protocol (MCP) AI Scheduling Specification',
+      repoPath: 'app/api/mcp/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/blob/main/app/api/mcp/route.ts',
+      section: 'Tool Calling & Natural Language Confirmation',
+      branch: 'feature/mcp-copilot',
+      commitSha: 'e21079d',
+    },
+    subtasks: [
+      { id: '1', title: 'Deploy /api/mcp tool registry', completed: true },
+      { id: '2', title: 'Implement availability tool handler', completed: false },
+      { id: '3', title: 'Twilio voice synthesis webhooks', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-106',
+    key: 'AIR-106',
+    title: 'Multi-Branch Location Switcher & Consolidated Analytics',
+    description: 'Allow multi-location salon franchises to toggle between branches and view rollup GMV.',
+    milestone: 'v2.0',
+    cycle: 'Cycle 12',
+    status: 'done',
+    priority: 'high',
+    estimate: 5,
+    assignee: {
+      name: 'Eduardo & AI Team',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Lead Architect',
+    },
+    tags: ['Franchise', 'Analytics', 'Multi-Location'],
+    githubSpec: {
+      title: 'Multi-Location Franchise Architecture',
+      repoPath: 'components/Header.tsx',
+      url: 'https://github.com/airkeyhq/airbook-webapp/blob/main/components/Header.tsx',
+      section: 'Rollup Analytics & Tenant Isolation',
+      branch: 'main',
+      commitSha: '3d902ac',
+    },
+    subtasks: [
+      { id: '1', title: 'Database branch provisioning schema', completed: true },
+      { id: '2', title: 'Header location switcher dropdown', completed: true },
+      { id: '3', title: 'Network revenue aggregation endpoint', completed: true },
+    ],
+  },
+  {
+    id: 'AIR-107',
+    key: 'AIR-107',
+    title: 'eSign Liability Waiver Signature Pad & Audit Trail',
+    description: 'Digital canvas signature pad for high-risk cosmetic and aesthetic procedures with SHA-256 consent logs.',
+    milestone: 'v1.3',
+    cycle: 'Cycle 11',
+    status: 'done',
+    priority: 'medium',
+    estimate: 3,
+    assignee: {
+      name: 'Product Team',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Product Engineer',
+    },
+    tags: ['Legal', 'eSign', 'Compliance'],
+    githubSpec: {
+      title: 'Digital Signature & Consent Audit Specification',
+      repoPath: 'components/ConsentSignaturePad.tsx',
+      url: 'https://github.com/airkeyhq/airbook-webapp/blob/main/components/ConsentSignaturePad.tsx',
+      section: 'Cryptographic Consent Verification',
+      branch: 'main',
+      commitSha: '9a138ff',
+    },
+    subtasks: [
+      { id: '1', title: 'HTML5 vector canvas signature pad component', completed: true },
+      { id: '2', title: 'Client CRM consent verification badge', completed: true },
+      { id: '3', title: 'Waiver audit log endpoint in /api/waivers', completed: true },
+    ],
+  },
+  {
+    id: 'AIR-108',
+    key: 'AIR-108',
+    title: 'Automated 2-Way SMS Reminders & Twilio Gateway Relay',
+    description: 'Send automated appointment confirmation text messages with 2-way client replies (C to confirm, R to reschedule).',
+    milestone: 'v2.4',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'urgent',
+    estimate: 5,
+    assignee: {
+      name: 'Marketing Systems',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Messaging Engineer',
+    },
+    tags: ['Marketing', 'SMS', 'Twilio'],
+    githubSpec: {
+      title: 'Twilio Programmable SMS Webhook Engine',
+      repoPath: 'app/api/campaigns/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/campaigns',
+      section: 'Two-Way SMS Relay & Keyword Parsers',
+      branch: 'feature/sms-engine',
+      commitSha: 'b712c90',
+    },
+    subtasks: [
+      { id: '1', title: 'Twilio 10DLC registration flow and webhook endpoints', completed: true },
+      { id: '2', title: 'Incoming SMS keyword parser ("C" -> confirmed status)', completed: true },
+      { id: '3', title: 'Custom SMS template editor with tags ({client}, {time})', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-109',
+    key: 'AIR-109',
+    title: 'Automated 5-Star Google Reviews Booster & Reputation Engine',
+    description: 'Automatically trigger Google Maps review invites 2 hours post-checkout with sentiment filtering to protect public ratings.',
+    milestone: 'v2.4',
+    cycle: 'Cycle 14',
+    status: 'todo',
+    priority: 'high',
+    estimate: 5,
+    assignee: {
+      name: 'Growth Engineering',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Growth Lead',
+    },
+    tags: ['Growth', 'Google Reviews', 'Reputation'],
+    githubSpec: {
+      title: 'Google Places API & Post-Checkout Review Automation',
+      repoPath: 'app/api/notifications/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/notifications',
+      section: 'Post-Appointment Feedback Loop',
+      branch: 'feature/google-reviews',
+      commitSha: 'c8021da',
+    },
+    subtasks: [
+      { id: '1', title: 'Google Business Profile Place ID link resolver', completed: true },
+      { id: '2', title: 'Post-service cron job trigger (2h post checkout)', completed: false },
+      { id: '3', title: 'Internal NPS feedback gate for <4 star responses', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-110',
+    key: 'AIR-110',
+    title: 'Hardware Barcode SKU Scanner & Automated Purchase Order Engine',
+    description: 'Integrate physical USB/Bluetooth 1D/2D barcode scanners for instant product retail checkout and automatic reorder thresholds.',
+    milestone: 'v2.5',
+    cycle: 'Cycle 15',
+    status: 'todo',
+    priority: 'medium',
+    estimate: 8,
+    assignee: {
+      name: 'POS & Hardware Team',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Hardware Specialist',
+    },
+    tags: ['Inventory', 'Hardware', 'Retail POS'],
+    githubSpec: {
+      title: 'WebHID / Keyboard Wedge Barcode Scanner Protocol',
+      repoPath: 'app/api/products/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/products',
+      section: 'SKU Barcode Input Buffers & Reorder Triggers',
+      branch: 'feature/barcode-scanner',
+      commitSha: 'f3189a0',
+    },
+    subtasks: [
+      { id: '1', title: 'Global keydown buffer listener for rapid barcode inputs', completed: true },
+      { id: '2', title: 'Low-stock threshold alerts with vendor PO generator', completed: false },
+      { id: '3', title: 'Backbar vs. Retail stock usage allocation breakdown', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-111',
+    key: 'AIR-111',
+    title: 'Tiered Commission Payroll & Booth Rent Split Calculator',
+    description: 'Dynamic tiered compensation engine supporting commission sliding scales (e.g., 50% up to $5k, 60% above), chair rent, and tip disbursements.',
+    milestone: 'v2.5',
+    cycle: 'Cycle 15',
+    status: 'backlog',
+    priority: 'high',
+    estimate: 8,
+    assignee: {
+      name: 'Eduardo & AI Team',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Lead Architect',
+    },
+    tags: ['Payroll', 'Commissions', 'Staff'],
+    githubSpec: {
+      title: 'Multi-Tier Commission Matrix & Payroll Export RFC',
+      repoPath: 'app/api/staff/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/staff',
+      section: 'Sliding Scale Calculation & Direct Payouts',
+      branch: 'feature/payroll-commission',
+      commitSha: 'e9920bf',
+    },
+    subtasks: [
+      { id: '1', title: 'Staff commission rules schema (service vs product rate)', completed: true },
+      { id: '2', title: 'Booth rent deduction ledger with automated due dates', completed: false },
+      { id: '3', title: 'Export to Gusto / QuickBooks payroll CSV format', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-112',
+    key: 'AIR-112',
+    title: 'Stripe Billing Recurring Memberships & Monthly Credit Sync',
+    description: 'Automated recurring monthly memberships (blowdry clubs, massage subscriptions) with automatic rollover credits.',
+    milestone: 'v2.4',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'high',
+    estimate: 5,
+    assignee: {
+      name: 'Payments Engineering',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Payments Lead',
+    },
+    tags: ['Memberships', 'Stripe Billing', 'Subscriptions'],
+    githubSpec: {
+      title: 'Stripe Subscriptions Webhook Handler & Credit Ledger',
+      repoPath: 'app/api/memberships/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/memberships',
+      section: 'Auto-Renewals & Member Perks Validation',
+      branch: 'main',
+      commitSha: 'd10283a',
+    },
+    subtasks: [
+      { id: '1', title: 'Stripe customer subscription creation flow', completed: true },
+      { id: '2', title: 'Invoice.paid webhook credit allocation handler', completed: true },
+      { id: '3', title: 'Member discount enforcement in POS checkout drawer', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-113',
+    key: 'AIR-113',
+    title: 'Digital Gift Card Balance Portal & Point-of-Sale QR Scanner',
+    description: 'Client self-service gift card balance lookups with instant Apple Wallet pass generation and in-store QR code redemption.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'medium',
+    estimate: 3,
+    assignee: {
+      name: 'Frontend Team',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Senior Frontend',
+    },
+    tags: ['Gift Cards', 'POS', 'Checkout'],
+    githubSpec: {
+      title: 'Gift Card Ledger & QR Code Verification API',
+      repoPath: 'app/api/gift-cards/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/gift-cards',
+      section: 'Secure Voucher Verification & Redemption',
+      branch: 'main',
+      commitSha: '89a2bc1',
+    },
+    subtasks: [
+      { id: '1', title: 'Digital gift card issuance endpoint and email template', completed: true },
+      { id: '2', title: 'Webcam / camera barcode QR code scanner component', completed: true },
+      { id: '3', title: 'Apple Wallet .pkpass downloadable generator', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-114',
+    key: 'AIR-114',
+    title: 'Direct Tap to Pay on iPhone Contactless Apple SDK Integration',
+    description: 'Enable iPhone devices to accept contactless cards and Apple Pay directly without external bluetooth reader hardware.',
+    milestone: 'v2.4',
+    cycle: 'Cycle 14',
+    status: 'todo',
+    priority: 'high',
+    estimate: 8,
+    assignee: {
+      name: 'Mobile Engineering',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'iOS Specialist',
+    },
+    tags: ['Tap to Pay', 'Apple', 'Mobile POS'],
+    githubSpec: {
+      title: 'Apple ProximityReader API & Stripe iOS SDK RFC',
+      repoPath: 'app/api/stripe/terminal/readers/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/stripe/terminal',
+      section: 'ProximityReader Entitlements & Session Linking',
+      branch: 'feature/tap-to-pay-ios',
+      commitSha: '4b7911c',
+    },
+    subtasks: [
+      { id: '1', title: 'Request Apple Tap to Pay Merchant Entitlement', completed: true },
+      { id: '2', title: 'Stripe Terminal Local Mobile iOS SDK integration', completed: false },
+      { id: '3', title: 'Zero-hardware fallback prompt in web checkout', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-115',
+    key: 'AIR-115',
+    title: 'Smart Service Duration Sequencing & Color Processing Time Gaps',
+    description: 'Allow stylists to book multiple overlapping clients during color development/processing time gaps automatically.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'urgent',
+    estimate: 5,
+    assignee: {
+      name: 'Eduardo & AI Team',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Lead Architect',
+    },
+    tags: ['Calendar', 'Sequencing', 'Salon UX'],
+    githubSpec: {
+      title: 'Service Duration Segmentation & Gap Scheduling Algorithm',
+      repoPath: 'app/api/availability/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/availability',
+      section: 'Split Block Appointment Math',
+      branch: 'main',
+      commitSha: '61a9bc2',
+    },
+    subtasks: [
+      { id: '1', title: 'Service segment schema (Prep, Processing, Finishing)', completed: true },
+      { id: '2', title: 'Slot calculator to open processing gaps for quick cuts', completed: true },
+      { id: '3', title: 'Visual split block rendering in Calendar Grid', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-116',
+    key: 'AIR-116',
+    title: 'Drop-In Waitlist Engine with Automated 10-Min Claim Broadcast',
+    description: 'When a cancellation occurs, instantly blast SMS notifications to waitlist clients with a 10-minute first-claim lock.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'high',
+    estimate: 5,
+    assignee: {
+      name: 'Product Engineering',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Product Engineer',
+    },
+    tags: ['Waitlist', 'Automation', 'SMS'],
+    githubSpec: {
+      title: 'Drop-In Waitlist Engine & Race-Condition Lock RFC',
+      repoPath: 'app/api/waitlists/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/waitlists',
+      section: 'Distributed Claim Locks & SMS Broadcast',
+      branch: 'main',
+      commitSha: 'a2099cc',
+    },
+    subtasks: [
+      { id: '1', title: 'Waitlist entry creation during full schedule view', completed: true },
+      { id: '2', title: 'Cancellation hook to identify top matching waitlist users', completed: true },
+      { id: '3', title: '10-minute atomic claim timer in public booking drawer', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-117',
+    key: 'AIR-117',
+    title: 'Abandoned Booking Cart SMS & Email Recovery Sequence',
+    description: 'Detect when potential clients abandon at date/staff selection and send a gentle SMS reminder within 30 minutes.',
+    milestone: 'v2.4',
+    cycle: 'Cycle 14',
+    status: 'todo',
+    priority: 'medium',
+    estimate: 5,
+    assignee: {
+      name: 'Growth Engineering',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Growth Lead',
+    },
+    tags: ['Growth', 'Cart Recovery', 'Marketing'],
+    githubSpec: {
+      title: 'Client Intent Tracking & Abandonment Recovery Webhooks',
+      repoPath: 'app/api/campaigns/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/campaigns',
+      section: 'Conversion Funnel & SMS Retargeting',
+      branch: 'feature/cart-recovery',
+      commitSha: '82109ab',
+    },
+    subtasks: [
+      { id: '1', title: 'Client phone capture at Step 1 of booking drawer', completed: true },
+      { id: '2', title: 'Redis scheduled delayed job for 30m recovery trigger', completed: false },
+      { id: '3', title: 'One-click magic resume link to cart state', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-118',
+    key: 'AIR-118',
+    title: 'Dynamic Yield & Peak-Hour Surge Pricing Engine',
+    description: 'Automatically adjust weekend/evening peak rates or offer off-peak promotional discounts based on real-time chair utilization.',
+    milestone: 'v3.0',
+    cycle: 'Cycle 15',
+    status: 'backlog',
+    priority: 'low',
+    estimate: 8,
+    assignee: {
+      name: 'AI Engineering',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Pricing Algorithm Lead',
+    },
+    tags: ['Dynamic Pricing', 'AI', 'Revenue Optimization'],
+    githubSpec: {
+      title: 'Yield Management & Dynamic Slot Pricing Algorithm',
+      repoPath: 'app/api/services/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/services',
+      section: 'Utilization-Based Pricing Multipliers',
+      branch: 'feature/yield-pricing',
+      commitSha: '1a908be',
+    },
+    subtasks: [
+      { id: '1', title: 'Peak hour definition rules in service settings', completed: false },
+      { id: '2', title: 'Dynamic multiplier calculation in availability API', completed: false },
+      { id: '3', title: 'Transparent surge pricing disclosure badge in booking UI', completed: false },
+    ],
+  },
+  {
+    id: 'AIR-119',
+    key: 'AIR-119',
+    title: 'Client Self-Service Reschedule Portal & Late Cancellation Shield',
+    description: 'Clients can reschedule or cancel appointments up to salon policy window (e.g. 24h) with automated no-show card fee capture.',
+    milestone: 'v2.3',
+    cycle: 'Cycle 14',
+    status: 'in_progress',
+    priority: 'urgent',
+    estimate: 5,
+    assignee: {
+      name: 'Frontend & Payments',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      role: 'Senior Fullstack',
+    },
+    tags: ['Self-Service', 'No-Show Shield', 'Stripe'],
+    githubSpec: {
+      title: 'Self-Service Booking Management & Cancellation Fee Protocol',
+      repoPath: 'app/api/appointments/route.ts',
+      url: 'https://github.com/airkeyhq/airbook-webapp/tree/main/app/api/appointments',
+      section: 'Policy Enforcement & Off-Session Payment Capture',
+      branch: 'main',
+      commitSha: '7f9104b',
+    },
+    subtasks: [
+      { id: '1', title: 'Magic link authenticated self-service booking portal', completed: true },
+      { id: '2', title: 'Cancellation policy countdown timer enforcement', completed: true },
+      { id: '3', title: 'Off-session Stripe card payment intent capture for late fee', completed: false },
+    ],
+  },
+];
+

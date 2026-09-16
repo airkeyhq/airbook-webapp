@@ -32,7 +32,8 @@ export async function GET(req: Request) {
 
     const dayOfWeek = new Date(`${dateStr}T00:00:00`).getDay();
     const now = new Date();
-    const isToday = dateStr === now.toISOString().slice(0, 10);
+    const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const isToday = dateStr === todayLocal;
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
     // Helper to compute slots for a single staff member
