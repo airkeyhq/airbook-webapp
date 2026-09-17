@@ -14,10 +14,20 @@ import {
   BuildingShop24Regular,
   ArrowRight24Filled,
   LockClosed24Regular,
+  Sparkle24Regular,
 } from '@fluentui/react-icons';
 
 export default function InternalHubPage() {
   const internalModules = [
+    {
+      title: 'Founding Client Pilot Approvals',
+      href: '/in/founding',
+      description: 'Review and qualify incoming Founding Client applications, score pilot readiness, schedule alignment calls with Maria, and activate 2-month free workspaces.',
+      icon: Sparkle24Regular,
+      accent: 'from-sky-500/20 to-blue-500/20',
+      tag: 'Founding Cohort',
+      badgeColor: 'text-[#2BB5FF] border-[#2BB5FF]/30',
+    },
     {
       title: 'Attio-Style CRM & Sales Pipeline',
       href: '/in/crm',

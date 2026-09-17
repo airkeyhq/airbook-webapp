@@ -23,6 +23,7 @@ import {
   Checkmark24Filled,
   SignOut24Filled,
   Settings24Filled,
+  Sparkle24Regular,
 } from '@fluentui/react-icons';
 
 interface InternalModuleOption {
@@ -53,6 +54,13 @@ export default function InternalConsoleLayout({
   const userAvatar = getAvatarUrl(userName, session?.user?.image, '#007AFF');
 
   const internalModules: InternalModuleOption[] = [
+    {
+      href: '/in/founding',
+      label: 'Founding Clients',
+      sublabel: '2M Free Pilot Approvals',
+      icon: Sparkle24Regular,
+      badge: '2M Free',
+    },
     {
       href: '/in/crm',
       label: t('crmModuleNavLabel'),

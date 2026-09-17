@@ -182,3 +182,60 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const body = await req.json().catch(() => ({}));
+    const { id, status, internalNotes, qualificationScore } = body;
+
+    if (!id || typeof id !== 'string') {
+      return NextResponse.json({ error: 'Application ID is required.' }, { status: 400 });
+    }
+
+    const updates: Record<string, any> = {
+      updatedAt: new Date(),
+    };
+
+    if (status !== undefined) updates.status = String(status);
+    if (internalNotes !== undefined) updates.internalNotes = String(internalNotes);
+    if (qualificationScore !== undefined) updates.qualificationScore = Number(qualificationScore);
+
+    const [updatedApp] = await db
+      .update(foundingApplications)
+      .set(updates)
+      .where(eq(foundingApplications.id, id))
+      .returning();
+
+    if (!updatedApp) {
+      return NextResponse.json({ error: 'Application not found.' }, { status: 404 });
+    }
+
+    // Sync status change to Loops if approved
+    if (status === 'approved') {
+      try {
+        await sendLoopsEvent({
+          email: updatedApp.email,
+          eventName: 'founding_client_approved',
+          eventProperties: {
+            businessName: updatedApp.businessName,
+            status: 'approved',
+          },
+        });
+      } catch (loopsErr) {
+        console.warn('Loops status event warning:', loopsErr);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      application: updatedApp,
+    });
+  } catch (error: any) {
+    console.error('Error updating founding application:', error);
+    return NextResponse.json(
+      { error: 'Failed to update application.' },
+      { status: 500 }
+    );
+  }
+}
+
