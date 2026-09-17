@@ -533,3 +533,32 @@ export const notifications = pgTable('notifications', {
   isRead: boolean('is_read').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// =============================================================================
+// MODULE 16: FOUNDING CLIENT PROGRAM (2 MONTHS FREE ONBOARDING)
+// =============================================================================
+
+export const foundingApplications = pgTable('founding_applications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 50 }).notNull(),
+  businessName: text('business_name').notNull(),
+  businessType: varchar('business_type', { length: 50 }).notNull(), // 'hair_salon' | 'barbershop' | 'spa_wellness' | 'medspa' | 'nails' | 'other'
+  city: text('city').notNull(),
+  country: varchar('country', { length: 10 }).default('MX').notNull(),
+  instagramUrl: text('instagram_url'),
+  websiteUrl: text('website_url'),
+  staffCount: integer('staff_count').default(1).notNull(),
+  monthlyAppointments: varchar('monthly_appointments', { length: 50 }).default('50-150').notNull(),
+  currentSoftware: varchar('current_software', { length: 100 }).default('pen_paper').notNull(),
+  primaryPainPoint: text('primary_pain_point'),
+  feedbackCommitment: varchar('feedback_commitment', { length: 50 }).default('biweekly').notNull(), // 'weekly' | 'biweekly' | 'monthly'
+  status: varchar('status', { length: 30 }).default('pending').notNull(), // 'pending' | 'under_review' | 'call_scheduled' | 'approved' | 'rejected' | 'activated'
+  qualificationScore: integer('qualification_score').default(0).notNull(),
+  internalNotes: text('internal_notes'),
+  locale: varchar('locale', { length: 10 }).default('es').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+

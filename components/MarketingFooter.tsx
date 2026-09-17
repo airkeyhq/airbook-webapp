@@ -144,6 +144,12 @@ export const MarketingFooter: React.FC = () => {
               <li><Link href="/platform/integrations" className="hover:text-[var(--text-primary)] transition-colors">{t('navIntegrations')}</Link></li>
               <li><Link href="/platform/reminders" className="hover:text-[var(--text-primary)] transition-colors">{t('navSmsReminders')}</Link></li>
               <li><Link href="/platform/deposit-protection" className="hover:text-[var(--text-primary)] transition-colors">{t('navDepositSecurity')}</Link></li>
+              <li>
+                <Link href="/founding" className="hover:text-[var(--text-primary)] inline-flex items-center gap-1.5 transition-colors">
+                  <span>{t('foundingNav')}</span>
+                  <span className="px-1.5 py-0.2 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] text-[9px] font-black">2M FREE</span>
+                </Link>
+              </li>
               <li><Link href="/blog" className="hover:text-[var(--text-primary)] transition-colors">{t('blog')}</Link></li>
               <li><Link href="/help" className="hover:text-[var(--text-primary)] transition-colors">{t('navHelpCenterTitle')}</Link></li>
               <li>

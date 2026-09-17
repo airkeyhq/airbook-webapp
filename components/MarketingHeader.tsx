@@ -425,6 +425,17 @@ export const MarketingHeader: React.FC = () => {
             >
               {t('pricingNav')}
             </Link>
+
+            {/* 5. FOUNDING PROGRAM LINK */}
+            <Link
+              href="/founding"
+              className="px-3.5 py-2 rounded-2xl hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]/60 transition-all flex items-center gap-1.5"
+            >
+              <span>{t('foundingNav')}</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] text-[9px] font-black uppercase whitespace-nowrap">
+                2M Free
+              </span>
+            </Link>
           </nav>
 
           {/* Right Controls: Flag Language Switcher + Fast Action CTAs */}
@@ -645,6 +656,21 @@ export const MarketingHeader: React.FC = () => {
                       className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] col-span-2"
                     >
                       Data Protection
+                    </Link>
+
+                    {/* Founding Client Banner in Mobile Menu */}
+                    <Link
+                      href="/founding"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-3.5 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/25 text-xs font-bold text-[#0284C7] dark:text-[#2BB5FF] col-span-2 flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                        <span>{t('foundingNav')}</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase">
+                        2M Free
+                      </span>
                     </Link>
                   </div>
                 </div>
