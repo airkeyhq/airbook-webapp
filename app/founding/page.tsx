@@ -259,14 +259,13 @@ export default function FoundingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4"
           >
-            <button
-              type="button"
-              onClick={scrollToForm}
+            <Link
+              href="/founding/form"
               className="btn-primary w-full sm:w-auto h-12 px-6 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
               <span>{t('foundingCtaApply')}</span>
               <ArrowRight24Filled className="w-4 h-4" />
-            </button>
+            </Link>
             <button
               type="button"
               onClick={scrollToForm}
