@@ -63,12 +63,15 @@ import {
   Money24Regular,
 } from '@fluentui/react-icons';
 import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
+import { PlanGate } from '@/components/PlanGate';
+import { normalizePlanTier, getPlanLimits, AIRBOOK_PLAN_DEFINITIONS } from '@/lib/plans';
 
-type SettingsTab = 'profile' | 'workspace' | 'mcp' | 'locations' | 'domain' | 'addons' | 'compliance';
+type SettingsTab = 'profile' | 'workspace' | 'billing' | 'mcp' | 'locations' | 'domain' | 'addons' | 'compliance';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Filled },
   { id: 'workspace', labelKey: 'workspace', icon: Building24Filled },
+  { id: 'billing', labelKey: 'tabBilling', icon: Payment24Filled },
   { id: 'mcp', labelKey: 'tabMCP', icon: Sparkle24Filled },
   { id: 'locations', labelKey: 'tabLocations', icon: Location24Filled },
   { id: 'domain', labelKey: 'tabDomain', icon: Globe24Filled },
@@ -135,10 +138,14 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
 
 export const SettingsModule: React.FC = () => {
   const {
+    workspaceId,
     workspaceName,
     setWorkspaceName,
     staffMembers,
     workspaceSlug,
+    workspacePlan,
+    subscriptionStatus,
+    openPricingModal,
     addons,
     toggleAddon,
     isBetaAccess,
@@ -224,6 +231,28 @@ export const SettingsModule: React.FC = () => {
   const [pushDeskArrivals, setPushDeskArrivals] = useState(true);
   const [pushPermission, setPushPermission] = useState<string>('default');
   const [isSendingTestNotif, setIsSendingTestNotif] = useState(false);
+  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
+
+  const handleOpenBillingPortal = async () => {
+    setIsOpeningPortal(true);
+    try {
+      const res = await fetch('/api/payments/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workspaceId }),
+      });
+      const data = await res.json();
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      addToast(data?.error || t('somethingWentWrong'), 'error');
+    } catch {
+      addToast(t('somethingWentWrong'), 'error');
+    } finally {
+      setIsOpeningPortal(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
@@ -1316,7 +1345,155 @@ export const SettingsModule: React.FC = () => {
           </motion.div>
         )}
 
+        {/* ─── TAB: BILLING & SUBSCRIPTION ─── */}
+        {activeTab === 'billing' && (() => {
+          const tier = normalizePlanTier(workspacePlan);
+          const planInfo = AIRBOOK_PLAN_DEFINITIONS[tier];
+          const limits = getPlanLimits(tier);
 
+          const statusDisplay = subscriptionStatus === 'active'
+            ? t('statusActive')
+            : subscriptionStatus === 'trialing'
+            ? t('statusTrialing')
+            : subscriptionStatus === 'past_due'
+            ? t('statusPastDue')
+            : subscriptionStatus === 'canceled'
+            ? t('statusCanceled')
+            : t('statusFree');
+
+          return (
+            <motion.div
+              key="billing"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-6"
+            >
+              {/* Header Title & Desc */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-[var(--text-primary)] flex items-center gap-2">
+                    <Payment24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                    <span>{t('billingSettingsTitle')}</span>
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                    {t('billingSettingsDesc')}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={openPricingModal}
+                    className="btn-primary text-xs font-black px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    <Sparkle24Filled className="w-3.5 h-3.5" />
+                    <span>{t('changePlanBtn')}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Current Active Plan Card */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] relative overflow-hidden shadow-xs space-y-6">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                        {t('currentPlanLabel')}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        {statusDisplay}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] tracking-tight">
+                      {planInfo.name}
+                    </h2>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium">
+                      {tier === 'free' ? '$0 / mo' : `$${planInfo.priceMonthly} / mo (${t('billedYearlyNote')}: $${planInfo.priceYearly}/mo)`}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <button
+                      type="button"
+                      disabled={isOpeningPortal}
+                      onClick={handleOpenBillingPortal}
+                      className="btn-secondary text-xs font-bold px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Open24Filled className="w-3.5 h-3.5" />
+                      <span>{isOpeningPortal ? t('redirectingToStripe') : t('manageBillingPortal')}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[var(--text-muted)] border-t border-[var(--border-subtle)] pt-4 leading-relaxed">
+                  {t('manageBillingPortalSub')}
+                </p>
+              </div>
+
+              {/* Resource Quotas & Included Features Grid */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)]">
+                  {t('planUsageTitle')}
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {/* Staff Quota Meter */}
+                  <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[var(--text-secondary)]">{t('staffQuotaLabel')}</span>
+                      <span className="font-mono font-black text-[var(--text-primary)]">
+                        {staffMembers.length} / {limits.maxStaff === Infinity ? t('unlimited') : limits.maxStaff}
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                      <div
+                        className="h-full bg-[#2BB5FF] rounded-full transition-all"
+                        style={{
+                          width: `${Math.min(100, (staffMembers.length / (limits.maxStaff === Infinity ? staffMembers.length || 1 : limits.maxStaff)) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location Quota Meter */}
+                  <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[var(--text-secondary)]">{t('locationsQuotaLabel')}</span>
+                      <span className="font-mono font-black text-[var(--text-primary)]">
+                        {locations.length || 1} / {limits.maxLocations === Infinity ? t('unlimited') : limits.maxLocations}
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 rounded-full transition-all"
+                        style={{
+                          width: `${Math.min(100, ((locations.length || 1) / (limits.maxLocations === Infinity ? locations.length || 1 : limits.maxLocations)) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* SMS Credits Quota */}
+                  <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[var(--text-secondary)]">SMS Credits / Mo</span>
+                      <span className="font-mono font-black text-[var(--text-primary)]">
+                        {limits.smsCreditsPerMonth}
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
+                      <div className="h-full bg-purple-500 rounded-full w-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })()}
 
         {/* ─── TAB: ADD-ONS ─── */}
         {activeTab === 'addons' && (() => {
@@ -1632,7 +1809,9 @@ export const SettingsModule: React.FC = () => {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
           >
-            <MCPStudio />
+            <PlanGate feature="api_keys">
+              <MCPStudio />
+            </PlanGate>
           </motion.div>
         )}
 
@@ -1645,7 +1824,9 @@ export const SettingsModule: React.FC = () => {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
           >
-            <CustomDomainStudio />
+            <PlanGate feature="custom_domain">
+              <CustomDomainStudio />
+            </PlanGate>
           </motion.div>
         )}
 
@@ -1659,6 +1840,7 @@ export const SettingsModule: React.FC = () => {
             transition={{ duration: 0.15 }}
             className="space-y-6"
           >
+            <PlanGate feature="multi_location">
             {/* Header with Title and Primary Action CTA */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
               <div>
@@ -1799,6 +1981,7 @@ export const SettingsModule: React.FC = () => {
                 ))}
               </div>
             )}
+            </PlanGate>
           </motion.div>
         )}
       </AnimatePresence>

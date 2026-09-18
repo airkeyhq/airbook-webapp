@@ -22,7 +22,7 @@ export default function InternalHubPage() {
     {
       title: 'Founding Client Pilot Approvals',
       href: '/in/founding',
-      description: 'Review and qualify incoming Founding Client applications, score pilot readiness, schedule alignment calls with Maria, and activate 2-month free workspaces.',
+      description: 'Review and qualify incoming Founding Client applications, score pilot readiness, schedule alignment calls with Eduardo, and activate 2-month free workspaces.',
       icon: Sparkle24Regular,
       accent: 'from-sky-500/20 to-blue-500/20',
       tag: 'Founding Cohort',

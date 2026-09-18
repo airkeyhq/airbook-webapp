@@ -30,7 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export const DesktopHeader: React.FC = () => {
-  const { workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isPricingModalOpen, closePricingModal, lockPos } = useAirBookStore();
+  const { workspaceId, workspaceName, workspaceSlug, isSidebarCollapsed, toggleSidebar, isPricingModalOpen, closePricingModal, lockPos } = useAirBookStore();
   const { data: session } = useSession();
   const { t, language, setLanguage, availableLanguages } = useTranslation();
   const router = useRouter();
@@ -55,10 +55,16 @@ export const DesktopHeader: React.FC = () => {
     fetch('/api/workspaces')
       .then(res => res.json())
       .then(data => {
-        if (data.success) setWorkspaces(data.workspaces || []);
+        if (data.success && Array.isArray(data.workspaces)) {
+          setWorkspaces(data.workspaces);
+          const current = data.workspaces.find((w: any) => w.id === workspaceId) || data.workspaces[0];
+          if (current?.plan) {
+            useAirBookStore.getState().setWorkspacePlan(current.plan, current.subscriptionStatus);
+          }
+        }
       })
       .catch(err => console.error('Failed to fetch workspaces', err));
-  }, []);
+  }, [workspaceId]);
 
   useEffect(() => {
     setMounted(true);

@@ -630,6 +630,9 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         setAddSchedule(INITIAL_SCHEDULE);
         addToast(t('staffSpecialistAdded'), 'success');
         fetchStaff();
+      } else if (data.code === 'UPGRADE_REQUIRED' || res.status === 403) {
+        addToast(data.error || 'Plan limit reached. Upgrade to add more staff.', 'error');
+        useAirBookStore.getState().openPricingModal();
       } else {
         const updated = [...staffList, newStaffItem];
         setStaffList(updated);

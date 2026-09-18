@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { staff } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { staff, workspaces } from '@/db/schema';
+import { eq, desc, count } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { getPlanLimits } from '@/lib/plans';
 
 const DEFAULT_WORKING_HOURS = {
   monday: { enabled: true, start: '09:00', end: '18:00' },
@@ -82,6 +83,33 @@ export async function POST(req: Request) {
     }
 
     const activeWorkspaceId = await getActiveWorkspaceId(workspaceId);
+
+    // Enforce Plan Limits
+    const [ws] = await db
+      .select({ plan: workspaces.plan })
+      .from(workspaces)
+      .where(eq(workspaces.id, activeWorkspaceId))
+      .limit(1);
+
+    const limits = getPlanLimits(ws?.plan);
+    const [staffCountResult] = await db
+      .select({ count: count() })
+      .from(staff)
+      .where(eq(staff.workspaceId, activeWorkspaceId));
+
+    const currentStaffCount = Number(staffCountResult?.count || 0);
+    if (currentStaffCount >= limits.maxStaff) {
+      return NextResponse.json(
+        {
+          error: `Your current plan allows a maximum of ${limits.maxStaff} staff member(s). Upgrade to Team or Scale to add more team members.`,
+          code: 'UPGRADE_REQUIRED',
+          requiredTier: limits.maxStaff === 1 ? 'team' : 'scale',
+          currentCount: currentStaffCount,
+          maxAllowed: limits.maxStaff,
+        },
+        { status: 403 }
+      );
+    }
 
     const [newStaff] = await db
       .insert(staff)

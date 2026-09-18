@@ -580,7 +580,7 @@ export default function FoundingApplicationsAdminPage() {
                     </div>
                     <a
                       href={`https://wa.me/${selectedApp.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda Maria del equipo de AirBook México. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
+                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda Eduardo del equipo de AirBook México. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
                       )}`}
                       target="_blank"
                       rel="noreferrer"

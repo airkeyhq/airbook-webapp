@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { canAccessFeature } from '@/lib/plans';
 
 const CNAME_TARGET = 'cname.getairbook.com';
 const A_RECORD_TARGET = '76.76.21.21';
@@ -36,6 +37,19 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const { customDomain, workspaceId } = body;
     const wsId = await getActiveWorkspaceId(workspaceId);
+
+    const [ws] = await db.select().from(workspaces).where(eq(workspaces.id, wsId)).limit(1);
+
+    if (customDomain?.trim() && !canAccessFeature(ws?.plan, 'custom_domain')) {
+      return NextResponse.json(
+        {
+          error: 'Custom White-Label domain branding is exclusive to the Scale plan. Please upgrade to bind your own domain.',
+          code: 'UPGRADE_REQUIRED',
+          requiredTier: 'scale',
+        },
+        { status: 403 }
+      );
+    }
 
     if (!customDomain?.trim()) {
       // Clear custom domain

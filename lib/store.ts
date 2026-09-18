@@ -69,6 +69,9 @@ export interface AirBookState {
   setWorkspaceName: (name: string) => void;
   workspaceSlug: string;
   setWorkspaceSlug: (slug: string) => void;
+  workspacePlan: string;
+  subscriptionStatus: string;
+  setWorkspacePlan: (plan: string, status?: string) => void;
   businessType: string;
   setBusinessType: (type: string) => void;
 
@@ -473,6 +476,13 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   setWorkspaceName: (name) => set({ workspaceName: name }),
   workspaceSlug: 'glow-esthetics-studio',
   setWorkspaceSlug: (slug) => set({ workspaceSlug: slug }),
+  workspacePlan: 'solo',
+  subscriptionStatus: 'active',
+  setWorkspacePlan: (plan, status) =>
+    set((state) => ({
+      workspacePlan: plan || state.workspacePlan,
+      ...(status ? { subscriptionStatus: status } : {}),
+    })),
   businessType: 'salon',
   setBusinessType: (type) => set({ businessType: type }),
 

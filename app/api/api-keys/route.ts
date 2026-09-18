@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createApiKey, listApiKeys, revokeApiKey } from '@/lib/api-keys';
 import { db } from '@/db';
 import { workspaces } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import { canAccessFeature } from '@/lib/plans';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +49,23 @@ export async function POST(req: Request) {
 
     if (!name) {
       return NextResponse.json({ error: 'Key name is required.' }, { status: 400 });
+    }
+
+    const [ws] = await db
+      .select({ plan: workspaces.plan })
+      .from(workspaces)
+      .where(eq(workspaces.id, workspaceId))
+      .limit(1);
+
+    if (!canAccessFeature(ws?.plan, 'api_keys')) {
+      return NextResponse.json(
+        {
+          error: 'Developer API Keys and MCP access are exclusive to the Scale plan. Please upgrade your workspace to generate secret API keys.',
+          code: 'UPGRADE_REQUIRED',
+          requiredTier: 'scale',
+        },
+        { status: 403 }
+      );
     }
 
     const created = await createApiKey({

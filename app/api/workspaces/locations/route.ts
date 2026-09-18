@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { workspaces, staff, appointments } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { canAccessFeature } from '@/lib/plans';
 
 // GET /api/workspaces/locations - List all physical branch locations
 export async function GET(req: NextRequest) {
@@ -138,6 +139,17 @@ export async function POST(req: NextRequest) {
       .from(workspaces)
       .where(eq(workspaces.id, activeWorkspaceId))
       .limit(1);
+
+    if (!canAccessFeature(parentWs?.plan, 'multi_location')) {
+      return NextResponse.json(
+        {
+          error: 'Multi-location branch provisioning is exclusive to the Scale plan. Please upgrade to manage multiple locations.',
+          code: 'UPGRADE_REQUIRED',
+          requiredTier: 'scale',
+        },
+        { status: 403 }
+      );
+    }
 
     const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
 

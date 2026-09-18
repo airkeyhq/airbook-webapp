@@ -98,7 +98,11 @@ export default function DashboardPage() {
         .then((r) => r.json())
         .then((data) => {
           if (data?.success && Array.isArray(data.workspaces) && data.workspaces[0]?.id) {
-            setWorkspaceId(data.workspaces[0].id);
+            const firstWs = data.workspaces[0];
+            setWorkspaceId(firstWs.id);
+            if (firstWs.plan) {
+              useAirBookStore.getState().setWorkspacePlan(firstWs.plan, firstWs.subscriptionStatus);
+            }
           }
         })
         .catch((e) => console.warn('Failed to bootstrap workspace context:', e));

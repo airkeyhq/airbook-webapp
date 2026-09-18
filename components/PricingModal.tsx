@@ -2,198 +2,298 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AIRBOOK_PLANS } from '@/lib/stripe';
-import { CircleCloudIcon } from './Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
-import { Dismiss24Filled, Sparkle24Filled, Checkmark24Regular } from '@fluentui/react-icons';
+import { useAirBookStore } from '@/lib/store';
+import { normalizePlanTier, PlanTier } from '@/lib/plans';
+import {
+  Dismiss24Filled,
+  Sparkle24Filled,
+  Sparkle24Regular,
+  Checkmark24Regular,
+  ArrowRight24Filled,
+} from '@fluentui/react-icons';
 
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialPlan?: PlanTier;
 }
 
-export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
+export const PricingModal: React.FC<PricingModalProps> = ({
+  isOpen,
+  onClose,
+  initialPlan,
+}) => {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const { workspaceId, workspacePlan } = useAirBookStore();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSelectPlan = async (planKey: 'pro' | 'business') => {
+  const currentTier = normalizePlanTier(workspacePlan);
+
+  const handleSelectPlan = async (planKey: 'solo' | 'team' | 'scale') => {
     setLoadingPlan(planKey);
     try {
       const res = await fetch('/api/payments/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'subscription', plan: planKey, billingCycle }),
+        body: JSON.stringify({
+          type: 'subscription',
+          plan: planKey,
+          billingCycle,
+          workspaceId,
+        }),
       });
       const data = await res.json();
       if (data?.url) {
         window.location.href = data.url;
         return;
       }
-      addToast(data?.error || 'Could not start checkout. Please try again.', 'error');
+      addToast(data?.error || t('somethingWentWrong'), 'error');
     } catch (e) {
-      addToast('Could not start checkout. Please try again.', 'error');
+      addToast(t('somethingWentWrong'), 'error');
     } finally {
       setLoadingPlan(null);
     }
   };
 
+  const plans: {
+    key: 'solo' | 'team' | 'scale';
+    title: string;
+    desc: string;
+    priceMonthly: number;
+    priceYearly: number;
+    popular?: boolean;
+    features: string[];
+  }[] = [
+    {
+      key: 'solo',
+      title: t('soloPlanTitle'),
+      desc: t('soloPlanDesc'),
+      priceMonthly: 29,
+      priceYearly: 24,
+      features: [
+        t('soloFeat1'),
+        t('soloFeat2'),
+        t('soloFeat3'),
+        t('soloFeat4'),
+        t('soloFeat5'),
+      ],
+    },
+    {
+      key: 'team',
+      title: t('teamPlanTitle'),
+      desc: t('teamPlanDesc'),
+      priceMonthly: 79,
+      priceYearly: 64,
+      popular: true,
+      features: [
+        t('teamFeat1'),
+        t('teamFeat2'),
+        t('teamFeat3'),
+        t('teamFeat4'),
+        t('teamFeat5'),
+      ],
+    },
+    {
+      key: 'scale',
+      title: t('scalePlanTitle'),
+      desc: t('scalePlanDesc'),
+      priceMonthly: 199,
+      priceYearly: 159,
+      features: [
+        t('scaleFeat1'),
+        t('scaleFeat2'),
+        t('scaleFeat3'),
+        t('scaleFeat4'),
+        t('scaleFeat5'),
+      ],
+    },
+  ];
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
+      <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+        {/* Total Occlusion Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/60 backdrop-blur-md"
         />
 
-        {/* Modal Panel Container */}
+        {/* Modal Container */}
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
           transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full md:max-w-2xl bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-y-auto p-6 md:p-8"
+          className="relative w-full md:max-w-5xl bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[90vh] overflow-y-auto p-5 sm:p-8"
         >
-          {/* Mobile & Tablet Drag Handle */}
-          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-2 mb-4 md:hidden" />
+          {/* Mobile Drag Handle */}
+          <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto -mt-1 mb-4 md:hidden" />
 
           {/* Close Trigger */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
+            className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] cursor-pointer"
           >
             <Dismiss24Filled className="w-5 h-5" />
           </button>
 
-          {/* Logo & Header */}
-          <div className="text-center max-w-md mx-auto mb-6">
-            <div className="flex justify-center mb-3">
-              <CircleCloudIcon size={42} />
+          {/* Header */}
+          <div className="text-center max-w-xl mx-auto mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] text-[11px] font-black uppercase tracking-wider mb-2 border border-[#2BB5FF]/20">
+              <Sparkle24Filled className="w-3.5 h-3.5" />
+              <span>{t('pricingSubtitle')}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
+            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[var(--text-primary)]">
               {t('upgradePlan')}
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
-              Pick a plan that best suits you or your team. Upgrade or downgrade at any time.
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 font-medium leading-relaxed">
+              {t('pricingModalSubtitle')}
             </p>
 
-            {/* Monthly / Yearly Toggle with Amie Green Badge */}
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <span className={`text-xs font-semibold ${billingCycle === 'monthly' ? 'text-[var(--text-primary)]' : 'text-gray-400'}`}>
-                Bill monthly
-              </span>
-              
-              <button
-                onClick={() => setBillingCycle((b) => (b === 'monthly' ? 'yearly' : 'monthly'))}
-                className="w-12 h-6 rounded-full bg-black/10 dark:bg-white/15 p-1 flex items-center transition-colors"
-              >
-                <motion.div
-                  animate={{ x: billingCycle === 'yearly' ? 24 : 0 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  className="w-4 h-4 rounded-full bg-green-500 shadow-sm"
-                />
-              </button>
-
-              <div className="flex items-center gap-1.5">
-                <span className={`text-xs font-semibold ${billingCycle === 'yearly' ? 'text-[var(--text-primary)]' : 'text-gray-400'}`}>
-                  Bill yearly
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-green-500 text-white text-[9px] font-bold uppercase tracking-wider shadow-xs">
-                  GET 2 MONTHS FREE
-                </span>
+            {/* Monthly / Yearly Toggle */}
+            <div className="mt-5 flex items-center justify-center">
+              <div className="inline-flex items-center p-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                    billingCycle === 'monthly'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {t('billingMonthly')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingCycle === 'yearly'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <span>{t('billingAnnual')}</span>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {t('saveTwoMonths')}
+                  </span>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Plan Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Pro Plan */}
-            <div className="p-5 rounded-3xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 flex flex-col justify-between hover:border-black/20 transition-all">
-              <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-[var(--text-primary)]">Pro</h3>
-                  <span className="text-[10px] font-mono text-gray-400">
-                    Billed {billingCycle}
-                  </span>
+          {/* 3-Plan Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+            {plans.map((p) => {
+              const isCurrent = currentTier === p.key;
+              const displayPrice = billingCycle === 'yearly' ? p.priceYearly : p.priceMonthly;
+
+              return (
+                <div
+                  key={p.key}
+                  className={`p-6 rounded-3xl border transition-all flex flex-col justify-between relative ${
+                    p.popular
+                      ? 'border-2 border-[#2BB5FF] bg-blue-50/20 dark:bg-blue-950/10 shadow-lg ring-2 ring-[#2BB5FF]/20'
+                      : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-[#2BB5FF]/40'
+                  }`}
+                >
+                  {/* Floating Top Badge */}
+                  {p.popular && (
+                    <div className="absolute -top-3 left-6 z-20">
+                      <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase tracking-wider shadow-sm border border-white/40">
+                        <Sparkle24Regular className="w-3 h-3 text-white" />
+                        {t('mostPopular')}
+                      </span>
+                    </div>
+                  )}
+
+                  {isCurrent && (
+                    <div className="absolute -top-3 right-6 z-20">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
+                        {t('activePlanBadge')}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    {/* Title & Description */}
+                    <div>
+                      <h3 className="text-base font-black text-[var(--text-primary)]">
+                        {p.title}
+                      </h3>
+                      <p className="text-[11px] text-[var(--text-secondary)] font-medium mt-0.5 min-h-[32px]">
+                        {p.desc}
+                      </p>
+                    </div>
+
+                    {/* Price Row */}
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl sm:text-4xl font-black text-[var(--text-primary)] font-mono">
+                          ${displayPrice}
+                        </span>
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                          {t('pricingPerMonth')}
+                        </span>
+                      </div>
+                      <div className="min-h-[16px] mt-0.5">
+                        {billingCycle === 'yearly' && (
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            ${displayPrice * 12} {t('billedYearlyNote')}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="h-px bg-[var(--border-subtle)] w-full" />
+
+                    {/* Feature List */}
+                    <ul className="space-y-2.5 text-xs text-[var(--text-secondary)] font-semibold">
+                      {p.features.map((feat, i) => (
+                        <li key={i} className="flex items-start gap-2 min-h-[18px]">
+                          <Checkmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-[11px] leading-tight">{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="pt-6">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={loadingPlan !== null || isCurrent}
+                      onClick={() => handleSelectPlan(p.key)}
+                      className={`w-full h-11 rounded-2xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer ${
+                        p.popular ? 'btn-primary' : 'btn-secondary'
+                      } ${isCurrent ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    >
+                      {loadingPlan === p.key ? (
+                        <span>{t('redirectingToStripe')}</span>
+                      ) : isCurrent ? (
+                        <span>{t('currentPlanBadge')}</span>
+                      ) : (
+                        <>
+                          <span>{t('selectPlanBtn')}</span>
+                          <ArrowRight24Filled className="w-3.5 h-3.5" />
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
                 </div>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-2xl font-extrabold text-[var(--text-primary)]">
-                    ${billingCycle === 'yearly' ? AIRBOOK_PLANS.pro.priceYearly : AIRBOOK_PLANS.pro.priceMonthly}
-                  </span>
-                  <span className="text-xs text-[var(--text-secondary)]">per user/month</span>
-                </div>
-                <p className="text-[11px] text-green-600 dark:text-green-400 font-medium mt-0.5">
-                  7 day free trial
-                </p>
-
-                <ul className="mt-4 space-y-2 text-xs text-[var(--text-secondary)]">
-                  {AIRBOOK_PLANS.pro.features.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <Checkmark24Regular className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={() => handleSelectPlan('pro')}
-                className="btn-secondary w-full mt-6"
-              >
-                {loadingPlan === 'pro' ? 'Redirecting...' : 'Select Pro'}
-              </motion.button>
-            </div>
-
-            {/* Business Plan */}
-            <div className="p-5 rounded-3xl border-2 border-[#2BB5FF] bg-blue-50/40 dark:bg-blue-950/20 flex flex-col justify-between shadow-lg relative">
-              <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-bold uppercase tracking-wider shadow-sm">
-                POPULAR
-              </span>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-[var(--text-primary)]">Business</h3>
-                  <span className="text-[10px] font-mono text-gray-400">
-                    Billed {billingCycle}
-                  </span>
-                </div>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-2xl font-extrabold text-[var(--text-primary)]">
-                    ${billingCycle === 'yearly' ? AIRBOOK_PLANS.business.priceYearly : AIRBOOK_PLANS.business.priceMonthly}
-                  </span>
-                  <span className="text-xs text-[var(--text-secondary)]">per user/month</span>
-                </div>
-                <p className="text-[11px] text-green-600 dark:text-green-400 font-medium mt-0.5">
-                  7 day free trial
-                </p>
-
-                <ul className="mt-4 space-y-2 text-xs text-[var(--text-secondary)]">
-                  {AIRBOOK_PLANS.business.features.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <Checkmark24Regular className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={() => handleSelectPlan('business')}
-                className="btn-primary w-full mt-6"
-              >
-                {loadingPlan === 'business' ? 'Redirecting...' : 'Select Business'}
-              </motion.button>
-            </div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
