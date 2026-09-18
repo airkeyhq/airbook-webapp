@@ -2632,28 +2632,28 @@ export default function MarketingWebsite() {
               <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
                 {/* Upper Content Group */}
                 <div className="space-y-6">
-                  {/* Header: Title & Price Row */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-1.5 min-w-0">
-                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                        {t('soloPlanTitle')}
-                      </h3>
-                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                        {t('soloPlanDesc')}
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="flex items-baseline justify-end gap-1">
+                  {/* Header: Title & Description */}
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] tracking-tight">
+                      {t('soloPlanTitle')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed mt-1.5 min-h-[36px]">
+                      {t('soloPlanDesc')}
+                    </p>
+
+                    {/* Price Block */}
+                    <div className="mt-4 pt-1">
+                      <div className="flex items-baseline gap-1.5">
                         <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
                           {billingCycle === 'annual' ? formatPrice(soloRates.yearly) : formatPrice(soloRates.monthly)}
                         </span>
-                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                        <span className="text-xs sm:text-sm font-bold text-[var(--text-secondary)]">
                           {t('pricingPerMonth')}
                         </span>
                       </div>
-                      <div className="min-h-[18px] mt-0.5">
+                      <div className="min-h-[18px] mt-1">
                         {billingCycle === 'annual' ? (
-                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                             {formatPrice(soloRates.yearly * 12)} {t('billedYearlyNote')}
                           </span>
                         ) : null}
@@ -2726,28 +2726,28 @@ export default function MarketingWebsite() {
 
                 {/* Upper Content Group */}
                 <div className="space-y-6 relative z-10">
-                  {/* Header: Title & Price Row */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-1.5 min-w-0">
-                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                        {t('teamPlanTitle')}
-                      </h3>
-                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                        {t('teamPlanDesc')}
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="flex items-baseline justify-end gap-1">
+                  {/* Header: Title & Description */}
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] tracking-tight">
+                      {t('teamPlanTitle')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed mt-1.5 min-h-[36px]">
+                      {t('teamPlanDesc')}
+                    </p>
+
+                    {/* Price Block */}
+                    <div className="mt-4 pt-1">
+                      <div className="flex items-baseline gap-1.5">
                         <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
                           {billingCycle === 'annual' ? formatPrice(teamRates.yearly) : formatPrice(teamRates.monthly)}
                         </span>
-                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                        <span className="text-xs sm:text-sm font-bold text-[var(--text-secondary)]">
                           {t('pricingPerMonth')}
                         </span>
                       </div>
-                      <div className="min-h-[18px] mt-0.5">
+                      <div className="min-h-[18px] mt-1">
                         {billingCycle === 'annual' ? (
-                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                             {formatPrice(teamRates.yearly * 12)} {t('billedYearlyNote')}
                           </span>
                         ) : null}
@@ -2809,28 +2809,28 @@ export default function MarketingWebsite() {
               <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
                 {/* Upper Content Group */}
                 <div className="space-y-6">
-                  {/* Header: Title & Price Row */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-1.5 min-w-0">
-                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                        {t('scalePlanTitle')}
-                      </h3>
-                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                        {t('scalePlanDesc')}
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="flex items-baseline justify-end gap-1">
+                  {/* Header: Title & Description */}
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] tracking-tight">
+                      {t('scalePlanTitle')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed mt-1.5 min-h-[36px]">
+                      {t('scalePlanDesc')}
+                    </p>
+
+                    {/* Price Block */}
+                    <div className="mt-4 pt-1">
+                      <div className="flex items-baseline gap-1.5">
                         <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
                           {billingCycle === 'annual' ? formatPrice(scaleRates.yearly) : formatPrice(scaleRates.monthly)}
                         </span>
-                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                        <span className="text-xs sm:text-sm font-bold text-[var(--text-secondary)]">
                           {t('pricingPerMonth')}
                         </span>
                       </div>
-                      <div className="min-h-[18px] mt-0.5">
+                      <div className="min-h-[18px] mt-1">
                         {billingCycle === 'annual' ? (
-                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                             {formatPrice(scaleRates.yearly * 12)} {t('billedYearlyNote')}
                           </span>
                         ) : null}
