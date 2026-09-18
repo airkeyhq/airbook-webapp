@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { stripe, isStripeConfigured, AIRBOOK_PLANS } from '@/lib/stripe';
 import { sendBookingNotifications } from '@/lib/notifications';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { getPlanPricing, CurrencyCode, SUPPORTED_CURRENCIES } from '@/lib/plans';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const {
-      type, plan, billingCycle, workspaceId,
+      type, plan, billingCycle, currency = 'USD', workspaceId,
       clientName, clientEmail, serviceName, staffName, dateStr, startTime,
       amountCents, appointmentId,
     } = body;
@@ -31,16 +32,18 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Unknown plan selected.' }, { status: 400 });
       }
       const cycle = billingCycle === 'monthly' ? 'monthly' : 'yearly';
-      const unitAmount = Math.round(
-        (cycle === 'monthly' ? planConfig.priceMonthly : planConfig.priceYearly) * 100
-      );
+      const selectedCurrency = ((currency as string)?.toUpperCase() as CurrencyCode) || 'USD';
+      const pricing = getPlanPricing(planKey as any, selectedCurrency);
+      const amount = cycle === 'monthly' ? pricing.monthly : pricing.yearly;
+      const unitAmount = Math.round(amount * 100);
+      const stripeCurrency = selectedCurrency.toLowerCase();
 
       const checkoutSession = await stripe.checkout.sessions.create({
         mode: 'subscription',
         line_items: [
           {
             price_data: {
-              currency: 'usd',
+              currency: stripeCurrency,
               product_data: { name: `AirBook ${planConfig.name} (${cycle})` },
               unit_amount: unitAmount,
               recurring: { interval: cycle === 'monthly' ? 'month' : 'year' },
@@ -51,7 +54,12 @@ export async function POST(req: Request) {
         subscription_data: { trial_period_days: 7 },
         success_url: `${origin}/dashboard?tab=settings&subscription=success`,
         cancel_url: `${origin}/dashboard?tab=settings&subscription=cancelled`,
-        metadata: { workspaceId: activeWorkspaceId, plan: planKey, billingCycle: cycle },
+        metadata: {
+          workspaceId: activeWorkspaceId,
+          plan: planKey,
+          billingCycle: cycle,
+          currency: selectedCurrency,
+        },
       });
 
       return NextResponse.json({ url: checkoutSession.url, success: true });

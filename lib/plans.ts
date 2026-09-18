@@ -120,6 +120,179 @@ export const AIRBOOK_PLAN_DEFINITIONS: Record<PlanTier, PlanDefinition> = {
   },
 };
 
+export type CurrencyCode = 'USD' | 'MXN' | 'EUR' | 'GBP' | 'COP' | 'BRL' | 'CAD';
+
+export interface CurrencyConfig {
+  code: CurrencyCode;
+  symbol: string;
+  label: string;
+  flagCode: string;
+  decimals: number;
+  rates: {
+    solo: { monthly: number; yearly: number };
+    team: { monthly: number; yearly: number };
+    scale: { monthly: number; yearly: number };
+  };
+}
+
+export const SUPPORTED_CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
+  USD: {
+    code: 'USD',
+    symbol: '$',
+    label: 'USD ($)',
+    flagCode: 'us',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 29, yearly: 24 },
+      team: { monthly: 79, yearly: 64 },
+      scale: { monthly: 199, yearly: 159 },
+    },
+  },
+  MXN: {
+    code: 'MXN',
+    symbol: '$',
+    label: 'MXN ($)',
+    flagCode: 'mx',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 499, yearly: 399 },
+      team: { monthly: 1399, yearly: 1099 },
+      scale: { monthly: 3499, yearly: 2799 },
+    },
+  },
+  EUR: {
+    code: 'EUR',
+    symbol: '€',
+    label: 'EUR (€)',
+    flagCode: 'eu',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 27, yearly: 22 },
+      team: { monthly: 74, yearly: 59 },
+      scale: { monthly: 185, yearly: 149 },
+    },
+  },
+  GBP: {
+    code: 'GBP',
+    symbol: '£',
+    label: 'GBP (£)',
+    flagCode: 'gb',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 24, yearly: 19 },
+      team: { monthly: 64, yearly: 52 },
+      scale: { monthly: 159, yearly: 129 },
+    },
+  },
+  COP: {
+    code: 'COP',
+    symbol: '$',
+    label: 'COP ($)',
+    flagCode: 'co',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 119000, yearly: 99000 },
+      team: { monthly: 319000, yearly: 259000 },
+      scale: { monthly: 799000, yearly: 649000 },
+    },
+  },
+  BRL: {
+    code: 'BRL',
+    symbol: 'R$',
+    label: 'BRL (R$)',
+    flagCode: 'br',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 149, yearly: 119 },
+      team: { monthly: 399, yearly: 319 },
+      scale: { monthly: 999, yearly: 799 },
+    },
+  },
+  CAD: {
+    code: 'CAD',
+    symbol: 'CA$',
+    label: 'CAD ($)',
+    flagCode: 'ca',
+    decimals: 0,
+    rates: {
+      solo: { monthly: 39, yearly: 32 },
+      team: { monthly: 109, yearly: 89 },
+      scale: { monthly: 269, yearly: 219 },
+    },
+  },
+};
+
+export const CURRENCIES_LIST = Object.values(SUPPORTED_CURRENCIES);
+
+export const COUNTRY_TO_CURRENCY_MAP: Record<string, CurrencyCode> = {
+  MX: 'MXN',
+  ES: 'EUR',
+  DE: 'EUR',
+  FR: 'EUR',
+  IT: 'EUR',
+  NL: 'EUR',
+  BE: 'EUR',
+  PT: 'EUR',
+  AT: 'EUR',
+  IE: 'EUR',
+  FI: 'EUR',
+  GR: 'EUR',
+  GB: 'GBP',
+  CO: 'COP',
+  BR: 'BRL',
+  CA: 'CAD',
+  US: 'USD',
+};
+
+/**
+ * Maps an ISO 2-letter country code to default currency.
+ */
+export function getCurrencyForCountry(countryCode?: string): CurrencyCode {
+  if (!countryCode) return 'USD';
+  const clean = countryCode.toUpperCase().trim();
+  return COUNTRY_TO_CURRENCY_MAP[clean] || 'USD';
+}
+
+/**
+ * Formats a localized price string.
+ */
+export function formatPlanPrice(
+  amount: number,
+  currencyCode: CurrencyCode = 'USD'
+): string {
+  const config = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.USD;
+  const formattedNumber = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: config.decimals,
+  }).format(amount);
+
+  if (currencyCode === 'EUR') {
+    return `${formattedNumber}€`;
+  }
+  if (currencyCode === 'GBP') {
+    return `£${formattedNumber}`;
+  }
+  if (currencyCode === 'BRL') {
+    return `R$${formattedNumber}`;
+  }
+  if (currencyCode === 'CAD') {
+    return `CA$${formattedNumber}`;
+  }
+  return `$${formattedNumber}`;
+}
+
+/**
+ * Retrieves localized monthly and yearly pricing for a given plan tier and currency.
+ */
+export function getPlanPricing(
+  tier: PlanTier,
+  currencyCode: CurrencyCode = 'USD'
+): { monthly: number; yearly: number } {
+  if (tier === 'free') return { monthly: 0, yearly: 0 };
+  const currency = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.USD;
+  const planRates = currency.rates[tier as 'solo' | 'team' | 'scale'];
+  return planRates || { monthly: 0, yearly: 0 };
+}
+
 /**
  * Normalizes any plan string (e.g. 'pro', 'business', 'enterprise') to canonical PlanTier.
  */

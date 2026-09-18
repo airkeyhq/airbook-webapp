@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { Heart24Filled, Mail24Regular, News24Regular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { CurrencySelector } from '@/components/CurrencySelector';
 
 export const MarketingFooter: React.FC = () => {
   const { t, language } = useTranslation();
@@ -199,8 +200,11 @@ export const MarketingFooter: React.FC = () => {
             <Link href="/data-protection" className="hover:text-[var(--text-primary)] transition-colors underline">Data Protection</Link>
           </div>
 
-          {/* Reusable Circular Vector Flag Language Selector Component */}
-          <LanguageSelector direction="up" format="label" size="sm" />
+          {/* Reusable Region Pickers: Currency & Language Selectors */}
+          <div className="flex items-center gap-2">
+            <CurrencySelector direction="up" format="label" size="sm" />
+            <LanguageSelector direction="up" format="label" size="sm" />
+          </div>
         </div>
       </div>
     </footer>

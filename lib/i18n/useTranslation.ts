@@ -2,6 +2,14 @@ import { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { translations, Language, LANGUAGES } from './translations';
+import {
+  CurrencyCode,
+  CURRENCIES_LIST,
+  getCurrencyForCountry,
+  formatPlanPrice,
+  getPlanPricing,
+  PlanTier,
+} from '@/lib/plans';
 
 export function detectDeviceLanguage(): Language {
   if (typeof window === 'undefined' || !window.navigator) {
@@ -23,9 +31,12 @@ export function detectDeviceLanguage(): Language {
 interface LanguageState {
   language: Language;
   countryCode: string;
+  currency: CurrencyCode;
   isUserSelected: boolean;
+  isCurrencyUserSelected: boolean;
   setLanguage: (lang: Language, explicit?: boolean) => void;
   setCountryCode: (code: string) => void;
+  setCurrency: (currency: CurrencyCode, explicit?: boolean) => void;
   initGeoDetection: () => Promise<void>;
 }
 
@@ -34,12 +45,17 @@ export const useLanguageStore = create<LanguageState>()(
     (set, get) => ({
       language: 'en',
       countryCode: 'MX',
+      currency: 'USD',
       isUserSelected: false,
+      isCurrencyUserSelected: false,
       setLanguage: (lang: Language, explicit: boolean = true) => {
         set({ language: lang, isUserSelected: explicit });
       },
       setCountryCode: (code: string) => {
         set({ countryCode: code });
+      },
+      setCurrency: (currency: CurrencyCode, explicit: boolean = true) => {
+        set({ currency, isCurrencyUserSelected: explicit });
       },
       initGeoDetection: async () => {
         // 1. Instant check from browser / device OS locale if language not user-selected
@@ -50,20 +66,25 @@ export const useLanguageStore = create<LanguageState>()(
           }
         }
 
-        // 2. Query edge Country IP resolver in background to refine country and language
+        // 2. Query edge Country IP resolver in background to refine country, language, and currency
         try {
           const res = await fetch('/api/geo/locale');
           if (res.ok) {
             const data = await res.json();
-            if (data?.country && typeof data.country === 'string') {
-              set({ countryCode: data.country.toUpperCase() });
-            }
+            const rawCountry = data?.country && typeof data.country === 'string' ? data.country.toUpperCase() : 'US';
+            set({ countryCode: rawCountry });
+
             if (data?.language && !get().isUserSelected) {
               set({ language: data.language });
             }
+
+            if (!get().isCurrencyUserSelected) {
+              const matchedCurrency = getCurrencyForCountry(rawCountry);
+              set({ currency: matchedCurrency });
+            }
           }
         } catch {
-          // Graceful fallback to default
+          // Graceful fallback
         }
       },
     }),
@@ -77,9 +98,12 @@ export function useTranslation() {
   const {
     language,
     countryCode,
+    currency,
     setLanguage,
     setCountryCode,
+    setCurrency,
     isUserSelected,
+    isCurrencyUserSelected,
     initGeoDetection,
   } = useLanguageStore();
 
@@ -113,6 +137,14 @@ export function useTranslation() {
     return language === 'es' ? 'México' : 'Global';
   };
 
+  const formatPrice = (amount: number, overrideCurrency?: CurrencyCode): string => {
+    return formatPlanPrice(amount, overrideCurrency || currency);
+  };
+
+  const getTierPricing = (tier: PlanTier) => {
+    return getPlanPricing(tier, currency);
+  };
+
   const t = (key: keyof typeof translations.en, params?: Record<string, string | number>): string => {
     const dict = (translations[language] || translations.en) as Record<string, string>;
     let text = dict[key] || translations.en[key] || key;
@@ -128,9 +160,16 @@ export function useTranslation() {
     t,
     language,
     countryCode,
+    currency,
+    currenciesList: CURRENCIES_LIST,
+    formatPrice,
+    getTierPricing,
     getLocalizedCountry,
     setLanguage: (lang: Language) => setLanguage(lang, true),
     setCountryCode,
+    setCurrency: (curr: CurrencyCode) => setCurrency(curr, true),
+    isUserSelected,
+    isCurrencyUserSelected,
     availableLanguages: LANGUAGES,
   };
 }

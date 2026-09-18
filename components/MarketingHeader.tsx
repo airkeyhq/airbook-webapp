@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { CurrencySelector } from '@/components/CurrencySelector';
 import { GoToAppPill } from '@/components/GoToAppPill';
 import {
   Sparkle24Filled,
@@ -438,8 +439,13 @@ export const MarketingHeader: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Right Controls: Flag Language Switcher + Fast Action CTAs */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Right Controls: Currency Selector + Flag Language Switcher + Fast Action CTAs */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Reusable Currency Selector Component */}
+            <div className="hidden sm:block">
+              <CurrencySelector direction="down" format="code" size="md" />
+            </div>
+
             {/* Reusable Circular Vector Flag Language Selector Component */}
             <LanguageSelector direction="down" format="code" size="md" />
 
@@ -508,13 +514,16 @@ export const MarketingHeader: React.FC = () => {
               {/* Header Title + Close */}
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                 <Logo size={24} showText />
-                <button
-                  type="button"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <CurrencySelector direction="down" format="code" size="sm" />
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               {/* Core Products Section */}

@@ -9,6 +9,7 @@ import { AirBookPeopleAvatars } from '@/components/AirBookPeopleAvatars';
 import { FeatureBentoGrid } from '@/components/FeatureBentoGrid';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
+import { CurrencySelector } from '@/components/CurrencySelector';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { getDemoSpecialists, getDemoClient } from '@/lib/i18n/demographics';
@@ -68,7 +69,7 @@ const AUTO_SCENARIOS = [
 ];
 
 export default function MarketingWebsite() {
-  const { t, language, setLanguage, availableLanguages } = useTranslation();
+  const { t, language, setLanguage, availableLanguages, currency, formatPrice, getTierPricing } = useTranslation();
   const { data: session } = useSession();
   const router = useRouter();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -2586,297 +2587,309 @@ export default function MarketingWebsite() {
 
           {/* Interactive Tactile Billing Cycle Toggle */}
           <div className="pt-4 flex justify-center">
-            <div className="inline-flex items-center p-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-inner">
-              <button
-                type="button"
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
-                  billingCycle === 'monthly'
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                {t('billingMonthly')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setBillingCycle('annual')}
-                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
-                  billingCycle === 'annual'
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <span>{t('billingAnnual')}</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                  {t('saveTwoMonths')}
-                </span>
-              </button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="inline-flex items-center p-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
+                    billingCycle === 'monthly'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {t('billingMonthly')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('annual')}
+                  className={`px-4 sm:px-5 py-2 rounded-full text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingCycle === 'annual'
+                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-md'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <span>{t('billingAnnual')}</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {t('saveTwoMonths')}
+                  </span>
+                </button>
+              </div>
+
+              <CurrencySelector size="md" direction="down" />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto items-stretch">
-          {/* Card 1: Solo Pro / Independent Plan (Standard Tier) */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
-            {/* Upper Content Group */}
-            <div className="space-y-6">
-              {/* Header: Title & Price Row */}
-              <div className="flex justify-between items-start gap-4">
-                <div className="space-y-1.5 min-w-0">
-                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                    {t('soloPlanTitle')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                    {t('soloPlanDesc')}
-                  </p>
+        {(() => {
+          const soloRates = getTierPricing('solo');
+          const teamRates = getTierPricing('team');
+          const scaleRates = getTierPricing('scale');
+
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto items-stretch">
+              {/* Card 1: Solo Pro / Independent Plan (Standard Tier) */}
+              <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+                {/* Upper Content Group */}
+                <div className="space-y-6">
+                  {/* Header: Title & Price Row */}
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="space-y-1.5 min-w-0">
+                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
+                        {t('soloPlanTitle')}
+                      </h3>
+                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
+                        {t('soloPlanDesc')}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="flex items-baseline justify-end gap-1">
+                        <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+                          {billingCycle === 'annual' ? formatPrice(soloRates.yearly) : formatPrice(soloRates.monthly)}
+                        </span>
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                          {t('pricingPerMonth')}
+                        </span>
+                      </div>
+                      <div className="min-h-[18px] mt-0.5">
+                        {billingCycle === 'annual' ? (
+                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            {formatPrice(soloRates.yearly * 12)} {t('billedYearlyNote')}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-[var(--border-subtle)] w-full" />
+
+                  {/* Features List */}
+                  <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('soloFeat1')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('soloFeat2')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('soloFeat3')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('soloFeat4')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('soloFeat5')}</span>
+                    </li>
+                  </ul>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="flex items-baseline justify-end gap-1">
-                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
-                      {billingCycle === 'annual' ? '$24' : '$29'}
-                    </span>
-                    <span className="text-xs font-bold text-[var(--text-secondary)]">
-                      {t('pricingPerMonth')}
-                    </span>
-                  </div>
-                  <div className="min-h-[18px] mt-0.5">
-                    {billingCycle === 'annual' ? (
-                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        $288 {t('billedYearlyNote')}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
 
-              {/* Divider */}
-              <div className="h-px bg-[var(--border-subtle)] w-full" />
-
-              {/* Features List */}
-              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('soloFeat1')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('soloFeat2')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('soloFeat3')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('soloFeat4')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('soloFeat5')}</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* CTA Button */}
-            <div className="pt-8">
-              {session?.user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-                >
-                  <span>{t('goToDashboard')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              ) : (
-                <Link
-                  href="/onboarding"
-                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-                >
-                  <span>{t('startFreeTrial')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              )}
-            </div>
-          </div>
-
-          {/* Card 2: Business & Multi-Staff Team Plan (Featured Tier) */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border-2 border-[#2BB5FF] shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(43,181,255,0.3)] transition-all flex flex-col justify-between relative overflow-visible group ring-4 ring-[#2BB5FF]/10">
-            {/* Floating Top Badge */}
-            <div className="absolute -top-3.5 left-8 z-20">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#2BB5FF] text-white text-[10px] font-black uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(43,181,255,0.6)] border border-white/40">
-                <Sparkle24Regular className="w-3 h-3 text-white" />
-                {t('mostPopular')}
-              </span>
-            </div>
-
-            {/* Ambient Lighting */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Upper Content Group */}
-            <div className="space-y-6 relative z-10">
-              {/* Header: Title & Price Row */}
-              <div className="flex justify-between items-start gap-4">
-                <div className="space-y-1.5 min-w-0">
-                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                    {t('teamPlanTitle')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                    {t('teamPlanDesc')}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="flex items-baseline justify-end gap-1">
-                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
-                      {billingCycle === 'annual' ? '$64' : '$79'}
-                    </span>
-                    <span className="text-xs font-bold text-[var(--text-secondary)]">
-                      {t('pricingPerMonth')}
-                    </span>
-                  </div>
-                  <div className="min-h-[18px] mt-0.5">
-                    {billingCycle === 'annual' ? (
-                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        $768 {t('billedYearlyNote')}
-                      </span>
-                    ) : null}
-                  </div>
+                {/* CTA Button */}
+                <div className="pt-8">
+                  {session?.user ? (
+                    <Link
+                      href="/dashboard"
+                      className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                    >
+                      <span>{t('goToDashboard')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/onboarding"
+                      className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                    >
+                      <span>{t('startFreeTrial')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  )}
                 </div>
               </div>
 
-              {/* Divider */}
-              <div className="h-px bg-[var(--border-subtle)] w-full" />
-
-              {/* Features List */}
-              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('teamFeat1')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('teamFeat2')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('teamFeat3')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('teamFeat4')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('teamFeat5')}</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* CTA Button */}
-            <div className="pt-8 relative z-10">
-              {session?.user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
-                >
-                  <span>{t('goToDashboard')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              ) : (
-                <Link
-                  href="/onboarding"
-                  className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
-                >
-                  <span>{t('startFreeTrialBtn')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              )}
-            </div>
-          </div>
-
-          {/* Card 3: Scale & Multi-Location Plan (Enterprise Tier) */}
-          <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
-            {/* Upper Content Group */}
-            <div className="space-y-6">
-              {/* Header: Title & Price Row */}
-              <div className="flex justify-between items-start gap-4">
-                <div className="space-y-1.5 min-w-0">
-                  <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
-                    {t('scalePlanTitle')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
-                    {t('scalePlanDesc')}
-                  </p>
+              {/* Card 2: Business & Multi-Staff Team Plan (Featured Tier) */}
+              <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border-2 border-[#2BB5FF] shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(43,181,255,0.3)] transition-all flex flex-col justify-between relative overflow-visible group ring-4 ring-[#2BB5FF]/10">
+                {/* Floating Top Badge */}
+                <div className="absolute -top-3.5 left-8 z-20">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#2BB5FF] text-white text-[10px] font-black uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(43,181,255,0.6)] border border-white/40">
+                    <Sparkle24Regular className="w-3 h-3 text-white" />
+                    {t('mostPopular')}
+                  </span>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="flex items-baseline justify-end gap-1">
-                    <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
-                      {billingCycle === 'annual' ? '$159' : '$199'}
-                    </span>
-                    <span className="text-xs font-bold text-[var(--text-secondary)]">
-                      {t('pricingPerMonth')}
-                    </span>
+
+                {/* Ambient Lighting */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#2BB5FF]/5 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Upper Content Group */}
+                <div className="space-y-6 relative z-10">
+                  {/* Header: Title & Price Row */}
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="space-y-1.5 min-w-0">
+                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
+                        {t('teamPlanTitle')}
+                      </h3>
+                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
+                        {t('teamPlanDesc')}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="flex items-baseline justify-end gap-1">
+                        <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+                          {billingCycle === 'annual' ? formatPrice(teamRates.yearly) : formatPrice(teamRates.monthly)}
+                        </span>
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                          {t('pricingPerMonth')}
+                        </span>
+                      </div>
+                      <div className="min-h-[18px] mt-0.5">
+                        {billingCycle === 'annual' ? (
+                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            {formatPrice(teamRates.yearly * 12)} {t('billedYearlyNote')}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
                   </div>
-                  <div className="min-h-[18px] mt-0.5">
-                    {billingCycle === 'annual' ? (
-                      <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        $1,908 {t('billedYearlyNote')}
-                      </span>
-                    ) : null}
-                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-[var(--border-subtle)] w-full" />
+
+                  {/* Features List */}
+                  <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('teamFeat1')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('teamFeat2')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('teamFeat3')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('teamFeat4')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('teamFeat5')}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-8 relative z-10">
+                  {session?.user ? (
+                    <Link
+                      href="/dashboard"
+                      className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
+                    >
+                      <span>{t('goToDashboard')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/onboarding"
+                      className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
+                    >
+                      <span>{t('startFreeTrialBtn')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  )}
                 </div>
               </div>
 
-              {/* Divider */}
-              <div className="h-px bg-[var(--border-subtle)] w-full" />
+              {/* Card 3: Scale & Multi-Location Plan (Enterprise Tier) */}
+              <div className="p-8 sm:p-10 rounded-[36px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xl hover:shadow-2xl hover:border-[#2BB5FF]/40 transition-all flex flex-col justify-between relative group">
+                {/* Upper Content Group */}
+                <div className="space-y-6">
+                  {/* Header: Title & Price Row */}
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="space-y-1.5 min-w-0">
+                      <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
+                        {t('scalePlanTitle')}
+                      </h3>
+                      <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed min-h-[36px]">
+                        {t('scalePlanDesc')}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="flex items-baseline justify-end gap-1">
+                        <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+                          {billingCycle === 'annual' ? formatPrice(scaleRates.yearly) : formatPrice(scaleRates.monthly)}
+                        </span>
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                          {t('pricingPerMonth')}
+                        </span>
+                      </div>
+                      <div className="min-h-[18px] mt-0.5">
+                        {billingCycle === 'annual' ? (
+                          <span className="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            {formatPrice(scaleRates.yearly * 12)} {t('billedYearlyNote')}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
 
-              {/* Features List */}
-              <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('scaleFeat1')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('scaleFeat2')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('scaleFeat3')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('scaleFeat4')}</span>
-                </li>
-                <li className="flex items-center gap-2.5 min-h-[20px]">
-                  <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>{t('scaleFeat5')}</span>
-                </li>
-              </ul>
-            </div>
+                  {/* Divider */}
+                  <div className="h-px bg-[var(--border-subtle)] w-full" />
 
-            {/* CTA Button */}
-            <div className="pt-8">
-              {session?.user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-                >
-                  <span>{t('goToDashboard')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              ) : (
-                <Link
-                  href="/onboarding"
-                  className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
-                >
-                  <span>{t('startFreeTrial')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
-                </Link>
-              )}
+                  {/* Features List */}
+                  <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('scaleFeat1')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('scaleFeat2')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('scaleFeat3')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('scaleFeat4')}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5 min-h-[20px]">
+                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span>{t('scaleFeat5')}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-8">
+                  {session?.user ? (
+                    <Link
+                      href="/dashboard"
+                      className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                    >
+                      <span>{t('goToDashboard')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/onboarding"
+                      className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
+                    >
+                      <span>{t('startFreeTrial')}</span>
+                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    </Link>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* Bottom Trust & Guarantee Ribbon */}
         <div className="max-w-4xl mx-auto mt-12 p-4 sm:p-5 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-around gap-4 text-xs font-bold text-[var(--text-secondary)] shadow-xs">

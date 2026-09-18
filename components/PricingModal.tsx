@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { useAirBookStore } from '@/lib/store';
 import { normalizePlanTier, PlanTier } from '@/lib/plans';
+import { CurrencySelector } from '@/components/CurrencySelector';
 import {
   Dismiss24Filled,
   Sparkle24Filled,
@@ -25,7 +26,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   onClose,
   initialPlan,
 }) => {
-  const { t } = useTranslation();
+  const { t, currency, formatPrice, getTierPricing } = useTranslation();
   const { addToast } = useToast();
   const { workspaceId, workspacePlan } = useAirBookStore();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
@@ -45,6 +46,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
           type: 'subscription',
           plan: planKey,
           billingCycle,
+          currency,
           workspaceId,
         }),
       });
@@ -61,6 +63,10 @@ export const PricingModal: React.FC<PricingModalProps> = ({
     }
   };
 
+  const soloRates = getTierPricing('solo');
+  const teamRates = getTierPricing('team');
+  const scaleRates = getTierPricing('scale');
+
   const plans: {
     key: 'solo' | 'team' | 'scale';
     title: string;
@@ -74,8 +80,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
       key: 'solo',
       title: t('soloPlanTitle'),
       desc: t('soloPlanDesc'),
-      priceMonthly: 29,
-      priceYearly: 24,
+      priceMonthly: soloRates.monthly,
+      priceYearly: soloRates.yearly,
       features: [
         t('soloFeat1'),
         t('soloFeat2'),
@@ -88,8 +94,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
       key: 'team',
       title: t('teamPlanTitle'),
       desc: t('teamPlanDesc'),
-      priceMonthly: 79,
-      priceYearly: 64,
+      priceMonthly: teamRates.monthly,
+      priceYearly: teamRates.yearly,
       popular: true,
       features: [
         t('teamFeat1'),
@@ -103,8 +109,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
       key: 'scale',
       title: t('scalePlanTitle'),
       desc: t('scalePlanDesc'),
-      priceMonthly: 199,
-      priceYearly: 159,
+      priceMonthly: scaleRates.monthly,
+      priceYearly: scaleRates.yearly,
       features: [
         t('scaleFeat1'),
         t('scaleFeat2'),
@@ -159,8 +165,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
               {t('pricingModalSubtitle')}
             </p>
 
-            {/* Monthly / Yearly Toggle */}
-            <div className="mt-5 flex items-center justify-center">
+            {/* Monthly / Yearly Toggle & Currency Picker */}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               <div className="inline-flex items-center p-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-inner">
                 <button
                   type="button"
@@ -188,6 +194,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                   </span>
                 </button>
               </div>
+
+              <CurrencySelector size="sm" direction="down" />
             </div>
           </div>
 
@@ -239,7 +247,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                     <div>
                       <div className="flex items-baseline gap-1">
                         <span className="text-3xl sm:text-4xl font-black text-[var(--text-primary)] font-mono">
-                          ${displayPrice}
+                          {formatPrice(displayPrice)}
                         </span>
                         <span className="text-xs font-bold text-[var(--text-secondary)]">
                           {t('pricingPerMonth')}
@@ -248,7 +256,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                       <div className="min-h-[16px] mt-0.5">
                         {billingCycle === 'yearly' && (
                           <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                            ${displayPrice * 12} {t('billedYearlyNote')}
+                            {formatPrice(displayPrice * 12)} {t('billedYearlyNote')}
                           </span>
                         )}
                       </div>
