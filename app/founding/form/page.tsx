@@ -29,7 +29,7 @@ import {
 type FormStep = 1 | 2 | 3;
 
 export default function FoundingFormPage() {
-  const { t, language } = useTranslation();
+  const { t, language, countryCode, getLocalizedCountry } = useTranslation();
 
   // Step state
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
@@ -141,7 +141,7 @@ export default function FoundingFormPage() {
           businessName: salonName.trim(),
           businessType,
           city: city.trim(),
-          country: 'MX',
+          country: countryCode || 'MX',
           instagramUrl: instagramUrl.trim(),
           websiteUrl: websiteUrl.trim(),
           staffCount: parseInt(staffCount, 10) || 1,
@@ -539,9 +539,9 @@ export default function FoundingFormPage() {
 
                 <div className="pt-3 border-t border-[var(--border-subtle)]/60 text-xs">
                   <p className="text-[var(--text-muted)] font-medium">{t('foundingSuccessLetterSignoff')}</p>
-                  <p className="font-extrabold text-[var(--text-primary)] mt-0.5">
-                    {t('foundingSuccessLetterAuthor')}
-                  </p>
+                    <p className="font-extrabold text-[var(--text-primary)] mt-0.5">
+                      {t('foundingSuccessLetterAuthor', { country: getLocalizedCountry() })}
+                    </p>
                 </div>
               </div>
 

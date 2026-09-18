@@ -32,6 +32,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Automated submission rejected.' }, { status: 403 });
     }
 
+    // Determine country from body or edge IP header
+    const detectedEdgeCountry = (
+      req.headers.get('x-vercel-ip-country') ||
+      req.headers.get('cf-ipcountry') ||
+      req.headers.get('x-country-code') ||
+      req.headers.get('cloudfront-viewer-country') ||
+      ''
+    ).trim().toUpperCase();
+
+    const finalCountry = country && country !== 'MX' && country !== 'GLOBAL' ? country : (detectedEdgeCountry || country || 'MX');
+
     // 2. Validate essential fields
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return NextResponse.json({ error: 'Name is required.' }, { status: 400 });
@@ -77,7 +88,7 @@ export async function POST(req: NextRequest) {
         businessName: businessName.trim(),
         businessType: String(businessType),
         city: city.trim(),
-        country: String(country),
+        country: String(finalCountry),
         instagramUrl: instagramUrl ? String(instagramUrl).trim() : null,
         websiteUrl: websiteUrl ? String(websiteUrl).trim() : null,
         staffCount: parsedStaff,

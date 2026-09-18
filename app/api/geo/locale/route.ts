@@ -13,13 +13,38 @@ const FRENCH_COUNTRIES = new Set([
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Check geo-ip headers from Vercel / Cloudflare / edge proxies
-    const country = (
+    // 1. Check geo-ip headers from Vercel, Cloudflare, AWS CloudFront, Google Cloud edge proxies
+    let country = (
       req.headers.get('x-vercel-ip-country') ||
       req.headers.get('cf-ipcountry') ||
       req.headers.get('x-country-code') ||
+      req.headers.get('cloudfront-viewer-country') ||
+      req.headers.get('x-appengine-country') ||
       ''
-    ).toUpperCase();
+    ).trim().toUpperCase();
+
+    // 2. If no edge headers present (e.g. local dev, custom VPS, or direct IP), resolve via public IP lookup
+    if (!country || country === 'XX' || country === 'UNKNOWN') {
+      const forwarded = req.headers.get('x-forwarded-for');
+      const clientIp = forwarded ? forwarded.split(',')[0].trim() : req.headers.get('x-real-ip') || '';
+      
+      try {
+        const isLocalIp = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('192.168.') || clientIp.startsWith('10.');
+        const url = isLocalIp ? 'https://api.country.is/' : `https://api.country.is/${clientIp}`;
+        const res = await fetch(url, {
+          signal: AbortSignal.timeout(1500),
+          next: { revalidate: 3600 },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.country && typeof data.country === 'string') {
+            country = data.country.toUpperCase();
+          }
+        }
+      } catch {
+        // Fallback gracefully
+      }
+    }
 
     let detectedLanguage: 'en' | 'es' | 'de' | 'fr' = 'en';
 
@@ -30,7 +55,7 @@ export async function GET(req: NextRequest) {
     } else if (FRENCH_COUNTRIES.has(country)) {
       detectedLanguage = 'fr';
     } else {
-      // 2. Fallback to Accept-Language header from browser
+      // 3. Fallback to Accept-Language header from browser
       const acceptLang = req.headers.get('accept-language')?.toLowerCase() || '';
       if (acceptLang.startsWith('es') || acceptLang.includes(',es')) {
         detectedLanguage = 'es';
@@ -42,10 +67,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({
-      country: country || 'GLOBAL',
+      country: country || 'MX',
       language: detectedLanguage,
     });
-  } catch (error) {
-    return NextResponse.json({ country: 'GLOBAL', language: 'en' });
+  } catch {
+    return NextResponse.json({ country: 'MX', language: 'es' });
   }
 }
