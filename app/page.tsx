@@ -460,11 +460,11 @@ export default function MarketingWebsite() {
               </Link>
             ) : (
               <Link
-                href="/login?mode=signup"
+                href="/founding"
                 className="btn-primary w-full sm:w-auto h-12 px-7 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
                 <Sparkle24Filled className="w-4 h-4" />
-                <span>{t('getStartedFree')}</span>
+                <span>{t('applyForFoundingProgram')}</span>
                 <ArrowRight24Filled className="w-3.5 h-3.5" />
               </Link>
             )}
@@ -2701,10 +2701,10 @@ export default function MarketingWebsite() {
                     </Link>
                   ) : (
                     <Link
-                      href="/onboarding"
+                      href="/founding"
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
-                      <span>{t('startFreeTrial')}</span>
+                      <span>{t('applyForAccess')}</span>
                       <ArrowRight24Filled className="w-3.5 h-3.5" />
                     </Link>
                   )}
@@ -2795,10 +2795,10 @@ export default function MarketingWebsite() {
                     </Link>
                   ) : (
                     <Link
-                      href="/onboarding"
+                      href="/founding"
                       className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
                     >
-                      <span>{t('startFreeTrialBtn')}</span>
+                      <span>{t('applyForFoundingProgram')}</span>
                       <ArrowRight24Filled className="w-3.5 h-3.5" />
                     </Link>
                   )}
@@ -2878,10 +2878,10 @@ export default function MarketingWebsite() {
                     </Link>
                   ) : (
                     <Link
-                      href="/onboarding"
+                      href="/founding"
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
-                      <span>{t('startFreeTrial')}</span>
+                      <span>{t('applyForAccess')}</span>
                       <ArrowRight24Filled className="w-3.5 h-3.5" />
                     </Link>
                   )}
@@ -2967,15 +2967,15 @@ export default function MarketingWebsite() {
               </Link>
             ) : (
               <Link
-                href="/onboarding"
+                href="/founding"
                 className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
               >
-                <span>{t('startFreeTrialBtn')}</span>
+                <span>{t('applyForFoundingProgram')}</span>
                 <ArrowRight24Filled className="w-3.5 h-3.5" />
               </Link>
             )}
             <Link
-              href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`}
+              href={session?.user ? '/book/aurelia-studio' : `/onboarding?redirect=${encodeURIComponent('/book/aurelia-studio')}&reason=demo_storefront`}
               className="btn-secondary h-12 px-6 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
             >
               <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />

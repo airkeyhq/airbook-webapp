@@ -121,14 +121,16 @@ export const ServicesModule: React.FC = () => {
           </p>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowForm(!showForm)}
-          className="btn-primary self-start sm:self-auto"
-        >
-          <Add24Filled className="w-4 h-4" />
-          <span>{t('addService')}</span>
-        </motion.button>
+        {serviceList.length > 0 && (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowForm(!showForm)}
+            className="btn-primary self-start sm:self-auto"
+          >
+            <Add24Filled className="w-4 h-4" />
+            <span>{t('addService')}</span>
+          </motion.button>
+        )}
       </div>
 
       {/* Smart Dynamic Pricing Control Card - Roadmap Teaser */}

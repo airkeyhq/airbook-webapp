@@ -273,10 +273,10 @@ export default function BlogIndexPage() {
               </Link>
             ) : (
               <Link
-                href="/onboarding"
+                href="/founding"
                 className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
               >
-                <span>{t('getStarted')}</span>
+                <span>{t('applyForFoundingProgram')}</span>
                 <ArrowRight24Filled className="w-3.5 h-3.5" />
               </Link>
             )}

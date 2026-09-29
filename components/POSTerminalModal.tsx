@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -51,6 +52,11 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
   const [showPairForm, setShowPairForm] = useState(false);
   const [isPairing, setIsPairing] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchReaders = async () => {
     setIsLoadingReaders(true);
@@ -124,7 +130,10 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
       const res = await fetch('/api/stripe/terminal/readers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ registrationCode: registrationCode.trim(), label: readerLabel || 'POS Register' }),
+        body: JSON.stringify({
+          registrationCode: registrationCode.trim(),
+          label: readerLabel.trim() || 'Countertop Reader',
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -143,21 +152,22 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[270] flex items-end md:items-center justify-center p-0 md:p-4">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-xs" />
+      {isOpen && (
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-md" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 40, scale: 0.98 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-        >
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+            className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+          >
           {/* Mobile & Tablet Drag Handle */}
           <div className="w-full pt-3 pb-1 flex md:hidden justify-center flex-shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
@@ -325,7 +335,9 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
           )}
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 

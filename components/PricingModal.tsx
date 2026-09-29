@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -31,8 +32,11 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   const { workspaceId, workspacePlan } = useAirBookStore();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const currentTier = normalizePlanTier(workspacePlan);
 
@@ -121,20 +125,23 @@ export const PricingModal: React.FC<PricingModalProps> = ({
     },
   ];
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Total Occlusion Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-md"
-        />
+  if (!mounted) return null;
 
-        {/* Modal Container */}
-        <motion.div
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Total Occlusion Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+
+          {/* Modal Container */}
+          <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
@@ -305,6 +312,8 @@ export const PricingModal: React.FC<PricingModalProps> = ({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

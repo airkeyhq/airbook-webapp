@@ -19,6 +19,7 @@ import {
 } from 'date-fns';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { getDemoSpecialists, getDemoBusiness } from '@/lib/i18n/demographics';
 import { signIn, useSession } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
@@ -208,12 +209,13 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
 
         // Fallback default staff if database staff is empty
         if (mappedStaff.length === 0) {
-          mappedStaff = [
-            { id: 'stf-1', name: 'Eduardo Moreno', role: 'Master Stylist & Owner', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
-            { id: 'stf-2', name: 'Dennis Müller', role: 'Senior Aesthetician', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-            { id: 'stf-3', name: 'Ivo Silva', role: 'Therapy Specialist', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
-            { id: 'stf-4', name: 'Agnes K.', role: 'Spa Director', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80' },
-          ];
+          const specialists = getDemoSpecialists(language);
+          mappedStaff = specialists.map((sp) => ({
+            id: sp.id,
+            name: sp.name,
+            role: sp.role,
+            avatarUrl: sp.avatar,
+          }));
         }
         setDbStaff(mappedStaff);
 
@@ -491,7 +493,19 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
     );
   }
 
-  const isDemoSlug = ['eduardos-lounge', 'demo', 'solaris-spa', 'preview', 'default'].includes(slug.toLowerCase());
+  const isDemoSlug = [
+    'aurelia-studio',
+    'salon-aurelia',
+    'aurelia-haardesign',
+    'maison-aurelia',
+    'lumina-spa',
+    'elysian-lounge',
+    'eduardos-lounge',
+    'demo',
+    'solaris-spa',
+    'preview',
+    'default',
+  ].includes(slug.toLowerCase());
 
   // Shield demo exploration from bots & unregistered crawlers: requires freemium or active account
   if (isDemoSlug && !session?.user && !isSessionPending && !loadingDb) {
@@ -1132,7 +1146,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Alex Johnson"
+                      placeholder={t('clientNamePlaceholder')}
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
                       className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
@@ -1147,7 +1161,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                       <input
                         type="email"
                         required
-                        placeholder="client@gmail.com"
+                        placeholder={t('clientEmailPlaceholder')}
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"

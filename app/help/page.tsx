@@ -49,7 +49,7 @@ interface HelpArticle {
 }
 
 export default function HelpCenterPage() {
-  const { language } = useTranslation();
+  const { t, language } = useTranslation();
   const lang = (['en', 'es', 'de', 'fr'].includes(language) ? language : 'en') as 'en' | 'es' | 'de' | 'fr';
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,10 +170,10 @@ export default function HelpCenterPage() {
         {
           title: { en: '2. Set Your Studio Slug & Handle', es: '2. Elige el nombre de tu enlace', de: '2. Salon-Namen und Link wählen', fr: '2. Définir votre identifiant de lien' },
           body: {
-            en: 'Enter your desired business handle (e.g. "eduardos-lounge"). AirBook will verify real-time availability and lock your unique URL.',
-            es: 'Ingresa el nombre deseado (ej. "eduardos-lounge"). AirBook verificará la disponibilidad en tiempo real para asignarte tu enlace único.',
-            de: 'Geben Sie Ihren Wunschnamen ein (z.B. "salon-berlin"). AirBook prüft sofort die Verfügbarkeit.',
-            fr: 'Saisissez le nom souhaité (ex. "salon-paris"). AirBook vérifie la disponibilité instantanément.',
+            en: 'Enter your desired business handle (e.g. "aurelia-studio"). AirBook will verify real-time availability and lock your unique URL.',
+            es: 'Ingresa el nombre deseado (ej. "salon-aurelia"). AirBook verificará la disponibilidad en tiempo real para asignarte tu enlace único.',
+            de: 'Geben Sie Ihren Wunschnamen ein (z. B. "aurelia-haardesign"). AirBook prüft sofort die Verfügbarkeit.',
+            fr: 'Saisissez le nom souhaité (ex. "maison-aurelia"). AirBook vérifie la disponibilité instantanément.',
           },
         },
         {
@@ -811,10 +811,10 @@ export default function HelpCenterPage() {
               <ArrowRight24Filled className="w-3.5 h-3.5" />
             </a>
             <Link
-              href="/onboarding"
+              href="/founding"
               className="h-12 px-6 rounded-2xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] border border-[var(--border-subtle)] inline-flex items-center justify-center w-full sm:w-auto transition-all bg-[var(--bg-primary)]/70"
             >
-              Start Free Trial
+              {t('applyForFoundingProgram')}
             </Link>
           </div>
         </div>

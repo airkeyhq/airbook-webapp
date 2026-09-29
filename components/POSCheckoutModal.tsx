@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Payment24Filled,
@@ -82,6 +83,11 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const [giftCardCodeInput, setGiftCardCodeInput] = useState('');
   const [verifiedGiftCard, setVerifiedGiftCard] = useState<any | null>(null);
   const [checkingCard, setCheckingCard] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -274,26 +280,29 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
     addToast(t('receiptSent'), 'success');
   };
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        />
+  if (!mounted) return null;
 
-        {/* POS Card Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 30, scale: 0.98 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-        >
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+
+          {/* POS Card Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 30, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+            className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+          >
           {/* Mobile & Tablet Drag Handle */}
           <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
@@ -802,7 +811,9 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           )}
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 

@@ -237,6 +237,7 @@ export const clients = pgTable('clients', {
   allergies: text('allergies'),
   tags: jsonb('tags').$type<string[]>().default([]).notNull(),
   customSpecs: jsonb('custom_specs').$type<Array<{ id: string; label: string; value: string; date?: string }>>().default([]).notNull(),
+  photos: jsonb('photos').$type<Array<{ id: string; beforeUrl?: string; afterUrl?: string; title?: string; date?: string; notes?: string }>>().default([]).notNull(),
   medicalWaiversSigned: boolean('medical_waivers_signed').default(false).notNull(),
   patchTestResults: text('patch_test_results'),
   isKycVerified: boolean('is_kyc_verified').default(false).notNull(),

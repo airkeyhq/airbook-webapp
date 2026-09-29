@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -116,6 +117,11 @@ export const PackagesModule: React.FC = () => {
 
   const [saving, setSaving] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Load all initial data
   const fetchData = async () => {
@@ -407,63 +413,67 @@ export const PackagesModule: React.FC = () => {
 
         {/* Primary Action Button */}
         <div>
-          {activeTab === 'gift_cards' && (
-            <button
-              type="button"
-              onClick={() => {
-                setGcAmount(100);
-                setGcCustomAmount('');
-                setGcRecipientName('');
-                setGcRecipientEmail('');
-                setGcSenderName('');
-                setGcNotes('');
-                setGcExpiresAt('');
-                setIsGiftCardDrawerOpen(true);
-              }}
-              className="btn-primary self-start sm:self-auto"
-            >
-              <Add24Filled className="w-4 h-4" />
-              <span>{t('issueGiftCard')}</span>
-            </button>
-          )}
+          {hasAnyItems && (
+            <div className="flex items-center gap-2">
+              {activeTab === 'gift_cards' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGcAmount(100);
+                    setGcCustomAmount('');
+                    setGcRecipientName('');
+                    setGcRecipientEmail('');
+                    setGcSenderName('');
+                    setGcNotes('');
+                    setGcExpiresAt('');
+                    setIsGiftCardDrawerOpen(true);
+                  }}
+                  className="btn-primary self-start sm:self-auto"
+                >
+                  <Add24Filled className="w-4 h-4" />
+                  <span>{t('issueGiftCard')}</span>
+                </button>
+              )}
 
-          {activeTab === 'packages' && (
-            <button
-              type="button"
-              onClick={() => {
-                setEditingPackage(null);
-                setPkgName('');
-                setPkgServiceName(servicesList[0]?.name || 'Haircut & Styling');
-                setPkgTotalSessions(5);
-                setPkgPrice('225');
-                setPkgDiscountPercent(15);
-                setPkgValidityDays(365);
-                setIsPackageDrawerOpen(true);
-              }}
-              className="btn-primary self-start sm:self-auto"
-            >
-              <Add24Filled className="w-4 h-4" />
-              <span>{t('createPackage')}</span>
-            </button>
-          )}
+              {activeTab === 'packages' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingPackage(null);
+                    setPkgName('');
+                    setPkgServiceName(servicesList[0]?.name || 'Haircut & Styling');
+                    setPkgTotalSessions(5);
+                    setPkgPrice('225');
+                    setPkgDiscountPercent(15);
+                    setPkgValidityDays(365);
+                    setIsPackageDrawerOpen(true);
+                  }}
+                  className="btn-primary self-start sm:self-auto"
+                >
+                  <Add24Filled className="w-4 h-4" />
+                  <span>{t('createPackage')}</span>
+                </button>
+              )}
 
-          {activeTab === 'memberships' && (
-            <button
-              type="button"
-              onClick={() => {
-                setEditingMembership(null);
-                setMemName('');
-                setMemPrice('120');
-                setMemIncludedServices(2);
-                setMemDiscountRetail(15);
-                setMemPerks('Priority Weekend Access · 15% Off Retail Products');
-                setIsMembershipDrawerOpen(true);
-              }}
-              className="btn-primary self-start sm:self-auto"
-            >
-              <Add24Filled className="w-4 h-4" />
-              <span>{t('createMembership')}</span>
-            </button>
+              {activeTab === 'memberships' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingMembership(null);
+                    setMemName('');
+                    setMemPrice('120');
+                    setMemIncludedServices(2);
+                    setMemDiscountRetail(15);
+                    setMemPerks('Priority Weekend Access · 15% Off Retail Products');
+                    setIsMembershipDrawerOpen(true);
+                  }}
+                  className="btn-primary self-start sm:self-auto"
+                >
+                  <Add24Filled className="w-4 h-4" />
+                  <span>{t('createMembership')}</span>
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -891,475 +901,488 @@ export const PackagesModule: React.FC = () => {
       )}
 
       {/* ─── DRAWER 1: ISSUE DIGITAL GIFT CARD ─── */}
-      <AnimatePresence>
-        {isGiftCardDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsGiftCardDrawerOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
-            />
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isGiftCardDrawerOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsGiftCardDrawerOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
 
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              {/* Mobile & Tablet Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-              </div>
-
-              {/* Header */}
-              <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
-                <div>
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {t('issueGiftCard')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    {t('issueGiftCardDesc')}
-                  </p>
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+              >
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setIsGiftCardDrawerOpen(false)}
-                  className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
 
-              {/* Body */}
-              <form onSubmit={handleIssueGiftCard} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-4 flex-1">
-                  {/* Amount Presets */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                      {t('initialBalance')} ($)
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {[25, 50, 100, 150].map((amt) => (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => {
-                            setGcAmount(amt);
-                            setGcCustomAmount('');
-                          }}
-                          className={`py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
-                            gcAmount === amt && !gcCustomAmount
-                              ? 'bg-[var(--color-accent-primary)] text-white border-[1.5px] border-[#1A8EFF] shadow-xs'
-                              : 'bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                          }`}
-                        >
-                          ${amt}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="pt-1">
+                {/* Header */}
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
+                  <div>
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                      {t('issueGiftCard')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                      {t('issueGiftCardDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsGiftCardDrawerOpen(false)}
+                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Body */}
+                <form onSubmit={handleIssueGiftCard} className="flex flex-col flex-1 overflow-hidden">
+                  <div className="p-6 overflow-y-auto space-y-4 flex-1">
+                    {/* Amount Selector */}
+                    <div>
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2 block">
+                        {t('initialBalance')}
+                      </label>
+                      <div className="grid grid-cols-4 gap-2 mb-3">
+                        {[25, 50, 100, 200].map((amt) => (
+                          <button
+                            key={amt}
+                            type="button"
+                            onClick={() => {
+                              setGcAmount(amt);
+                              setGcCustomAmount('');
+                            }}
+                            className={`py-3 rounded-2xl font-black text-sm transition-all cursor-pointer ${
+                              gcAmount === amt && !gcCustomAmount
+                                ? 'bg-primary text-white shadow-md'
+                                : 'bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-black/20 dark:hover:border-white/20'
+                            }`}
+                          >
+                            ${amt}
+                          </button>
+                        ))}
+                      </div>
                       <FloatingInput
-                        label={t('customAmount')}
+                        label={t('initialBalance')}
                         type="number"
-                        placeholder={t('customAmountPlaceholder')}
+                        placeholder="0.00"
                         value={gcCustomAmount}
-                        onChange={(e) => setGcCustomAmount(e.target.value)}
+                        onChange={(e) => {
+                          setGcCustomAmount(e.target.value);
+                          if (e.target.value) setGcAmount(Number(e.target.value));
+                        }}
+                        className="font-mono"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <FloatingInput
+                        label={t('recipientName')}
+                        placeholder={t('recipientNamePlaceholder')}
+                        value={gcRecipientName}
+                        onChange={(e) => setGcRecipientName(e.target.value)}
+                      />
+                      <FloatingInput
+                        label={t('recipientEmail')}
+                        type="email"
+                        placeholder={t('recipientEmailPlaceholder')}
+                        value={gcRecipientEmail}
+                        onChange={(e) => setGcRecipientEmail(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <FloatingInput
+                        label={t('senderName')}
+                        placeholder={t('senderNamePlaceholder')}
+                        value={gcSenderName}
+                        onChange={(e) => setGcSenderName(e.target.value)}
+                      />
+                      <FloatingInput
+                        label={t('expiresOn')}
+                        type="date"
+                        value={gcExpiresAt}
+                        onChange={(e) => setGcExpiresAt(e.target.value)}
+                      />
+                    </div>
+
+                    <FloatingTextarea
+                      label={t('personalGreeting')}
+                      rows={2}
+                      placeholder={t('personalGreetingPlaceholder')}
+                      value={gcNotes}
+                      onChange={(e) => setGcNotes(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Side-to-Side Bottom Action Banner */}
+                  <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="btn-primary w-full disabled:opacity-50"
+                    >
+                      <GiftCard24Filled className="w-4 h-4" />
+                      <span>{saving ? t('issuingGiftCard') : t('issueGiftCard')}</span>
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* ─── MODAL 1: REDEEM GIFT CARD MODAL ─── */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {redeemingCard && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setRedeemingCard(null)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="relative w-full md:max-w-sm bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
+              >
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
+                <form onSubmit={handleRedeemGiftCard} className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                      {t('redeemGiftCard')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] font-mono">
+                      Code: {redeemingCard.code}
+                    </p>
+                    <p className="text-xs font-black text-primary">
+                      {t('availableBalance').replace('{amount}', (redeemingCard.currentBalanceCents / 100).toFixed(2))}
+                    </p>
+                  </div>
+
+                  <FloatingInput
+                    label={t('amountToDeduct')}
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="0.00"
+                    value={redeemAmount}
+                    onChange={(e) => setRedeemAmount(e.target.value)}
+                    className="font-mono text-base"
+                  />
+
+                  <div className="flex gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setRedeemingCard(null)}
+                      className="btn-secondary flex-1"
+                    >
+                      {t('cancel')}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="btn-primary flex-1 disabled:opacity-50"
+                    >
+                      <Checkmark24Filled className="w-4 h-4" />
+                      <span>{saving ? t('redeeming') : t('redeemGiftCard')}</span>
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* ─── DRAWER 2: CREATE / EDIT SERVICE PACKAGE ─── */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isPackageDrawerOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsPackageDrawerOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
+
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+              >
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                </div>
+
+                {/* Header */}
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
+                  <div>
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                      {editingPackage ? t('editPackage') : t('createPackage')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                      {t('packageDrawerDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsPackageDrawerOpen(false)}
+                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Body */}
+                <form onSubmit={handleSavePackage} className="flex flex-col flex-1 overflow-hidden">
+                  <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
+                    <FloatingInput
+                      label={t('packageName')}
+                      required
+                      placeholder={t('packageNamePlaceholder')}
+                      value={pkgName}
+                      onChange={(e) => setPkgName(e.target.value)}
+                    />
+
+                    <CustomSelect
+                      label={t('serviceCovered')}
+                      value={pkgServiceName}
+                      onChange={(val) => setPkgServiceName(val)}
+                      options={
+                        servicesList.length > 0
+                          ? servicesList.map((s) => ({ value: s.name, label: `${s.name} ($${(s.priceCents / 100).toFixed(0)})` }))
+                          : [
+                              { value: 'Haircut & Styling', label: 'Haircut & Styling ($65)' },
+                              { value: 'Balayage & Glaze', label: 'Balayage & Glaze ($180)' },
+                              { value: 'Gel Manicure', label: 'Gel Manicure ($45)' },
+                              { value: 'Deep Tissue Massage', label: 'Deep Tissue Massage ($110)' },
+                            ]
+                      }
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <FloatingInput
+                        label={t('totalSessions')}
+                        type="number"
+                        min="2"
+                        max="50"
+                        required
+                        value={pkgTotalSessions}
+                        onChange={(e) => setPkgTotalSessions(Number(e.target.value))}
+                        className="font-mono"
+                      />
+                      <FloatingInput
+                        label={t('packagePrice')}
+                        type="number"
+                        step="1"
+                        required
+                        value={pkgPrice}
+                        onChange={(e) => setPkgPrice(e.target.value)}
+                        className="font-mono"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <FloatingInput
+                        label={t('savingsPercent')}
+                        type="number"
+                        min="0"
+                        max="80"
+                        value={pkgDiscountPercent}
+                        onChange={(e) => setPkgDiscountPercent(Number(e.target.value))}
+                        className="font-mono"
+                      />
+                      <FloatingInput
+                        label={t('validityDays')}
+                        type="number"
+                        min="30"
+                        max="730"
+                        value={pkgValidityDays}
+                        onChange={(e) => setPkgValidityDays(Number(e.target.value))}
                         className="font-mono"
                       />
                     </div>
                   </div>
 
-                  {/* Recipient Details */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('recipientName')}
-                      type="text"
-                      placeholder={t('recipientNamePlaceholder')}
-                      value={gcRecipientName}
-                      onChange={(e) => setGcRecipientName(e.target.value)}
-                    />
-
-                    <FloatingInput
-                      label={t('recipientEmail')}
-                      type="email"
-                      placeholder={t('recipientEmailPlaceholder')}
-                      value={gcRecipientEmail}
-                      onChange={(e) => setGcRecipientEmail(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Sender & Notes */}
-                  <FloatingInput
-                    label={t('senderName')}
-                    type="text"
-                    placeholder={t('senderNamePlaceholder')}
-                    value={gcSenderName}
-                    onChange={(e) => setGcSenderName(e.target.value)}
-                  />
-
-                  <FloatingTextarea
-                    label={t('personalGreeting')}
-                    rows={2}
-                    placeholder={t('personalGreetingPlaceholder')}
-                    value={gcNotes}
-                    onChange={(e) => setGcNotes(e.target.value)}
-                  />
-                </div>
-
-                {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30">
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <GiftCard24Filled className="w-4 h-4" />
-                    <span>{saving ? t('issuingGiftCard') : t('issueGiftCard')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* ─── MODAL 1: REDEEM GIFT CARD MODAL ─── */}
-      <AnimatePresence>
-        {redeemingCard && (
-          <div className="fixed inset-0 z-[220] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setRedeemingCard(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full md:max-w-sm bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
-            >
-              {/* Mobile & Tablet Drag Handle */}
-              <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                  {t('redeemGiftCard')}
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {t('availableBalance').replace('{amount}', (redeemingCard.currentBalanceCents / 100).toFixed(2))}
-                </p>
-              </div>
-
-              <form onSubmit={handleRedeemGiftCard} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[var(--text-secondary)] block">
-                    {t('amountToDeduct')}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    max={redeemingCard.currentBalanceCents / 100}
-                    required
-                    value={redeemAmount}
-                    onChange={(e) => setRedeemAmount(e.target.value)}
-                    className="input-base w-full font-mono"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2 pt-2">
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{saving ? t('redeeming') : t('redeemGiftCard')}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRedeemingCard(null)}
-                    className="btn-secondary w-full"
-                  >
-                    {t('cancel')}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* ─── DRAWER 2: CREATE / EDIT SERVICE PACKAGE ─── */}
-      <AnimatePresence>
-        {isPackageDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsPackageDrawerOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              {/* Mobile & Tablet Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-              </div>
-
-              {/* Header */}
-              <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
-                <div>
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {editingPackage ? t('editPackage') : t('createPackage')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    {t('packageDrawerDesc')}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsPackageDrawerOpen(false)}
-                  className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Body */}
-              <form onSubmit={handleSavePackage} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <FloatingInput
-                    label={t('packageName')}
-                    required
-                    placeholder={t('packageNamePlaceholder')}
-                    value={pkgName}
-                    onChange={(e) => setPkgName(e.target.value)}
-                  />
-
-                  <CustomSelect
-                    label={t('serviceCovered')}
-                    value={pkgServiceName}
-                    onChange={setPkgServiceName}
-                    options={
-                      servicesList.length > 0
-                        ? servicesList.map((s) => ({
-                            value: s.name,
-                            label: `${s.name} ($${(s.priceCents / 100).toFixed(2)})`,
-                          }))
-                        : [{ value: 'Haircut & Styling', label: t('haircutStyling') || 'Haircut & Styling' }]
-                    }
-                  />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('totalSessions')}
-                      type="number"
-                      min="2"
-                      max="50"
-                      required
-                      value={pkgTotalSessions}
-                      onChange={(e) => setPkgTotalSessions(Number(e.target.value))}
-                      className="font-mono"
-                    />
-
-                    <FloatingInput
-                      label={t('packagePrice')}
-                      type="number"
-                      step="1"
-                      required
-                      value={pkgPrice}
-                      onChange={(e) => setPkgPrice(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('savingsPercent')}
-                      type="number"
-                      min="0"
-                      max="80"
-                      value={pkgDiscountPercent}
-                      onChange={(e) => setPkgDiscountPercent(Number(e.target.value))}
-                      className="font-mono"
-                    />
-
-                    <CustomSelect
-                      label={t('validityDays')}
-                      value={String(pkgValidityDays)}
-                      onChange={(val) => setPkgValidityDays(Number(val))}
-                      options={[
-                        { value: '90', label: t('validity90Days') },
-                        { value: '180', label: t('validity180Days') },
-                        { value: '365', label: t('validity365Days') },
-                        { value: '730', label: t('validity730Days') },
-                      ]}
-                    />
-                  </div>
-                </div>
-
-                {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex flex-col gap-2.5">
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Tag24Filled className="w-4 h-4" />
-                    <span>{saving ? t('savingState') : editingPackage ? t('updatePackage') : t('createPackage')}</span>
-                  </button>
-
-                  {editingPackage && (
+                  {/* Side-to-Side Bottom Action Banner */}
+                  <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex flex-col gap-2.5">
                     <button
-                      type="button"
-                      onClick={() => handleDeletePackage(editingPackage.id)}
-                      className="w-full py-2 rounded-xl text-red-500 hover:bg-red-500/10 font-extrabold text-xs transition-colors cursor-pointer"
+                      type="submit"
+                      disabled={saving}
+                      className="btn-primary w-full disabled:opacity-50"
                     >
-                      {t('deletePackage')}
+                      <Tag24Filled className="w-4 h-4" />
+                      <span>{saving ? t('savingState') : editingPackage ? t('updatePackage') : t('createPackage')}</span>
                     </button>
-                  )}
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
+                    {editingPackage && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePackage(editingPackage.id)}
+                        className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
+                      >
+                        {t('deletePackage')}
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* ─── DRAWER 3: CREATE / EDIT MEMBERSHIP TIER ─── */}
-      <AnimatePresence>
-        {isMembershipDrawerOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMembershipDrawerOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
-            />
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isMembershipDrawerOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMembershipDrawerOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
 
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              {/* Mobile & Tablet Drag Handle */}
-              <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-              </div>
-
-              {/* Header */}
-              <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
-                <div>
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                    {editingMembership ? t('editMembership') : t('createMembership')}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                    {t('membershipDrawerDesc')}
-                  </p>
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+              >
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setIsMembershipDrawerOpen(false)}
-                  className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-5 h-5" />
-                </button>
-              </div>
 
-              {/* Body */}
-              <form onSubmit={handleSaveMembership} className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <FloatingInput
-                    label={t('tierName')}
-                    required
-                    placeholder={t('tierNamePlaceholder')}
-                    value={memName}
-                    onChange={(e) => setMemName(e.target.value)}
-                  />
+                {/* Header */}
+                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
+                  <div>
+                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                      {editingMembership ? t('editMembership') : t('createMembership')}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                      {t('membershipDrawerDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsMembershipDrawerOpen(false)}
+                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-5 h-5" />
+                  </button>
+                </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                {/* Body */}
+                <form onSubmit={handleSaveMembership} className="flex flex-col flex-1 overflow-hidden">
+                  <div className="p-6 overflow-y-auto space-y-3.5 flex-1">
                     <FloatingInput
-                      label={t('monthlyPrice')}
-                      type="number"
-                      step="1"
+                      label={t('tierName')}
                       required
-                      value={memPrice}
-                      onChange={(e) => setMemPrice(e.target.value)}
-                      className="font-mono"
+                      placeholder={t('tierNamePlaceholder')}
+                      value={memName}
+                      onChange={(e) => setMemName(e.target.value)}
                     />
 
-                    <FloatingInput
-                      label={t('servicesPerMonth')}
-                      type="number"
-                      min="1"
-                      max="20"
-                      value={memIncludedServices}
-                      onChange={(e) => setMemIncludedServices(Number(e.target.value))}
-                      className="font-mono"
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                      <FloatingInput
+                        label={t('monthlyPrice')}
+                        type="number"
+                        step="1"
+                        required
+                        value={memPrice}
+                        onChange={(e) => setMemPrice(e.target.value)}
+                        className="font-mono"
+                      />
 
-                    <FloatingInput
-                      label={t('retailDiscountPercent')}
-                      type="number"
-                      min="0"
-                      max="50"
-                      value={memDiscountRetail}
-                      onChange={(e) => setMemDiscountRetail(Number(e.target.value))}
-                      className="font-mono"
+                      <FloatingInput
+                        label={t('servicesPerMonth')}
+                        type="number"
+                        min="1"
+                        max="20"
+                        value={memIncludedServices}
+                        onChange={(e) => setMemIncludedServices(Number(e.target.value))}
+                        className="font-mono"
+                      />
+
+                      <FloatingInput
+                        label={t('retailDiscountPercent')}
+                        type="number"
+                        min="0"
+                        max="50"
+                        value={memDiscountRetail}
+                        onChange={(e) => setMemDiscountRetail(Number(e.target.value))}
+                        className="font-mono"
+                      />
+                    </div>
+
+                    <FloatingTextarea
+                      label={t('tierPerks')}
+                      rows={3}
+                      placeholder={t('tierPerksPlaceholder')}
+                      value={memPerks}
+                      onChange={(e) => setMemPerks(e.target.value)}
                     />
                   </div>
 
-                  <FloatingTextarea
-                    label={t('tierPerks')}
-                    rows={3}
-                    placeholder={t('tierPerksPlaceholder')}
-                    value={memPerks}
-                    onChange={(e) => setMemPerks(e.target.value)}
-                  />
-                </div>
-
-                {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex flex-col gap-2.5">
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Sparkle24Filled className="w-4 h-4" />
-                    <span>{saving ? t('savingState') : editingMembership ? t('updateTier') : t('createMembership')}</span>
-                  </button>
-
-                  {editingMembership && (
+                  {/* Side-to-Side Bottom Action Banner */}
+                  <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex flex-col gap-2.5">
                     <button
-                      type="button"
-                      onClick={() => handleDeleteMembership(editingMembership.id)}
-                      className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
+                      type="submit"
+                      disabled={saving}
+                      className="btn-primary w-full disabled:opacity-50"
                     >
-                      {t('deleteTier')}
+                      <Sparkle24Filled className="w-4 h-4" />
+                      <span>{saving ? t('savingState') : editingMembership ? t('updateTier') : t('createMembership')}</span>
                     </button>
-                  )}
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
+                    {editingMembership && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMembership(editingMembership.id)}
+                        className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs transition-colors cursor-pointer"
+                      >
+                        {t('deleteTier')}
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

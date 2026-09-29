@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -55,6 +56,11 @@ export const InventoryModule: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Add Product Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -290,14 +296,16 @@ export const InventoryModule: React.FC = () => {
           </p>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsAddModalOpen(true)}
-          className="btn-primary self-start sm:self-auto"
-        >
-          <Add24Filled className="w-4 h-4 flex-shrink-0" />
-          <span>{t('addProduct')}</span>
-        </motion.button>
+        {products.length > 0 && (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsAddModalOpen(true)}
+            className="btn-primary self-start sm:self-auto"
+          >
+            <Add24Filled className="w-4 h-4 flex-shrink-0" />
+            <span>{t('addProduct')}</span>
+          </motion.button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
@@ -520,303 +528,313 @@ export const InventoryModule: React.FC = () => {
         )}
       </div>
 
-      <AnimatePresence>
-        {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsAddModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              <form onSubmit={handleAddProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
-
-                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addProduct')}</h3>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
-
-                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <FloatingInput
-                    label={t('productName')}
-                    required
-                    placeholder={t('productNamePlaceholder')}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <CustomSelect
-                      label={t('category')}
-                      value={category}
-                      onChange={(val) => setCategory(val)}
-                      options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
-                    />
-
-                    <FloatingInput
-                      label={t('skuCode')}
-                      placeholder={t('skuPlaceholder')}
-                      value={sku}
-                      onChange={(e) => setSku(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('retailPrice')}
-                      type="number"
-                      step="0.01"
-                      required
-                      value={retailPrice}
-                      onChange={(e) => setRetailPrice(e.target.value)}
-                      className="font-mono"
-                    />
-
-                    <FloatingInput
-                      label={t('costPrice')}
-                      type="number"
-                      step="0.01"
-                      value={costPrice}
-                      onChange={(e) => setCostPrice(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
-
-                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
-                    <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
-                    <span className="font-extrabold font-mono text-[var(--text-primary)]">
-                      {t('profitMarginPercent').replace('{margin}', String(addMargin))}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('initialStock')}
-                      type="number"
-                      value={stockQuantity}
-                      onChange={(e) => setStockQuantity(e.target.value)}
-                      className="font-mono"
-                    />
-
-                    <FloatingInput
-                      label={t('lowStockThreshold')}
-                      type="number"
-                      value={lowStockThreshold}
-                      onChange={(e) => setLowStockThreshold(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
-
-                  <FloatingInput
-                    label={t('productImageUrl')}
-                    type="url"
-                    placeholder="https://..."
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                  />
-
-                  <div className="pt-2">
-                    <Checkbox
-                      checked={isRetail}
-                      onChange={setIsRetail}
-                      label={t('availableRetail')}
-                    />
-                  </div>
-                </div>
-
-                <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Save24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('save')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {editingProduct && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setEditingProduct(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              <form onSubmit={handleUpdateProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
-
-                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden flex-shrink-0">
-                      {editImageUrl ? (
-                        <img src={editImageUrl} alt={editName} className="w-full h-full object-cover" />
-                      ) : (
-                        <ShoppingBag24Regular className="w-5 h-5 text-[var(--text-muted)]" />
-                      )}
+      {/* Add Product Modal (Portaled to document.body) */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isAddModalOpen && (
+              <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                  className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+                >
+                  <form onSubmit={handleAddProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
+                    <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                     </div>
-                    <div>
-                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{editName}</h3>
-                      <p className="text-[11px] text-[var(--text-secondary)]">{editCategory}</p>
+
+                    <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addProduct')}</h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddModalOpen(false)}
+                        className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+                      >
+                        <Dismiss24Filled className="w-5 h-5" />
+                      </button>
                     </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setEditingProduct(null)}
-                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+                    <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <FloatingInput
-                    label={t('productName')}
-                    required
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                  />
+                    <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                      <FloatingInput
+                        label={t('productName')}
+                        required
+                        placeholder={t('productNamePlaceholder')}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <CustomSelect
-                      label={t('category')}
-                      value={editCategory}
-                      onChange={(val) => setEditCategory(val)}
-                      options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
-                    />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <CustomSelect
+                          label={t('category')}
+                          value={category}
+                          onChange={(val) => setCategory(val)}
+                          options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
+                        />
 
-                    <FloatingInput
-                      label={t('skuCode')}
-                      value={editSku}
-                      onChange={(e) => setEditSku(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
+                        <FloatingInput
+                          label={t('skuCode')}
+                          placeholder={t('skuPlaceholder')}
+                          value={sku}
+                          onChange={(e) => setSku(e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('retailPrice')}
-                      type="number"
-                      step="0.01"
-                      required
-                      value={editRetailPrice}
-                      onChange={(e) => setEditRetailPrice(e.target.value)}
-                      className="font-mono"
-                    />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('retailPrice')}
+                          type="number"
+                          step="0.01"
+                          required
+                          value={retailPrice}
+                          onChange={(e) => setRetailPrice(e.target.value)}
+                          className="font-mono"
+                        />
 
-                    <FloatingInput
-                      label={t('costPrice')}
-                      type="number"
-                      step="0.01"
-                      value={editCostPrice}
-                      onChange={(e) => setEditCostPrice(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
+                        <FloatingInput
+                          label={t('costPrice')}
+                          type="number"
+                          step="0.01"
+                          value={costPrice}
+                          onChange={(e) => setCostPrice(e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
 
-                  <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
-                    <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
-                    <span className="font-extrabold font-mono text-[var(--text-primary)]">
-                      {t('profitMarginPercent').replace('{margin}', String(editMargin))}
-                    </span>
-                  </div>
+                      <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                        <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
+                        <span className="font-extrabold font-mono text-[var(--text-primary)]">
+                          {t('profitMarginPercent').replace('{margin}', String(addMargin))}
+                        </span>
+                      </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('initialStock')}
-                      type="number"
-                      value={editStockQuantity}
-                      onChange={(e) => setEditStockQuantity(Number(e.target.value))}
-                      className="font-mono"
-                    />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('initialStock')}
+                          type="number"
+                          value={stockQuantity}
+                          onChange={(e) => setStockQuantity(e.target.value)}
+                          className="font-mono"
+                        />
 
-                    <FloatingInput
-                      label={t('lowStockThreshold')}
-                      type="number"
-                      value={editLowStockThreshold}
-                      onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
-                      className="font-mono"
-                    />
-                  </div>
+                        <FloatingInput
+                          label={t('lowStockThreshold')}
+                          type="number"
+                          value={lowStockThreshold}
+                          onChange={(e) => setLowStockThreshold(e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
 
-                  <FloatingInput
-                    label={t('productImageUrl')}
-                    type="url"
-                    placeholder="https://..."
-                    value={editImageUrl}
-                    onChange={(e) => setEditImageUrl(e.target.value)}
-                  />
+                      <FloatingInput
+                        label={t('productImageUrl')}
+                        type="url"
+                        placeholder="https://..."
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                      />
 
-                  <div className="pt-2">
-                    <Checkbox
-                      checked={editIsRetail}
-                      onChange={setEditIsRetail}
-                      label={t('availableRetail')}
-                    />
-                  </div>
-                </div>
+                      <div className="pt-2">
+                        <Checkbox
+                          checked={isRetail}
+                          onChange={setIsRetail}
+                          label={t('availableRetail')}
+                        />
+                      </div>
+                    </div>
 
-                <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] space-y-2.5 z-30 flex-shrink-0">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Save24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('save')}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDeleteProduct}
-                    disabled={submitting}
-                    className="btn-secondary w-full text-red-600 dark:text-red-400 hover:bg-red-500/10"
-                  >
-                    <Delete24Filled className="w-4 h-4" />
-                    <span>{t('deleteProduct')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
+                    <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-primary w-full disabled:opacity-50"
+                      >
+                        <Save24Filled className="w-4 h-4" />
+                        <span>{submitting ? t('saving') : t('save')}</span>
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
+
+      {/* Edit Product Modal (Portaled to document.body) */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {editingProduct && (
+              <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setEditingProduct(null)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                  className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+                >
+                  <form onSubmit={handleUpdateProduct} className="flex flex-col h-full min-h-0 overflow-hidden">
+                    <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                    </div>
+
+                    <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden flex-shrink-0">
+                          {editImageUrl ? (
+                            <img src={editImageUrl} alt={editName} className="w-full h-full object-cover" />
+                          ) : (
+                            <ShoppingBag24Regular className="w-5 h-5 text-[var(--text-muted)]" />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="text-base font-extrabold text-[var(--text-primary)]">{editName}</h3>
+                          <p className="text-[11px] text-[var(--text-secondary)]">{editCategory}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct(null)}
+                        className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
+                      >
+                        <Dismiss24Filled className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+
+                    <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                      <FloatingInput
+                        label={t('productName')}
+                        required
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                      />
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <CustomSelect
+                          label={t('category')}
+                          value={editCategory}
+                          onChange={(val) => setEditCategory(val)}
+                          options={CATEGORY_OPTIONS.filter((c) => c.value !== 'all')}
+                        />
+
+                        <FloatingInput
+                          label={t('skuCode')}
+                          value={editSku}
+                          onChange={(e) => setEditSku(e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('retailPrice')}
+                          type="number"
+                          step="0.01"
+                          required
+                          value={editRetailPrice}
+                          onChange={(e) => setEditRetailPrice(e.target.value)}
+                          className="font-mono"
+                        />
+
+                        <FloatingInput
+                          label={t('costPrice')}
+                          type="number"
+                          step="0.01"
+                          value={editCostPrice}
+                          onChange={(e) => setEditCostPrice(e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
+
+                      <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                        <span className="text-[var(--text-secondary)] font-bold">{t('profitMargin')}:</span>
+                        <span className="font-extrabold font-mono text-[var(--text-primary)]">
+                          {t('profitMarginPercent').replace('{margin}', String(editMargin))}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('initialStock')}
+                          type="number"
+                          value={editStockQuantity}
+                          onChange={(e) => setEditStockQuantity(Number(e.target.value))}
+                          className="font-mono"
+                        />
+
+                        <FloatingInput
+                          label={t('lowStockThreshold')}
+                          type="number"
+                          value={editLowStockThreshold}
+                          onChange={(e) => setEditLowStockThreshold(Number(e.target.value))}
+                          className="font-mono"
+                        />
+                      </div>
+
+                      <FloatingInput
+                        label={t('productImageUrl')}
+                        type="url"
+                        placeholder="https://..."
+                        value={editImageUrl}
+                        onChange={(e) => setEditImageUrl(e.target.value)}
+                      />
+
+                      <div className="pt-2">
+                        <Checkbox
+                          checked={editIsRetail}
+                          onChange={setEditIsRetail}
+                          label={t('availableRetail')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-full p-4 sm:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] space-y-2.5 z-30 flex-shrink-0">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-primary w-full disabled:opacity-50"
+                      >
+                        <Save24Filled className="w-4 h-4" />
+                        <span>{submitting ? t('saving') : t('save')}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleDeleteProduct}
+                        disabled={submitting}
+                        className="btn-secondary w-full text-red-600 dark:text-red-400 hover:bg-red-500/10"
+                      >
+                        <Delete24Filled className="w-4 h-4" />
+                        <span>{t('deleteProduct')}</span>
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </div>
   );
 };

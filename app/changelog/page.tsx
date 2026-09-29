@@ -152,8 +152,8 @@ export default function ChangelogPage() {
             Get your link live in less than 5 minutes. Free to start, no credit card required.
           </p>
           <div className="pt-2">
-            <Link href="/onboarding" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-xs">
-              <span>Try AirBook Free</span>
+            <Link href="/founding" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-xs">
+              <span>{t('applyForFoundingProgram')}</span>
               <ArrowRight24Filled className="w-3.5 h-3.5" />
             </Link>
           </div>

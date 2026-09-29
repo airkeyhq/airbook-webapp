@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Appointment, useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -39,9 +40,14 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 }) => {
   const { deleteAppointment } = useAirBookStore();
   const { t } = useTranslation();
-  const [partyGuests, setPartyGuests] = React.useState<PartyGuestRow[]>([]);
+  const [partyGuests, setPartyGuests] = useState<PartyGuestRow[]>([]);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!appointment?.groupId) {
       setPartyGuests([]);
       return;
@@ -60,9 +66,8 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     };
   }, [appointment?.groupId]);
 
-  if (!isOpen || !appointment) return null;
-
   const handleDelete = async () => {
+    if (!appointment) return;
     deleteAppointment(appointment.id);
     try {
       await fetch(`/api/appointments?id=${appointment.id}`, { method: 'DELETE' });
@@ -72,20 +77,23 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     onClose();
   };
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        />
+  if (!mounted) return null;
 
-        {/* Modal Card Container */}
-        <motion.div
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && appointment && (
+        <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+
+          {/* Modal Card Container */}
+          <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
@@ -246,6 +254,8 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

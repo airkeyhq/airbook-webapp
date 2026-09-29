@@ -465,10 +465,10 @@ export const MarketingHeader: React.FC = () => {
                 </Link>
 
                 <Link
-                  href="/onboarding"
+                  href="/founding"
                   className="btn-primary flex items-center gap-1.5"
                 >
-                  <span>{t('startFreeTrialBtn')}</span>
+                  <span>{t('applyForAccess')}</span>
                   <ArrowRight24Filled className="w-3.5 h-3.5" />
                 </Link>
               </>
@@ -752,11 +752,11 @@ export const MarketingHeader: React.FC = () => {
                   </Link>
                 ) : (
                   <Link
-                    href="/onboarding"
+                    href="/founding"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
                   >
-                    <span>{t('signUpFree')}</span>
+                    <span>{t('applyForAccess')}</span>
                     <ArrowRight24Filled className="w-4 h-4" />
                   </Link>
                 )}

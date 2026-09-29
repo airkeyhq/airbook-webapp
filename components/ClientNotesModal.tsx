@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
@@ -27,17 +28,33 @@ import {
   Clock24Regular,
   ShieldCheckmark24Regular,
   ShieldCheckmark24Filled,
+  Camera24Regular,
+  Camera24Filled,
+  Image24Regular,
+  Eye24Filled,
+  Sparkle24Filled,
 } from '@fluentui/react-icons';
 import { WaiverPadModal } from '@/components/WaiverPadModal';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { KYCVerificationModal } from '@/components/KYCVerificationModal';
 import { EmptyState } from '@/components/EmptyState';
+import { CustomSelect } from '@/components/CustomSelect';
+import { INDUSTRY_SPEC_CATEGORIES } from '@/lib/presets/technicalSpecs';
 
 export interface CustomSpecItem {
   id: string;
   label: string;
   value: string;
   date?: string;
+}
+
+export interface ClientPhotoItem {
+  id: string;
+  beforeUrl?: string;
+  afterUrl?: string;
+  title?: string;
+  date?: string;
+  notes?: string;
 }
 
 interface ClientNotesModalProps {
@@ -56,6 +73,7 @@ interface ClientNotesModalProps {
   allergies?: string;
   tags?: string[];
   customSpecs?: CustomSpecItem[];
+  photos?: ClientPhotoItem[];
   isKycVerified?: boolean;
   onClientUpdated?: () => void;
 }
@@ -70,6 +88,13 @@ const PRESET_TAG_KEYS = [
   { key: 'tagExecutive', defaultLabel: 'Executive' },
   { key: 'tagHighSensitivity', defaultLabel: 'High Sensitivity' },
 ] as const;
+
+const splitClientName = (fullName: string) => {
+  const parts = (fullName || '').trim().split(/\s+/);
+  const first = parts[0] || '';
+  const last = parts.slice(1).join(' ') || '';
+  return { first, last };
+};
 
 export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   isOpen,
@@ -87,6 +112,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   allergies: initialAllergies = '',
   tags: initialTags = [],
   customSpecs: initialSpecs = [],
+  photos: initialPhotos = [],
   isKycVerified = false,
   onClientUpdated,
 }) => {
@@ -94,8 +120,11 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   const { addons, appointments } = useAirBookStore();
   const { addToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'specs' | 'waivers' | 'contact' | 'history'>('specs');
-  const [name, setName] = useState(clientName);
+  const [activeTab, setActiveTab] = useState<'specs' | 'photos' | 'waivers' | 'contact' | 'history'>('specs');
+  const initialNameParts = useMemo(() => splitClientName(clientName), [clientName]);
+  const [firstName, setFirstName] = useState(initialNameParts.first);
+  const [lastName, setLastName] = useState(initialNameParts.last);
+  const displayName = `${firstName.trim()} ${lastName.trim()}`.trim() || clientName || 'Client';
   const [email, setEmail] = useState(clientEmail);
   const [phone, setPhone] = useState(clientPhone);
   const [notes, setNotes] = useState(initialNotes);
@@ -103,21 +132,78 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   const [allergies, setAllergies] = useState(initialAllergies);
   const [tags, setTags] = useState<string[]>(initialTags);
   const [customSpecs, setCustomSpecs] = useState<CustomSpecItem[]>(initialSpecs);
+  const [photos, setPhotos] = useState<ClientPhotoItem[]>(initialPhotos);
 
   const [signedWaivers, setSignedWaivers] = useState<any[]>([]);
   const [isWaiverModalOpen, setIsWaiverModalOpen] = useState(false);
   const [isKycVerifiedState, setIsKycVerifiedState] = useState(!!isKycVerified);
   const [isKycModalOpen, setIsKycModalOpen] = useState(false);
 
+  const [selectedIndustry, setSelectedIndustry] = useState<'hair' | 'barber' | 'spa' | 'nails' | 'medspa' | 'custom'>('hair');
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('hair-formula');
   const [newSpecLabel, setNewSpecLabel] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isAddingSpec, setIsAddingSpec] = useState(false);
+
+  const activeCategory = useMemo(
+    () => INDUSTRY_SPEC_CATEGORIES.find((c) => c.id === selectedIndustry) || INDUSTRY_SPEC_CATEGORIES[0],
+    [selectedIndustry]
+  );
+
+  const activePreset = useMemo(
+    () => activeCategory.presets.find((p) => p.id === selectedPresetId) || activeCategory.presets[0],
+    [activeCategory, selectedPresetId]
+  );
+
+  const handleSelectIndustry = (catId: 'hair' | 'barber' | 'spa' | 'nails' | 'medspa' | 'custom') => {
+    setSelectedIndustry(catId);
+    if (catId === 'custom') {
+      setNewSpecLabel('');
+      setNewSpecValue('');
+    } else {
+      const cat = INDUSTRY_SPEC_CATEGORIES.find((c) => c.id === catId);
+      if (cat && cat.presets.length > 0) {
+        setSelectedPresetId(cat.presets[0].id);
+        setNewSpecLabel(t(cat.presets[0].labelKey as any));
+        setNewSpecValue('');
+      }
+    }
+  };
+
+  const handleSelectPreset = (presetId: string) => {
+    setSelectedPresetId(presetId);
+    const p = activeCategory.presets.find((x) => x.id === presetId);
+    if (p) {
+      setNewSpecLabel(t(p.labelKey as any));
+    }
+  };
+
+  const handleOpenAddSpec = () => {
+    if (selectedIndustry !== 'custom' && activePreset) {
+      setNewSpecLabel(t(activePreset.labelKey as any));
+    }
+    setIsAddingSpec(true);
+  };
+
+  // Photos State
+  const [isAddingPhoto, setIsAddingPhoto] = useState(false);
+  const [photoTitle, setPhotoTitle] = useState('');
+  const [photoDate, setPhotoDate] = useState(new Date().toISOString().split('T')[0]);
+  const [photoNotes, setPhotoNotes] = useState('');
+  const [beforeImage, setBeforeImage] = useState<string | null>(null);
+  const [afterImage, setAfterImage] = useState<string | null>(null);
+  const [viewingPhoto, setViewingPhoto] = useState<{ url: string; title: string; type: 'before' | 'after' } | null>(null);
 
   const [newTagInput, setNewTagInput] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchWaivers = async () => {
     if (!clientId) return;
@@ -134,7 +220,9 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    setName(clientName);
+    const parts = splitClientName(clientName);
+    setFirstName(parts.first);
+    setLastName(parts.last);
     setEmail(clientEmail);
     setPhone(clientPhone);
     setNotes(initialNotes);
@@ -142,8 +230,10 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     setAllergies(initialAllergies);
     setTags(initialTags || []);
     setCustomSpecs(initialSpecs || []);
+    setPhotos(initialPhotos || []);
     setActiveTab('specs');
     setIsAddingSpec(false);
+    setIsAddingPhoto(false);
     setIsAddingTag(false);
     if (clientId) {
       fetchWaivers();
@@ -157,11 +247,12 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     initialNotes,
     initialPreferences,
     initialAllergies,
+    initialPhotos,
   ]);
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
 
-  const handleAddSpec = () => {
+  const handleAddSpec = async () => {
     if (!newSpecLabel.trim() || !newSpecValue.trim()) return;
     const newSpec: CustomSpecItem = {
       id: `spec-${Date.now()}`,
@@ -169,14 +260,48 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
       value: newSpecValue.trim(),
       date: new Date().toISOString().split('T')[0],
     };
-    setCustomSpecs([newSpec, ...customSpecs]);
-    setNewSpecLabel('');
+    const updatedSpecs = [newSpec, ...customSpecs];
+    setCustomSpecs(updatedSpecs);
     setNewSpecValue('');
     setIsAddingSpec(false);
+
+    if (clientId) {
+      try {
+        await fetch('/api/clients', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: clientId,
+            customSpecs: updatedSpecs,
+          }),
+        });
+        onClientUpdated?.();
+      } catch (err) {
+        console.error('Failed to auto-save technical spec:', err);
+      }
+    }
+    addToast(t('savedToProfile'), 'success');
   };
 
-  const handleDeleteSpec = (specId: string) => {
-    setCustomSpecs(customSpecs.filter((s) => s.id !== specId));
+  const handleDeleteSpec = async (specId: string) => {
+    const updatedSpecs = customSpecs.filter((s) => s.id !== specId);
+    setCustomSpecs(updatedSpecs);
+    if (clientId) {
+      try {
+        await fetch('/api/clients', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: clientId,
+            customSpecs: updatedSpecs,
+          }),
+        });
+        onClientUpdated?.();
+      } catch (err) {
+        console.error('Failed to auto-save technical spec deletion:', err);
+      }
+    }
+    addToast(t('savedToProfile'), 'success');
   };
 
   const handleToggleTag = (tag: string) => {
@@ -196,6 +321,79 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
     }
   };
 
+  const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>, type: 'before' | 'after') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        if (type === 'before') setBeforeImage(reader.result);
+        else setAfterImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddPhotoRecord = async () => {
+    if (!beforeImage && !afterImage) {
+      addToast(t('uploadBeforeAfterPhoto'), 'error');
+      return;
+    }
+    const newRecord: ClientPhotoItem = {
+      id: `photo-${Date.now()}`,
+      beforeUrl: beforeImage || undefined,
+      afterUrl: afterImage || undefined,
+      title: photoTitle.trim() || 'Transformation Session',
+      date: photoDate,
+      notes: photoNotes.trim() || undefined,
+    };
+    const updatedPhotos = [newRecord, ...photos];
+    setPhotos(updatedPhotos);
+    setIsAddingPhoto(false);
+    setBeforeImage(null);
+    setAfterImage(null);
+    setPhotoTitle('');
+    setPhotoNotes('');
+
+    if (clientId) {
+      try {
+        await fetch('/api/clients', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: clientId,
+            photos: updatedPhotos,
+          }),
+        });
+        onClientUpdated?.();
+      } catch (err) {
+        console.error('Failed to auto-save photos:', err);
+      }
+    }
+    addToast(t('savedToProfile'), 'success');
+  };
+
+  const handleDeletePhotoRecord = async (id: string) => {
+    const updatedPhotos = photos.filter((p) => p.id !== id);
+    setPhotos(updatedPhotos);
+    if (clientId) {
+      try {
+        await fetch('/api/clients', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: clientId,
+            photos: updatedPhotos,
+          }),
+        });
+        onClientUpdated?.();
+      } catch (err) {
+        console.error('Failed to auto-save photo deletion:', err);
+      }
+    }
+    addToast(t('savedToProfile'), 'success');
+  };
+
   const handleSaveClient = async () => {
     if (!clientId) return;
     setIsSaving(true);
@@ -205,7 +403,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: clientId,
-          name: name.trim(),
+          name: displayName,
           email: email.trim() || null,
           phone: phone.trim() || null,
           notes: notes.trim() || null,
@@ -213,6 +411,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           allergies: allergies.trim() || null,
           tags,
           customSpecs,
+          photos,
         }),
       });
 
@@ -248,27 +447,28 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   };
 
   const clientAppointments = appointments.filter(
-    (a) => a.clientName?.toLowerCase() === name.toLowerCase()
+    (a) => a.clientName?.toLowerCase() === displayName.toLowerCase()
   );
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
 
-        <motion.div
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 350 }}
-          className="relative w-full max-w-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] overflow-hidden"
-        >
+          <motion.div
+            initial={{ y: '100%', opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 350 }}
+            className="relative w-full max-w-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] overflow-hidden"
+          >
           <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
           </div>
@@ -276,14 +476,14 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           <div className="p-5 md:p-6 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] flex items-start justify-between gap-4 flex-shrink-0">
             <div className="flex items-center gap-3.5 min-w-0">
               <img
-                src={getAvatarUrl(name)}
-                alt={name}
+                src={getAvatarUrl(displayName)}
+                alt={displayName}
                 className="w-12 h-12 md:w-14 md:h-14 rounded-2xl object-cover border border-[var(--border-subtle)] shadow-xs flex-shrink-0"
               />
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="text-base md:text-lg font-extrabold text-[var(--text-primary)] truncate">
-                    {name}
+                    {displayName}
                   </h3>
                   {tags.includes('VIP') && (
                     <span className="px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-subtle)] text-[9px] font-extrabold uppercase tracking-wider">
@@ -365,12 +565,37 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
           {/* Unified Design System Segmented Control Tabs */}
           <div className="px-5 md:px-6 pt-4 pb-1 bg-[var(--bg-primary)] flex-shrink-0">
-            <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-full">
+            <div className="grid grid-cols-5 gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-full">
               {[
-                { id: 'specs', label: t('technicalSpecs'), icon: Note24Regular },
-                { id: 'waivers', label: t('waiverPadTitle'), icon: DocumentSignature24Regular },
-                { id: 'contact', label: t('details'), icon: Person24Regular },
-                { id: 'history', label: t('activity'), icon: Calendar24Regular },
+                {
+                  id: 'specs',
+                  label: t('tabSpecs'),
+                  icon: Note24Regular,
+                  badge: customSpecs.length > 0 ? customSpecs.length : undefined,
+                },
+                {
+                  id: 'photos',
+                  label: t('tabPhotos'),
+                  icon: Camera24Regular,
+                  badge: photos.length > 0 ? photos.length : undefined,
+                },
+                {
+                  id: 'waivers',
+                  label: t('tabConsents'),
+                  icon: DocumentSignature24Regular,
+                  dot: isKycVerifiedState || signedWaivers.length > 0,
+                },
+                {
+                  id: 'contact',
+                  label: t('tabProfile'),
+                  icon: Person24Regular,
+                },
+                {
+                  id: 'history',
+                  label: t('tabHistory'),
+                  icon: Calendar24Regular,
+                  badge: totalVisits > 0 ? totalVisits : undefined,
+                },
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -379,14 +604,22 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 sm:px-3 rounded-xl text-xs transition-all cursor-pointer ${
+                    className={`relative flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-1 sm:px-2 rounded-xl text-xs transition-all cursor-pointer select-none ${
                       isActive
-                        ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold'
+                        ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold border border-black/5 dark:border-white/10'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] font-semibold'
                     }`}
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{tab.label}</span>
+                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="truncate text-[10px] sm:text-xs font-bold">{tab.label}</span>
+                    {tab.badge !== undefined && (
+                      <span className="hidden sm:inline-flex px-1.5 py-0.2 rounded-full bg-black/5 dark:bg-white/10 text-[9px] font-mono font-black">
+                        {tab.badge}
+                      </span>
+                    )}
+                    {tab.dot && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ring-2 ring-[var(--bg-primary)] flex-shrink-0" />
+                    )}
                   </button>
                 );
               })}
@@ -406,46 +639,123 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         {t('specsSub')}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsAddingSpec(!isAddingSpec)}
-                      className="py-1.5 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      <Add24Filled className="w-3.5 h-3.5" />
-                      <span>{t('addCustomSpec')}</span>
-                    </button>
+                    {customSpecs.length > 0 && !isAddingSpec && (
+                      <button
+                        type="button"
+                        onClick={handleOpenAddSpec}
+                        className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1.5"
+                      >
+                        <Add24Filled className="w-3.5 h-3.5" />
+                        <span>{t('addCustomSpec')}</span>
+                      </button>
+                    )}
                   </div>
 
                   {isAddingSpec && (
-                    <div className="p-3.5 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-2.5">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <input
-                          type="text"
-                          value={newSpecLabel}
-                          onChange={(e) => setNewSpecLabel(e.target.value)}
-                          placeholder={t('specLabelPlaceholder')}
-                          className="px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                        />
-                        <input
-                          type="text"
+                    <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                      {/* Industry Specialty Pills */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">
+                          {t('selectProfessionPreset')}
+                        </span>
+                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                          {INDUSTRY_SPEC_CATEGORIES.map((cat) => {
+                            const isSelected = selectedIndustry === cat.id;
+                            return (
+                              <button
+                                key={cat.id}
+                                type="button"
+                                onClick={() => handleSelectIndustry(cat.id)}
+                                className={`h-8 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                                  isSelected
+                                    ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
+                                    : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                }`}
+                              >
+                                <span>{t(cat.nameKey as any)}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Parameter Selector / Inputs */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        {selectedIndustry !== 'custom' ? (
+                          <CustomSelect
+                            label={t('selectPresetField')}
+                            value={selectedPresetId}
+                            onChange={handleSelectPreset}
+                            options={activeCategory.presets.map((p) => ({
+                              value: p.id,
+                              label: t(p.labelKey as any),
+                            }))}
+                          />
+                        ) : (
+                          <FloatingInput
+                            label={t('customParamLabel')}
+                            value={newSpecLabel}
+                            onChange={(e) => setNewSpecLabel(e.target.value)}
+                            placeholder="e.g. Blade Setting / Formula"
+                          />
+                        )}
+
+                        <FloatingInput
+                          label={t('customParamValue')}
                           value={newSpecValue}
                           onChange={(e) => setNewSpecValue(e.target.value)}
-                          placeholder={t('specValuePlaceholder')}
-                          className="px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          placeholder={
+                            selectedIndustry !== 'custom' && activePreset
+                              ? t(activePreset.placeholderKey as any)
+                              : 'e.g. Redken 09P + 09V'
+                          }
                         />
                       </div>
-                      <div className="flex items-center justify-end gap-2">
+
+                      {/* Smart Recommendation Chips */}
+                      {selectedIndustry !== 'custom' && activePreset?.suggestedValues && activePreset.suggestedValues.length > 0 && (
+                        <div className="space-y-1.5 pt-1">
+                          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                            <Sparkle24Filled className="w-3.5 h-3.5 text-blue-500" />
+                            <span className="text-[10px] uppercase font-bold tracking-wider">
+                              {t('smartSuggestions')}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {activePreset.suggestedValues.map((sug, idx) => (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => setNewSpecValue(sug)}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all text-left cursor-pointer border ${
+                                  newSpecValue === sug
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                    : 'bg-[var(--bg-primary)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-blue-500/50 hover:bg-blue-500/5'
+                                }`}
+                              >
+                                {sug}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Form Footer Actions */}
+                      <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[var(--border-subtle)]">
                         <button
                           type="button"
-                          onClick={() => setIsAddingSpec(false)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+                          onClick={() => {
+                            setIsAddingSpec(false);
+                            setNewSpecValue('');
+                          }}
+                          className="btn-secondary py-2 px-4 text-xs"
                         >
                           {t('cancel')}
                         </button>
                         <button
                           type="button"
                           onClick={handleAddSpec}
-                          className="btn-primary py-1 px-3 text-xs"
+                          className="btn-primary py-2 px-4 text-xs"
                         >
                           <Add24Filled className="w-3.5 h-3.5" />
                           <span>{t('addCustomSpec')}</span>
@@ -487,7 +797,12 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       icon={DocumentBulletList24Regular}
                       title={t('noSpecsTitle')}
                       description={t('noSpecsDesc')}
-                      className="min-h-[130px] sm:min-h-[140px] p-4 sm:p-5 space-y-1"
+                      action={{
+                        label: t('addCustomSpec'),
+                        onClick: () => setIsAddingSpec(true),
+                        icon: Add24Filled,
+                      }}
+                      className="min-h-[140px] sm:min-h-[150px] p-5 space-y-2"
                     />
                   )}
                 </div>
@@ -575,6 +890,257 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
               </div>
             )}
 
+            {/* ─── TAB: BEFORE & AFTER TRANSFORMATION PHOTOS ─── */}
+            {activeTab === 'photos' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      {t('clientPhotosTitle')}
+                    </h4>
+                    <p className="text-[11px] text-[var(--text-secondary)]">
+                      {t('clientPhotosSub')}
+                    </p>
+                  </div>
+
+                  {photos.length > 0 && !isAddingPhoto && (
+                    <button
+                      type="button"
+                      onClick={() => setIsAddingPhoto(true)}
+                      className="btn-primary py-1.5 px-3 text-xs flex items-center gap-1.5"
+                    >
+                      <Camera24Filled className="w-3.5 h-3.5" />
+                      <span>{t('addBeforeAfterPhoto')}</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Add Photo Form Card */}
+                {isAddingPhoto && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <FloatingInput
+                        label={t('transformationTitle')}
+                        placeholder={t('transformationTitlePlaceholder')}
+                        value={photoTitle}
+                        onChange={(e) => setPhotoTitle(e.target.value)}
+                      />
+                      <FloatingInput
+                        label={t('sessionDate')}
+                        type="date"
+                        value={photoDate}
+                        onChange={(e) => setPhotoDate(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Dual Upload Area (Before & After) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {/* Before Photo Box */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">
+                          {t('photoBefore')}
+                        </span>
+                        {beforeImage ? (
+                          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-[var(--border-subtle)] group bg-black/5 dark:bg-white/5">
+                            <img src={beforeImage} alt="Before" className="w-full h-full object-cover" />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 text-white font-black text-[9px] backdrop-blur-xs">
+                              {t('beforeBadge')}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setBeforeImage(null)}
+                              className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors cursor-pointer"
+                              title="Remove"
+                            >
+                              <Dismiss24Filled className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="relative aspect-[4/3] rounded-2xl border-2 border-dashed border-[var(--border-subtle)] hover:border-blue-500/50 bg-[var(--bg-primary)] hover:bg-blue-500/5 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all p-4 text-center">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleImageFile(e, 'before')}
+                            />
+                            <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-[var(--text-muted)] group-hover:text-blue-500">
+                              <Camera24Regular className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-[var(--text-primary)]">{t('photoBefore')}</p>
+                              <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">{t('clickToUpload')}</p>
+                            </div>
+                          </label>
+                        )}
+                      </div>
+
+                      {/* After Photo Box */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 tracking-wider">
+                          {t('photoAfter')}
+                        </span>
+                        {afterImage ? (
+                          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-blue-500/30 ring-1 ring-blue-500/20 group bg-black/5 dark:bg-white/5">
+                            <img src={afterImage} alt="After" className="w-full h-full object-cover" />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-[9px] shadow-xs">
+                              {t('afterBadge')}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setAfterImage(null)}
+                              className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors cursor-pointer"
+                              title="Remove"
+                            >
+                              <Dismiss24Filled className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="relative aspect-[4/3] rounded-2xl border-2 border-dashed border-blue-500/30 hover:border-blue-500 bg-blue-500/5 hover:bg-blue-500/10 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all p-4 text-center">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleImageFile(e, 'after')}
+                            />
+                            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+                              <Sparkle24Filled className="w-5 h-5 text-blue-500" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-[var(--text-primary)]">{t('photoAfter')}</p>
+                              <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">{t('clickToUpload')}</p>
+                            </div>
+                          </label>
+                        )}
+                      </div>
+                    </div>
+
+                    <FloatingTextarea
+                      label={t('photoNotes')}
+                      rows={2}
+                      placeholder={t('photoNotesPlaceholder')}
+                      value={photoNotes}
+                      onChange={(e) => setPhotoNotes(e.target.value)}
+                    />
+
+                    <div className="flex items-center justify-end gap-2.5 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAddingPhoto(false);
+                          setBeforeImage(null);
+                          setAfterImage(null);
+                          setPhotoTitle('');
+                          setPhotoNotes('');
+                        }}
+                        className="btn-secondary py-2 px-4 text-xs"
+                      >
+                        {t('cancel')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAddPhotoRecord}
+                        className="btn-primary py-2 px-4 text-xs"
+                      >
+                        <Camera24Filled className="w-3.5 h-3.5" />
+                        <span>{t('addBeforeAfterPhoto')}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Empty State vs Photo Comparison Cards */}
+                {!isAddingPhoto && (
+                  <>
+                    {photos.length === 0 ? (
+                      <EmptyState
+                        icon={Camera24Regular}
+                        title={t('noPhotosTitle')}
+                        description={t('noPhotosDesc')}
+                        action={{
+                          label: t('uploadBeforeAfterPhoto'),
+                          onClick: () => setIsAddingPhoto(true),
+                          icon: Camera24Filled,
+                        }}
+                        className="min-h-[180px] sm:min-h-[200px] p-6 space-y-2"
+                      />
+                    ) : (
+                      <div className="space-y-4">
+                        {photos.map((item) => (
+                          <div
+                            key={item.id}
+                            className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] space-y-3"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h5 className="text-xs font-extrabold text-[var(--text-primary)]">
+                                  {item.title || 'Transformation Session'}
+                                </h5>
+                                {item.date && (
+                                  <p className="text-[10px] text-[var(--text-secondary)] font-mono mt-0.5">
+                                    {item.date}
+                                  </p>
+                                )}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleDeletePhotoRecord(item.id)}
+                                className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+                                title={t('deletePhotoConfirm')}
+                              >
+                                <Delete24Filled className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            {/* Dual Side-by-Side Comparison */}
+                            <div className="grid grid-cols-2 gap-3">
+                              {item.beforeUrl ? (
+                                <div
+                                  onClick={() => setViewingPhoto({ url: item.beforeUrl!, title: `${item.title || ''} (${t('beforeBadge')})`, type: 'before' })}
+                                  className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--border-subtle)] group cursor-zoom-in bg-black/5 dark:bg-white/5"
+                                >
+                                  <img src={item.beforeUrl} alt="Before" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 text-white font-black text-[9px] backdrop-blur-xs">
+                                    {t('beforeBadge')}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="aspect-[4/3] rounded-xl border border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-[var(--text-muted)] text-[10px] font-semibold">
+                                  <span>{t('photoBefore')} N/A</span>
+                                </div>
+                              )}
+
+                              {item.afterUrl ? (
+                                <div
+                                  onClick={() => setViewingPhoto({ url: item.afterUrl!, title: `${item.title || ''} (${t('afterBadge')})`, type: 'after' })}
+                                  className="relative aspect-[4/3] rounded-xl overflow-hidden border border-blue-500/40 ring-1 ring-blue-500/20 group cursor-zoom-in bg-black/5 dark:bg-white/5"
+                                >
+                                  <img src={item.afterUrl} alt="After" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-[9px] shadow-xs">
+                                    {t('afterBadge')}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="aspect-[4/3] rounded-xl border border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center text-[var(--text-muted)] text-[10px] font-semibold">
+                                  <span>{t('photoAfter')} N/A</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {item.notes && (
+                              <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 text-[11px] text-[var(--text-secondary)] flex items-start gap-1.5 leading-relaxed">
+                                <Note24Regular className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
+                                <span>{item.notes}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
             {/* ─── TAB: ESIGN WAIVERS & COMPLIANCE LOGS ─── */}
             {activeTab === 'waivers' && (
               <div className="space-y-4">
@@ -588,30 +1154,30 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsWaiverModalOpen(true)}
-                    className="btn-primary"
-                  >
-                    <DocumentSignature24Filled className="w-3.5 h-3.5" />
-                    <span>{t('signNewWaiver')}</span>
-                  </button>
-                </div>
-
-                {signedWaivers.length === 0 ? (
-                  <div className="p-8 text-center bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] rounded-2xl space-y-2">
-                    <ShieldCheckmark24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
-                    <p className="text-xs font-bold text-[var(--text-primary)]">{t('noSignedWaivers')}</p>
-                    <p className="text-[11px] text-[var(--text-secondary)]">{t('noSignedWaiversSub')}</p>
+                  {signedWaivers.length > 0 && (
                     <button
                       type="button"
                       onClick={() => setIsWaiverModalOpen(true)}
-                      className="mt-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold inline-flex items-center gap-1.5 cursor-pointer"
+                      className="btn-primary py-1.5 px-3 text-xs"
                     >
                       <DocumentSignature24Filled className="w-3.5 h-3.5" />
-                      <span>{t('signWaiver')}</span>
+                      <span>{t('signNewWaiver')}</span>
                     </button>
-                  </div>
+                  )}
+                </div>
+
+                {signedWaivers.length === 0 ? (
+                  <EmptyState
+                    icon={ShieldCheckmark24Regular}
+                    title={t('noSignedWaivers')}
+                    description={t('noSignedWaiversSub')}
+                    action={{
+                      label: t('signWaiver'),
+                      onClick: () => setIsWaiverModalOpen(true),
+                      icon: DocumentSignature24Filled,
+                    }}
+                    className="min-h-[180px] sm:min-h-[200px] p-6 space-y-2"
+                  />
                 ) : (
                   <div className="space-y-3">
                     {signedWaivers.map((w) => (
@@ -671,12 +1237,23 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
             {activeTab === 'contact' && (
               <div className="space-y-3.5">
-                <FloatingInput
-                  label={t('fullNameLabel')}
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <FloatingInput
+                    label={t('firstName')}
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder={t('firstNamePlaceholder')}
+                  />
+
+                  <FloatingInput
+                    label={t('lastName')}
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder={t('lastNamePlaceholder')}
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <FloatingInput
@@ -684,7 +1261,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="client@gmail.com"
+                    placeholder={t('clientEmailPlaceholder')}
                   />
 
                   <FloatingInput
@@ -700,33 +1277,18 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                 <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-[var(--border-subtle)] grid grid-cols-2 gap-3 text-center">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">
-                      Total Completed Visits
+                      {t('totalCompletedVisits')}
                     </p>
                     <p className="text-lg font-black text-[var(--text-primary)] mt-0.5">{totalVisits}</p>
                   </div>
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--text-secondary)]">
-                      No-Show Counter
+                      {t('noShowCounter')}
                     </p>
                     <p className={`text-lg font-black mt-0.5 ${noShowCount > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
                       {noShowCount}
                     </p>
                   </div>
-                </div>
-
-                {/* Delete Client Action */}
-                <div className="pt-3 border-t border-[var(--border-subtle)]">
-                  <button
-                    type="button"
-                    onClick={handleDeleteClient}
-                    className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      confirmDelete
-                        ? 'bg-red-600 text-white'
-                        : 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20'
-                    }`}
-                  >
-                    {confirmDelete ? 'Click Again to Confirm Delete' : 'Delete Client Record'}
-                  </button>
                 </div>
               </div>
             )}
@@ -773,27 +1335,46 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
             )}
           </div>
 
-          {/* Side-to-Side Bottom Action Banner */}
-          <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30">
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={handleSaveClient}
-              className="btn-primary w-full disabled:opacity-50"
-            >
-              <Save24Filled className="w-4 h-4" />
-              <span>{isSaving ? t('saving') : t('save')}</span>
-            </button>
-          </div>
+          {/* Side-to-Side Bottom Action Banner (Grouped Actions for Editable Profile & Specs) */}
+          {(activeTab === 'specs' || activeTab === 'contact') && !isAddingSpec && (
+            <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30 flex flex-col gap-2.5">
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={handleSaveClient}
+                className="btn-primary w-full disabled:opacity-50"
+              >
+                <Save24Filled className="w-4 h-4" />
+                <span>{isSaving ? t('saving') : t('save')}</span>
+              </button>
+
+              {/* Grouped Secondary / Destructive Action */}
+              {activeTab === 'contact' && clientId && (
+                <button
+                  type="button"
+                  onClick={handleDeleteClient}
+                  className={`w-full py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                    confirmDelete
+                      ? 'bg-red-600 hover:bg-red-700 text-white shadow-md'
+                      : 'bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400'
+                  }`}
+                >
+                  <Delete24Filled className="w-3.5 h-3.5" />
+                  <span>{confirmDelete ? t('confirmDeleteClient') : t('deleteClientRecord')}</span>
+                </button>
+              )}
+            </div>
+          )}
         </motion.div>
       </div>
+      )}
 
       {/* Embedded Digital Waiver Signing Pad */}
       <WaiverPadModal
         isOpen={isWaiverModalOpen}
         onClose={() => setIsWaiverModalOpen(false)}
         clientId={clientId}
-        initialClientName={name}
+        initialClientName={displayName}
         initialClientEmail={email}
         initialClientPhone={phone}
         onSignedSuccess={(newWaiver) => {
@@ -807,7 +1388,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           isOpen={isKycModalOpen}
           onClose={() => setIsKycModalOpen(false)}
           clientId={clientId}
-          clientName={name}
+          clientName={displayName}
           clientEmail={email}
           onVerificationComplete={() => {
             setIsKycVerifiedState(true);
@@ -817,6 +1398,36 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
           }}
         />
       )}
-    </AnimatePresence>
+
+      {/* Before/After Photo Zoom Lightbox Modal */}
+      {viewingPhoto && (
+        <div
+          onClick={() => setViewingPhoto(null)}
+          className="fixed inset-0 z-[400] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-3xl max-h-[85vh] bg-[var(--bg-primary)] rounded-3xl overflow-hidden shadow-2xl border border-white/20 p-2 flex flex-col"
+          >
+            <div className="p-3 flex items-center justify-between">
+              <p className="text-xs font-bold text-[var(--text-primary)]">{viewingPhoto.title}</p>
+              <button
+                type="button"
+                onClick={() => setViewingPhoto(null)}
+                className="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
+              >
+                <Dismiss24Filled className="w-4 h-4" />
+              </button>
+            </div>
+            <img
+              src={viewingPhoto.url}
+              alt="Zoomed preview"
+              className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain mx-auto"
+            />
+          </div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

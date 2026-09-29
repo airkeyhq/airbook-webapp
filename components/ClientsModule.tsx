@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
+import { useToast } from '@/components/Toast';
 import { EmptyState } from '@/components/EmptyState';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import {
@@ -24,7 +26,7 @@ import {
   ShieldCheckmark24Filled,
 } from '@fluentui/react-icons';
 import { getAvatarUrl } from '@/lib/avatars';
-import { ClientNotesModal, CustomSpecItem } from '@/components/ClientNotesModal';
+import { ClientNotesModal, CustomSpecItem, ClientPhotoItem } from '@/components/ClientNotesModal';
 
 interface ClientItem {
   id: string;
@@ -41,11 +43,13 @@ interface ClientItem {
   allergies?: string;
   tags?: string[];
   customSpecs?: CustomSpecItem[];
+  photos?: ClientPhotoItem[];
   isKycVerified?: boolean;
 }
 
 export const ClientsModule: React.FC = () => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const [clients, setClients] = useState<ClientItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -54,9 +58,15 @@ export const ClientsModule: React.FC = () => {
   // Search & Tag Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('All');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Form State for Add Client Modal
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
@@ -184,7 +194,8 @@ export const ClientsModule: React.FC = () => {
 
   const handleAddClient = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
+    if (!fullName) return;
 
     try {
       setSubmitting(true);
@@ -192,7 +203,7 @@ export const ClientsModule: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: name.trim(),
+          name: fullName,
           email: email.trim() || undefined,
           phone: phone.trim() || undefined,
           notes: notes.trim() || undefined,
@@ -204,17 +215,25 @@ export const ClientsModule: React.FC = () => {
 
       const data = await res.json();
       if (data.success) {
+        if (data.client) {
+          setClients((prev) => [data.client, ...prev]);
+        }
         setIsAddModalOpen(false);
-        setName('');
+        setFirstName('');
+        setLastName('');
         setEmail('');
         setPhone('');
         setNotes('');
         setPreferences('');
         setAllergies('');
+        addToast(t('savedToProfile'), 'success');
         fetchClients();
+      } else {
+        addToast(data.error || 'Failed to create client.', 'error');
       }
     } catch (err) {
       console.error('Failed to create client:', err);
+      addToast('Network error while creating client.', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -233,14 +252,16 @@ export const ClientsModule: React.FC = () => {
           </p>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsAddModalOpen(true)}
-          className="btn-primary self-start sm:self-auto"
-        >
-          <Add24Filled className="w-4 h-4" />
-          <span>{t('addClient')}</span>
-        </motion.button>
+        {clients.length > 0 && (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsAddModalOpen(true)}
+            className="btn-primary self-start sm:self-auto"
+          >
+            <Add24Filled className="w-4 h-4" />
+            <span>{t('addClient')}</span>
+          </motion.button>
+        )}
       </div>
 
       {/* Quick Metrics Header Cards */}
@@ -481,109 +502,123 @@ export const ClientsModule: React.FC = () => {
         allergies={selectedClient?.allergies || ''}
         tags={selectedClient?.tags || []}
         customSpecs={selectedClient?.customSpecs || []}
+        photos={selectedClient?.photos || []}
         isKycVerified={selectedClient?.isKycVerified}
         onClientUpdated={fetchClients}
       />
 
-      {/* Add Client Modal */}
-      <AnimatePresence>
-        {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsAddModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              <form onSubmit={handleAddClient} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile & Tablet Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
+      {/* Add Client Modal (Portaled to document.body) */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isAddModalOpen && (
+              <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+                  className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+                >
+                  <form onSubmit={handleAddClient} className="flex flex-col h-full min-h-0 overflow-hidden">
+                    {/* Mobile & Tablet Drag Handle */}
+                    <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                    </div>
 
-                {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addClient')}</h3>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+                    {/* Header Edge-to-Edge Bar */}
+                    <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addClient')}</h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddModalOpen(false)}
+                        className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
+                      >
+                        <Dismiss24Filled className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
-                {/* Form Body */}
-                <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
-                  <FloatingInput
-                    label={t('fullName')}
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Alex Rivera"
-                  />
+                    {/* Form Body */}
+                    <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('firstName')}
+                          required
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          placeholder={t('firstNamePlaceholder')}
+                        />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('email')}
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="alex@example.com"
-                    />
+                        <FloatingInput
+                          label={t('lastName')}
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          placeholder={t('lastNamePlaceholder')}
+                        />
+                      </div>
 
-                    <FloatingInput
-                      label={t('phoneNumber')}
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="(555) 019-2834"
-                    />
-                  </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('email')}
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={t('clientEmailPlaceholder')}
+                        />
 
-                  <FloatingInput
-                    label={t('preferencesTitle')}
-                    type="text"
-                    value={preferences}
-                    onChange={(e) => setPreferences(e.target.value)}
-                    placeholder="e.g. Early morning slots, sparkling water, quiet session"
-                  />
+                        <FloatingInput
+                          label={t('phoneNumber')}
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="(555) 019-2834"
+                        />
+                      </div>
 
-                  <FloatingTextarea
-                    label={t('notes')}
-                    rows={2}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="e.g. Initial consultation notes, service goals, technical specs..."
-                  />
-                </div>
+                      <FloatingInput
+                        label={t('preferencesTitle')}
+                        type="text"
+                        value={preferences}
+                        onChange={(e) => setPreferences(e.target.value)}
+                        placeholder="e.g. Early morning slots, sparkling water, quiet session"
+                      />
 
-                {/* Side-to-Side Bottom Action Banner */}
-                <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30">
-                  <motion.button
-                    whileTap={{ scale: 0.96 }}
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Save24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('save')}</span>
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
+                      <FloatingTextarea
+                        label={t('notes')}
+                        rows={2}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="e.g. Initial consultation notes, service goals, technical specs..."
+                      />
+                    </div>
+
+                    {/* Side-to-Side Bottom Action Banner */}
+                    <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 md:p-5 flex-shrink-0 z-30">
+                      <motion.button
+                        whileTap={{ scale: 0.96 }}
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-primary w-full disabled:opacity-50"
+                      >
+                        <Save24Filled className="w-4 h-4" />
+                        <span>{submitting ? t('saving') : t('save')}</span>
+                      </motion.button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </div>
   );
 };

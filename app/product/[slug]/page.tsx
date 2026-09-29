@@ -449,10 +449,10 @@ export default function ProductDetailPage() {
           {/* Primary CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
-              href="/onboarding"
+              href="/founding"
               className="btn-primary h-12 px-6 rounded-2xl text-sm font-extrabold text-white inline-flex items-center justify-center gap-2 shadow-lg w-full sm:w-auto"
             >
-              <span>{t('tryAirBookFree')}</span>
+              <span>{t('applyForFoundingProgram')}</span>
               <ArrowRight24Filled className="w-4 h-4" />
             </Link>
             <Link
@@ -551,10 +551,10 @@ export default function ProductDetailPage() {
             {t('launchFastSubtitle')}
           </p>
           <Link
-            href="/onboarding"
+            href="/founding"
             className="btn-primary h-12 px-8 rounded-2xl text-sm font-extrabold text-white inline-flex items-center justify-center gap-2 shadow-lg"
           >
-            <span>{t('tryAirBookFree')}</span>
+            <span>{t('applyForFoundingProgram')}</span>
             <ArrowRight24Filled className="w-4 h-4" />
           </Link>
         </div>

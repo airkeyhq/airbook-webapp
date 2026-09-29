@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Warning24Regular, Dismiss24Filled } from '@fluentui/react-icons';
 
@@ -25,19 +26,26 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onCancel}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onCancel}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
 
         {/* Dialog Container */}
         <motion.div
@@ -92,6 +100,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

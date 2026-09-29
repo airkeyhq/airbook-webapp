@@ -13,7 +13,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/in/brand', request.url));
   }
 
-  const isProtectedPath = path.startsWith('/dashboard') || path.startsWith('/onboarding') || path.startsWith('/in');
+  // Redirect unauthenticated /onboarding directly to Founding Client Waitlist
+  if (path.startsWith('/onboarding') && !sessionToken) {
+    return NextResponse.redirect(new URL('/founding', request.url));
+  }
+
+  const isProtectedPath = path.startsWith('/dashboard') || path.startsWith('/in');
 
   // If trying to access protected route without session token, redirect to /login
   if (isProtectedPath && !sessionToken) {

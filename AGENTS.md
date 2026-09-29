@@ -16,6 +16,15 @@ All frontend code in this application MUST be fully internationalized without ex
 2. **4-Language Translation Maintenance**: When adding or modifying UI text, update all 4 supported language dictionaries in `lib/i18n/translations.ts`: English (`en`), Spanish (`es`), German (`de`), and French (`fr`).
 3. **Flag Icon System**: All language pickers MUST use circular vector flags from `hatscripts/circle-flags` (`https://hatscripts.github.io/circle-flags/flags/{flagCode}.svg`).
 4. **Tone & Positioning**: Address beauty, spa, salon, and barber shop operators in a warm, friendly tone. Avoid generic developer/SaaS boilerplate jargon.
+5. **Localized High-Converting Demographic & Business Placeholders**:
+   - **Zero Personal Name Leakage**: NEVER interpolate personal developer/user account names (e.g., `userFirstName + "'s Lounge"`, personal first names) into dummy placeholders, input examples, seed data, or demo storefront links.
+   - **Culturally Authentic & High-Converting**: ALWAYS use realistic, high-converting luxury salon, spa, barbershop, and client personas tailored for each locale via `lib/i18n/demographics.ts` and `translations.ts`:
+     - **English (`en`)**: *Aurelia Hair & Spa* (`aurelia-studio`), *Jessica Taylor*
+     - **Spanish (`es`)**: *Salón Aurelia & Spa* (`salon-aurelia`), *Valeria Morales*
+     - **German (`de`)**: *Aurelia Haardesign & Spa* (`aurelia-haardesign`), *Hannah Weber*
+     - **French (`fr`)**: *Maison Aurelia & Spa* (`maison-aurelia`), *Camille Moreau*
+   - **Dedicated Translation Tokens**: Always route placeholder microcopy through translation keys (`t('workspaceNamePlaceholder')`, `t('clientNamePlaceholder')`, `t('clientEmailPlaceholder')`) and demographic helpers (`getDemoBusiness(lang, countryCode)`, `getDemoSpecialists(lang)`).
+   - **Separated First & Last Name Fields**: All client, specialist, and profile creation forms MUST divide names into separate **First Name** (`firstName`) and **Last Name** (`lastName`) `<FloatingInput />` fields arranged in a responsive 2-column grid (`grid grid-cols-1 sm:grid-cols-2 gap-3.5`). Placeholders must use localized demographic tokens (`firstNamePlaceholder`, `lastNamePlaceholder`).
 
 # Mandatory Mobile-First Responsive Rule
 
@@ -161,6 +170,12 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Freemium Identity Gate on Demo Previews**: Public exploration of live demo storefronts (e.g. `/book/eduardos-lounge`, `/book/demo`, `/book/solaris-spa`) MUST strictly require an active or freemium registered session (`session?.user`). Unauthenticated visitors must be prompted with the passwordless Freemium Shield Gate linking to `/onboarding?redirect=...`.
     - **Real Client Booking Preservation**: Real registered tenant booking pages (`/book/[tenant-slug]`) remain open for actual salon clients to book appointments seamlessly.
     - **Invisible Anti-Bot Honeypots**: All public booking forms and API handlers (`/api/bookings/create`) MUST implement hidden honeypot traps (`_airbook_hp_check`) to detect and reject automated scrapers and bots immediately with HTTP 403.
+
+23. **Mandatory Action Button Deduplication & Modal Action Isolation Invariant**:
+    - **Zero Duplicate Header Buttons on Empty States**: When a catalog, list, or table is empty (`items.length === 0`) and renders an `<EmptyState action={{ ... }} />`, the page/section header action CTA MUST be conditionally hidden (`{items.length > 0 && <motion.button ... />}`) so the empty state contains the single, focused primary forward CTA without repetitive clutter.
+    - **Direction-Neutral Empty State Microcopy**: Empty state subtitles MUST NOT refer to buttons "above" or "below" (`noClientsSub`, `noServicesSub` must describe the feature value proposition without directional phrases like "Haz clic arriba" / "Click above").
+    - **Context-Aware Modal Bottom Action Banners**: When a modal or drawer tab features self-contained inline forms or actions (such as before/after photo session uploads, digital signature pads, or inline item creators), the persistent bottom modal "Guardar" banner MUST be hidden. Global bottom save bars are strictly reserved for uncommitted profile/settings forms (`specs`, `contact`) when no inline sub-form is active.
+    - **Immediate Sub-Item Persistence**: Dedicated sub-record operations (e.g. uploading/deleting transformation photos or custom specs) must auto-persist directly to the backend API (`PATCH /api/clients`) on confirmation rather than requiring a second redundant "Guardar" step.
 
 # Mandatory UI Integrity & Feature Evaluation System
 

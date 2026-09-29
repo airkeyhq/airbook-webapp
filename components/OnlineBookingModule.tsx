@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -180,6 +181,11 @@ export const OnlineBookingModule: React.FC = () => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Station Modal States
   const [isAddStationModalOpen, setIsAddStationModalOpen] = useState(false);
@@ -996,86 +1002,89 @@ export const OnlineBookingModule: React.FC = () => {
       </div>
 
       {/* QR Code Modal */}
-      <AnimatePresence>
-        {isQrModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
-                  <span>{t('qrCodeModalTitle')}</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setIsQrModalOpen(false)}
-                  className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isQrModalOpen && (
+            <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="w-full max-w-sm rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                    <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <span>{t('qrCodeModalTitle')}</span>
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setIsQrModalOpen(false)}
+                    className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
+                  >
+                    <Dismiss24Filled className="w-4 h-4" />
+                  </button>
+                </div>
 
-              <p className="text-xs text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
 
-              {/* High-Resolution QR Vector Card */}
-              <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
-                <svg viewBox="0 0 100 100" className="w-36 h-36">
-                  <rect x="0" y="0" width="100" height="100" fill="white" />
-                  <rect x="10" y="10" width="24" height="24" fill="black" />
-                  <rect x="14" y="14" width="16" height="16" fill="white" />
-                  <rect x="18" y="18" width="8" height="8" fill="black" />
-                  <rect x="66" y="10" width="24" height="24" fill="black" />
-                  <rect x="70" y="14" width="16" height="16" fill="white" />
-                  <rect x="74" y="18" width="8" height="8" fill="black" />
-                  <rect x="10" y="66" width="24" height="24" fill="black" />
-                  <rect x="14" y="70" width="16" height="16" fill="white" />
-                  <rect x="18" y="74" width="8" height="8" fill="black" />
-                  <rect x="40" y="10" width="8" height="8" fill="black" />
-                  <rect x="52" y="14" width="8" height="8" fill="black" />
-                  <rect x="40" y="26" width="8" height="8" fill="black" />
-                  <rect x="48" y="38" width="8" height="8" fill="black" />
-                  <rect x="14" y="44" width="8" height="8" fill="black" />
-                  <rect x="28" y="48" width="8" height="8" fill="black" />
-                  <rect x="66" y="44" width="8" height="8" fill="black" />
-                  <rect x="78" y="52" width="8" height="8" fill="black" />
-                  <rect x="40" y="66" width="8" height="8" fill="black" />
-                  <rect x="54" y="74" width="8" height="8" fill="black" />
-                  <rect x="70" y="74" width="8" height="8" fill="black" />
-                  <rect x="82" y="82" width="8" height="8" fill="black" />
-                </svg>
-              </div>
+                {/* High-Resolution QR Vector Card */}
+                <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
+                  <svg viewBox="0 0 100 100" className="w-36 h-36">
+                    <rect x="0" y="0" width="100" height="100" fill="white" />
+                    <rect x="10" y="10" width="24" height="24" fill="black" />
+                    <rect x="14" y="14" width="16" height="16" fill="white" />
+                    <rect x="18" y="18" width="8" height="8" fill="black" />
+                    <rect x="66" y="10" width="24" height="24" fill="black" />
+                    <rect x="70" y="14" width="16" height="16" fill="white" />
+                    <rect x="74" y="18" width="8" height="8" fill="black" />
+                    <rect x="10" y="66" width="24" height="24" fill="black" />
+                    <rect x="14" y="70" width="16" height="16" fill="white" />
+                    <rect x="18" y="74" width="8" height="8" fill="black" />
+                    <rect x="40" y="10" width="8" height="8" fill="black" />
+                    <rect x="52" y="14" width="8" height="8" fill="black" />
+                    <rect x="40" y="26" width="8" height="8" fill="black" />
+                    <rect x="48" y="38" width="8" height="8" fill="black" />
+                    <rect x="14" y="44" width="8" height="8" fill="black" />
+                    <rect x="28" y="48" width="8" height="8" fill="black" />
+                    <rect x="66" y="44" width="8" height="8" fill="black" />
+                    <rect x="78" y="52" width="8" height="8" fill="black" />
+                    <rect x="40" y="66" width="8" height="8" fill="black" />
+                    <rect x="54" y="74" width="8" height="8" fill="black" />
+                    <rect x="70" y="74" width="8" height="8" fill="black" />
+                    <rect x="82" y="82" width="8" height="8" fill="black" />
+                  </svg>
+                </div>
 
-              <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate">
-                getairbook.com/book/{slugInput}
-              </div>
+                <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate">
+                  getairbook.com/book/{slugInput}
+                </div>
 
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="btn-secondary flex-1"
-                >
-                  <Copy24Filled className="w-3.5 h-3.5" />
-                  <span>{t('copyBookingLink')}</span>
-                </button>
-                <a
-                  href={`/book/${slugInput}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary flex-1"
-                >
-                  <Open24Filled className="w-3.5 h-3.5" />
-                  <span>{t('openLiveBookingPage')}</span>
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="btn-secondary flex-1"
+                  >
+                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <span>{t('copyBookingLink')}</span>
+                  </button>
+                  <a
+                    href={`/book/${slugInput}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary flex-1"
+                  >
+                    <Open24Filled className="w-3.5 h-3.5" />
+                    <span>{t('openLiveBookingPage')}</span>
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

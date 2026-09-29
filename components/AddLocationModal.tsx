@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -35,8 +36,11 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
   const [locationType, setLocationType] = useState<'flagship' | 'branch' | 'pop_up'>('branch');
   const [managerName, setManagerName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNameChange = (val: string) => {
     setName(val);
@@ -60,7 +64,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
           address: address.trim(),
           phone: phone.trim(),
           locationType,
-          managerName: managerName.trim(),
+          managerName: managerName.trim() || undefined,
         }),
       });
 
@@ -70,36 +74,39 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
         onLocationCreated();
         onClose();
       } else {
-        addToast(data.error || 'Failed to provision location branch.', 'error');
+        addToast(data.error || 'Failed to create location branch', 'error');
       }
     } catch (err) {
-      console.error('Error creating location:', err);
-      addToast('Error provisioning location.', 'error');
+      console.error('Failed to create location branch:', err);
+      addToast('Network error deploying branch.', 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[260] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-        />
+  if (!mounted) return null;
 
-        {/* Modal Dialog */}
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 40, scale: 0.98 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-          className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-        >
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+
+          {/* Modal Dialog */}
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
+            className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+          >
           {/* Mobile & Tablet Drag Handle */}
           <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
@@ -206,6 +213,8 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
           </form>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

@@ -11,11 +11,13 @@ import { FloatingInput } from '@/components/FloatingInput';
 import { isPasskeySupported, signInWithPasskey } from '@/lib/passkey';
 import {
   ArrowLeft24Filled,
+  ArrowRight24Filled,
   Mail24Regular,
   Person24Regular,
   ShieldCheckmark24Regular,
   Warning24Regular,
   Sparkle24Filled,
+  Sparkle24Regular,
   Fingerprint24Filled,
 } from '@fluentui/react-icons';
 
@@ -165,88 +167,111 @@ function LoginFormContent() {
           ))}
         </div>
 
-        {/* Passkey Biometric Sign-In CTA */}
-        {passkeyAvailable && mode === 'signin' && (
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            type="button"
-            onClick={handlePasskeySignIn}
-            disabled={passkeyLoading}
-            className="w-full py-3 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 active:scale-98 border border-[var(--border-subtle)] text-xs font-extrabold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
-          >
-            <Fingerprint24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
-            <span>{passkeyLoading ? t('passkeyVerifying') : t('signInWithPasskey')}</span>
-          </motion.button>
+        {mode === 'signup' ? (
+          <div className="space-y-4 pt-1">
+            <div className="p-4 rounded-3xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/20 space-y-2.5 text-center">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] text-[10px] font-black uppercase tracking-wider">
+                <Sparkle24Regular className="w-3.5 h-3.5" />
+                <span>{t('foundingBannerBadge')}</span>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                {t('inviteOnlySignupSubtitle')}
+              </p>
+            </div>
+
+            <Link
+              href="/founding"
+              className="btn-primary w-full h-12 flex items-center justify-center gap-2 cursor-pointer text-xs font-extrabold shadow-md"
+            >
+              <span>{t('joinFoundingWaitlist')}</span>
+              <ArrowRight24Filled className="w-4 h-4" />
+            </Link>
+
+            <div className="text-center pt-1">
+              <button
+                type="button"
+                onClick={() => switchMode('signin')}
+                className="text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer underline"
+              >
+                {t('alreadyHaveAccount')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Passkey Biometric Sign-In CTA */}
+            {passkeyAvailable && (
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                type="button"
+                onClick={handlePasskeySignIn}
+                disabled={passkeyLoading}
+                className="w-full py-3 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 active:scale-98 border border-[var(--border-subtle)] text-xs font-extrabold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
+              >
+                <Fingerprint24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
+                <span>{passkeyLoading ? t('passkeyVerifying') : t('signInWithPasskey')}</span>
+              </motion.button>
+            )}
+
+            {/* OAuth Provider Buttons */}
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  const res = await signIn.social({ provider: 'google', callbackURL: urlRedirect || '/dashboard' });
+                  if (res?.data?.url) window.location.href = res.data.url;
+                }}
+                className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
+              >
+                <GoogleColor size={16} />
+                <span>{t('continueWithGoogle')}</span>
+              </button>
+            </div>
+
+            {/* Centered Divider */}
+            <div className="relative flex items-center justify-center my-3">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-black/10 dark:border-white/10" />
+              </div>
+              <div className="relative px-3 bg-white dark:bg-gray-900 text-center">
+                <span className="text-[10px] uppercase font-extrabold text-[var(--text-secondary)] tracking-wider block">
+                  {t('orMagicLink')}
+                </span>
+              </div>
+            </div>
+
+            {/* Passwordless Form */}
+            <form onSubmit={handleMagicLinkSubmit} className="space-y-3">
+              <FloatingInput
+                label={t('workEmail')}
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                icon={<Mail24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+              />
+
+              <StatusBanner error={error} success={successMessage} />
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full py-3 h-12 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Sparkle24Filled className="w-4 h-4" />
+                <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
+              </motion.button>
+            </form>
+
+            <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5 text-[11px] text-emerald-700 dark:text-emerald-300">
+              <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <p className="leading-snug">
+                {t('passwordlessSecurityNotice')}
+              </p>
+            </div>
+          </>
         )}
-
-        {/* OAuth Provider Buttons */}
-        <div className="space-y-2">
-          <button
-            type="button"
-            onClick={async () => {
-              const res = await signIn.social({ provider: 'google', callbackURL: urlRedirect || '/dashboard' });
-              if (res?.data?.url) window.location.href = res.data.url;
-            }}
-            className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2.5 transition-all cursor-pointer"
-          >
-            <GoogleColor size={16} />
-            <span>{t('continueWithGoogle')}</span>
-          </button>
-        </div>
-
-        {/* Centered Divider */}
-        <div className="relative flex items-center justify-center my-3">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-black/10 dark:border-white/10" />
-          </div>
-          <div className="relative px-3 bg-white dark:bg-gray-900 text-center">
-            <span className="text-[10px] uppercase font-extrabold text-[var(--text-secondary)] tracking-wider block">
-              {t('orMagicLink')}
-            </span>
-          </div>
-        </div>
-
-        {/* Passwordless Form */}
-        <form onSubmit={handleMagicLinkSubmit} className="space-y-3">
-          {mode === 'signup' && (
-            <FloatingInput
-              label={t('fullName')}
-              type="text"
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              icon={<Person24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
-            />
-          )}
-
-          <FloatingInput
-            label={t('workEmail')}
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            icon={<Mail24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
-          />
-
-          <StatusBanner error={error} success={successMessage} />
-
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full py-3 h-12 flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Sparkle24Filled className="w-4 h-4" />
-            <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
-          </motion.button>
-        </form>
-
-        <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5 text-[11px] text-emerald-700 dark:text-emerald-300">
-          <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-          <p className="leading-snug">
-            {t('passwordlessSecurityNotice')}
-          </p>
-        </div>
       </motion.div>
     </div>
   );

@@ -31,17 +31,15 @@ import {
 type Step = 1 | 2 | 3 | 4;
 
 const BUSINESS_TYPES = [
-  { id: 'salon', label: 'Hair Salon', icon: Cut24Regular },
-  { id: 'barbershop', label: 'Barbershop', icon: Cut24Regular },
-  { id: 'spa', label: 'Spa & Beauty', icon: Sparkle24Regular },
-  { id: 'wellness', label: 'Wellness', icon: Heart24Regular },
-  { id: 'aesthetics', label: 'Aesthetics', icon: Emoji24Regular },
-  { id: 'medical', label: 'Medical', icon: Stethoscope24Regular },
-  { id: 'tattoo', label: 'Tattoo & Art', icon: Edit24Regular },
-  { id: 'other', label: 'Other', icon: Grid24Regular },
-];
-
-const STEP_LABELS = ['Identity', 'Business Type', 'Team', 'Done!'];
+  { id: 'salon', labelKey: 'tradeHairSalons', icon: Cut24Regular },
+  { id: 'barbershop', labelKey: 'tradeBarbershops', icon: Cut24Regular },
+  { id: 'spa', labelKey: 'tradeSpas', icon: Sparkle24Regular },
+  { id: 'wellness', labelKey: 'tradeWellness', icon: Heart24Regular },
+  { id: 'aesthetics', labelKey: 'tradeAesthetics', icon: Emoji24Regular },
+  { id: 'medical', labelKey: 'tradeMedical', icon: Stethoscope24Regular },
+  { id: 'tattoo', labelKey: 'tradeTattoo', icon: Edit24Regular },
+  { id: 'other', labelKey: 'tradeOther', icon: Grid24Regular },
+] as const;
 
 const slideVariants = {
   initial: (dir: number) => ({ x: dir * 48, opacity: 0 }),
@@ -53,8 +51,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { setWorkspaceName, setBusinessType, setWorkspaceSlug, setWorkspaceId } = useAirBookStore();
   const { data: session } = useSession();
-  const { t } = useTranslation();
-  const userFirstName = session?.user?.name ? session.user.name.split(' ')[0] : '';
+  const { t, language, countryCode } = useTranslation();
 
   const [step, setStep] = useState<Step>(1);
   const [direction, setDirection] = useState(1);
@@ -146,7 +143,7 @@ export default function OnboardingPage() {
         className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors z-20"
       >
         <ArrowLeft24Filled className="w-3.5 h-3.5" />
-        <span>Back to login</span>
+        <span>{t('backToLogin')}</span>
       </Link>
 
       {/* Background glow */}
@@ -196,7 +193,7 @@ export default function OnboardingPage() {
 
           {/* Step label */}
           <span className="text-[11px] font-semibold text-[var(--text-muted)]">
-            Step {step} of 4
+            {t('stepCount', { step })}
           </span>
         </div>
 
@@ -216,17 +213,17 @@ export default function OnboardingPage() {
               >
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                    {nameInput ? nameInput : 'Your Workspace'}
+                    {nameInput ? nameInput : t('yourWorkspace')}
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    Let's start with your workspace identity.
+                    {t('workspaceIdentityDesc')}
                   </p>
                 </div>
 
                 {/* Icon */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[var(--text-primary)] block">Workspace Icon</label>
-                  <p className="text-xs text-[var(--text-secondary)]">Shown in notifications and share links.</p>
+                  <label className="text-sm font-bold text-[var(--text-primary)] block">{t('workspaceIcon')}</label>
+                  <p className="text-xs text-[var(--text-secondary)]">{t('iconHelp')}</p>
                   <div className="flex items-center gap-4 pt-1">
                     <input
                       type="file"
@@ -249,7 +246,7 @@ export default function OnboardingPage() {
                         className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-semibold text-[var(--text-primary)] transition-colors flex items-center gap-1.5"
                       >
                         <Add24Filled className="w-3.5 h-3.5" />
-                        <span>{iconUrl ? 'Change Image' : 'Upload Image'}</span>
+                        <span>{iconUrl ? t('changeImage') : t('uploadImage')}</span>
                       </button>
                       {iconUrl && (
                         <button
@@ -257,23 +254,23 @@ export default function OnboardingPage() {
                           onClick={() => setIconUrl(null)}
                           className="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
                         >
-                          Remove
+                          {t('remove')}
                         </button>
                       )}
                     </div>
                   </div>
-                  <span className="text-[10px] text-[var(--text-muted)]">Recommended: 256×256px</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">{t('recommendedIconSize')}</span>
                 </div>
 
                 <div className="h-px w-full bg-black/5 dark:bg-white/10" />
 
                 {/* Workspace name */}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[var(--text-primary)] block">Workspace Name *</label>
+                  <label className="text-sm font-bold text-[var(--text-primary)] block">{t('workspaceName')} *</label>
                   <input
                     type="text"
                     required
-                    placeholder={userFirstName ? `e.g. ${userFirstName}'s Lounge` : 'e.g. Glow Studio & Lounge'}
+                    placeholder={t('workspaceNamePlaceholder')}
                     value={nameInput}
                     onChange={(e) => {
                       setNameInput(e.target.value);
@@ -306,10 +303,10 @@ export default function OnboardingPage() {
               >
                 <div>
                   <h2 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                    What kind of business?
+                    {t('businessTypeQuestion')}
                   </h2>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    We'll tailor your AirBook experience to your industry.
+                    {t('businessTypeDesc')}
                   </p>
                 </div>
 
@@ -331,7 +328,7 @@ export default function OnboardingPage() {
                         }`}
                       >
                         <Icon className="w-5 h-5" />
-                        <span>{type.label}</span>
+                        <span>{t(type.labelKey)}</span>
                         {isSelected && <CheckmarkCircle24Regular className="w-3.5 h-3.5" />}
                       </motion.button>
                     );
@@ -353,10 +350,10 @@ export default function OnboardingPage() {
               >
                 <div>
                   <h2 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                    Invite your team
+                    {t('inviteTeamTitle')}
                   </h2>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    Add your staff members. They'll receive an invitation email.
+                    {t('inviteTeamDesc')}
                   </p>
                 </div>
 
@@ -366,7 +363,7 @@ export default function OnboardingPage() {
                     <Mail24Regular className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
-                      placeholder="colleague@business.com"
+                      placeholder={t('teamMemberEmailPlaceholder')}
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
                       onKeyDown={(e) => {
@@ -409,7 +406,7 @@ export default function OnboardingPage() {
                 )}
 
                 <p className="text-[11px] text-[var(--text-muted)]">
-                  You can always add team members later in Settings → Team.
+                  {t('addTeamLater')}
                 </p>
               </motion.div>
             )}
@@ -436,20 +433,25 @@ export default function OnboardingPage() {
 
                 <div>
                   <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                    You're all set!
+                    {t('youreAllSet')}
                   </h2>
                   <p className="text-sm text-[var(--text-secondary)] mt-2 max-w-xs mx-auto leading-relaxed">
-                    {nameInput ? <><strong>{nameInput}</strong> is ready.</> : 'Your workspace is ready.'}{' '}
-                    {inviteEmails.length > 0 && `Invites sent to ${inviteEmails.length} team member${inviteEmails.length > 1 ? 's' : ''}.`}
+                    {nameInput ? (
+                      t('workspaceIsReady', { name: nameInput })
+                    ) : (
+                      t('workspaceReady')
+                    )}{' '}
+                    {inviteEmails.length > 0 &&
+                      t('invitesSentCount', { count: inviteEmails.length })}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 w-full max-w-xs text-xs">
                   {[
-                    { label: 'Calendar', desc: 'Real-time booking grid', icon: Calendar24Regular },
-                    { label: 'POS', desc: 'Omnichannel checkout', icon: Payment24Regular },
-                    { label: 'Team', desc: 'Shifts & commissions', icon: People24Regular },
-                    { label: 'Analytics', desc: 'Revenue dashboard', icon: DataTrending24Regular },
+                    { label: t('tabCalendar'), desc: t('featureCalendarDesc'), icon: Calendar24Regular },
+                    { label: t('tabPos'), desc: t('featurePOSDesc'), icon: Payment24Regular },
+                    { label: t('tabTeam'), desc: t('featureTeamDesc'), icon: People24Regular },
+                    { label: t('analyticsTitle'), desc: t('featureAnalyticsDesc'), icon: DataTrending24Regular },
                   ].map((f) => {
                     const Icon = f.icon;
                     return (

@@ -298,14 +298,16 @@ export const MarketingModule: React.FC = () => {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsCampaignDrawerOpen(true)}
-          className="btn-primary self-start sm:self-auto flex-shrink-0"
-        >
-          <Add24Filled className="w-4 h-4" />
-          <span>{t('newBroadcastCampaign')}</span>
-        </button>
+        {campaignsList.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setIsCampaignDrawerOpen(true)}
+            className="btn-primary self-start sm:self-auto flex-shrink-0"
+          >
+            <Add24Filled className="w-4 h-4" />
+            <span>{t('newBroadcastCampaign')}</span>
+          </button>
+        )}
       </div>
 
       {/* ─── SECTION 2: UNIFORM METRICS & BALANCE RIBBON ─── */}

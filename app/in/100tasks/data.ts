@@ -441,7 +441,7 @@ export const VENTURE_TASKS: VentureTask[] = [
     initialStatus: 'completed',
     verificationStatus: 'verified_codebase',
     exactImplementation: 'Implemented in app/onboarding/page.tsx, app/dashboard/page.tsx, and app/book/[slug]/page.tsx.',
-    airbookModuleLink: { href: '/book/eduardos-lounge', label: 'Preview 60fps Journey' },
+    airbookModuleLink: { href: '/book/aurelia-studio', label: 'Preview 60fps Journey' },
   },
   {
     id: 13,
@@ -1289,7 +1289,7 @@ export const VENTURE_TASKS: VentureTask[] = [
     initialStatus: 'completed',
     verificationStatus: 'verified_codebase',
     exactImplementation: 'Implemented in app/book/[slug]/page.tsx and app/api/bookings/create/route.ts.',
-    airbookModuleLink: { href: '/book/eduardos-lounge', label: 'Preview Booking Studio' },
+    airbookModuleLink: { href: '/book/aurelia-studio', label: 'Preview Booking Studio' },
   },
   {
     id: 53,

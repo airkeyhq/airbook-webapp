@@ -46,7 +46,7 @@ export const DateStrip: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 px-3 py-2.5 sm:px-5 sm:py-3 flex flex-col flex-shrink-0 z-20 relative gap-2.5">
+    <div className="w-full bg-white dark:bg-[#141720] border-b border-slate-200/80 dark:border-white/10 px-3 py-2.5 sm:px-5 sm:py-3 flex flex-col flex-shrink-0 z-10 relative gap-2.5">
       {/* Top Row: Month/Week Title (Left) + View Mode & Navigation Controls (Right) */}
       <div className="flex items-center justify-between w-full flex-wrap gap-2">
         {/* Month & Week Number Indicator */}

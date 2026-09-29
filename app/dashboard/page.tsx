@@ -154,12 +154,12 @@ export default function DashboardPage() {
       <DesktopHeader />
 
       {/* Main Full-Width Flex Body */}
-      <div className="flex-1 flex w-full h-full min-h-0 overflow-hidden relative gap-2.5 sm:gap-3.5">
+      <div className="flex-1 flex w-full h-full min-h-0 overflow-hidden relative z-0 gap-2.5 sm:gap-3.5">
         {/* Desktop Left Floating Sidebar */}
         <DesktopSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Center Floating Viewport */}
-        <section className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative rounded-2xl sm:rounded-[24px] bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 shadow-md shadow-black/5 dark:shadow-black/30">
+        <section className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative z-0 rounded-2xl sm:rounded-[24px] bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 shadow-md shadow-black/5 dark:shadow-black/30">
           {/* Mobile Module Navigation Bar */}
           <div className="md:hidden flex items-center justify-start px-3 py-2.5 border-b border-slate-200/80 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 overflow-x-auto gap-1.5 hide-scrollbar rounded-t-2xl sm:rounded-t-[24px]">
             {[

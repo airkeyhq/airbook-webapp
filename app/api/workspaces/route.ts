@@ -245,7 +245,7 @@ export async function GET(req: Request) {
               .insert(staff)
               .values({
                 workspaceId: newWs.id,
-                name: 'Eduardo Moreno',
+                name: 'Master Specialist',
                 role: 'Master Specialist & Owner',
                 commissionPercent: 70,
               })

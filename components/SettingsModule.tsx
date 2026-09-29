@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
@@ -207,6 +208,12 @@ export const SettingsModule: React.FC = () => {
   const [profileEmail, setProfileEmail] = useState(session?.user?.email || '');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(session?.user?.image || null);
   const profilePhotoRef = React.useRef<HTMLInputElement>(null);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (session?.user) {
@@ -2007,281 +2014,291 @@ export const SettingsModule: React.FC = () => {
       />
 
       {/* Beta Access Key Modal */}
-      <AnimatePresence>
-        {isBetaModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsBetaModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-md"
-            />
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full md:max-w-md glass-panel rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border-t md:border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
-            >
-              {/* Mobile & Tablet Drag Handle */}
-              <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                    <LockClosed24Regular className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-base font-black text-[var(--text-primary)]">{t('enterBetaCode')}</h3>
-                </div>
-                <button
-                  onClick={() => setIsBetaModalOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
-
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                {t('betaAccessRule')}
-              </p>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const success = unlockBetaWithCode(betaInputCode);
-                  if (success) {
-                    addToast(t('betaUnlockedSuccess'), 'success');
-                    setIsBetaModalOpen(false);
-                    setBetaInputCode('');
-                  } else {
-                    addToast(t('invalidBetaCode'), 'error');
-                  }
-                }}
-                className="space-y-3 pt-2"
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isBetaModalOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsBetaModalOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="relative w-full md:max-w-md glass-panel rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl p-6 shadow-2xl bg-white dark:bg-gray-900 border-t md:border border-white/80 dark:border-white/10 z-10 space-y-4 max-h-[92vh] md:max-h-[85vh] overflow-y-auto"
               >
-                <input
-                  type="text"
-                  value={betaInputCode}
-                  onChange={(e) => setBetaInputCode(e.target.value)}
-                  placeholder={t('betaCodePlaceholder')}
-                  className="w-full px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-bold tracking-wider text-[var(--text-primary)] uppercase focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                  autoFocus
-                />
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsBetaModalOpen(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
-                  >
-                    {t('cancel')}
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors"
-                  >
-                    {t('unlockBeta')}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      {/* ─── ADD STATION MODAL DIALOG ─── */}
-      <AnimatePresence>
-        {isAddStationModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsAddStationModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="relative w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col overflow-visible"
-            >
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!newStationName.trim()) return;
-                  addStation({ name: newStationName.trim(), category: newStationCategory });
-                  setIsAddStationModalOpen(false);
-                  setNewStationName('');
-                  addToast(t('stationAdded'), 'success');
-                }}
-                className="flex flex-col h-full"
-              >
-                {/* Mobile Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
+                {/* Mobile & Tablet Drag Handle */}
+                <div className="w-full pt-1 pb-1 flex md:hidden justify-center bg-transparent flex-shrink-0">
                   <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                 </div>
-
-                {/* Header */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
-                  <div className="flex items-center gap-2.5">
-                    <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
-                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                      <LockClosed24Regular className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-base font-black text-[var(--text-primary)]">{t('enterBetaCode')}</h3>
                   </div>
                   <button
-                    type="button"
-                    onClick={() => setIsAddStationModalOpen(false)}
-                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                    onClick={() => setIsBetaModalOpen(false)}
+                    className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Dismiss24Filled className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Form Body */}
-                <div className="p-6 space-y-3.5">
-                  <FloatingInput
-                    label={t('stationNameLabel')}
-                    required
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  {t('betaAccessRule')}
+                </p>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const success = unlockBetaWithCode(betaInputCode);
+                    if (success) {
+                      addToast(t('betaUnlockedSuccess'), 'success');
+                      setIsBetaModalOpen(false);
+                      setBetaInputCode('');
+                    } else {
+                      addToast(t('invalidBetaCode'), 'error');
+                    }
+                  }}
+                  className="space-y-3 pt-2"
+                >
+                  <input
+                    type="text"
+                    value={betaInputCode}
+                    onChange={(e) => setBetaInputCode(e.target.value)}
+                    placeholder={t('betaCodePlaceholder')}
+                    className="w-full px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-bold tracking-wider text-[var(--text-primary)] uppercase focus:outline-none focus:ring-2 focus:ring-amber-500/50"
                     autoFocus
-                    value={newStationName}
-                    onChange={(e) => setNewStationName(e.target.value)}
-                    placeholder={t('stationNamePlaceholder')}
                   />
 
-                  <CustomSelect
-                    label={t('stationCategoryLabel')}
-                    value={newStationCategory}
-                    onChange={setNewStationCategory}
-                    options={[
-                      { value: 'Hair & Styling', label: t('catHairStyling') },
-                      { value: 'Color & Wash Bar', label: t('catColorWash') },
-                      { value: 'Spa & Skincare', label: t('catSpaSkincare') },
-                      { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
-                      { value: 'Barbering', label: t('catBarbering') },
-                      { value: 'General / Flex', label: t('catGeneralFlex') },
-                    ]}
-                  />
-                </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsBetaModalOpen(false)}
+                      className="flex-1 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold text-[var(--text-secondary)] hover:bg-black/5"
+                    >
+                      {t('cancel')}
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors"
+                    >
+                      {t('unlockBeta')}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
-                {/* Bottom Action Bar */}
-                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddStationModalOpen(false)}
-                    className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
-                  >
-                    {t('cancel')}
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary flex-1 flex items-center justify-center gap-1.5"
-                  >
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
-                    <span>{t('addStation')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* ─── ADD STATION MODAL DIALOG ─── */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isAddStationModalOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsAddStationModalOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+                className="relative w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col overflow-visible"
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newStationName.trim()) return;
+                    addStation({ name: newStationName.trim(), category: newStationCategory });
+                    setIsAddStationModalOpen(false);
+                    setNewStationName('');
+                    addToast(t('stationAdded'), 'success');
+                  }}
+                  className="flex flex-col h-full"
+                >
+                  {/* Mobile Drag Handle */}
+                  <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
+                    <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                  </div>
+
+                  {/* Header */}
+                  <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
+                    <div className="flex items-center gap-2.5">
+                      <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddStationModalOpen(false)}
+                      className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                    >
+                      <Dismiss24Filled className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Form Body */}
+                  <div className="p-6 space-y-3.5">
+                    <FloatingInput
+                      label={t('stationNameLabel')}
+                      required
+                      autoFocus
+                      value={newStationName}
+                      onChange={(e) => setNewStationName(e.target.value)}
+                      placeholder={t('stationNamePlaceholder')}
+                    />
+
+                    <CustomSelect
+                      label={t('stationCategoryLabel')}
+                      value={newStationCategory}
+                      onChange={setNewStationCategory}
+                      options={[
+                        { value: 'Hair & Styling', label: t('catHairStyling') },
+                        { value: 'Color & Wash Bar', label: t('catColorWash') },
+                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                        { value: 'Barbering', label: t('catBarbering') },
+                        { value: 'General / Flex', label: t('catGeneralFlex') },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Bottom Action Bar */}
+                  <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddStationModalOpen(false)}
+                      className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
+                    >
+                      {t('cancel')}
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn-primary flex-1 flex items-center justify-center gap-1.5"
+                    >
+                      <CheckmarkCircle24Filled className="w-4 h-4" />
+                      <span>{t('addStation')}</span>
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* ─── EDIT STATION MODAL DIALOG ─── */}
-      <AnimatePresence>
-        {editingStationId && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setEditingStationId(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col overflow-visible"
-            >
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!editingStationName.trim()) return;
-                  updateStation(editingStationId, editingStationName.trim(), editingStationCategory);
-                  setEditingStationId(null);
-                  addToast(t('stationUpdated'), 'success');
-                }}
-                className="flex flex-col h-full"
+      {mounted && createPortal(
+        <AnimatePresence>
+          {editingStationId && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setEditingStationId(null)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+                className="relative w-full max-w-md bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl z-10 flex flex-col overflow-visible"
               >
-                {/* Mobile Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
-
-                {/* Header */}
-                <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
-                  <div className="flex items-center gap-2.5">
-                    <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
-                    <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editChairStation')}</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!editingStationName.trim()) return;
+                    updateStation(editingStationId, editingStationName.trim(), editingStationCategory);
+                    setEditingStationId(null);
+                    addToast(t('stationUpdated'), 'success');
+                  }}
+                  className="flex flex-col h-full"
+                >
+                  {/* Mobile Drag Handle */}
+                  <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0 rounded-t-[32px]">
+                    <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setEditingStationId(null)}
-                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
 
-                {/* Form Body */}
-                <div className="p-6 space-y-3.5">
-                  <FloatingInput
-                    label={t('stationNameLabel')}
-                    required
-                    autoFocus
-                    value={editingStationName}
-                    onChange={(e) => setEditingStationName(e.target.value)}
-                  />
+                  {/* Header */}
+                  <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
+                    <div className="flex items-center gap-2.5">
+                      <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editChairStation')}</h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingStationId(null)}
+                      className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                    >
+                      <Dismiss24Filled className="w-5 h-5" />
+                    </button>
+                  </div>
 
-                  <CustomSelect
-                    label={t('stationCategoryLabel')}
-                    value={editingStationCategory}
-                    onChange={setEditingStationCategory}
-                    options={[
-                      { value: 'Hair & Styling', label: t('catHairStyling') },
-                      { value: 'Color & Wash Bar', label: t('catColorWash') },
-                      { value: 'Spa & Skincare', label: t('catSpaSkincare') },
-                      { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
-                      { value: 'Barbering', label: t('catBarbering') },
-                      { value: 'General / Flex', label: t('catGeneralFlex') },
-                    ]}
-                  />
-                </div>
+                  {/* Form Body */}
+                  <div className="p-6 space-y-3.5">
+                    <FloatingInput
+                      label={t('stationNameLabel')}
+                      required
+                      autoFocus
+                      value={editingStationName}
+                      onChange={(e) => setEditingStationName(e.target.value)}
+                    />
 
-                {/* Bottom Action Bar */}
-                <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
-                  <button
-                    type="button"
-                    onClick={() => setEditingStationId(null)}
-                    className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
-                  >
-                    {t('cancel')}
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary flex-1 flex items-center justify-center gap-1.5"
-                  >
-                    <Save24Filled className="w-4 h-4" />
-                    <span>{t('save')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                    <CustomSelect
+                      label={t('stationCategoryLabel')}
+                      value={editingStationCategory}
+                      onChange={setEditingStationCategory}
+                      options={[
+                        { value: 'Hair & Styling', label: t('catHairStyling') },
+                        { value: 'Color & Wash Bar', label: t('catColorWash') },
+                        { value: 'Spa & Skincare', label: t('catSpaSkincare') },
+                        { value: 'Nails & Pedicure', label: t('catNailsPedicure') },
+                        { value: 'Barbering', label: t('catBarbering') },
+                        { value: 'General / Flex', label: t('catGeneralFlex') },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Bottom Action Bar */}
+                  <div className="w-full p-4 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] flex items-center gap-2 rounded-b-none md:rounded-b-3xl">
+                    <button
+                      type="button"
+                      onClick={() => setEditingStationId(null)}
+                      className="flex-1 py-3 rounded-2xl border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] hover:bg-black/5 transition-colors"
+                    >
+                      {t('cancel')}
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn-primary flex-1 flex items-center justify-center gap-1.5"
+                    >
+                      <Save24Filled className="w-4 h-4" />
+                      <span>{t('save')}</span>
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Add Location Branch Modal */}
       <AddLocationModal

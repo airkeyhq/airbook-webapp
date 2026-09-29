@@ -110,7 +110,7 @@ export const DesktopHeader: React.FC = () => {
   return (
     <>
       <header
-        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-40 relative shadow-sm gap-1.5 overflow-visible"
+        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-50 relative shadow-sm gap-1.5 overflow-visible"
       >
         {/* Left: Workspace Dropdown Pill & Sidebar Toggle */}
         <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-[100]">
@@ -165,7 +165,7 @@ export const DesktopHeader: React.FC = () => {
         </div>
 
         {/* Right Action Pills */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-[100]">
           {/* Notifications Inbox Popover (Visible on both mobile & desktop) */}
           <NotificationCenterPopover />
 
@@ -284,14 +284,22 @@ export const DesktopHeader: React.FC = () => {
           </div>
 
           {/* Desktop Only: Quick Lock Station Action */}
-          <button
-            type="button"
-            onClick={() => lockPos()}
-            title={t('lockStation')}
-            className="hidden md:flex h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] items-center justify-center cursor-pointer flex-shrink-0"
-          >
-            <LockClosed24Filled className="w-4 h-4" />
-          </button>
+          <div className="hidden md:block relative z-[100] group">
+            <button
+              type="button"
+              onClick={() => lockPos()}
+              aria-label={t('lockStation')}
+              className="h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center cursor-pointer flex-shrink-0"
+            >
+              <LockClosed24Filled className="w-4 h-4" />
+            </button>
+
+            {/* Hover Tooltip */}
+            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform translate-y-[-2px] group-hover:translate-y-0 z-30 drop-shadow-2xl">
+              <span>{t('lockStation')}</span>
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
+            </div>
+          </div>
 
           {/* Desktop Only: User Profile Pill / Dropdown */}
           <div ref={userDropdownRef} className="hidden md:block relative z-[100]">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore, DEMO_STAFF } from '@/lib/store';
@@ -298,6 +299,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedStaffForEdit, setSelectedStaffForEdit] = useState<StaffItem | null>(null);
   const [showMoreActions, setShowMoreActions] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Invite Team State
   const [inviteEmail, setInviteEmail] = useState('');
@@ -677,7 +683,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           </p>
         </div>
 
-        {activeTab === 'roster' && (
+        {activeTab === 'roster' && (staffList.length > 0 || pendingInvitesList.length > 0) && (
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsAddModalOpen(true)}
@@ -981,342 +987,334 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       )}
 
       {/* Staff Card Interactive Details & Edit Modal */}
-      <AnimatePresence>
-        {selectedStaffForEdit && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedStaffForEdit(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="relative w-full md:max-w-2xl bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              <form onSubmit={handleSaveEdit} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile & Tablet Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {selectedStaffForEdit && (
+              <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedStaffForEdit(null)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  className="relative w-full md:max-w-2xl bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+                >
+                  <form onSubmit={handleSaveEdit} className="flex flex-col h-full min-h-0 overflow-hidden">
+                    {/* Mobile & Tablet Drag Handle */}
+                    <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                    </div>
 
-                {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <div className="flex items-center gap-3">
-                    {(() => {
-                      const editIdx = staffList.findIndex((s) => s.id === selectedStaffForEdit.id);
-                      const editProviderColor = getProviderColor(editIdx >= 0 ? editIdx : 0, (selectedStaffForEdit as any).color, providerColorMode);
-                      const editAvatarSrc = getAvatarUrl(selectedStaffForEdit.name, (selectedStaffForEdit as any).avatarUrl, editProviderColor);
-                      const isCustomPhoto = (selectedStaffForEdit as any).avatarUrl && (selectedStaffForEdit as any).avatarUrl.startsWith('http');
+                    {/* Edge-to-Edge Drawer Header with Avatar Badge */}
+                    <div className="p-4 md:p-6 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] flex items-start justify-between gap-4 flex-shrink-0">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <img
+                          src={getAvatarUrl(selectedStaffForEdit.name, selectedStaffForEdit.avatarUrl)}
+                          alt={selectedStaffForEdit.name}
+                          className="w-12 h-12 md:w-14 md:h-14 rounded-2xl object-cover border border-[var(--border-subtle)] shadow-xs flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-base md:text-lg font-extrabold text-[var(--text-primary)] truncate">
+                              {selectedStaffForEdit.name}
+                            </h3>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${
+                                selectedStaffForEdit.isActive !== false
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              }`}
+                            >
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  selectedStaffForEdit.isActive !== false ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                                }`}
+                              />
+                              <span>{selectedStaffForEdit.isActive !== false ? t('activeOnShift') : t('temporarilyDeactivate')}</span>
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span className="text-[11px] font-semibold text-[var(--text-secondary)]">
+                              {selectedStaffForEdit.role}
+                            </span>
+                            <span className="text-[11px] text-[var(--text-muted)]">·</span>
+                            <span className="text-[11px] font-mono text-blue-600 dark:text-blue-400 font-bold">
+                              {selectedStaffForEdit.stationName || t('chairsAndStations')}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
 
-                      return (
-                        <div className="relative flex-shrink-0">
-                          <img
-                            src={editAvatarSrc}
-                            alt={selectedStaffForEdit.name}
-                            className={`w-14 h-14 rounded-2xl object-cover shadow-sm ${
-                              isCustomPhoto ? 'border-2' : ''
-                            }`}
-                            style={isCustomPhoto ? { borderColor: editProviderColor } : undefined}
-                          />
-                          <span
-                            className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-[#141720]"
-                            style={{ backgroundColor: editProviderColor }}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedStaffForEdit(null)}
+                        className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                      >
+                        <Dismiss24Filled className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Scrollable Form Body */}
+                    <div className="p-5 md:p-6 overflow-y-auto space-y-4 flex-1 scroll-fade-b">
+                      {/* Name & Role Inputs */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <FloatingInput
+                          label={t('fullName')}
+                          required
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          placeholder="e.g. Elena Vance"
+                        />
+                        <FloatingInput
+                          label={t('role')}
+                          value={editRole}
+                          onChange={(e) => setEditRole(e.target.value)}
+                          placeholder="e.g. Master Stylist"
+                        />
+                      </div>
+
+                      {/* Station Assignment Picker */}
+                      <CustomSelect
+                        label={t('chairStation')}
+                        value={editChair}
+                        onChange={setEditChair}
+                        options={[
+                          { value: 'Station 1 (Hair & Styling)', label: 'Station 1 (Hair & Styling)', sublabel: 'Main Floor' },
+                          { value: 'Station 2 (Color Bar & Balayage)', label: 'Station 2 (Color Bar & Balayage)', sublabel: 'Color Lab' },
+                          { value: 'Station 3 (Spa Treatment Suite)', label: 'Station 3 (Spa Treatment Suite)', sublabel: 'Quiet Suite' },
+                          { value: 'Station 4 (Nail & Pedicure Pod)', label: 'Station 4 (Nail & Pedicure Pod)', sublabel: 'Pod Area' },
+                          { value: 'Station 5 (Barber Chair)', label: 'Station 5 (Barber Chair)', sublabel: 'Executive Barbershop' },
+                          ...stations.map((st) => ({
+                            value: st.name,
+                            label: st.name,
+                            sublabel: st.category || undefined,
+                          })),
+                        ]}
+                      />
+
+                      {/* Working Hours Weekly Schedule Editor */}
+                      <StaffScheduleConfigurator schedule={editSchedule} onChange={setEditSchedule} />
+
+                      {/* Commission Split Slider Container */}
+                      <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[var(--text-primary)]">
+                            {t('commissionSplit')} (%)
+                          </span>
+                          <span className="text-xs font-mono font-extrabold text-blue-600 dark:text-blue-400">
+                            {t('commissionSplitDisplay').replace('{staffPercent}', String(editCommission)).replace('{housePercent}', String(100 - editCommission))}
+                          </span>
+                        </div>
+
+                        <div className="py-2">
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={editCommission}
+                            onChange={(e) => setEditCommission(Number(e.target.value))}
+                            className="w-full cursor-pointer h-2.5 rounded-full"
+                            style={{
+                              background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${editCommission}%, rgba(148, 163, 184, 0.25) ${editCommission}%, rgba(148, 163, 184, 0.25) 100%)`,
+                            }}
                           />
                         </div>
-                      );
-                    })()}
-                    <div>
-                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">
-                        {selectedStaffForEdit.name}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs font-medium text-[var(--text-secondary)]">
-                          {selectedStaffForEdit.role}
-                        </span>
-                        {selectedStaffForEdit.isActive === false ? (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold">
-                            {t('temporarilyDeactivate')}
+
+                        <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
+                          <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
                           </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                            {t('activeOnShift')}
-                          </span>
-                        )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setSelectedStaffForEdit(null)}
-                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+                    {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
+                    <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0 flex flex-col gap-2.5">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-primary w-full disabled:opacity-50"
+                      >
+                        <Save24Filled className="w-4 h-4" />
+                        <span>{submitting ? t('saving') : t('save')}</span>
+                      </button>
 
-                {/* Scrollable Drawer Body */}
-                <div className="p-5 md:p-6 overflow-y-auto space-y-4 md:space-y-5 flex-1 scroll-fade-b">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <FloatingInput
-                      label={t('fullName')}
-                      required
-                      type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                    />
+                      {/* Más Acciones Collapsible Overflow Trigger */}
+                      <button
+                        type="button"
+                        onClick={() => setShowMoreActions(!showMoreActions)}
+                        className="btn-secondary w-full flex items-center justify-center gap-2 text-xs font-bold"
+                      >
+                        <MoreHorizontal24Filled className="w-4 h-4" />
+                        <span>{t('moreActions')}</span>
+                      </button>
 
-                    <FloatingInput
-                      label={t('role')}
-                      type="text"
-                      value={editRole}
-                      onChange={(e) => setEditRole(e.target.value)}
-                    />
-                  </div>
+                      <AnimatePresence>
+                        {showMoreActions && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="flex flex-col gap-2 pt-1 overflow-hidden"
+                          >
+                            {/* Toggle Active Status */}
+                            <button
+                              type="button"
+                              onClick={handleToggleActive}
+                              className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] text-xs font-bold transition-all flex items-center justify-center gap-2"
+                            >
+                              <DismissCircle24Filled className="w-4 h-4 text-amber-500" />
+                              <span>{selectedStaffForEdit.isActive !== false ? t('temporarilyDeactivate') : t('activeOnShift')}</span>
+                            </button>
 
-                  {/* Detailed Working Shifts & Hours Configurator */}
-                  <StaffScheduleConfigurator schedule={editSchedule} onChange={setEditSchedule} />
-
-                  <CustomSelect
-                    label={t('chairStation')}
-                    value={editChair}
-                    onChange={(val) => setEditChair(val)}
-                    options={[
-                      ...stations.map((stn) => ({ value: stn.name, label: stn.name })),
-                      { value: 'Unassigned / Floating', label: t('unassignedFloating') },
-                    ]}
-                  />
-                <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[var(--text-primary)]">
-                      {t('commissionSplit')}
-                    </span>
-                    <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
-                      {t('commissionSplitDisplay').replace('{staffPercent}', String(editCommission)).replace('{housePercent}', String(100 - editCommission))}
-                    </span>
-                  </div>
-
-                  <div className="py-2">
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      value={editCommission}
-                      onChange={(e) => setEditCommission(Number(e.target.value))}
-                      className="w-full cursor-pointer h-2.5 rounded-full"
-                      style={{
-                        background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${editCommission}%, rgba(148, 163, 184, 0.25) ${editCommission}%, rgba(148, 163, 184, 0.25) 100%)`,
-                      }}
-                    />
-                  </div>
-
-                  <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
-                    <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
-                    </span>
-                  </div>
-                </div>
+                            {/* Remove Specialist Button */}
+                            <button
+                              type="button"
+                              onClick={handleDeleteStaff}
+                              className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
+                            >
+                              <Delete24Filled className="w-4 h-4" />
+                              <span>{t('removeTeamMember')}</span>
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </form>
+                </motion.div>
               </div>
-
-              {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
-              <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] space-y-2.5 z-30 flex-shrink-0">
-                {/* Primary Action */}
-                <button
-                  type="button"
-                  onClick={handleSaveEdit as any}
-                  className="btn-primary w-full"
-                >
-                  <Save24Filled className="w-4 h-4" />
-                  <span>{t('save')}</span>
-                </button>
-
-                {/* Secondary Navigation Shortcut */}
-                <button
-                  type="button"
-                  onClick={() => handleViewCalendar(selectedStaffForEdit.id)}
-                  className="btn-secondary w-full"
-                >
-                  <Calendar24Filled className="w-4 h-4" />
-                  <span>{t('viewCalendarSchedule')}</span>
-                </button>
-
-                {/* Tertiary Action: "Más Acciones..." Overflow Trigger */}
-                <button
-                  type="button"
-                  onClick={() => setShowMoreActions(!showMoreActions)}
-                  className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold hover:bg-black/10 dark:hover:bg-white/10 active:scale-98 transition-all duration-100 ease-out flex items-center justify-center gap-2"
-                >
-                  <MoreHorizontal24Filled className="w-4 h-4" />
-                  <span>{showMoreActions ? t('hideActions') : t('moreActions')}</span>
-                </button>
-
-                {/* Collapsible Extended Overflow Actions */}
-                <AnimatePresence>
-                  {showMoreActions && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden pt-2 space-y-2 border-t border-black/5 dark:border-white/10"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => addToast(t('generatingPdf'), 'info')}
-                        className="w-full py-2.5 px-4 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
-                      >
-                        <Print24Filled className="w-4 h-4" />
-                        <span>{t('printMemberProfile')}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleToggleActive}
-                        className="w-full py-2.5 px-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
-                      >
-                        <DismissCircle24Filled className="w-4 h-4" />
-                        <span>{selectedStaffForEdit.isActive === false ? t('activateMember') : t('temporarilyDeactivate')}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleDeleteStaff}
-                        className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
-                      >
-                        <Delete24Filled className="w-4 h-4" />
-                        <span>{t('removeTeamMember')}</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              </form>
-            </motion.div>
-          </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
 
       {/* Add Staff Modal / Drawer */}
-      <AnimatePresence>
-        {isAddModalOpen && (
-          <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsAddModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.98 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
-            >
-              <form onSubmit={handleAddStaff} className="flex flex-col h-full min-h-0 overflow-hidden">
-                {/* Mobile & Tablet Drag Handle */}
-                <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
-                  <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                </div>
-
-                {/* Header Edge-to-Edge Bar */}
-                <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                  >
-                    <Dismiss24Filled className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
-
-                {/* Scrollable Form Body */}
-                <div className="p-5 md:p-6 overflow-y-auto space-y-3.5 flex-1 scroll-fade-b">
-                  <FloatingInput
-                    label={t('fullName')}
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Marcus Vance"
-                  />
-
-                  <FloatingInput
-                    label={t('role')}
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="e.g. Master Barber / Color Specialist"
-                  />
-
-                  <FloatingInput
-                    label={t('email')}
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="staff@business.com"
-                  />
-
-                  {/* Detailed Working Shifts & Hours Configurator */}
-                  <StaffScheduleConfigurator schedule={addSchedule} onChange={setAddSchedule} />
-
-                  {/* Commission Split Slider Container */}
-                  <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[var(--text-primary)]">
-                        {t('commissionSplit')} (%)
-                      </span>
-                      <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
-                        {t('commissionSplitDisplay').replace('{staffPercent}', String(commissionPercent)).replace('{housePercent}', String(100 - commissionPercent))}
-                      </span>
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isAddModalOpen && (
+              <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+                >
+                  <form onSubmit={handleAddStaff} className="flex flex-col h-full min-h-0 overflow-hidden">
+                    {/* Mobile & Tablet Drag Handle */}
+                    <div className="w-full pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-primary)] flex-shrink-0">
+                      <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
                     </div>
 
-                    <div className="py-2">
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        value={commissionPercent}
-                        onChange={(e) => setCommissionPercent(Number(e.target.value))}
-                        className="w-full cursor-pointer h-2.5 rounded-full"
-                        style={{
-                          background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${commissionPercent}%, rgba(148, 163, 184, 0.25) ${commissionPercent}%, rgba(148, 163, 184, 0.25) 100%)`,
-                        }}
+                    {/* Header Edge-to-Edge Bar */}
+                    <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)]">
+                      <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStaffMember')}</h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddModalOpen(false)}
+                        className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                      >
+                        <Dismiss24Filled className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
+
+                    {/* Scrollable Form Body */}
+                    <div className="p-5 md:p-6 overflow-y-auto space-y-3.5 flex-1 scroll-fade-b">
+                      <FloatingInput
+                        label={t('fullName')}
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Marcus Vance"
                       />
+
+                      <FloatingInput
+                        label={t('role')}
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        placeholder="e.g. Master Barber / Color Specialist"
+                      />
+
+                      <FloatingInput
+                        label={t('email')}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="staff@business.com"
+                      />
+
+                      {/* Detailed Working Shifts & Hours Configurator */}
+                      <StaffScheduleConfigurator schedule={addSchedule} onChange={setAddSchedule} />
+
+                      {/* Commission Split Slider Container */}
+                      <div className="p-5 pb-5 rounded-3xl bg-black/5 dark:bg-white/5 space-y-3.5 border border-black/5 dark:border-white/10">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[var(--text-primary)]">
+                            {t('commissionSplit')} (%)
+                          </span>
+                          <span className="text-xs font-mono font-extrabold text-green-600 dark:text-green-400">
+                            {t('commissionSplitDisplay').replace('{staffPercent}', String(commissionPercent)).replace('{housePercent}', String(100 - commissionPercent))}
+                          </span>
+                        </div>
+
+                        <div className="py-2">
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={commissionPercent}
+                            onChange={(e) => setCommissionPercent(Number(e.target.value))}
+                            className="w-full cursor-pointer h-2.5 rounded-full"
+                            style={{
+                              background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${commissionPercent}%, rgba(148, 163, 184, 0.25) ${commissionPercent}%, rgba(148, 163, 184, 0.25) 100%)`,
+                            }}
+                          />
+                        </div>
+
+                        <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
+                          <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="pt-3.5 pb-1 flex items-center justify-between border-t border-black/10 dark:border-white/10 text-[11px]">
-                      <span className="text-[var(--text-secondary)] font-semibold">{t('payoutMethod')}</span>
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {t('stripeInstantPayoutActive')}
-                      </span>
+                    {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
+                    <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-primary w-full disabled:opacity-50"
+                      >
+                        <Save24Filled className="w-4 h-4" />
+                        <span>{submitting ? t('saving') : t('save')}</span>
+                      </button>
                     </div>
-                  </div>
-                </div>
-
-                {/* SIDE-TO-SIDE BOTTOM ACTION BANNER (FLUSH TO BOTTOM OF DRAWER PANEL) */}
-                <div className="w-full p-4 md:p-5 bg-[var(--bg-primary)] border-t border-[var(--border-subtle)] z-30 flex-shrink-0">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full disabled:opacity-50"
-                  >
-                    <Save24Filled className="w-4 h-4" />
-                    <span>{submitting ? t('saving') : t('save')}</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </div>
   );
 };

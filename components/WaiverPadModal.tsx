@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -54,6 +55,11 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Templates
   const [templates, setTemplates] = useState<WaiverTemplate[]>([]);
@@ -231,21 +237,22 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
 
   const currentTemplate = templates.find((t) => t.id === selectedTemplateId) || templates[0];
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
 
         {/* Modal Window */}
         <motion.div
@@ -318,7 +325,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="Jane Doe"
+                    placeholder={t('clientNamePlaceholder')}
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-semibold focus:outline-none"
@@ -344,7 +351,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                   </label>
                   <input
                     type="email"
-                    placeholder="client@example.com"
+                    placeholder={t('clientEmailPlaceholder')}
                     value={clientEmail}
                     onChange={(e) => setClientEmail(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none"
@@ -444,6 +451,8 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
           </form>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

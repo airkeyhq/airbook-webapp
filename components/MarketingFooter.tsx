@@ -185,7 +185,7 @@ export const MarketingFooter: React.FC = () => {
             <ul className="space-y-2">
               <li><Link href="/login" className="hover:text-[var(--text-primary)] transition-colors">{t('signIn')}</Link></li>
               <li><Link href="/dashboard" className="hover:text-[var(--text-primary)] transition-colors">{t('openDashboard')}</Link></li>
-              <li><Link href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`} className="hover:text-[var(--text-primary)] transition-colors">{t('seeLiveDemo')}</Link></li>
+              <li><Link href={session?.user ? '/book/aurelia-studio' : `/onboarding?redirect=${encodeURIComponent('/book/aurelia-studio')}&reason=demo_storefront`} className="hover:text-[var(--text-primary)] transition-colors">{t('seeLiveDemo')}</Link></li>
               <li><Link href="/#pricing" className="hover:text-[var(--text-primary)] transition-colors">{t('pricingNav')}</Link></li>
             </ul>
           </div>

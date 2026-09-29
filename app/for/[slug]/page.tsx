@@ -1754,15 +1754,15 @@ export default function IndustryFunnelPage() {
                   </Link>
                 ) : (
                   <Link
-                    href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
+                    href="/founding"
                     className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
                   >
-                    <span>{t('startFreeTrialBtn')}</span>
+                    <span>{t('applyForFoundingProgram')}</span>
                     <ArrowRight24Filled className="w-3.5 h-3.5" />
                   </Link>
                 )}
                 <Link
-                  href={session?.user ? '/book/eduardos-lounge' : `/onboarding?redirect=${encodeURIComponent('/book/eduardos-lounge')}&reason=demo_storefront`}
+                  href={session?.user ? '/book/aurelia-studio' : `/onboarding?redirect=${encodeURIComponent('/book/aurelia-studio')}&reason=demo_storefront`}
                   className="btn-secondary px-5 py-3.5 text-xs flex items-center gap-2"
                 >
                   <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
@@ -2104,10 +2104,10 @@ export default function IndustryFunnelPage() {
               </Link>
             ) : (
               <Link
-                href={`/onboarding?industry=${encodeURIComponent(config.slug)}`}
+                href="/founding"
                 className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
               >
-                <span>{t('startFreeTrialBtn')}</span>
+                <span>{t('applyForFoundingProgram')}</span>
                 <ArrowRight24Filled className="w-3.5 h-3.5" />
               </Link>
             )}

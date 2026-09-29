@@ -152,3 +152,135 @@ export function getDemoClient(lang: string): DemoClient {
   const normalized = (['en', 'es', 'de', 'fr'].includes(lang) ? lang : 'en') as 'en' | 'es' | 'de' | 'fr';
   return LOCALIZED_CLIENTS[normalized];
 }
+
+export interface DemoBusiness {
+  name: string;
+  slug: string;
+  placeholder: string;
+  industry: string;
+  tagline: string;
+}
+
+export const LOCALIZED_BUSINESSES: Record<'en' | 'es' | 'de' | 'fr', DemoBusiness> = {
+  en: {
+    name: 'Aurelia Hair & Spa',
+    slug: 'aurelia-studio',
+    placeholder: 'e.g. Aurelia Hair Studio & Spa',
+    industry: 'Hair Salon & Day Spa',
+    tagline: 'Luxury Hair, Aesthetics & Wellness',
+  },
+  es: {
+    name: 'Salón Aurelia & Spa',
+    slug: 'salon-aurelia',
+    placeholder: 'ej. Salón Aurelia & Spa',
+    industry: 'Salón de Belleza y Spa',
+    tagline: 'Estilismo de Alta Gama, Estética y Bienestar',
+  },
+  de: {
+    name: 'Aurelia Haardesign & Spa',
+    slug: 'aurelia-haardesign',
+    placeholder: 'z. B. Aurelia Haardesign & Spa',
+    industry: 'Friseursalon & Ästhetik',
+    tagline: 'Premium Friseurkunst, Ästhetik & Wellness',
+  },
+  fr: {
+    name: 'Maison Aurelia & Spa',
+    slug: 'maison-aurelia',
+    placeholder: 'ex. Maison Aurelia & Spa',
+    industry: 'Salon de Coiffure & Spa',
+    tagline: 'Haute Coiffure, Soins & Institut de Beauté',
+  },
+};
+
+export const COUNTRY_BUSINESS_OVERRIDES: Record<string, { placeholder: string; name: string; slug: string }> = {
+  MX: {
+    placeholder: 'ej. Salón Aurelia & Spa',
+    name: 'Salón Aurelia & Spa',
+    slug: 'salon-aurelia',
+  },
+  ES: {
+    placeholder: 'ej. Salón Aurelia & Spa',
+    name: 'Salón Aurelia Madrid',
+    slug: 'salon-aurelia',
+  },
+  CO: {
+    placeholder: 'ej. Aurelia Belleza & Spa',
+    name: 'Aurelia Belleza & Spa',
+    slug: 'aurelia-belleza',
+  },
+  AR: {
+    placeholder: 'ej. Lumina Studio & Spa',
+    name: 'Lumina Studio & Spa',
+    slug: 'lumina-studio',
+  },
+  CL: {
+    placeholder: 'ej. Salón Aurelia & Spa',
+    name: 'Salón Aurelia & Spa',
+    slug: 'salon-aurelia',
+  },
+  PE: {
+    placeholder: 'ej. Salón Aurelia & Spa',
+    name: 'Salón Aurelia & Spa',
+    slug: 'salon-aurelia',
+  },
+  US: {
+    placeholder: 'e.g. Aurelia Hair Studio & Spa',
+    name: 'Aurelia Hair & Spa',
+    slug: 'aurelia-studio',
+  },
+  GB: {
+    placeholder: 'e.g. Lumina Hair & Aesthetics',
+    name: 'Lumina Hair & Aesthetics',
+    slug: 'lumina-aesthetics',
+  },
+  CA: {
+    placeholder: 'e.g. Aurelia Hair Studio & Spa',
+    name: 'Aurelia Hair & Spa',
+    slug: 'aurelia-studio',
+  },
+  AU: {
+    placeholder: 'e.g. Aurelia Hair & Wellness',
+    name: 'Aurelia Hair & Wellness',
+    slug: 'aurelia-studio',
+  },
+  DE: {
+    placeholder: 'z. B. Aurelia Haardesign & Spa',
+    name: 'Aurelia Haardesign & Spa',
+    slug: 'aurelia-haardesign',
+  },
+  AT: {
+    placeholder: 'z. B. Salon Aurelia & Spa',
+    name: 'Salon Aurelia & Spa',
+    slug: 'aurelia-haardesign',
+  },
+  CH: {
+    placeholder: 'z. B. Aurelia Studio Zürich',
+    name: 'Aurelia Studio Zürich',
+    slug: 'aurelia-studio',
+  },
+  FR: {
+    placeholder: 'ex. Maison Aurelia & Spa',
+    name: 'Maison Aurelia & Spa',
+    slug: 'maison-aurelia',
+  },
+  BE: {
+    placeholder: 'ex. Maison Aurelia & Spa',
+    name: 'Maison Aurelia & Spa',
+    slug: 'maison-aurelia',
+  },
+};
+
+export function getDemoBusiness(lang: string, countryCode?: string): DemoBusiness {
+  const normalizedLang = (['en', 'es', 'de', 'fr'].includes(lang) ? lang : 'en') as 'en' | 'es' | 'de' | 'fr';
+  const base = LOCALIZED_BUSINESSES[normalizedLang];
+  if (countryCode && COUNTRY_BUSINESS_OVERRIDES[countryCode.toUpperCase()]) {
+    const override = COUNTRY_BUSINESS_OVERRIDES[countryCode.toUpperCase()];
+    return {
+      ...base,
+      name: override.name,
+      slug: override.slug,
+      placeholder: override.placeholder,
+    };
+  }
+  return base;
+}

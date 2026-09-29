@@ -136,6 +136,7 @@ export async function POST(req: Request) {
       allergies,
       tags,
       customSpecs,
+      photos,
       avatarUrl,
     } = body;
 
@@ -157,6 +158,7 @@ export async function POST(req: Request) {
         allergies: allergies || null,
         tags: Array.isArray(tags) ? tags : [],
         customSpecs: Array.isArray(customSpecs) ? customSpecs : [],
+        photos: Array.isArray(photos) ? photos : [],
         avatarUrl: avatarUrl || null,
         totalVisits: 0,
         totalSpentCents: 0,
@@ -182,6 +184,7 @@ export async function PATCH(req: Request) {
       allergies,
       tags,
       customSpecs,
+      photos,
       avatarUrl,
       medicalWaiversSigned,
     } = body;
@@ -199,6 +202,7 @@ export async function PATCH(req: Request) {
     if (allergies !== undefined) updateFields.allergies = allergies;
     if (tags !== undefined) updateFields.tags = Array.isArray(tags) ? tags : [];
     if (customSpecs !== undefined) updateFields.customSpecs = Array.isArray(customSpecs) ? customSpecs : [];
+    if (photos !== undefined) updateFields.photos = Array.isArray(photos) ? photos : [];
     if (avatarUrl !== undefined) updateFields.avatarUrl = avatarUrl;
     if (medicalWaiversSigned !== undefined) updateFields.medicalWaiversSigned = medicalWaiversSigned;
 

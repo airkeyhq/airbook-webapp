@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dismiss24Filled, Sparkle24Filled } from '@fluentui/react-icons';
 import { CustomSelect } from '@/components/CustomSelect';
@@ -33,8 +34,11 @@ export const BookingDrawer: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState('#FF4D8D');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isBookingDrawerOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const currentService = services.find((s) => s.id === selectedServiceId) || services[0];
   const currentStaff = staffMembers.find((s) => s.id === selectedStaffId) || staffMembers[0];
@@ -91,20 +95,23 @@ export const BookingDrawer: React.FC = () => {
 
   const PASTEL_COLORS = ['#FF4D8D', '#00C7BE', '#9D50BB', '#34C759', '#FF9500', '#007AFF'];
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
-        {/* Dark Translucent Glass Overlay */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={closeBookingDrawer}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        />
+  if (!mounted) return null;
 
-        {/* Drawer Panel Container */}
-        <motion.div
+  return createPortal(
+    <AnimatePresence>
+      {isBookingDrawerOpen && (
+        <div className="fixed inset-0 z-[250] flex items-end md:items-center justify-center p-0 md:p-4">
+          {/* Dark Translucent Glass Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeBookingDrawer}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+          />
+
+          {/* Drawer Panel Container */}
+          <motion.div
           initial={{ y: '100%', opacity: 0.8 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '100%', opacity: 0 }}
@@ -226,6 +233,8 @@ export const BookingDrawer: React.FC = () => {
           </form>
         </motion.div>
       </div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };

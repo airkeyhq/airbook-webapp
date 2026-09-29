@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
@@ -61,6 +62,11 @@ export function MCPStudio() {
   // Revoke Dialog State
   const [keyToRevoke, setKeyToRevoke] = useState<ApiKeyItem | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // MCP Ping Test State
   const [isPinging, setIsPinging] = useState(false);
@@ -575,115 +581,121 @@ Headers:
       </div>
 
       {/* ─── MODAL: CREATE API KEY ─── */}
-      <AnimatePresence>
-        {isCreateOpen && (
-          <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-            >
-              {/* Mobile Drag Handle */}
-              <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 md:hidden" />
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isCreateOpen && (
+            <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="w-full md:max-w-md bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+              >
+                {/* Mobile Drag Handle */}
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 md:hidden" />
 
-              <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between">
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <Key24Regular className="w-4 h-4 text-blue-500" />
-                  {t('createApiKeyTitle')}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setIsCreateOpen(false)}
-                  className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
-                >
-                  <Dismiss24Filled className="w-4 h-4" />
-                </button>
-              </div>
-
-              <form onSubmit={handleCreateKey} className="p-5 space-y-4">
-                <FloatingInput
-                  id="api-key-name"
-                  label={t('apiKeyNameLabel')}
-                  value={keyName}
-                  onChange={(e) => setKeyName(e.target.value)}
-                  placeholder={t('apiKeyNamePlaceholder')}
-                  required
-                  autoFocus
-                />
-
-                <div className="flex items-center justify-end gap-2.5 pt-2">
+                <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                    <Key24Regular className="w-4 h-4 text-blue-500" />
+                    {t('createApiKeyTitle')}
+                  </h3>
                   <button
                     type="button"
                     onClick={() => setIsCreateOpen(false)}
-                    className="btn-secondary px-4 py-2.5 rounded-2xl text-xs font-bold"
+                    className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isCreating || !keyName.trim()}
-                    className="btn-primary px-5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2"
-                  >
-                    <Sparkle24Filled className="w-4 h-4" />
-                    {isCreating ? 'Generating…' : t('createApiKeyBtn')}
+                    <Dismiss24Filled className="w-4 h-4" />
                   </button>
                 </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
+                <form onSubmit={handleCreateKey} className="p-5 space-y-4">
+                  <FloatingInput
+                    id="api-key-name"
+                    label={t('apiKeyNameLabel')}
+                    value={keyName}
+                    onChange={(e) => setKeyName(e.target.value)}
+                    placeholder={t('apiKeyNamePlaceholder')}
+                    required
+                    autoFocus
+                  />
+
+                  <div className="flex items-center justify-end gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsCreateOpen(false)}
+                      className="btn-secondary px-4 py-2.5 rounded-2xl text-xs font-bold"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isCreating || !keyName.trim()}
+                      className="btn-primary px-5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2"
+                    >
+                      <Sparkle24Filled className="w-4 h-4" />
+                      {isCreating ? 'Generating…' : t('createApiKeyBtn')}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* ─── MODAL: SECRET KEY REVEAL (ONE-TIME VIEW) ─── */}
-      <AnimatePresence>
-        {revealedKey && (
-          <div className="fixed inset-0 z-[350] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/70 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-blue-500/30 rounded-t-[32px] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-            >
-              <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between bg-blue-500/5">
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <CheckmarkCircle24Regular className="w-5 h-5 text-emerald-500" />
-                  {t('apiKeyCreatedTitle')}
-                </h3>
-              </div>
-
-              <div className="p-5 space-y-4">
-                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-200 text-xs leading-relaxed flex items-start gap-2.5">
-                  <Warning24Regular className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <span>{t('apiKeyRevealNotice')}</span>
+      {mounted && createPortal(
+        <AnimatePresence>
+          {revealedKey && (
+            <div className="fixed inset-0 z-[350] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/70 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-blue-500/30 rounded-t-[32px] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+              >
+                <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between bg-blue-500/5">
+                  <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+                    <CheckmarkCircle24Regular className="w-5 h-5 text-emerald-500" />
+                    {t('apiKeyCreatedTitle')}
+                  </h3>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs text-blue-300 break-all select-all flex items-center justify-between gap-3">
-                  <span>{revealedKey}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleCopyText(revealedKey, t('apiKeyCopied'))}
-                    className="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold flex-shrink-0 flex items-center gap-1.5"
-                  >
-                    <Copy24Filled className="w-3.5 h-3.5" />
-                    {t('copyApiKeyBtn')}
-                  </button>
-                </div>
+                <div className="p-5 space-y-4">
+                  <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-200 text-xs leading-relaxed flex items-start gap-2.5">
+                    <Warning24Regular className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span>{t('apiKeyRevealNotice')}</span>
+                  </div>
 
-                <div className="pt-2 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setRevealedKey(null)}
-                    className="btn-secondary px-5 py-2.5 rounded-2xl text-xs font-bold"
-                  >
-                    Done
-                  </button>
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs text-blue-300 break-all select-all flex items-center justify-between gap-3">
+                    <span>{revealedKey}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyText(revealedKey, t('apiKeyCopied'))}
+                      className="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold flex-shrink-0 flex items-center gap-1.5"
+                    >
+                      <Copy24Filled className="w-3.5 h-3.5" />
+                      {t('copyApiKeyBtn')}
+                    </button>
+                  </div>
+
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setRevealedKey(null)}
+                      className="btn-secondary px-5 py-2.5 rounded-2xl text-xs font-bold"
+                    >
+                      Done
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* ─── CONFIRM REVOKE DIALOG ─── */}
       <ConfirmDialog

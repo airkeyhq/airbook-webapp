@@ -1179,7 +1179,7 @@ export default function CrmSalesPage() {
                     required
                     value={newSalonName}
                     onChange={(e) => setNewSalonName(e.target.value)}
-                    placeholder="e.g. Bespoke Hair Lounge"
+                    placeholder={t('workspaceNamePlaceholder')}
                     className="w-full h-11 px-3.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                   />
                 </div>
@@ -1194,7 +1194,7 @@ export default function CrmSalesPage() {
                       required
                       value={newOwnerName}
                       onChange={(e) => setNewOwnerName(e.target.value)}
-                      placeholder="e.g. Marco Rossi"
+                      placeholder={t('clientNamePlaceholder')}
                       className="w-full h-11 px-3.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                     />
                   </div>

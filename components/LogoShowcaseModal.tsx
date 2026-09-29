@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo, CircleCloudIconFlat, BlueprintBadgeIcon } from './Logo';
 import { Dismiss24Filled, Sparkle24Filled, Copy24Filled, Checkmark24Filled } from '@fluentui/react-icons';
@@ -12,8 +13,13 @@ interface LogoShowcaseModalProps {
 
 export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, onClose }) => {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const handleCopy = (codeSnippet: string, id: string) => {
     navigator.clipboard.writeText(codeSnippet);
@@ -21,7 +27,7 @@ export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, on
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
         {/* Backdrop */}
@@ -175,6 +181,7 @@ export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, on
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
