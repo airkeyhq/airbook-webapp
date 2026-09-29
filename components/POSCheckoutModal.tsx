@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Payment24Filled,
+  Payment24Regular,
   CheckmarkCircle24Filled,
   Dismiss24Filled,
   Print24Filled,
@@ -16,6 +17,7 @@ import {
   Sparkle24Regular,
   GiftCard24Filled,
   GiftCard24Regular,
+  Copy24Filled,
 } from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
@@ -64,9 +66,14 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const [customTip, setCustomTip] = useState<string>('');
 
   // Tender & Cash Math
-  const [paymentMethod, setPaymentMethod] = useState<'stripe_terminal' | 'stripe_card' | 'cash' | 'split' | 'gift_card'>('stripe_terminal');
+  const [paymentMethod, setPaymentMethod] = useState<'stripe_terminal' | 'stripe_card' | 'cash' | 'zelle' | 'split' | 'gift_card'>('stripe_terminal');
   const [cashTendered, setCashTendered] = useState<string>('');
   const [splitCardAmount, setSplitCardAmount] = useState<string>('');
+
+  // Zelle Direct Transfer State
+  const [salonZelleInfo, setSalonZelleInfo] = useState<{ phoneOrEmail: string; recipientName: string } | null>(null);
+  const [zelleMemo, setZelleMemo] = useState('');
+  const [zelleCopied, setZelleCopied] = useState(false);
 
   // Processing & Completed State
   const [submitting, setSubmitting] = useState(false);
@@ -99,6 +106,18 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           }
         })
         .catch((err) => console.warn('Failed to load products for POS:', err));
+
+      fetch('/api/settings')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.workspace) {
+            setSalonZelleInfo({
+              phoneOrEmail: data.workspace.zellePhoneOrEmail || '',
+              recipientName: data.workspace.zelleRecipientName || data.workspace.name || '',
+            });
+          }
+        })
+        .catch((err) => console.warn('Failed to load Zelle info for POS:', err));
     }
   }, [isOpen]);
 
@@ -260,6 +279,9 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
             <div class="divider"></div>
             <div class="row bold"><span>TOTAL PAID</span><span>$${finalTotal.toFixed(2)}</span></div>
             <div class="row"><span>METHOD</span><span>${paymentMethod.toUpperCase()}</span></div>
+            ${paymentMethod === 'zelle' && zelleMemo ? `
+              <div class="row"><span>ZELLE REF</span><span>${zelleMemo}</span></div>
+            ` : ''}
             ${paymentMethod === 'cash' && cashGiven > 0 ? `
               <div class="row"><span>CASH TENDERED</span><span>$${cashGiven.toFixed(2)}</span></div>
               <div class="row"><span>CHANGE DUE</span><span>$${changeDue.toFixed(2)}</span></div>
@@ -661,6 +683,24 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
 
                     <button
                       type="button"
+                      onClick={() => setPaymentMethod('zelle')}
+                      className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
+                        paymentMethod === 'zelle'
+                          ? 'border-purple-600 bg-purple-600/10 text-[var(--text-primary)] shadow-sm'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Payment24Filled className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <span>{t('zellePayment')}</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400">
+                        0% Fee · Direct
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => setPaymentMethod('split')}
                       className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
                         paymentMethod === 'split'
@@ -724,6 +764,74 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                         </span>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Zelle Direct Bank Transfer Callout */}
+                {paymentMethod === 'zelle' && (
+                  <div className="p-4 rounded-2xl bg-purple-500/5 border border-purple-500/20 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+                        <Sparkle24Filled className="w-3.5 h-3.5" />
+                        {t('zelleInstructions')}
+                      </span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10">
+                        0% Commission
+                      </span>
+                    </div>
+
+                    {salonZelleInfo?.phoneOrEmail ? (
+                      <div className="p-3 rounded-xl bg-[var(--bg-primary)] border border-purple-500/20 space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <div>
+                            <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">
+                              {t('zelleRecipientName')}
+                            </p>
+                            <p className="font-extrabold text-[var(--text-primary)]">
+                              {salonZelleInfo.recipientName || 'Salon'}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">
+                              {t('zellePhoneOrEmail')}
+                            </p>
+                            <p className="font-mono font-black text-purple-600 dark:text-purple-400">
+                              {salonZelleInfo.phoneOrEmail}
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (salonZelleInfo?.phoneOrEmail) {
+                              navigator.clipboard.writeText(salonZelleInfo.phoneOrEmail);
+                              setZelleCopied(true);
+                              addToast(t('zelleCopied'), 'success');
+                              setTimeout(() => setZelleCopied(false), 2500);
+                            }
+                          }}
+                          className="w-full py-1.5 rounded-lg bg-purple-600/10 hover:bg-purple-600/20 text-purple-600 dark:text-purple-400 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <Copy24Filled className="w-3.5 h-3.5" />
+                          <span>{zelleCopied ? t('zelleCopied') : t('copyZelleInfo')}</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 font-medium">
+                        {t('zelleFeeNotice')}
+                      </div>
+                    )}
+
+                    <div>
+                      <input
+                        type="text"
+                        placeholder={t('zelleRefPlaceholder')}
+                        value={zelleMemo}
+                        onChange={(e) => setZelleMemo(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-purple-500/30 text-xs font-mono font-medium text-[var(--text-primary)] focus:outline-none placeholder:text-[var(--text-secondary)]"
+                      />
+                    </div>
                   </div>
                 )}
 

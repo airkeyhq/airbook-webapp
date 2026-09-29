@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { handleMCPRequest, AIRBOOK_MCP_METADATA } from '@/lib/mcp/server';
 import { AIRBOOK_MCP_TOOLS } from '@/lib/mcp/tools';
 import { validateApiKey } from '@/lib/api-keys';
+import { checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,6 +39,15 @@ function extractApiKey(req: Request): string | null {
  * Discovers AirBook MCP Server capabilities, metadata, and available tools.
  */
 export async function GET(req: Request) {
+  const rateLimit = checkRateLimit(req, {
+    limit: 60,
+    windowSeconds: 60,
+    prefix: 'mcp_discovery',
+  });
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(rateLimit);
+  }
+
   const { searchParams } = new URL(req.url);
   const format = searchParams.get('format');
 
@@ -93,26 +103,59 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const rawApiKey = extractApiKey(req);
-    let resolvedWorkspaceId = req.headers.get('x-workspace-id') || undefined;
 
-    if (rawApiKey) {
-      const auth = await validateApiKey(rawApiKey);
-      if (!auth.valid) {
-        return NextResponse.json(
-          {
-            jsonrpc: '2.0',
-            id: null,
-            error: {
-              code: -32001,
-              message: auth.error || 'Unauthorized: Invalid or revoked AirBook API key.',
-            },
+    if (!rawApiKey) {
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id: null,
+          error: {
+            code: -32001,
+            message: 'Unauthorized: Missing AirBook API key. Provide via "Authorization: Bearer ab_live_..." header.',
           },
-          { status: 401, headers: CORS_HEADERS }
-        );
-      }
-      if (auth.workspaceId) {
-        resolvedWorkspaceId = auth.workspaceId;
-      }
+        },
+        { status: 401, headers: CORS_HEADERS }
+      );
+    }
+
+    const rateLimit = checkRateLimit(`mcp_${rawApiKey}`, {
+      limit: 120,
+      windowSeconds: 60,
+      prefix: 'mcp_execution',
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id: null,
+          error: {
+            code: -32000,
+            message: 'Rate limit exceeded: Too many MCP tool invocations. Please slow down.',
+          },
+        },
+        { status: 429, headers: CORS_HEADERS }
+      );
+    }
+
+    let resolvedWorkspaceId = req.headers.get('x-workspace-id') || undefined;
+    const auth = await validateApiKey(rawApiKey);
+
+    if (!auth.valid) {
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id: null,
+          error: {
+            code: -32001,
+            message: auth.error || 'Unauthorized: Invalid or revoked AirBook API key.',
+          },
+        },
+        { status: 401, headers: CORS_HEADERS }
+      );
+    }
+
+    if (auth.workspaceId) {
+      resolvedWorkspaceId = auth.workspaceId;
     }
 
     const body = await req.json();

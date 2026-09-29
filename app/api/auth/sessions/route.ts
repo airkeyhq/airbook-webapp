@@ -37,46 +37,36 @@ export async function GET(req: NextRequest) {
       req.cookies.get('__Secure-better-auth.session_token')?.value ||
       req.cookies.get('better-auth.session_token')?.value;
 
+    if (!currentToken) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Active session required.' },
+        { status: 401 }
+      );
+    }
+
     let targetUserId: string | null = null;
 
-    if (currentToken) {
-      const [currentSession] = await db
-        .select()
-        .from(sessions)
-        .where(eq(sessions.token, currentToken))
-        .limit(1);
+    const [currentSession] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.token, currentToken))
+      .limit(1);
 
-      if (currentSession) {
-        targetUserId = currentSession.userId;
-      }
+    if (currentSession) {
+      targetUserId = currentSession.userId;
     }
 
     if (!targetUserId) {
-      // Fallback to first user in workspace
-      const [firstUser] = await db.select().from(users).limit(1);
-      if (firstUser) {
-        targetUserId = firstUser.id;
-      }
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid or expired session.' },
+        { status: 401 }
+      );
     }
 
     const queryUA = req.nextUrl.searchParams.get('ua') || '';
     const headerUA = req.headers.get('user-agent') || '';
     const liveUA = queryUA || headerUA || '';
     const liveIP = cleanIp(null, req);
-
-    if (!targetUserId) {
-      return NextResponse.json({
-        sessions: [
-          {
-            id: 'current-session',
-            device: parseUserAgent(liveUA),
-            ipAddress: liveIP,
-            createdAt: new Date().toISOString(),
-            isCurrent: true,
-          },
-        ],
-      });
-    }
 
     const userSessions = await db
       .select()
@@ -142,29 +132,30 @@ export async function DELETE(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const { sessionId, revokeOthers } = body;
 
+    if (!currentToken) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Active session required.' },
+        { status: 401 }
+      );
+    }
+
     let targetUserId: string | null = null;
 
-    if (currentToken) {
-      const [currentSession] = await db
-        .select()
-        .from(sessions)
-        .where(eq(sessions.token, currentToken))
-        .limit(1);
+    const [currentSession] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.token, currentToken))
+      .limit(1);
 
-      if (currentSession) {
-        targetUserId = currentSession.userId;
-      }
+    if (currentSession) {
+      targetUserId = currentSession.userId;
     }
 
     if (!targetUserId) {
-      const [firstUser] = await db.select().from(users).limit(1);
-      if (firstUser) {
-        targetUserId = firstUser.id;
-      }
-    }
-
-    if (!targetUserId) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid session.' },
+        { status: 401 }
+      );
     }
 
     if (revokeOthers && currentToken) {

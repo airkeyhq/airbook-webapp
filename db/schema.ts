@@ -123,6 +123,9 @@ export const workspaces = pgTable('workspaces', {
   sslStatus: varchar('ssl_status', { length: 20 }).default('pending'),
   // Stripe Terminal
   stripeTerminalLocationId: text('stripe_terminal_location_id'),
+  // Direct Offline & Zelle Transfer Details
+  zellePhoneOrEmail: text('zelle_phone_or_email'),
+  zelleRecipientName: text('zelle_recipient_name'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

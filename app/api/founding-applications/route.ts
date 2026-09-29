@@ -3,9 +3,21 @@ import { db } from '@/db';
 import { foundingApplications } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
 import { syncContactToLoops, sendLoopsEvent } from '@/lib/loops';
+import { checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
+import { requireAuthSession } from '@/lib/auth-guard';
 
 export async function POST(req: NextRequest) {
   try {
+    // 0. Volumetric Rate Limiting (max 5 founding applications per 10 minutes per IP)
+    const rateLimit = checkRateLimit(req, {
+      limit: 5,
+      windowSeconds: 600,
+      prefix: 'founding_application',
+    });
+    if (!rateLimit.allowed) {
+      return rateLimitExceededResponse(rateLimit);
+    }
+
     const body = await req.json().catch(() => ({}));
     const {
       name,
@@ -159,6 +171,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    const authCheck = await requireAuthSession();
+    if (!authCheck.authenticated) {
+      return authCheck.response;
+    }
+
     const { searchParams } = new URL(req.url);
     const email = searchParams.get('email');
 
@@ -196,6 +213,11 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const authCheck = await requireAuthSession();
+    if (!authCheck.authenticated) {
+      return authCheck.response;
+    }
+
     const body = await req.json().catch(() => ({}));
     const { id, status, internalNotes, qualificationScore } = body;
 

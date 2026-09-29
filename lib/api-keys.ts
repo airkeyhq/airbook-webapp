@@ -95,8 +95,10 @@ export async function validateApiKey(apiKeyInput: string): Promise<{
     };
   } catch (err: any) {
     console.error('Error validating API Key against database:', err);
-    // Dev fallback if DB connection fails in local preview
-    return { valid: true, workspaceId: undefined, scopes: 'all' };
+    return {
+      valid: false,
+      error: 'Authentication service temporarily unavailable. Please try again.',
+    };
   }
 }
 

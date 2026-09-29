@@ -434,6 +434,27 @@ export const SettingsModule: React.FC = () => {
   const [noShowFee, setNoShowFee] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // Zelle Direct Transfer State
+  const [zellePhoneOrEmail, setZellePhoneOrEmail] = useState('');
+  const [zelleRecipientName, setZelleRecipientName] = useState('');
+  const [isSavingZelle, setIsSavingZelle] = useState(false);
+
+  useEffect(() => {
+    async function loadWorkspaceSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data?.workspace) {
+          if (data.workspace.zellePhoneOrEmail) setZellePhoneOrEmail(data.workspace.zellePhoneOrEmail);
+          if (data.workspace.zelleRecipientName) setZelleRecipientName(data.workspace.zelleRecipientName);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch workspace settings:', err);
+      }
+    }
+    loadWorkspaceSettings();
+  }, []);
+
 
 
   // Add-ons state
@@ -468,6 +489,31 @@ export const SettingsModule: React.FC = () => {
       addToast('Workspace settings saved to database.', 'success');
     } catch (e) {
       addToast('Saved locally, error syncing to database.', 'error');
+    }
+  };
+
+  const handleSaveZelle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingZelle(true);
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          zellePhoneOrEmail: zellePhoneOrEmail.trim(),
+          zelleRecipientName: zelleRecipientName.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data?.workspace) {
+        addToast(t('settingsSaved'), 'success');
+      } else {
+        addToast(data?.error || 'Failed to save Zelle settings', 'error');
+      }
+    } catch {
+      addToast('Error communicating with server', 'error');
+    } finally {
+      setIsSavingZelle(false);
     }
   };
 
@@ -782,6 +828,55 @@ export const SettingsModule: React.FC = () => {
                   <CheckmarkCircle24Filled className="w-4 h-4 flex-shrink-0" />
                   <span>{t('stripeConnected')} · {t('expressPayoutsActive')}</span>
                 </div>
+
+                {/* 2. Zelle & Direct Peer Transfer Configuration */}
+                <form onSubmit={handleSaveZelle} className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Payment24Regular className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <span>{t('zelleSettingsTitle')}</span>
+                      </p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">
+                        {t('zelleSettingsDesc')}
+                      </p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                      0% Fees
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                    <FloatingInput
+                      label={t('zellePhoneOrEmail')}
+                      type="text"
+                      value={zellePhoneOrEmail}
+                      onChange={(e) => setZellePhoneOrEmail(e.target.value)}
+                      placeholder="e.g. (555) 234-5678 or salon@zelle.com"
+                      icon={<Payment24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                    />
+
+                    <FloatingInput
+                      label={t('zelleRecipientName')}
+                      type="text"
+                      value={zelleRecipientName}
+                      onChange={(e) => setZelleRecipientName(e.target.value)}
+                      placeholder="e.g. Alex Johnson"
+                      icon={<Person24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                    />
+                  </div>
+
+                  <div className="flex justify-end pt-1">
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      type="submit"
+                      disabled={isSavingZelle}
+                      className="btn-primary px-5 py-2 text-xs font-bold"
+                    >
+                      <span>{isSavingZelle ? t('loading') : t('save')}</span>
+                    </motion.button>
+                  </div>
+                </form>
               </div>
             </Section>
 

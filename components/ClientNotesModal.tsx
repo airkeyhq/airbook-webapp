@@ -18,8 +18,6 @@ import {
   Calendar24Regular,
   Delete24Filled,
   Shield24Filled,
-  Shield24Regular,
-  DocumentCheckmark24Regular,
   DocumentSignature24Regular,
   DocumentSignature24Filled,
   DocumentBulletList24Regular,
@@ -117,7 +115,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
   onClientUpdated,
 }) => {
   const { t } = useTranslation();
-  const { addons, appointments } = useAirBookStore();
+  const { appointments } = useAirBookStore();
   const { addToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'specs' | 'photos' | 'waivers' | 'contact' | 'history'>('specs');
@@ -492,7 +490,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1">
                   <span className="text-[11px] font-semibold text-[var(--text-secondary)]">
                     {totalVisits} {t('visits')}
                   </span>
@@ -500,36 +498,6 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   <span className="text-[11px] font-bold text-[var(--text-primary)]">
                     ${(totalSpentCents / 100).toFixed(0)} {t('lifetimeSpend')}
                   </span>
-
-                  {addons.esign && (
-                    <span className="px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] text-[10px] font-bold flex items-center gap-1">
-                      <DocumentCheckmark24Regular className="w-3 h-3" />
-                      <span>eSign</span>
-                    </span>
-                  )}
-                  {addons.hipaa && (
-                    <span className="px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] text-[10px] font-bold flex items-center gap-1">
-                      <Shield24Regular className="w-3 h-3" />
-                      <span>HIPAA</span>
-                    </span>
-                  )}
-
-                  {/* KYC Verification Status */}
-                  {isKycVerifiedState ? (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1">
-                      <ShieldCheckmark24Filled className="w-3 h-3 text-emerald-500" />
-                      <span>{t('idVerified')}</span>
-                    </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setIsKycModalOpen(true)}
-                      className="px-2 py-0.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <ShieldCheckmark24Filled className="w-3 h-3" />
-                      <span>{t('verifyIdentity')}</span>
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
@@ -1144,7 +1112,54 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
             {/* ─── TAB: ESIGN WAIVERS & COMPLIANCE LOGS ─── */}
             {activeTab === 'waivers' && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                {/* KYC Biometric Identity Verification Card */}
+                <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      isKycVerifiedState
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                        : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                    }`}>
+                      {isKycVerifiedState ? (
+                        <ShieldCheckmark24Filled className="w-5 h-5 text-emerald-500" />
+                      ) : (
+                        <Shield24Filled className="w-5 h-5 text-[#2BB5FF]" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h5 className="text-xs font-bold text-[var(--text-primary)]">
+                          {t('kycTitle')}
+                        </h5>
+                        {isKycVerifiedState ? (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[9px] font-extrabold uppercase tracking-wider">
+                            {t('idVerified')}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[9px] font-extrabold uppercase tracking-wider">
+                            {t('statusPending')}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
+                        {isKycVerifiedState ? t('kycVerifiedSuccess') : t('kycModalDesc')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {!isKycVerifiedState && (
+                    <button
+                      type="button"
+                      onClick={() => setIsKycModalOpen(true)}
+                      className="btn-primary py-2 px-3.5 text-xs flex-shrink-0 self-start sm:self-center"
+                    >
+                      <ShieldCheckmark24Filled className="w-3.5 h-3.5" />
+                      <span>{t('verifyIdentity')}</span>
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
                       {t('complianceLog')}

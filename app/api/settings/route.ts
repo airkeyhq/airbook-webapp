@@ -63,6 +63,8 @@ export async function PATCH(req: NextRequest) {
         logoUrl: body.logoUrl ?? ws.logoUrl,
         cancellationNoticeHours: body.cancellationNoticeHours ?? ws.cancellationNoticeHours,
         depositRequiredPercent: body.depositRequiredPercent ?? ws.depositRequiredPercent,
+        zellePhoneOrEmail: body.zellePhoneOrEmail !== undefined ? body.zellePhoneOrEmail : ws.zellePhoneOrEmail,
+        zelleRecipientName: body.zelleRecipientName !== undefined ? body.zelleRecipientName : ws.zelleRecipientName,
       })
       .where(eq(workspaces.id, ws.id))
       .returning();

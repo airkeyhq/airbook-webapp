@@ -144,7 +144,7 @@ export const BookingDrawer: React.FC = () => {
             <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
 
             {/* Scrollable Form Body */}
-            <div className="p-6 overflow-y-auto space-y-4 flex-1">
+            <div className="p-6 pb-10 overflow-y-auto space-y-4 flex-1">
             {/* Client Name Field */}
             <FloatingInput
               label={t('fullName')}
