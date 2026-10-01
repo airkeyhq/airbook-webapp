@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useSession } from "@/lib/auth-client";
+import { getAdminUser } from "@/lib/admin";
 import { CustomSelect } from "@/components/CustomSelect";
 import {
   PIPELINE_STAGES,
@@ -33,6 +35,12 @@ import {
 
 export default function CrmSalesPage() {
   const { t } = useTranslation();
+  const { data: session } = useSession();
+
+  const currentAdmin = getAdminUser(session?.user?.email);
+  const authorName = currentAdmin
+    ? `${currentAdmin.name} (${currentAdmin.role === 'ceo' ? 'CEO' : 'Admin'})`
+    : 'Eduardo G. (CEO)';
 
   const [deals, setDeals] = useState<(SalonDeal & { isStripeVerified?: boolean; verifiedTransactionsCount?: number })[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -162,7 +170,7 @@ export default function CrmSalesPage() {
               {
                 id: "act-" + Date.now(),
                 type: "deal_moved" as const,
-                author: "Eduardo G.",
+                author: authorName,
                 timestamp: new Date().toISOString(),
                 summary: "Stage updated to " + newStage.replace("_", " ").toUpperCase(),
               },
@@ -233,7 +241,7 @@ export default function CrmSalesPage() {
     const newActivity = {
       id: "act-" + Date.now(),
       type: "note" as const,
-      author: "Eduardo G.",
+      author: authorName,
       timestamp: new Date().toISOString(),
       summary: noteContent,
     };

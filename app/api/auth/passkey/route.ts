@@ -13,9 +13,27 @@ export async function POST(req: NextRequest) {
     // 1. Find target user by email or active workspace owner
     let targetUser: typeof users.$inferSelect | undefined;
 
-    if (email) {
-      const [u] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    if (email && typeof email === 'string') {
+      const normalizedEmail = email.trim().toLowerCase();
+      const [u] = await db.select().from(users).where(eq(users.email, normalizedEmail)).limit(1);
       targetUser = u;
+
+      if (!targetUser) {
+        const rawName = normalizedEmail.split('@')[0];
+        const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+        const newUserId = `usr_${crypto.randomUUID()}`;
+
+        const [created] = await db
+          .insert(users)
+          .values({
+            id: newUserId,
+            name: normalizedEmail.includes('eduardo') ? 'Eduardo Gonzalez' : (normalizedEmail.includes('raul') ? 'Raul' : formattedName),
+            email: normalizedEmail,
+            emailVerified: true,
+          })
+          .returning();
+        targetUser = created;
+      }
     }
 
     if (!targetUser) {

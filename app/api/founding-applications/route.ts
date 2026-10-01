@@ -4,7 +4,7 @@ import { foundingApplications } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
 import { syncContactToLoops, sendLoopsEvent } from '@/lib/loops';
 import { checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
-import { requireAuthSession } from '@/lib/auth-guard';
+import { requireAuthSession, requireAdminSession } from '@/lib/auth-guard';
 
 export async function POST(req: NextRequest) {
   try {
@@ -171,15 +171,15 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const authCheck = await requireAuthSession();
-    if (!authCheck.authenticated) {
-      return authCheck.response;
-    }
-
     const { searchParams } = new URL(req.url);
     const email = searchParams.get('email');
 
     if (email) {
+      const authCheck = await requireAuthSession();
+      if (!authCheck.authenticated) {
+        return authCheck.response;
+      }
+
       const [appRecord] = await db
         .select()
         .from(foundingApplications)
@@ -192,6 +192,12 @@ export async function GET(req: NextRequest) {
       }
 
       return NextResponse.json({ application: appRecord });
+    }
+
+    // Listing all applications requires executive admin session (Eduardo/Raul)
+    const adminCheck = await requireAdminSession();
+    if (!adminCheck.authenticated) {
+      return adminCheck.response;
     }
 
     // Return recent applications list for CRM view
@@ -213,9 +219,9 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const authCheck = await requireAuthSession();
-    if (!authCheck.authenticated) {
-      return authCheck.response;
+    const adminCheck = await requireAdminSession();
+    if (!adminCheck.authenticated) {
+      return adminCheck.response;
     }
 
     const body = await req.json().catch(() => ({}));

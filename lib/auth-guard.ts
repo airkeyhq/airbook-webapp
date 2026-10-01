@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { db } from '@/db';
 import { members, workspaces } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
+import { isAdminEmail, getAdminUser, AdminUser } from '@/lib/admin';
 
 export interface AuthSessionResult {
   user: {
@@ -72,6 +73,60 @@ export async function requireAuthSession(): Promise<
 }
 
 /**
+ * Enforces that the caller is an authenticated AirBook administrator (e.g. Eduardo Gonzalez CEO or Raul Admin).
+ * Returns { authenticated: true, user, session, adminProfile } or appropriate 401/403 NextResponse.
+ */
+export async function requireAdminSession(): Promise<
+  | {
+      authenticated: true;
+      user: AuthSessionResult['user'];
+      session: AuthSessionResult['session'];
+      adminProfile: AdminUser;
+    }
+  | { authenticated: false; response: NextResponse }
+> {
+  const authCheck = await requireAuthSession();
+  if (!authCheck.authenticated) {
+    return authCheck;
+  }
+
+  const email = authCheck.user.email;
+  if (!isAdminEmail(email)) {
+    return {
+      authenticated: false,
+      response: NextResponse.json(
+        {
+          error: 'Forbidden: Admin credentials required for internal console access.',
+          code: 'FORBIDDEN_ADMIN_REQUIRED',
+        },
+        { status: 403 }
+      ),
+    };
+  }
+
+  const adminProfile = getAdminUser(email) || {
+    email,
+    name: authCheck.user.name || 'Platform Admin',
+    role: 'admin' as const,
+    title: 'Platform Admin',
+    department: 'Core Team',
+    avatarColor: '#2BB5FF',
+    canAccessInternalConsole: true,
+    canManageFoundingApplications: true,
+    canManageCrm: true,
+    canManageRoadmap: true,
+    canManageDeployments: true,
+  };
+
+  return {
+    authenticated: true,
+    user: authCheck.user,
+    session: authCheck.session,
+    adminProfile,
+  };
+}
+
+/**
  * Validates whether the authenticated user has access to the specified workspace/organization.
  */
 export async function validateWorkspaceMembership(
@@ -109,3 +164,4 @@ export async function validateWorkspaceMembership(
     return false;
   }
 }
+

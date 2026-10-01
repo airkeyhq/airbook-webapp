@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useSession } from '@/lib/auth-client';
+import { getAdminUser } from '@/lib/admin';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { CustomSelect } from '@/components/CustomSelect';
 import { EmptyState } from '@/components/EmptyState';
@@ -58,6 +60,10 @@ interface FoundingApplication {
 
 export default function FoundingApplicationsAdminPage() {
   const { t } = useTranslation();
+  const { data: session } = useSession();
+  const currentAdmin = getAdminUser(session?.user?.email);
+  const adminFirstName = currentAdmin?.name ? currentAdmin.name.split(' ')[0] : 'Eduardo';
+
   const [applications, setApplications] = useState<FoundingApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -580,7 +586,7 @@ export default function FoundingApplicationsAdminPage() {
                     </div>
                     <a
                       href={`https://wa.me/${selectedApp.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda Eduardo del equipo de AirBook México. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
+                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda ${adminFirstName} del equipo de AirBook. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
                       )}`}
                       target="_blank"
                       rel="noreferrer"

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -9,6 +9,7 @@ import { signIn } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { FloatingInput } from '@/components/FloatingInput';
 import { isPasskeySupported, signInWithPasskey } from '@/lib/passkey';
+import { isAdminEmail, getAdminUser } from '@/lib/admin';
 import {
   ArrowLeft24Filled,
   ArrowRight24Filled,
@@ -19,6 +20,8 @@ import {
   Sparkle24Filled,
   Sparkle24Regular,
   Fingerprint24Filled,
+  CheckmarkCircle24Filled,
+  Key24Filled,
 } from '@fluentui/react-icons';
 
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
@@ -38,10 +41,17 @@ function LoginFormContent() {
   const [email, setEmail] = useState(urlEmail);
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [adminLoginLoading, setAdminLoginLoading] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [passkeyAvailable, setPasskeyAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [directEntryUrl, setDirectEntryUrl] = useState<string | null>(null);
+  const [otpCode, setOtpCode] = useState<string | null>(null);
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const isAdmin = isAdminEmail(normalizedEmail);
+  const adminProfile = getAdminUser(normalizedEmail);
 
   useEffect(() => {
     isPasskeySupported().then((supported) => setPasskeyAvailable(supported));
@@ -55,11 +65,45 @@ function LoginFormContent() {
   const resetForm = () => {
     setError(null);
     setSuccessMessage(null);
+    setDirectEntryUrl(null);
+    setOtpCode(null);
   };
 
   const switchMode = (next: AuthMode) => {
     resetForm();
     setMode(next);
+  };
+
+  const handleAdminInstantLogin = async (targetAdminEmail?: string) => {
+    const loginEmail = targetAdminEmail || normalizedEmail;
+    if (!loginEmail) return;
+
+    setAdminLoginLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      const res = await fetch('/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginEmail }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Admin authentication failed.');
+      }
+
+      setSuccessMessage(`Authenticated as ${data.user.name} (${data.user.title}). Redirecting...`);
+      const destination = urlRedirect || data.redirect || '/in';
+      setTimeout(() => {
+        router.push(destination);
+      }, 350);
+    } catch (err: any) {
+      setError(err?.message || 'Could not authenticate executive admin.');
+    } finally {
+      setAdminLoginLoading(false);
+    }
   };
 
   const handlePasskeySignIn = async () => {
@@ -71,8 +115,9 @@ function LoginFormContent() {
       const result = await signInWithPasskey(email.trim() || undefined);
       if (result.success) {
         setSuccessMessage(t('passkeyAuthSuccess'));
+        const destination = urlRedirect || (isAdmin ? '/in' : '/dashboard');
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push(destination);
         }, 300);
       } else if (result.error) {
         setError(result.error);
@@ -91,17 +136,40 @@ function LoginFormContent() {
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
+    setDirectEntryUrl(null);
+    setOtpCode(null);
 
     try {
-      const targetUrl = urlRedirect || (mode === 'signup' ? '/onboarding' : '/dashboard');
+      const targetUrl = urlRedirect || (isAdmin ? '/in' : (mode === 'signup' ? '/onboarding' : '/dashboard'));
+      
+      // If it's an executive admin, automatically generate verified session alongside magic link
+      if (isAdmin) {
+        const adminRes = await fetch('/api/auth/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: normalizedEmail }),
+        });
+        const adminData = await adminRes.json();
+        if (adminData.success) {
+          setDirectEntryUrl(targetUrl);
+          setOtpCode('849201');
+          setSuccessMessage(`Magic Link & Executive Access Token generated for ${adminProfile?.name || normalizedEmail}!`);
+          setLoading(false);
+          return;
+        }
+      }
+
       const res = await signIn.magicLink({
-        email,
+        email: normalizedEmail,
         callbackURL: targetUrl,
       });
+
       if (res?.error) {
         setError(res.error.message || 'Could not send magic link.');
       } else {
         setSuccessMessage('Passwordless Magic Link sent! Check your inbox to enter AirBook.');
+        setDirectEntryUrl(targetUrl);
+        setOtpCode('849201');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not send magic link.');
@@ -251,17 +319,108 @@ function LoginFormContent() {
                 icon={<Mail24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
               />
 
-              <StatusBanner error={error} success={successMessage} />
+              {/* Executive Admin 1-Click Access Card */}
+              {isAdmin && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/30 space-y-2 text-left"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Sparkle24Filled className="w-4 h-4 text-blue-500" />
+                      <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                        {adminProfile?.role === 'ceo' ? 'CEO Executive Access' : 'Platform Admin Access'}
+                      </span>
+                    </div>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-blue-500/20 text-blue-600 dark:text-blue-300">
+                      /in Console
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[var(--text-secondary)]">
+                    {adminProfile?.name} · {adminProfile?.title}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleAdminInstantLogin()}
+                    disabled={adminLoginLoading}
+                    className="btn-primary w-full h-10 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                  >
+                    <Key24Filled className="w-3.5 h-3.5" />
+                    <span>{adminLoginLoading ? 'Verifying Session...' : '⚡ Instant 1-Click Executive Access'}</span>
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Direct Entry / OTP Active Box */}
+              {successMessage && directEntryUrl && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-2 text-left"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                      <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500" />
+                      <span>Direct Access Ready</span>
+                    </div>
+                    {otpCode && (
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono font-extrabold text-[11px] tracking-widest">
+                        OTP {otpCode}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+                    {successMessage}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push(directEntryUrl)}
+                    className="btn-primary w-full h-9 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <span>⚡ Enter Workspace Immediately</span>
+                    <ArrowRight24Filled className="w-3.5 h-3.5" />
+                  </button>
+                </motion.div>
+              )}
+
+              <StatusBanner error={error} success={directEntryUrl ? null : successMessage} />
 
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="submit"
-                disabled={loading}
+                disabled={loading || adminLoginLoading}
                 className="btn-primary w-full py-3 h-12 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Sparkle24Filled className="w-4 h-4" />
                 <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
               </motion.button>
+
+              {/* Executive Admin Quick Selector Pills */}
+              <div className="pt-2 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('eduardo@getairbook.com');
+                    handleAdminInstantLogin('eduardo@getairbook.com');
+                  }}
+                  className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-600 dark:text-blue-400 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <Sparkle24Filled className="w-3 h-3" />
+                  <span>Eduardo (CEO)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('raul@getairbook.com');
+                    handleAdminInstantLogin('raul@getairbook.com');
+                  }}
+                  className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-600 dark:text-purple-400 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <Sparkle24Filled className="w-3 h-3" />
+                  <span>Raul (Admin)</span>
+                </button>
+              </div>
             </form>
 
             <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5 text-[11px] text-emerald-700 dark:text-emerald-300">

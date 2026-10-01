@@ -8,6 +8,7 @@ import { Logo } from '@/components/Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession, signOut } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
+import { getAdminUser, isAdminEmail } from '@/lib/admin';
 import {
   LockClosed24Regular,
   Image24Regular,
@@ -24,6 +25,7 @@ import {
   SignOut24Filled,
   Settings24Filled,
   Sparkle24Regular,
+  ShieldLock24Regular,
 } from '@fluentui/react-icons';
 
 interface InternalModuleOption {
@@ -49,9 +51,15 @@ export default function InternalConsoleLayout({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const userName = session?.user?.name || 'Eduardo Gonzalez';
-  const userEmail = session?.user?.email || 'eduardo@airbook.app';
-  const userAvatar = getAvatarUrl(userName, session?.user?.image, '#007AFF');
+  const email = session?.user?.email || 'eduardo@getairbook.com';
+  const adminProfile = getAdminUser(email);
+  const userName = session?.user?.name || adminProfile?.name || 'Eduardo Gonzalez';
+  const userEmail = email;
+  const userRoleBadge = adminProfile?.role === 'ceo' ? 'CEO & Founder' : (adminProfile?.role === 'admin' ? 'Platform Admin & Co-Founder' : 'Core Platform Admin');
+  const userRoleTitle = adminProfile?.title || 'Platform Admin';
+  const userAvatar = getAvatarUrl(userName, session?.user?.image, adminProfile?.avatarColor || '#007AFF');
+  const isUnauthorized = Boolean(session?.user?.email && !isAdminEmail(session.user.email));
+
 
   const internalModules: InternalModuleOption[] = [
     {
@@ -351,9 +359,12 @@ export default function InternalConsoleLayout({
                           </p>
                         </div>
                       </div>
-                      <div className="pt-1 flex items-center gap-1.5">
+                      <div className="pt-1 flex flex-wrap items-center gap-1.5">
                         <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                          Core Platform Admin
+                          {userRoleBadge}
+                        </span>
+                        <span className="text-[9px] font-mono text-[var(--text-muted)]">
+                          {userRoleTitle}
                         </span>
                       </div>
                     </div>
@@ -408,7 +419,29 @@ export default function InternalConsoleLayout({
 
       {/* Main Content Area */}
       <main className="py-6 sm:py-8">
-        {children}
+        {isUnauthorized ? (
+          <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6">
+            <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto shadow-sm">
+              <ShieldLock24Regular className="w-8 h-8" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black tracking-tight text-[var(--text-primary)]">
+                Admin Console Access Restricted
+              </h2>
+              <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
+                The Internal Engineering Console (<code className="font-mono text-xs text-blue-500">/in</code>) is exclusively restricted to executive administrators (<strong>eduardo@getairbook.com</strong> &amp; <strong>raul@getairbook.com</strong>).
+              </p>
+            </div>
+            <div className="pt-4 flex justify-center">
+              <Link href="/dashboard" className="btn-primary h-11 px-6 rounded-2xl text-xs font-bold flex items-center gap-2">
+                <ArrowLeft24Filled className="w-4 h-4" />
+                <span>Return to Salon Dashboard</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          children
+        )}
       </main>
     </div>
   );

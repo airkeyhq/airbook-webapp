@@ -4,6 +4,7 @@ import { workspaces, staff, appointments } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { stripe, isStripeConfigured } from '@/lib/stripe';
 import { SalonDeal, DealActivity, DealStage } from '@/app/in/crm/data';
+import { requireAdminSession } from '@/lib/auth-guard';
 
 // Helper to determine stage strictly from verified Stripe and DB state
 function determineDealStage(ws: any, isVerifiedStripe: boolean): DealStage {
@@ -35,6 +36,11 @@ function getTierMrr(tier: "solo_pro_29" | "team_79" | "scale_199"): number {
 
 export async function GET(req: NextRequest) {
   try {
+    const adminCheck = await requireAdminSession();
+    if (!adminCheck.authenticated) {
+      return adminCheck.response;
+    }
+
     const { searchParams } = new URL(req.url);
     const forceSync = searchParams.get('sync') === 'true';
 
@@ -212,6 +218,11 @@ export async function GET(req: NextRequest) {
 // POST /api/crm/deals - Create a real organization in PostgreSQL and Stripe
 export async function POST(req: NextRequest) {
   try {
+    const adminCheck = await requireAdminSession();
+    if (!adminCheck.authenticated) {
+      return adminCheck.response;
+    }
+
     const body = await req.json();
     const {
       salonName,
@@ -300,6 +311,11 @@ export async function POST(req: NextRequest) {
 // PATCH /api/crm/deals - Update deal stage and properties in PostgreSQL
 export async function PATCH(req: NextRequest) {
   try {
+    const adminCheck = await requireAdminSession();
+    if (!adminCheck.authenticated) {
+      return adminCheck.response;
+    }
+
     const body = await req.json();
     const { dealId, stage, plan, notes, customDomain, managerName } = body;
 

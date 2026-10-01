@@ -151,14 +151,14 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 948,
     icpScore: "Tier 1 (High Priority)",
     sourceChannel: "Competitor Comparison Page",
-    assignedRep: "Eduardo G.",
+    assignedRep: "Eduardo G. (CEO)",
     expectedCloseDate: "2026-09-20",
     notes: "Elena pays Fresha over $800/mo in marketplace penalties. Wants white-label CNAME (book.luxeateliertribeca.com) and instant Stripe payouts.",
     activities: [
       {
         id: "act-1",
         type: "demo",
-        author: "Eduardo G.",
+        author: "Eduardo G. (CEO)",
         timestamp: "2026-09-10T14:30:00Z",
         summary: "Presented 60fps booking drawer and Stripe Terminal WisePad 3.",
         details: "She was blown away by 0% client acquisition tax and instant Apple Pay checkout speed.",
@@ -166,7 +166,7 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
       {
         id: "act-2",
         type: "call",
-        author: "Eduardo G.",
+        author: "Eduardo G. (CEO)",
         timestamp: "2026-09-11T16:00:00Z",
         summary: "Reviewed client list CSV import from Fresha.",
         details: "1,420 client records formatted with formula color notes.",
@@ -192,7 +192,7 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 948,
     icpScore: "Tier 1 (High Priority)",
     sourceChannel: "Viral Embed Badge",
-    assignedRep: "Sarah K.",
+    assignedRep: "Raul (Admin)",
     expectedCloseDate: "2026-09-18",
     notes: "Marcus saw AirBook badge on Soho salon website. Active in 7-day pilot with 4 barbers on floor.",
     activities: [
@@ -231,14 +231,14 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 2388,
     icpScore: "Tier 1 (High Priority)",
     sourceChannel: "Direct Outbound",
-    assignedRep: "Eduardo G.",
+    assignedRep: "Eduardo G. (CEO)",
     expectedCloseDate: "2026-09-25",
     notes: "Boulevard costs them $655/mo with seat surcharges. Sophia needs German i18n consent waivers and treatment photo histories.",
     activities: [
       {
         id: "act-5",
         type: "call",
-        author: "Eduardo G.",
+        author: "Eduardo G. (CEO)",
         timestamp: "2026-09-07T10:00:00Z",
         summary: "Intro discovery call with Clinic Operations Manager.",
         details: "Confirmed high willingness to pay for HIPAA/GDPR audit logs and multi-room management.",
@@ -264,14 +264,14 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 2388,
     icpScore: "Tier 1 (High Priority)",
     sourceChannel: "Word of Mouth",
-    assignedRep: "Sarah K.",
+    assignedRep: "Raul (Admin)",
     expectedCloseDate: "2026-10-05",
     notes: "3 locations in Paris and Lyon. Exploring multi-branch consolidated reporting and unified staff permission matrix.",
     activities: [
       {
         id: "act-6",
         type: "sms",
-        author: "Sarah K.",
+        author: "Raul (Admin)",
         timestamp: "2026-09-06T15:20:00Z",
         summary: "Sent French product deck and live demo link.",
       },
@@ -296,7 +296,7 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 948,
     icpScore: "Tier 2 (Strong Fit)",
     sourceChannel: "Instagram DM",
-    assignedRep: "Eduardo G.",
+    assignedRep: "Eduardo G. (CEO)",
     expectedCloseDate: "2026-09-02",
     notes: "Migrated from Vagaro. Replaced $145/mo in add-ons with AirBook Team $79 flat. Live processing on Stripe Terminal.",
     activities: [
@@ -335,7 +335,7 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 348,
     icpScore: "Tier 2 (Strong Fit)",
     sourceChannel: "Competitor Comparison Page",
-    assignedRep: "Eduardo G.",
+    assignedRep: "Eduardo G. (CEO)",
     expectedCloseDate: "2026-09-05",
     notes: "Solo balayage master. Loves mobile drawer UX and Spanish localization.",
     activities: [
@@ -367,14 +367,14 @@ export const INITIAL_SALON_DEALS: SalonDeal[] = [
     arrValue: 948,
     icpScore: "Tier 2 (Strong Fit)",
     sourceChannel: "Viral Embed Badge",
-    assignedRep: "Sarah K.",
+    assignedRep: "Raul (Admin)",
     expectedCloseDate: "2026-10-10",
     notes: "Inbound lead via marketing website. Frustrated by Booksy charging 50% commission on repeat clients.",
     activities: [
       {
         id: "act-10",
         type: "note",
-        author: "Sarah K.",
+        author: "Raul (Admin)",
         timestamp: "2026-09-12T11:00:00Z",
         summary: "Sent automated introductory email with TCO calculator link.",
       },

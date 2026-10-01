@@ -132,9 +132,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'urgent',
     estimate: 5,
     assignee: {
-      name: 'Eduardo & AI Team',
+      name: 'Eduardo Gonzalez (CEO)',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Lead Architect',
+      role: 'Lead Architect & CEO',
     },
     tags: ['Payments', 'Stripe Terminal', 'Hardware'],
     githubSpec: {
@@ -162,9 +162,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'high',
     estimate: 8,
     assignee: {
-      name: 'Core Engineering',
+      name: 'Raul (Admin)',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Payments Engineer',
+      role: 'Platform Architect & Co-Founder',
     },
     tags: ['Payments', 'POS', 'Hardware'],
     githubSpec: {
@@ -192,9 +192,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'high',
     estimate: 5,
     assignee: {
-      name: 'Eduardo & AI Team',
+      name: 'Eduardo Gonzalez (CEO)',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Lead Architect',
+      role: 'Lead Architect & CEO',
     },
     tags: ['Infrastructure', 'DNS', 'White-Label'],
     githubSpec: {
@@ -282,9 +282,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'high',
     estimate: 5,
     assignee: {
-      name: 'Eduardo & AI Team',
+      name: 'Eduardo Gonzalez (CEO)',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Lead Architect',
+      role: 'Lead Architect & CEO',
     },
     tags: ['Franchise', 'Analytics', 'Multi-Location'],
     githubSpec: {
@@ -432,9 +432,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'high',
     estimate: 8,
     assignee: {
-      name: 'Eduardo & AI Team',
+      name: 'Eduardo Gonzalez (CEO)',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Lead Architect',
+      role: 'Lead Architect & CEO',
     },
     tags: ['Payroll', 'Commissions', 'Staff'],
     githubSpec: {
@@ -552,9 +552,9 @@ export const ROADMAP_ISSUES: RoadmapIssue[] = [
     priority: 'urgent',
     estimate: 5,
     assignee: {
-      name: 'Eduardo & AI Team',
+      name: 'Eduardo Gonzalez (CEO)',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
-      role: 'Lead Architect',
+      role: 'Lead Architect & CEO',
     },
     tags: ['Calendar', 'Sequencing', 'Salon UX'],
     githubSpec: {
