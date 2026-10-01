@@ -49,6 +49,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Colorist in vintage denim jacket laughing with client checking fresh balayage in studio mirror.',
     category: 'Hair Salon',
     url: '/brand/photos/candid/hair-salon.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a charismatic hair colorist in a vintage denim jacket and stacked rings laughing warmly with her client as the client inspects her fresh glossy dimensional balayage blowout in a handheld mirror. Modern lived-in salon with warm brick, plants, and styling bottles in the background. Natural candid laughter, real skin texture, crisp direct flash shadows.',
   },
   {
     id: 'barbershop-candid',
@@ -56,6 +57,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Barber in streetwear tee & apron sharing a genuine laugh with client in vintage leather chair.',
     category: 'Barbershop',
     url: '/brand/photos/candid/barbershop.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a master barber in a graphic streetwear tee and dark canvas apron sharing a genuine burst of laughter with a client seated in a vintage brown leather barber chair. Modern urban barbershop with dark wood, mirrors, warm filament bulbs, and hot towel warmer. Sharp skin fade, authentic smile, direct flash aesthetic.',
   },
   {
     id: 'medspa-esthetician-candid',
@@ -63,6 +65,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Radiant esthetician in cozy sage fleece consulting client with glowing bare skin over tea.',
     category: 'MedSpa & Esthetics',
     url: '/brand/photos/candid/medspa-esthetician.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a radiant esthetician in a cozy oversized sage green fleece having a relaxed, smiling consultation with a client who has bare glowing skin, holding ceramic tea cups. Organic botanical treatment suite with terracotta pots and linen cushions. Warm authentic atmosphere, dewy skin glow, direct flash.',
   },
   {
     id: 'nail-studio-candid',
@@ -70,6 +73,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Nail artist in denim & stacked rings showing off 3D chrome metallic manicure with client.',
     category: 'Nail Studio',
     url: '/brand/photos/candid/nail-studio.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a trendy nail artist wearing stacked chrome rings and denim holding hands with her laughing client to admire a bespoke 3D chrome sculpted nail set over a marble nail table. Chic boutique studio with pastel accents and LED curing lamps. Direct flash reflections, natural laughter, sharp focus on nail art.',
   },
   {
     id: 'tattoo-artist-candid',
@@ -77,6 +81,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Fine-line tattoo artist in beanie & hoodie reviewing iPad botanical stencil with smiling client.',
     category: 'Tattoo Atelier',
     url: '/brand/photos/candid/tattoo-artist.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a fine-line tattoo artist in a knit beanie and black hoodie smiling alongside their client while reviewing a delicate botanical stencil on an iPad in a sunlit creative loft studio. Exposed brick, art prints on walls, direct flash aesthetic, genuine collaboration.',
   },
   {
     id: 'massage-wellness-candid',
@@ -84,6 +89,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Holistic therapist in organic linen setting heated basalt stones and aromatherapy in bamboo suite.',
     category: 'Massage & Spa',
     url: '/brand/photos/candid/massage-wellness.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a holistic massage therapist in minimalist organic beige linen preparing heated basalt river stones and essential oil diffusers in a peaceful bamboo and cedar wellness sanctuary. Warm ambient mood, direct flash lighting, authentic artisanal calm.',
   },
   {
     id: 'pet-grooming-candid',
@@ -91,6 +97,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Friendly stylist gently grooming fluffy golden doodle on stainless steel table with mint tiles.',
     category: 'Pet Grooming',
     url: '/brand/photos/candid/pet-grooming.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a friendly pet stylist in a waterproof pastel apron smiling warmly while fluff-drying a cheerful golden doodle on a stainless steel hydraulic grooming table. Clean modern pet salon with mint ceramic tiles and natural lighting. Direct flash on-camera aesthetic.',
   },
   {
     id: 'fitness-trainer-candid',
@@ -98,6 +105,7 @@ const CANDID_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Charismatic trainer in slate athletic tee coaching dynamic kettlebell movement in private gym.',
     category: 'Fitness & Training',
     url: '/brand/photos/candid/fitness-trainer.jpg',
+    prompt: 'Authentic candid 35mm photo with direct on-camera flash of a charismatic personal trainer in a slate athletic tee giving positive, energetic coaching cues to a smiling client during a kettlebell workout in an upscale private boutique gym. Matte black weights, clean rubber flooring, crisp flash lighting.',
   },
 ];
 
@@ -108,6 +116,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Master colorist in warm olive linen presenting glossy balayage finish in bespoke studio.',
     category: 'Hair Salon',
     url: '/brand/photos/hair-salon.jpg',
+    prompt: 'Editorial portrait photograph of a master hair colorist in warm olive linen presenting a client\'s dimensional balayage in a sunlit architectural salon with travertine counters and brushed brass accents. Soft directional key light, warm natural tones, quiet luxury.',
   },
   {
     id: 'barbershop-editorial',
@@ -115,6 +124,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Master barber in dark craft apron beside classic vintage leather chair with precision skin fade.',
     category: 'Barbershop',
     url: '/brand/photos/barbershop.jpg',
+    prompt: 'Editorial portrait of a master barber in a dark waxed canvas apron standing beside an antique leather barber chair in a moody, walnut-paneled studio. Soft directional spotlight, warm amber highlights, artisan craft mood.',
   },
   {
     id: 'medspa-esthetician-editorial',
@@ -122,6 +132,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Licensed esthetician in minimalist wrap top conducting skincare consultation in limestone suite.',
     category: 'MedSpa & Esthetics',
     url: '/brand/photos/medspa-esthetician.jpg',
+    prompt: 'Editorial photograph of a licensed esthetician in a minimalist cream wrap top preparing botanical skincare serums in a limestone treatment suite with fluted glass. Serene daylight, warm muted tones, clinical luxury.',
   },
   {
     id: 'nail-studio-editorial',
@@ -129,6 +140,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Artistic nail designer at travertine marble workstation crafting bespoke chrome art manicure.',
     category: 'Nail Studio',
     url: '/brand/photos/nail-studio.jpg',
+    prompt: 'Editorial close-up photograph of a nail designer at a fluted travertine marble table carefully painting 3D chrome details on a client\'s sculpted manicure. Soft focused studio lighting, minimalist beige backdrop.',
   },
   {
     id: 'tattoo-artist-editorial',
@@ -136,6 +148,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Fine-line tattoo artist sketching botanical stencil on iPad in natural sunlit loft studio.',
     category: 'Tattoo Atelier',
     url: '/brand/photos/tattoo-artist.jpg',
+    prompt: 'Editorial photo of a fine-line tattoo artist sketching botanical ink illustrations on an iPad at a rustic wooden desk in a bright loft with high ceilings and green plants. Natural soft window lighting.',
   },
   {
     id: 'massage-wellness-editorial',
@@ -143,6 +156,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Holistic therapist in organic linen setting heated basalt stones and aromatherapy in bamboo suite.',
     category: 'Massage & Spa',
     url: '/brand/photos/massage-wellness.jpg',
+    prompt: 'Editorial image of a massage practitioner arranging smooth basalt river stones next to an aromatic cedar bowl in a minimalist zen spa suite. Soft warm ambient glow, organic textures.',
   },
   {
     id: 'pet-grooming-editorial',
@@ -150,6 +164,7 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Friendly stylist gently grooming fluffy golden doodle on stainless steel table with mint tiles.',
     category: 'Pet Grooming',
     url: '/brand/photos/pet-grooming.jpg',
+    prompt: 'Editorial photograph of a canine spa stylist gently brushing a well-groomed golden doodle in a bright, modern salon with terrazzo floors and sage green cabinetry. Soft natural daylight.',
   },
   {
     id: 'fitness-trainer-editorial',
@@ -157,8 +172,130 @@ const EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY = [
     subtitle: 'Charismatic trainer in slate athletic tee coaching dynamic kettlebell movement in private gym.',
     category: 'Fitness & Training',
     url: '/brand/photos/fitness-trainer.jpg',
+    prompt: 'Editorial athletic portrait of a fitness trainer demonstrating kettlebell technique in a minimalist boutique training studio with matte black equipment and natural morning window light.',
   },
 ];
+
+const AIRBOOK_PHOTO_BRAND_SPEC = {
+  $schema: 'https://getairbook.com/brand/photo-brand-spec.schema.json',
+  brand: 'AirBook',
+  version: '1.0.0',
+  spec_type: 'Photography Brand Guidelines & AI Agent Prompt Spec',
+  description: 'Official JSON specification for generating authentic AirBook brand photography across all modern AI models (ChatGPT / DALL-E, Midjourney, FLUX.1, Claude, Gemini, Grok).',
+  target_platforms: [
+    'ChatGPT',
+    'Claude',
+    'Gemini',
+    'Grok',
+    'Midjourney v6',
+    'FLUX.1',
+    'Stable Diffusion XL',
+  ],
+  core_philosophy: {
+    manifesto: 'Authentic Human Realism & Conscious Community over generic stock photography. Real creators, authentic streetwear, genuine candid laughter, and lived-in workspaces.',
+    anti_patterns: [
+      'No generic stock photo smiles or stiff poses',
+      'No sterile corporate white studio backgrounds',
+      'No over-smoothed plastic AI skin textures',
+      'No formal corporate suits or generic hospital scrubs unless stylistically relevant',
+      'No staged artificial prop handling',
+    ],
+  },
+  styles: {
+    candid_realism: {
+      id: 'candid',
+      name: 'Candid Human Realism & Conscious Community',
+      status: 'selected_primary',
+      tagline: 'Direct flash + authentic streetwear + candid laughter + real studios',
+      camera_and_lighting: {
+        lighting_setup: 'Direct on-camera flash, hard strobe, high-contrast crisp shadows with natural fast falloff',
+        lens_and_focal_length: '28mm or 35mm wide prime lens, f/2.8 to f/4 aperture',
+        film_aesthetic: 'Subtle 35mm film grain, organic texture, authentic dynamic range, rich contrast',
+        color_grading: 'Warm natural skin tones, deep blacks, authentic saturated accents without over-processing',
+      },
+      wardrobe_and_styling: {
+        specialists: 'Authentic streetwear, vintage denim jackets, oversized graphic tees, dark canvas work aprons, beanies, cozy fleeces, stacked silver/gold rings, visible artistic tattoos',
+        clients: 'Effortless casual chic, relaxed tailoring, genuine comfort',
+      },
+      emotion_and_action: {
+        mood: 'Genuine joy, shared spontaneous laughter, mid-sentence expressions, authentic creator-client connection',
+        interaction: 'Collaborative review, looking in handheld mirrors, inspecting fresh finishes, sharing drinks during consultations',
+      },
+      environment_and_props: {
+        location: 'Lived-in, texture-rich independent studios and salons',
+        elements: [
+          'Exposed brick',
+          'Subway tiles',
+          'Travertine & marble counters',
+          'Vintage leather styling chairs',
+          'Potted botanicals',
+          'Warm background ambient lighting',
+        ],
+      },
+      universal_prompt_prefix: 'Authentic candid documentary photo taken on 35mm camera with direct on-camera flash, natural film grain, crisp direct flash lighting, lived-in modern studio background.',
+      universal_negative_prompt: 'cartoon, illustration, 3d render, anime, over-smoothed skin, plastic face, corporate stock photo, stiff pose, sterile white background, studio softbox blur, fake smile, distorted hands',
+      curated_archetypes: CANDID_BRAND_PHOTOGRAPHY_GALLERY.map(item => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        subtitle: item.subtitle,
+        prompt: item.prompt,
+        url: `https://getairbook.com${item.url}`,
+      })),
+    },
+    editorial_craft: {
+      id: 'editorial',
+      name: 'Editorial Craft & Directional Light',
+      status: 'classic_secondary',
+      tagline: 'Editorial lighting + authentic creator craft + natural warm tones',
+      camera_and_lighting: {
+        lighting_setup: 'Directional soft key light with warm rim lighting and natural architectural daylight',
+        lens_and_focal_length: '50mm or 85mm portrait lens, shallow depth of field (f/1.8 to f/2.8)',
+        film_aesthetic: 'Medium format digital look, refined grain, creamy bokeh, wide tonal range',
+        color_grading: 'Warm earth tones, travertine, limestone, muted sage, amber highlights',
+      },
+      wardrobe_and_styling: {
+        specialists: 'Tailored organic linens, minimalist wrap tops, dark craft aprons, sleek workwear',
+        clients: 'Refined neutral knitwear, structured minimalist tailoring',
+      },
+      emotion_and_action: {
+        mood: 'Artisanal mastery, quiet luxury, serene concentration, refined elegance',
+        interaction: 'Deliberate precision, focused craft, subtle satisfied smiles',
+      },
+      environment_and_props: {
+        location: 'Architectural boutique salons and custom wellness sanctuaries',
+        elements: [
+          'Travertine marble',
+          'Fluted glass dividers',
+          'Brushed brass hardware',
+          'Minimalist display shelving',
+          'Warm linen drapes',
+        ],
+      },
+      universal_prompt_prefix: 'Editorial portrait photograph, architectural directional studio lighting, warm earth tones, shallow depth of field, quiet luxury aesthetic, authentic artisan craft.',
+      universal_negative_prompt: 'harsh flash, corporate stock, oversaturated colors, flat lighting, 3d render, plastic skin',
+      curated_archetypes: EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY.map(item => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        subtitle: item.subtitle,
+        prompt: item.prompt,
+        url: `https://getairbook.com${item.url}`,
+      })),
+    },
+  },
+  instructions_for_llm_agents: {
+    role: 'You are the AirBook Visual Brand Director & AI Image Prompt Specialist.',
+    task: 'Generate photo prompts that match AirBook\'s authentic visual identity exactly.',
+    execution_steps: [
+      '1. Identify the requested business archetype (e.g., Salon, Barber, Nail Studio, MedSpa, Tattoo, Spa, Pet Grooming, Fitness).',
+      '2. Default to the \'candid_realism\' style (direct flash, 35mm film grain, authentic streetwear, genuine laughter, real lived-in studios).',
+      '3. Frame genuine, un-staged interaction between specialist and client.',
+      '4. Include tactile wardrobe details: vintage denim, work aprons, stacked rings, cozy fleeces, tattoos.',
+      '5. Always apply the universal_prompt_prefix and universal_negative_prompt to prevent over-smoothed plastic AI skin.',
+    ],
+  },
+};
 
 const CURATED_COVERS = [
   ...CANDID_BRAND_PHOTOGRAPHY_GALLERY.map(item => ({
@@ -271,8 +408,11 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
   const [bgTheme, setBgTheme] = useState<'light' | 'cream' | 'dark' | 'grid'>('cream');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [photoStyle, setPhotoStyle] = useState<'candid' | 'editorial'>('candid');
+  const [showPhotoSpecModal, setShowPhotoSpecModal] = useState(false);
   const [selectedSchema, setSelectedSchema] = useState<SchemaType>('platform');
   const [schemaViewMode, setSchemaViewMode] = useState<'visual' | 'code'>('visual');
+
+  const photoBrandSpecString = JSON.stringify(AIRBOOK_PHOTO_BRAND_SPEC, null, 2);
 
   // Fetch initial brand settings from API
   useEffect(() => {
@@ -823,6 +963,105 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               </div>
             </div>
 
+            {/* AI Agent Photo Brand Spec (.JSON) Action Banner */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-sky-500/10 border border-blue-500/20 space-y-3.5">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-blue-500 text-white shadow-xs">
+                      <Bot24Regular className="w-4 h-4" />
+                    </span>
+                    <h4 className="text-xs sm:text-sm font-black text-[var(--text-primary)] uppercase tracking-wider">
+                      {t('aiPhotoSpecTitle')}
+                    </h4>
+                    <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[10px] font-mono font-black">
+                      v1.0.0 JSON
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-2xl">
+                    {t('aiPhotoSpecDesc')}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {['ChatGPT / DALL·E', 'Claude', 'Gemini', 'Grok', 'Midjourney v6', 'FLUX.1'].map((agent) => (
+                      <span
+                        key={agent}
+                        className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-black/5 dark:border-white/10"
+                      >
+                        {agent}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Primary Action Buttons */}
+                <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadJSON('airbook-photo-brand-guidelines.json', photoBrandSpecString)}
+                    className="btn-primary h-10 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                    <span>{t('downloadJsonSpec')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(photoBrandSpecString, 'photo-brand-spec-json')}
+                    className="btn-secondary h-10 px-3.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedId === 'photo-brand-spec-json' ? (
+                      <>
+                        <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>{t('jsonSpecCopied')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy24Filled className="w-3.5 h-3.5" />
+                        <span>{t('copyJsonSpec')}</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPhotoSpecModal(!showPhotoSpecModal)}
+                    className="btn-secondary h-10 px-3.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Code24Filled className="w-3.5 h-3.5" />
+                    <span>{showPhotoSpecModal ? t('closeJsonSpec') : t('viewJsonSpec')}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Collapsible Interactive JSON Code Viewer */}
+              {showPhotoSpecModal && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="pt-3 border-t border-blue-500/20 space-y-2.5"
+                >
+                  <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                    <span className="font-mono text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                      /public/brand/airbook-photo-brand-guidelines.json
+                    </span>
+                    <a
+                      href="/brand/airbook-photo-brand-guidelines.json"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] font-bold text-blue-500 hover:underline flex items-center gap-1"
+                    >
+                      <span>Direct Raw URL</span>
+                      <Open24Filled className="w-3 h-3" />
+                    </a>
+                  </div>
+                  <pre className="p-4 rounded-xl bg-gray-950 text-emerald-400 font-mono text-xs overflow-x-auto max-h-80 border border-white/10 select-all leading-relaxed">
+                    {photoBrandSpecString}
+                  </pre>
+                </motion.div>
+              )}
+            </div>
+
             {/* Photo Style Collection Toggle Selector */}
             <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
@@ -862,6 +1101,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               {(photoStyle === 'candid' ? CANDID_BRAND_PHOTOGRAPHY_GALLERY : EDITORIAL_BRAND_PHOTOGRAPHY_GALLERY).map((item) => {
                 const isCurrentCover = coverUrl === item.url;
                 const isCopied = copiedId === item.id;
+                const isPromptCopied = copiedId === `prompt-${item.id}`;
 
                 return (
                   <div
@@ -940,6 +1180,24 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                           )}
                         </button>
 
+                        {/* Copy AI Prompt Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCopy(item.prompt, `prompt-${item.id}`);
+                            addToast(t('aiPromptCopied'), 'success');
+                          }}
+                          className="p-1.5 rounded-xl bg-[var(--bg-primary)] hover:bg-blue-500/10 text-[var(--text-secondary)] hover:text-blue-500 border border-[var(--border-subtle)] hover:border-blue-500/30 transition-colors cursor-pointer"
+                          title={t('copyAiPrompt')}
+                        >
+                          {isPromptCopied ? (
+                            <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                          ) : (
+                            <Sparkle24Filled className="w-3.5 h-3.5 text-blue-500" />
+                          )}
+                        </button>
+
+                        {/* Copy Photo URL Button */}
                         <button
                           type="button"
                           onClick={() => handleCopy(item.url, item.id)}
