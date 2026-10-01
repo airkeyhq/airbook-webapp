@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { headers, cookies } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
-import { members, workspaces } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { members, workspaces, sessions, users } from '@/db/schema';
+import { eq, and, gt } from 'drizzle-orm';
 import { isAdminEmail, getAdminUser, AdminUser } from '@/lib/admin';
 
 export interface AuthSessionResult {
@@ -31,15 +31,57 @@ export async function getAuthSession(): Promise<AuthSessionResult | null> {
       headers: await headers(),
     });
 
-    if (!session?.user?.id) {
-      return null;
+    if (session?.user?.id) {
+      return session as AuthSessionResult;
     }
-
-    return session as AuthSessionResult;
   } catch (err) {
-    console.warn('[AuthGuard] Failed to resolve session:', err);
-    return null;
+    console.warn('[AuthGuard] Failed to resolve session via BetterAuth:', err);
   }
+
+  // Fallback: Check direct database session via cookie session token
+  try {
+    const cookieStore = await cookies();
+    const token =
+      cookieStore.get('__Secure-better-auth.session_token')?.value ||
+      cookieStore.get('better-auth.session_token')?.value;
+
+    if (token) {
+      const [dbSession] = await db
+        .select()
+        .from(sessions)
+        .where(and(eq(sessions.token, token), gt(sessions.expiresAt, new Date())))
+        .limit(1);
+
+      if (dbSession) {
+        const [dbUser] = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, dbSession.userId))
+          .limit(1);
+
+        if (dbUser) {
+          return {
+            user: {
+              id: dbUser.id,
+              email: dbUser.email,
+              name: dbUser.name,
+              image: dbUser.image,
+            },
+            session: {
+              id: dbSession.id,
+              userId: dbSession.userId,
+              token: dbSession.token,
+              expiresAt: dbSession.expiresAt,
+            },
+          };
+        }
+      }
+    }
+  } catch (dbErr) {
+    console.warn('[AuthGuard] Direct DB session lookup failed:', dbErr);
+  }
+
+  return null;
 }
 
 /**
