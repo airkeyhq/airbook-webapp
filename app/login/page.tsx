@@ -287,13 +287,6 @@ function LoginFormContent() {
                 <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
               </motion.button>
             </form>
-
-            <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5 text-[11px] text-emerald-700 dark:text-emerald-300">
-              <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <p className="leading-snug">
-                {t('passwordlessSecurityNotice')}
-              </p>
-            </div>
           </>
         )}
       </motion.div>
