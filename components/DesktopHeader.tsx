@@ -16,6 +16,7 @@ import {
   Share24Filled,
   Share24Regular,
   Sparkle24Filled,
+  Add24Filled,
   SignOut24Filled,
   Person24Filled,
   Open24Filled,
@@ -188,7 +189,7 @@ export const DesktopHeader: React.FC = () => {
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
-                  <Sparkle24Filled className="w-4 h-4" />
+                  <Add24Filled className="w-4 h-4" />
                   <span>{t('createNewWorkspace')}</span>
                 </button>
               </div>
