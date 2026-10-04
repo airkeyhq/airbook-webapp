@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
-import { useToast } from '@/components/Toast';
+import { Toast, useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import {
@@ -27,7 +27,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
   onWorkspaceCreated,
 }) => {
   const { t } = useTranslation();
-  const { addToast } = useToast();
+  const { toasts, addToast, dismiss } = useToast();
   const { data: session } = useSession();
   const { setWorkspaceId, setWorkspaceName, setWorkspaceSlug } = useAirBookStore();
 
@@ -36,6 +36,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
   const [businessType, setBusinessType] = useState('salon');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
 
     const finalSlug = slug.trim() || name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
 
+    setErrorMessage(null);
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/workspaces', {
@@ -80,12 +82,17 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
         setName('');
         setSlug('');
         setPhone('');
+        setErrorMessage(null);
       } else {
-        addToast(data.error || 'Failed to create workspace.', 'error');
+        const err = data.error || 'Failed to create workspace.';
+        setErrorMessage(err);
+        addToast(err, 'error');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create workspace:', err);
-      addToast('Network error creating workspace.', 'error');
+      const msg = err?.message || 'Network error creating workspace.';
+      setErrorMessage(msg);
+      addToast(msg, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -184,6 +191,12 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
                 placeholder="(555) 234-5678"
               />
 
+              {errorMessage && (
+                <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold leading-relaxed">
+                  {errorMessage}
+                </div>
+              )}
+
               {/* Action Footer */}
               <div className="pt-2">
                 <button
@@ -197,6 +210,8 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
               </div>
             </form>
           </motion.div>
+
+          <Toast toasts={toasts} onDismiss={dismiss} />
         </div>
       )}
     </AnimatePresence>,

@@ -31,193 +31,74 @@ export async function POST(req: Request) {
     const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
     const cleanEmail = email ? email.trim().toLowerCase() : null;
 
-    // 1. SMART WORKSPACE CLAIMING CHECK:
-    // Check if an unclaimed or pre-created workspace matching the user's email or slug already exists
-    let existingWorkspace: typeof workspaces.$inferSelect | undefined;
-
-    if (cleanEmail) {
-      const byEmail = await db.select().from(workspaces).where(eq(workspaces.email, cleanEmail)).limit(1);
-      if (byEmail.length > 0) {
-        existingWorkspace = byEmail[0];
-      }
+    // Check if slug is already taken, append unique suffix if needed
+    let finalSlug = cleanSlug;
+    const existingSlug = await db.select({ id: workspaces.id }).from(workspaces).where(eq(workspaces.slug, finalSlug)).limit(1);
+    if (existingSlug.length > 0) {
+      finalSlug = `${cleanSlug}-${Math.random().toString(36).substring(2, 6)}`;
     }
 
-    if (!existingWorkspace) {
-      const bySlug = await db.select().from(workspaces).where(eq(workspaces.slug, cleanSlug)).limit(1);
-      if (bySlug.length > 0) {
-        existingWorkspace = bySlug[0];
-      }
-    }
+    // 1. Create workspace
+    const [newWorkspace] = await db
+      .insert(workspaces)
+      .values({
+        name,
+        slug: finalSlug,
+        email: cleanEmail,
+        phone: phone || undefined,
+        managerName: ownerName || undefined,
+        brandColor: '#007AFF',
+        cancellationNoticeHours: 24,
+        depositRequiredPercent: 20,
+      })
+      .returning();
 
-    // 2. IF MATCHED: CLAIM AND RECONCILE EXISTING WORKSPACE
-    if (existingWorkspace) {
-      const claimed = await db.transaction(async (tx) => {
-        const [updatedWs] = await tx
-          .update(workspaces)
-          .set({
-            name: name || existingWorkspace!.name,
-            managerName: ownerName || existingWorkspace!.managerName,
-            email: cleanEmail || existingWorkspace!.email,
-            phone: phone || existingWorkspace!.phone,
-          })
-          .where(eq(workspaces.id, existingWorkspace!.id))
-          .returning();
+    // 2. Seed initial default staff member (Owner)
+    const [ownerStaff] = await db
+      .insert(staff)
+      .values({
+        workspaceId: newWorkspace.id,
+        name: ownerName || 'Owner',
+        email: cleanEmail,
+        phone: phone || undefined,
+        role: 'Master Specialist & Owner',
+        avatarEmoji: '👨🏻‍🎨',
+        commissionPercent: 70,
+      })
+      .returning();
 
-        // Check if owner staff exists
-        const existingStaff = await tx
-          .select()
-          .from(staff)
-          .where(eq(staff.workspaceId, existingWorkspace!.id));
-
-        let ownerStaffId = existingStaff[0]?.id;
-
-        if (existingStaff.length === 0) {
-          const [newOwnerStaff] = await tx
-            .insert(staff)
-            .values({
-              workspaceId: existingWorkspace!.id,
-              name: ownerName || 'Owner',
-              email: cleanEmail,
-              phone: phone || undefined,
-              role: 'Master Specialist & Owner',
-              avatarEmoji: '👨🏻‍🎨',
-              commissionPercent: 70,
-            })
-            .returning();
-          ownerStaffId = newOwnerStaff.id;
-        } else if (cleanEmail && !existingStaff[0].email) {
-          await tx
-            .update(staff)
-            .set({ email: cleanEmail, name: ownerName || existingStaff[0].name })
-            .where(eq(staff.id, existingStaff[0].id));
-        }
-
-        // Check if schedules exist
-        if (ownerStaffId) {
-          const existingSchedules = await tx
-            .select()
-            .from(schedules)
-            .where(eq(schedules.staffId, ownerStaffId));
-
-          if (existingSchedules.length === 0) {
-            for (let day = 1; day <= 5; day++) {
-              await tx.insert(schedules).values({
-                staffId: ownerStaffId,
-                dayOfWeek: day,
-                startTime: '09:00',
-                endTime: '18:00',
-                isWorkingDay: true,
-              });
-            }
-          }
-        }
-
-        // Check if services exist
-        const existingServices = await tx
-          .select()
-          .from(services)
-          .where(eq(services.workspaceId, existingWorkspace!.id));
-
-        if (existingServices.length === 0) {
-          const defaultServices = [
-            { name: 'Signature Styling & Precision Cut', category: 'Hair', durationMinutes: 45, priceCents: 7500, colorTag: '#FF4D8D' },
-            { name: 'Executive Beard & Hot Towel Treatment', category: 'Barber', durationMinutes: 30, priceCents: 4500, colorTag: '#00C7BE' },
-            { name: 'HydraFacial Glow Experience', category: 'Spa', durationMinutes: 60, priceCents: 16000, colorTag: '#9D50BB' },
-            { name: 'Deep Tissue Recovery Therapy', category: 'Wellness', durationMinutes: 60, priceCents: 13000, colorTag: '#34C759' },
-          ];
-
-          for (const srv of defaultServices) {
-            await tx.insert(services).values({
-              workspaceId: existingWorkspace!.id,
-              name: srv.name,
-              category: srv.category,
-              durationMinutes: srv.durationMinutes,
-              priceCents: srv.priceCents,
-              colorTag: srv.colorTag,
-              depositCents: Math.round(srv.priceCents * 0.2),
-            });
-          }
-        }
-
-        return updatedWs;
-      });
-
-      return NextResponse.json({
-        success: true,
-        workspace: claimed,
-        isClaimed: true,
-        message: 'Pre-provisioned CRM workspace successfully claimed and linked to user account.',
+    // 3. Seed 5 days schedule for owner
+    for (let day = 1; day <= 5; day++) {
+      await db.insert(schedules).values({
+        staffId: ownerStaff.id,
+        dayOfWeek: day,
+        startTime: '09:00',
+        endTime: '18:00',
+        isWorkingDay: true,
       });
     }
 
-    // 3. IF NO MATCH: CREATE NEW WORKSPACE
-    const finalSlug = cleanSlug;
+    // 4. Seed default services based on business type
+    const defaultServices = [
+      { name: 'Signature Styling & Precision Cut', category: 'Hair', durationMinutes: 45, priceCents: 7500, colorTag: '#FF4D8D' },
+      { name: 'Executive Beard & Hot Towel Treatment', category: 'Barber', durationMinutes: 30, priceCents: 4500, colorTag: '#00C7BE' },
+      { name: 'HydraFacial Glow Experience', category: 'Spa', durationMinutes: 60, priceCents: 16000, colorTag: '#9D50BB' },
+      { name: 'Deep Tissue Recovery Therapy', category: 'Wellness', durationMinutes: 60, priceCents: 13000, colorTag: '#34C759' },
+    ];
 
-    // Create workspace inside transaction
-    const result = await db.transaction(async (tx) => {
-      const [newWorkspace] = await tx
-        .insert(workspaces)
-        .values({
-          name,
-          slug: finalSlug,
-          email: cleanEmail,
-          phone: phone || undefined,
-          managerName: ownerName || undefined,
-          brandColor: '#007AFF',
-          cancellationNoticeHours: 24,
-          depositRequiredPercent: 20,
-        })
-        .returning();
+    for (const srv of defaultServices) {
+      await db.insert(services).values({
+        workspaceId: newWorkspace.id,
+        name: srv.name,
+        category: srv.category,
+        durationMinutes: srv.durationMinutes,
+        priceCents: srv.priceCents,
+        colorTag: srv.colorTag,
+        depositCents: Math.round(srv.priceCents * 0.2),
+      });
+    }
 
-      // Seed initial default staff member (Owner)
-      const [ownerStaff] = await tx
-        .insert(staff)
-        .values({
-          workspaceId: newWorkspace.id,
-          name: ownerName || 'Owner',
-          email: cleanEmail,
-          phone: phone || undefined,
-          role: 'Master Specialist & Owner',
-          avatarEmoji: '👨🏻‍🎨',
-          commissionPercent: 70,
-        })
-        .returning();
-
-      // Seed 5 days schedule for owner
-      for (let day = 1; day <= 5; day++) {
-        await tx.insert(schedules).values({
-          staffId: ownerStaff.id,
-          dayOfWeek: day,
-          startTime: '09:00',
-          endTime: '18:00',
-          isWorkingDay: true,
-        });
-      }
-
-      // Seed default services based on business type
-      const defaultServices = [
-        { name: 'Signature Styling & Precision Cut', category: 'Hair', durationMinutes: 45, priceCents: 7500, colorTag: '#FF4D8D' },
-        { name: 'Executive Beard & Hot Towel Treatment', category: 'Barber', durationMinutes: 30, priceCents: 4500, colorTag: '#00C7BE' },
-        { name: 'HydraFacial Glow Experience', category: 'Spa', durationMinutes: 60, priceCents: 16000, colorTag: '#9D50BB' },
-        { name: 'Deep Tissue Recovery Therapy', category: 'Wellness', durationMinutes: 60, priceCents: 13000, colorTag: '#34C759' },
-      ];
-
-      for (const srv of defaultServices) {
-        await tx.insert(services).values({
-          workspaceId: newWorkspace.id,
-          name: srv.name,
-          category: srv.category,
-          durationMinutes: srv.durationMinutes,
-          priceCents: srv.priceCents,
-          colorTag: srv.colorTag,
-          depositCents: Math.round(srv.priceCents * 0.2),
-        });
-      }
-
-      return newWorkspace;
-    });
-
-    return NextResponse.json({ success: true, workspace: result, isClaimed: false });
+    return NextResponse.json({ success: true, workspace: newWorkspace, isClaimed: false });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to create workspace.' }, { status: 500 });
   }
