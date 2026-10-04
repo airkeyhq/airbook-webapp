@@ -35,6 +35,7 @@ export async function POST(req: Request) {
 
     const {
       workspaceId: providedWorkspaceId,
+      clientId,
       clientName,
       clientEmail,
       clientPhone,
@@ -149,22 +150,74 @@ export async function POST(req: Request) {
 
       const createdAppointments = [];
       for (const guest of guests) {
-        const [newClient] = await tx
-          .insert(clients)
-          .values({
-            workspaceId,
-            name: guest.guestName,
-            email: clientEmail,
-            phone: clientPhone,
-            totalVisits: 1,
-          })
-          .returning();
+        let activeClientId: string | null = null;
+
+        // Check if explicit clientId was passed from client suggestions
+        if (clientId) {
+          const [matchedClient] = await tx
+            .select()
+            .from(clients)
+            .where(and(eq(clients.id, clientId), eq(clients.workspaceId, workspaceId)));
+
+          if (matchedClient) {
+            activeClientId = matchedClient.id;
+            await tx
+              .update(clients)
+              .set({
+                totalVisits: (matchedClient.totalVisits || 0) + 1,
+                totalSpentCents: (matchedClient.totalSpentCents || 0) + (guest.priceCents || 0),
+              })
+              .where(eq(clients.id, matchedClient.id));
+          }
+        }
+
+        // If not matched by explicit ID, check by matching name in this workspace
+        if (!activeClientId) {
+          const [matchedByName] = await tx
+            .select()
+            .from(clients)
+            .where(
+              and(
+                eq(clients.workspaceId, workspaceId),
+                eq(clients.name, guest.guestName)
+              )
+            );
+
+          if (matchedByName) {
+            activeClientId = matchedByName.id;
+            await tx
+              .update(clients)
+              .set({
+                totalVisits: (matchedByName.totalVisits || 0) + 1,
+                totalSpentCents: (matchedByName.totalSpentCents || 0) + (guest.priceCents || 0),
+                email: matchedByName.email || clientEmail || null,
+                phone: matchedByName.phone || clientPhone || null,
+              })
+              .where(eq(clients.id, matchedByName.id));
+          }
+        }
+
+        // Only insert new client profile if no existing record matched
+        if (!activeClientId) {
+          const [newClient] = await tx
+            .insert(clients)
+            .values({
+              workspaceId,
+              name: guest.guestName,
+              email: clientEmail || null,
+              phone: clientPhone || null,
+              totalVisits: 1,
+              totalSpentCents: guest.priceCents || 0,
+            })
+            .returning();
+          activeClientId = newClient.id;
+        }
 
         const [newAppointment] = await tx
           .insert(appointments)
           .values({
             workspaceId,
-            clientId: newClient.id,
+            clientId: activeClientId,
             staffId: guest.staffId,
             serviceId: guest.serviceId,
             groupId,

@@ -146,6 +146,12 @@ export const translations = {
     appointmentDeleted: 'Appointment deleted.',
     bookingDrawerTitle: 'Schedule New Appointment',
     bookingDrawerSub: 'Add client appointment directly to your live calendar grid.',
+    existingClientSuggestions: 'Existing Client Suggestions',
+    linkedClient: 'Linked Client',
+    unlinkClient: 'Unlink',
+    visitsCount: 'visits',
+    searchingClients: 'Searching clients...',
+    noMatchingClients: 'No existing clients match. A new profile will be created.',
 
     // Stripe & Payments
     stripeConnectTitle: 'Stripe Direct Payouts',
@@ -2299,6 +2305,12 @@ export const translations = {
     appointmentDeleted: 'Cita eliminada.',
     bookingDrawerTitle: 'Agendar Nueva Cita',
     bookingDrawerSub: 'Agrega una cita directamente a tu cuadrante de calendario.',
+    existingClientSuggestions: 'Sugerencias de clientes existentes',
+    linkedClient: 'Cliente vinculado',
+    unlinkClient: 'Desvincular',
+    visitsCount: 'visitas',
+    searchingClients: 'Buscando clientes...',
+    noMatchingClients: 'Ningún cliente existente coincide. Se creará un nuevo perfil.',
 
     // Stripe & Payments
     stripeConnectTitle: 'Transferencias Directas Stripe',
@@ -4451,6 +4463,12 @@ export const translations = {
     appointmentDeleted: 'Termin gelöscht.',
     bookingDrawerTitle: 'Neuen Termin buchen',
     bookingDrawerSub: 'Fügen Sie einen Termin direkt in den Kalender ein.',
+    existingClientSuggestions: 'Vorschläge bestehender Kunden',
+    linkedClient: 'Verknüpfter Kunde',
+    unlinkClient: 'Trennen',
+    visitsCount: 'Besuche',
+    searchingClients: 'Kunden werden gesucht...',
+    noMatchingClients: 'Keine übereinstimmenden Kunden. Ein neues Profil wird erstellt.',
 
     // Stripe & Payments
     stripeConnectTitle: 'Stripe Direktauszahlungen',
@@ -6602,6 +6620,12 @@ export const translations = {
     appointmentDeleted: 'Rendez-vous supprimé.',
     bookingDrawerTitle: 'Planifier un rendez-vous',
     bookingDrawerSub: 'Ajoutez un rendez-vous directement dans votre calendrier.',
+    existingClientSuggestions: 'Suggestions de clients existants',
+    linkedClient: 'Client associé',
+    unlinkClient: 'Dissocier',
+    visitsCount: 'visites',
+    searchingClients: 'Recherche de clients...',
+    noMatchingClients: 'Aucun client existant correspondant. Un nouveau profil sera créé.',
 
     // Stripe & Payments
     stripeConnectTitle: 'Virements Directs Stripe',

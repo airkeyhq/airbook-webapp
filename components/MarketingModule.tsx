@@ -41,6 +41,7 @@ interface Campaign {
 export const MarketingModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
 
   // Marketing & Ledger States
   const [campaignsList, setCampaignsList] = useState<Campaign[]>([]);
@@ -49,7 +50,7 @@ export const MarketingModule: React.FC = () => {
   const [autoReviewEnabled, setAutoReviewEnabled] = useState<boolean>(true);
   const [reengagementDays, setReengagementDays] = useState<number>(21);
   const [autoReengagementEnabled, setAutoReengagementEnabled] = useState<boolean>(true);
-  const [totalClientsCount, setTotalClientsCount] = useState<number>(34);
+  const [totalClientsCount, setTotalClientsCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
@@ -88,9 +89,10 @@ export const MarketingModule: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      const qs = workspaceId ? `?workspaceId=${encodeURIComponent(workspaceId)}` : '';
       const [campRes, clientRes] = await Promise.all([
-        fetch('/api/campaigns'),
-        fetch('/api/clients'),
+        fetch(`/api/campaigns${qs}`),
+        fetch(`/api/clients${qs}`),
       ]);
 
       const [campData, clientData] = await Promise.all([
@@ -105,13 +107,19 @@ export const MarketingModule: React.FC = () => {
         setAutoReviewEnabled(campData.autoReviewEnabled ?? true);
         setReengagementDays(campData.reengagementDays ?? 21);
         setAutoReengagementEnabled(campData.autoReengagementEnabled ?? true);
+      } else {
+        setCampaignsList([]);
       }
 
       if (clientData.success && Array.isArray(clientData.clients)) {
-        setTotalClientsCount(clientData.clients.length || 34);
+        setTotalClientsCount(clientData.clients.length || 0);
+      } else {
+        setTotalClientsCount(0);
       }
     } catch (err) {
       console.error('Error fetching marketing data:', err);
+      setCampaignsList([]);
+      setTotalClientsCount(0);
     } finally {
       setLoading(false);
     }
@@ -119,7 +127,7 @@ export const MarketingModule: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [workspaceId]);
 
   // Auto-Save Automation Settings
   const persistAutomationSettings = async (updates: {

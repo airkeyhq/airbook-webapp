@@ -54,7 +54,7 @@ interface WaitlistEntry {
 export const WalkInKioskModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { services, staffMembers, workspaceName, posPasscode, posPasskeyEnabled } = useAirBookStore();
+  const { services, staffMembers, workspaceName, workspaceId, posPasscode, posPasskeyEnabled } = useAirBookStore();
 
   const [queue, setQueue] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,13 +93,17 @@ export const WalkInKioskModule: React.FC = () => {
   const fetchWaitlist = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/waitlists');
+      const url = workspaceId ? `/api/waitlists?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/waitlists';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && Array.isArray(data.waitlists)) {
         setQueue(data.waitlists);
+      } else {
+        setQueue([]);
       }
     } catch (err) {
       console.warn('Failed to load waitlist from DB:', err);
+      setQueue([]);
     } finally {
       setLoading(false);
     }
@@ -107,6 +111,9 @@ export const WalkInKioskModule: React.FC = () => {
 
   useEffect(() => {
     fetchWaitlist();
+  }, [workspaceId]);
+
+  useEffect(() => {
     isPasskeySupported().then((supported) => setPasskeySupported(supported));
   }, []);
 
@@ -203,6 +210,7 @@ export const WalkInKioskModule: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           clientName: clientName.trim(),
           clientPhone: clientPhone.trim() || undefined,
           serviceId: matchedService?.id || undefined,

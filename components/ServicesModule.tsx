@@ -38,12 +38,14 @@ export const ServicesModule: React.FC = () => {
   const [offPeakDiscountPercent, setOffPeakDiscountPercent] = useState('10');
 
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
   const demoServices = useAirBookStore((s) => s.services);
 
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/services');
+      const url = workspaceId ? `/api/services?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/services';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && Array.isArray(data.services)) {
         setServiceList(data.services);
@@ -56,9 +58,14 @@ export const ServicesModule: React.FC = () => {
           color: sv.colorTag || '#00C7BE',
         }));
         useAirBookStore.getState().setServices(mapped);
+      } else {
+        setServiceList([]);
+        useAirBookStore.getState().setServices([]);
       }
     } catch (err) {
       console.warn('Failed to load services from DB:', err);
+      setServiceList([]);
+      useAirBookStore.getState().setServices([]);
     } finally {
       setLoading(false);
     }
@@ -70,7 +77,7 @@ export const ServicesModule: React.FC = () => {
     } else {
       fetchServices();
     }
-  }, [isDemoMode, demoServices]);
+  }, [isDemoMode, workspaceId, demoServices]);
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +89,7 @@ export const ServicesModule: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           name: name.trim(),
           category: category.trim() || 'General',
           durationMinutes: Number(duration) || 45,

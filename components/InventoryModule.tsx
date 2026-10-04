@@ -9,6 +9,7 @@ import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
+import { useAirBookStore } from '@/lib/store';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -50,6 +51,7 @@ const getCategoryOptions = (t: (key: any) => string) => [
 export const InventoryModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
   const CATEGORY_OPTIONS = useMemo(() => getCategoryOptions(t), [t]);
 
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -90,13 +92,17 @@ export const InventoryModule: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/products');
+      const url = workspaceId ? `/api/products?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/products';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
+      } else {
+        setProducts([]);
       }
     } catch (err) {
       console.warn('Failed to load products from DB:', err);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -104,7 +110,7 @@ export const InventoryModule: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [workspaceId]);
 
   const openEditDrawer = (prod: ProductItem) => {
     setEditingProduct(prod);
@@ -129,6 +135,7 @@ export const InventoryModule: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           name: name.trim(),
           sku: sku.trim() || undefined,
           category,

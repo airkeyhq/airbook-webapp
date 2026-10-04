@@ -139,11 +139,12 @@ export default function DashboardPage() {
         .catch((e) => console.warn('Failed to bootstrap workspace context:', e));
     }
 
-    fetch('/api/staff')
+    const staffUrl = workspaceId ? `/api/staff?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/staff';
+    fetch(staffUrl)
       .then((r) => r.json())
       .then((data) => {
         if (useAirBookStore.getState().isDemoMode) return;
-        if (data?.success && Array.isArray(data.staff) && data.staff.length > 0) {
+        if (data?.success && Array.isArray(data.staff)) {
           const mappedStaff = data.staff.map((st: any) => ({
             id: st.id,
             name: st.name,
@@ -153,15 +154,18 @@ export default function DashboardPage() {
             stationName: st.stationName || undefined,
           }));
           setStaffMembers(mappedStaff);
+        } else {
+          setStaffMembers([]);
         }
       })
       .catch((e) => console.warn('Failed to bootstrap staff:', e));
 
-    fetch('/api/services')
+    const servicesUrl = workspaceId ? `/api/services?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/services';
+    fetch(servicesUrl)
       .then((r) => r.json())
       .then((data) => {
         if (useAirBookStore.getState().isDemoMode) return;
-        if (data?.success && Array.isArray(data.services) && data.services.length > 0) {
+        if (data?.success && Array.isArray(data.services)) {
           const mappedServices = data.services.map((sv: any) => ({
             id: sv.id,
             name: sv.name,
@@ -171,6 +175,8 @@ export default function DashboardPage() {
             color: sv.colorTag || '#00C7BE',
           }));
           setServices(mappedServices);
+        } else {
+          setServices([]);
         }
       })
       .catch((e) => console.warn('Failed to bootstrap services:', e));

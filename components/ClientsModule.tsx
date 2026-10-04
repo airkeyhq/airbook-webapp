@@ -27,8 +27,10 @@ import {
 } from '@fluentui/react-icons';
 import { getAvatarUrl } from '@/lib/avatars';
 import { ClientNotesModal, CustomSpecItem, ClientPhotoItem } from '@/components/ClientNotesModal';
+import { findDuplicateClientGroups } from '@/lib/client-duplicates';
+import { DuplicateClientsBanner } from '@/components/DuplicateClientsBanner';
 
-interface ClientItem {
+export interface ClientItem {
   id: string;
   name: string;
   email?: string;
@@ -76,6 +78,7 @@ export const ClientsModule: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
 
   const DEMO_CLIENTS: ClientItem[] = useMemo(
     () => [
@@ -141,13 +144,17 @@ export const ClientsModule: React.FC = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/clients');
+      const url = workspaceId ? `/api/clients?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/clients';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && Array.isArray(data.clients)) {
         setClients(data.clients);
+      } else {
+        setClients([]);
       }
     } catch (err) {
       console.warn('Failed to load clients from DB:', err);
+      setClients([]);
     } finally {
       setLoading(false);
     }
@@ -160,7 +167,7 @@ export const ClientsModule: React.FC = () => {
     } else {
       fetchClients();
     }
-  }, [isDemoMode, DEMO_CLIENTS]);
+  }, [isDemoMode, workspaceId, DEMO_CLIENTS]);
 
   // Compute Unique Tags from Clients
   const allUniqueTags = useMemo(() => {
@@ -192,6 +199,11 @@ export const ClientsModule: React.FC = () => {
   const avgSpendPerClient = totalClientsCount > 0 ? totalLifetimeRevenue / totalClientsCount : 0;
   const vipCount = clients.filter((c) => (c.tags || []).includes('VIP') || (c.tags || []).includes('VIP Elite')).length;
 
+  // Duplicate Clients Detection (Estancia Pattern)
+  const duplicateGroups = useMemo(() => {
+    return findDuplicateClientGroups(clients);
+  }, [clients]);
+
   const handleAddClient = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
@@ -203,6 +215,7 @@ export const ClientsModule: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           name: fullName,
           email: email.trim() || undefined,
           phone: phone.trim() || undefined,
@@ -298,6 +311,33 @@ export const ClientsModule: React.FC = () => {
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">${avgSpendPerClient.toFixed(0)}</p>
         </div>
       </div>
+
+      {/* Duplicate Clients Detection & Review Banner (Estancia Pattern) */}
+      {!loading && duplicateGroups.length > 0 && (
+        <DuplicateClientsBanner
+          groups={duplicateGroups}
+          currency="USD"
+          isDemoMode={isDemoMode}
+          onMergeSuccess={fetchClients}
+          onLocalMerge={(targetId, sourceIds) => {
+            setClients((prev) => {
+              const target = prev.find((c) => c.id === targetId);
+              if (!target) return prev;
+              const sources = prev.filter((c) => sourceIds.includes(c.id));
+              const mergedVisits = (target.totalVisits || 0) + sources.reduce((sum, s) => sum + (s.totalVisits || 0), 0);
+              const mergedSpent = (target.totalSpentCents || 0) + sources.reduce((sum, s) => sum + (s.totalSpentCents || 0), 0);
+              const mergedTags = Array.from(new Set([...(target.tags || []), ...sources.flatMap((s) => s.tags || [])]));
+              const updatedTarget: ClientItem = {
+                ...target,
+                totalVisits: mergedVisits,
+                totalSpentCents: mergedSpent,
+                tags: mergedTags,
+              };
+              return prev.filter((c) => !sourceIds.includes(c.id)).map((c) => (c.id === targetId ? updatedTarget : c));
+            });
+          }}
+        />
+      )}
 
       {/* Catalog Group: Filter + Clients List / Empty State */}
       <div className="space-y-3.5">

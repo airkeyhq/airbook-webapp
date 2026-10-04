@@ -283,6 +283,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const [activeTab, setActiveTab] = useState<'roster' | 'invites'>('roster');
 
   const isDemoMode = useAirBookStore((s) => s.isDemoMode);
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
   const demoStaff = useAirBookStore((s) => s.staffMembers);
   const setSelectedStaffId = useAirBookStore((s) => s.setSelectedStaffId);
   const setViewMode = useAirBookStore((s) => s.setViewMode);
@@ -331,7 +332,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
   const fetchStaff = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/staff');
+      const url = workspaceId ? `/api/staff?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/staff';
+      const res = await fetch(url);
       const data = await res.json();
       if (useAirBookStore.getState().isDemoMode) return;
       if (data.success && Array.isArray(data.staff)) {
@@ -348,9 +350,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           isActive: st.isActive ?? true,
         }));
         useAirBookStore.getState().setStaffMembers(mapped);
+      } else {
+        setStaffList([]);
+        useAirBookStore.getState().setStaffMembers([]);
       }
     } catch (err) {
       console.warn('Failed to fetch staff from DB:', err);
+      setStaffList([]);
+      useAirBookStore.getState().setStaffMembers([]);
     } finally {
       setLoading(false);
     }
@@ -358,14 +365,18 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
   const fetchInvitations = async () => {
     try {
-      const res = await fetch('/api/invitations');
+      const url = workspaceId ? `/api/invitations?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/invitations';
+      const res = await fetch(url);
       const data = await res.json();
       if (useAirBookStore.getState().isDemoMode) return;
       if (data.success) {
         setPendingInvitesList(data.invitations || []);
+      } else {
+        setPendingInvitesList([]);
       }
     } catch (err) {
       console.error('Failed to load invitations:', err);
+      setPendingInvitesList([]);
     }
   };
 
@@ -383,7 +394,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       fetchStaff();
       fetchInvitations();
     }
-  }, [isDemoMode, demoStaff]);
+  }, [isDemoMode, workspaceId, demoStaff]);
 
   const handleSendInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -408,7 +419,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       const res = await fetch('/api/invitations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: inviteEmail.trim(), role: inviteRole }),
+        body: JSON.stringify({ email: inviteEmail.trim(), role: inviteRole, workspaceId: workspaceId || undefined }),
       });
       const data = await res.json();
       if (data.success) {
@@ -616,6 +627,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           name: name.trim(),
           role: role.trim() || 'Specialist',
           email: email.trim() || undefined,

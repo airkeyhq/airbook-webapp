@@ -17,58 +17,6 @@ export async function GET(req: NextRequest) {
       .where(eq(waitlists.workspaceId, workspaceId))
       .orderBy(asc(waitlists.position), desc(waitlists.createdAt));
 
-    // Seed default walk-in guests in dev mode if empty
-    if (rows.length === 0 && process.env.NODE_ENV !== 'production') {
-      const defaultWalkins = [
-        {
-          clientName: 'Alexander Hayes',
-          clientPhone: '+1 (555) 234-8891',
-          clientEmail: 'alex.hayes@example.com',
-          serviceName: 'Skin Fade & Beard Sculpt',
-          staffName: 'Elena Rostova',
-          estimatedWaitMinutes: 0,
-          position: 1,
-          status: 'in_chair' as const,
-          notes: 'Regular client. Prefers razor finish.',
-        },
-        {
-          clientName: 'Julian Vance',
-          clientPhone: '+1 (555) 345-9922',
-          clientEmail: 'julian.v@example.com',
-          serviceName: 'Executive Precision Cut',
-          staffName: 'Marcus Vance',
-          estimatedWaitMinutes: 10,
-          position: 2,
-          status: 'waiting' as const,
-          notes: 'Walk-in guest. Checked in via front iPad.',
-        },
-        {
-          clientName: 'Sofia Delgado',
-          clientPhone: '+1 (555) 456-1133',
-          clientEmail: 'sofia.d@example.com',
-          serviceName: 'Balayage & Gloss Treatment',
-          staffName: 'First Available Specialist',
-          estimatedWaitMinutes: 25,
-          position: 3,
-          status: 'waiting' as const,
-          notes: 'Requested consultation first.',
-        },
-      ];
-
-      for (const w of defaultWalkins) {
-        await db.insert(waitlists).values({
-          workspaceId,
-          ...w,
-        });
-      }
-
-      rows = await db
-        .select()
-        .from(waitlists)
-        .where(eq(waitlists.workspaceId, workspaceId))
-        .orderBy(asc(waitlists.position), desc(waitlists.createdAt));
-    }
-
     return NextResponse.json({ success: true, waitlists: rows });
   } catch (err: any) {
     console.error('Error fetching waitlist:', err);

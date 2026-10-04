@@ -8,6 +8,7 @@ import { useToast } from '@/components/Toast';
 import { CustomSelect } from './CustomSelect';
 import { FloatingInput, FloatingTextarea } from './FloatingInput';
 import { EmptyState } from './EmptyState';
+import { useAirBookStore } from '@/lib/store';
 import {
   Tag24Filled,
   Tag24Regular,
@@ -70,6 +71,7 @@ interface Membership {
 export const PackagesModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
 
   const [activeTab, setActiveTab] = useState<'gift_cards' | 'packages' | 'memberships'>('gift_cards');
 
@@ -127,11 +129,12 @@ export const PackagesModule: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      const qs = workspaceId ? `?workspaceId=${encodeURIComponent(workspaceId)}` : '';
       const [gcRes, pkgRes, memRes, srvRes] = await Promise.all([
-        fetch('/api/gift-cards'),
-        fetch('/api/packages'),
-        fetch('/api/memberships'),
-        fetch('/api/services'),
+        fetch(`/api/gift-cards${qs}`),
+        fetch(`/api/packages${qs}`),
+        fetch(`/api/memberships${qs}`),
+        fetch(`/api/services${qs}`),
       ]);
 
       const [gcData, pkgData, memData, srvData] = await Promise.all([
@@ -141,12 +144,16 @@ export const PackagesModule: React.FC = () => {
         srvRes.json(),
       ]);
 
-      if (gcData.success) setGiftCards(gcData.giftCards || []);
-      if (pkgData.success) setPackagesList(pkgData.packages || []);
-      if (memData.success) setMembershipsList(memData.memberships || []);
-      if (srvData.success) setServicesList(srvData.services || []);
+      setGiftCards(gcData.success && Array.isArray(gcData.giftCards) ? gcData.giftCards : []);
+      setPackagesList(pkgData.success && Array.isArray(pkgData.packages) ? pkgData.packages : []);
+      setMembershipsList(memData.success && Array.isArray(memData.memberships) ? memData.memberships : []);
+      setServicesList(srvData.success && Array.isArray(srvData.services) ? srvData.services : []);
     } catch (err) {
       console.error('Error fetching packages data:', err);
+      setGiftCards([]);
+      setPackagesList([]);
+      setMembershipsList([]);
+      setServicesList([]);
     } finally {
       setLoading(false);
     }
@@ -154,7 +161,7 @@ export const PackagesModule: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [workspaceId]);
 
   // Copy Code to Clipboard
   const handleCopyCode = (code: string) => {

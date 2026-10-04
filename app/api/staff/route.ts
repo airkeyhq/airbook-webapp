@@ -27,33 +27,6 @@ export async function GET(req: Request) {
       .where(eq(staff.workspaceId, workspaceId))
       .orderBy(desc(staff.createdAt));
 
-    if (staffList.length === 0 && process.env.NODE_ENV !== 'production') {
-      const defaultStaff = [
-        { name: 'Eduardo Moreno', role: 'Master Specialist & Owner', color: '#007AFF', stationName: 'Station 1 (Master Suite)', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
-        { name: 'Dennis Müller', role: 'Senior Practitioner', color: '#34C759', stationName: 'Station 2 (Therapy Room)', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-        { name: 'Ivo Silva', role: 'Technical Specialist', color: '#FF9500', stationName: 'Station 3 (Color Bar)', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
-        { name: 'Agnes K.', role: 'Operations & Aesthetics', color: '#9D50BB', stationName: 'Station 4 (Facial Suite)', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80' },
-      ];
-
-      for (const stf of defaultStaff) {
-        const [created] = await db
-          .insert(staff)
-          .values({
-            workspaceId,
-            name: stf.name,
-            role: stf.role,
-            color: stf.color,
-            stationName: stf.stationName,
-            avatarUrl: stf.avatarUrl,
-            commissionPercent: 70,
-            workingHours: DEFAULT_WORKING_HOURS,
-            isActive: true,
-          })
-          .returning();
-        staffList.push(created);
-      }
-    }
-
     return NextResponse.json({ success: true, staff: staffList });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to fetch staff.' }, { status: 500 });

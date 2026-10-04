@@ -28,6 +28,7 @@ export interface Staff {
 
 export interface Appointment {
   id: string;
+  clientId?: string;
   clientName: string;
   clientAvatar?: string;
   serviceId: string;
@@ -617,12 +618,7 @@ export const useAirBookStore = create<AirBookState>((set) => ({
     set((state) => ({
       appointments: state.appointments.filter((a) => a.id !== id),
     })),
-  stations: [
-    { id: 'stn-1', name: 'Station 1 (Hair & Styling)', category: 'Hair' },
-    { id: 'stn-2', name: 'Station 2 (Color & Wash Bar)', category: 'Color' },
-    { id: 'stn-3', name: 'Station 3 (Spa & Facial Suite)', category: 'Spa' },
-    { id: 'stn-4', name: 'Station 4 (Nails & Pedicure)', category: 'Nails' },
-  ],
+  stations: [],
   addStation: (station) =>
     set((state) => ({
       stations: [...state.stations, { ...station, id: `stn-${Date.now()}` }],

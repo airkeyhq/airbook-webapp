@@ -68,6 +68,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
     setSelectedStaffId,
     staffMembers,
     isDemoMode,
+    workspaceId,
     providerColorMode,
   } = useAirBookStore();
   const { t } = useTranslation();
@@ -116,9 +117,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
         return;
       }
       try {
-        const res = await fetch(`/api/appointments?dateStr=${selectedDateStr}`);
+        const url = workspaceId
+          ? `/api/appointments?dateStr=${selectedDateStr}&workspaceId=${encodeURIComponent(workspaceId)}`
+          : `/api/appointments?dateStr=${selectedDateStr}`;
+        const res = await fetch(url);
         const data = await res.json();
-        if (data.success && Array.isArray(data.appointments) && data.appointments.length > 0) {
+        if (data.success && Array.isArray(data.appointments)) {
           const mapped: Appointment[] = data.appointments.map((a: any) => ({
             id: a.id,
             clientName: a.client?.name || 'Client',
@@ -134,23 +138,17 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
             status: a.status as any,
             notes: a.notes,
           }));
-
-          // Merge DB appointments with existing state (avoiding duplicates)
-          const currentApts = useAirBookStore.getState().appointments;
-          const merged = [...currentApts];
-          for (const dbApt of mapped) {
-            if (!merged.some((existing) => existing.id === dbApt.id)) {
-              merged.push(dbApt);
-            }
-          }
-          setAppointments(merged);
+          setAppointments(mapped);
+        } else {
+          setAppointments([]);
         }
       } catch (err) {
         console.warn('DB appointments load fallback:', err);
+        setAppointments([]);
       }
     }
     loadDbAppointments();
-  }, [selectedDateStr, setAppointments, isDemoMode]);
+  }, [selectedDateStr, workspaceId, setAppointments, isDemoMode]);
 
   // Auto-switch to single day view on narrow mobile & tablet screens
   useEffect(() => {

@@ -384,7 +384,7 @@ interface BrandDAMModuleProps {
 
 export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'identity' }) => {
   const { t } = useTranslation();
-  const { workspaceName, workspaceSlug } = useAirBookStore();
+  const { workspaceName, workspaceSlug, workspaceId } = useAirBookStore();
   const { addToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<StudioTab>(initialTab);
@@ -418,7 +418,8 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
   useEffect(() => {
     const fetchBrand = async () => {
       try {
-        const res = await fetch('/api/brand');
+        const url = workspaceId ? `/api/brand?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/brand';
+        const res = await fetch(url);
         const data = await res.json();
         if (data.success && data.brand) {
           if (data.brand.name) setBrandName(data.brand.name);
@@ -437,7 +438,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
       }
     };
     fetchBrand();
-  }, []);
+  }, [workspaceId]);
 
   const handleSaveBrandKit = async () => {
     setIsSaving(true);
@@ -446,6 +447,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          workspaceId: workspaceId || undefined,
           name: brandName,
           bio: tagline,
           logoUrl,

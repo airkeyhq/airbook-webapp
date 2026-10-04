@@ -42,7 +42,7 @@ interface InvoiceRecord {
 
 export const POSModule: React.FC = () => {
   const { t } = useTranslation();
-  const { appointments, selectedDateStr, openBookingDrawer, isDemoMode } = useAirBookStore();
+  const { appointments, selectedDateStr, openBookingDrawer, isDemoMode, workspaceId } = useAirBookStore();
 
   const DEMO_INVOICES: InvoiceRecord[] = useMemo(
     () => [
@@ -112,13 +112,17 @@ export const POSModule: React.FC = () => {
   const fetchRecentInvoices = async () => {
     try {
       setLoadingInvoices(true);
-      const res = await fetch('/api/checkout');
+      const url = workspaceId ? `/api/checkout?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/checkout';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && Array.isArray(data.invoices)) {
         setInvoices(data.invoices);
+      } else {
+        setInvoices([]);
       }
     } catch (err) {
       console.warn('Failed to load recent invoices:', err);
+      setInvoices([]);
     } finally {
       setLoadingInvoices(false);
     }
@@ -131,7 +135,7 @@ export const POSModule: React.FC = () => {
     } else {
       fetchRecentInvoices();
     }
-  }, [isDemoMode, DEMO_INVOICES]);
+  }, [isDemoMode, workspaceId, DEMO_INVOICES]);
 
   const todayApts = appointments.filter((a) => a.dateStr === selectedDateStr);
   const totalRevenue = todayApts.reduce((sum, a) => sum + a.price, 0);

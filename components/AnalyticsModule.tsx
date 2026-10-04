@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { DataTrending24Regular, Money24Regular, People24Regular, Sparkle24Regular, ArrowUp24Regular } from '@fluentui/react-icons';
+import { useAirBookStore } from '@/lib/store';
 
 interface AnalyticsData {
   totalRevenue: number;
@@ -16,6 +17,7 @@ interface AnalyticsData {
 
 export const AnalyticsModule: React.FC = () => {
   const { t } = useTranslation();
+  const workspaceId = useAirBookStore((s) => s.workspaceId);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,19 +25,23 @@ export const AnalyticsModule: React.FC = () => {
     async function fetchAnalytics() {
       try {
         setLoading(true);
-        const res = await fetch('/api/analytics');
+        const url = workspaceId ? `/api/analytics?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/analytics';
+        const res = await fetch(url);
         const json = await res.json();
         if (json.success && json.analytics) {
           setData(json.analytics);
+        } else {
+          setData(null);
         }
       } catch (err) {
         console.warn('Failed to load analytics from DB:', err);
+        setData(null);
       } finally {
         setLoading(false);
       }
     }
     fetchAnalytics();
-  }, []);
+  }, [workspaceId]);
 
   const revNum = data ? data.totalRevenue : 0;
   const rev = revNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
