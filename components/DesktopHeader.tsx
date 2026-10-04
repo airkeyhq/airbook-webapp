@@ -118,6 +118,17 @@ export const DesktopHeader: React.FC = () => {
   const userName = session?.user?.name || '';
   const userEmail = session?.user?.email;
 
+  const currentWorkspace = workspaces.find((w: any) => w.id === workspaceId || w.name === workspaceName) || workspaces[0];
+  const brandColor = currentWorkspace?.brandColor || '#007AFF';
+  const logoUrl = currentWorkspace?.logoUrl;
+  const workspaceInitials = (workspaceName || 'A')
+    .trim()
+    .split(/\s+/)
+    .map((w: string) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'A';
+
   return (
     <>
       <header
@@ -127,9 +138,22 @@ export const DesktopHeader: React.FC = () => {
         <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-[100]">
           <button
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
-            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0"
+            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0 cursor-pointer"
           >
-            <CircleCloudIcon size={20} className="flex-shrink-0" />
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={workspaceName}
+                className="w-5 h-5 rounded-full object-cover flex-shrink-0 ring-1 ring-black/10 dark:ring-white/10"
+              />
+            ) : (
+              <div
+                className="w-5 h-5 rounded-full flex items-center justify-center font-extrabold text-[10px] text-white flex-shrink-0 shadow-xs"
+                style={{ backgroundColor: brandColor }}
+              >
+                {workspaceInitials}
+              </div>
+            )}
             <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
             <ChevronDown24Filled className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           </button>
@@ -155,9 +179,20 @@ export const DesktopHeader: React.FC = () => {
                         ws.name === workspaceName ? 'bg-black/5 dark:bg-white/5' : ''
                       }`}
                     >
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
-                        {ws.name.charAt(0)}
-                      </div>
+                      {ws.logoUrl ? (
+                        <img
+                          src={ws.logoUrl}
+                          alt={ws.name}
+                          className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0"
+                          style={{ backgroundColor: ws.brandColor || '#007AFF' }}
+                        >
+                          {ws.name.trim().split(/\s+/).map((w: string) => w[0]).slice(0, 2).join('').toUpperCase() || ws.name.charAt(0)}
+                        </div>
+                      )}
                       <div className="flex flex-col flex-1 truncate">
                         <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
                         <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
@@ -169,9 +204,20 @@ export const DesktopHeader: React.FC = () => {
                   ))
                 ) : (
                   <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left bg-black/5 dark:bg-white/5">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0 bg-blue-600">
-                      {(workspaceName || 'A').charAt(0)}
-                    </div>
+                    {logoUrl ? (
+                      <img
+                        src={logoUrl}
+                        alt={workspaceName}
+                        className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0"
+                        style={{ backgroundColor: brandColor }}
+                      >
+                        {workspaceInitials}
+                      </div>
+                    )}
                     <div className="flex flex-col flex-1 truncate">
                       <span className="text-xs font-bold text-[var(--text-primary)] truncate">{workspaceName || 'Aurelia Hair & Spa'}</span>
                       <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{currentSlug}</span>
