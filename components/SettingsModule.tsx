@@ -16,6 +16,7 @@ import { MCPStudio } from '@/components/MCPStudio';
 import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
 import { getAvatarUrl } from '@/lib/avatars';
+import { GeofenceSettingsCard } from '@/components/geofence/GeofenceSettingsCard';
 import {
   Person24Filled,
   Person24Regular,
@@ -67,7 +68,7 @@ import { isPasskeySupported, registerStationPasskey } from '@/lib/passkey';
 import { PlanGate } from '@/components/PlanGate';
 import { normalizePlanTier, getPlanLimits, AIRBOOK_PLAN_DEFINITIONS } from '@/lib/plans';
 
-type SettingsTab = 'profile' | 'workspace' | 'billing' | 'mcp' | 'locations' | 'domain' | 'addons' | 'compliance';
+type SettingsTab = 'profile' | 'workspace' | 'billing' | 'mcp' | 'locations' | 'domain' | 'geofence' | 'addons' | 'compliance';
 
 const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[] = [
   { id: 'profile', labelKey: 'myProfile', icon: Person24Filled },
@@ -75,6 +76,7 @@ const TAB_LIST: { id: SettingsTab; labelKey: string; icon: React.ElementType }[]
   { id: 'billing', labelKey: 'tabBilling', icon: Payment24Filled },
   { id: 'mcp', labelKey: 'tabMCP', icon: Sparkle24Filled },
   { id: 'locations', labelKey: 'tabLocations', icon: Location24Filled },
+  { id: 'geofence', labelKey: 'tabGeofence', icon: Location24Filled },
   { id: 'domain', labelKey: 'tabDomain', icon: Globe24Filled },
   { id: 'addons', labelKey: 'addOns', icon: Sparkle24Filled },
   { id: 'compliance', labelKey: 'tabCompliance', icon: ShieldCheckmark24Filled },
@@ -2084,6 +2086,19 @@ export const SettingsModule: React.FC = () => {
               </div>
             )}
             </PlanGate>
+          </motion.div>
+        )}
+
+        {/* Geofencing & Location Access Security */}
+        {activeTab === 'geofence' && (
+          <motion.div
+            key="geofence"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            <GeofenceSettingsCard />
           </motion.div>
         )}
       </AnimatePresence>

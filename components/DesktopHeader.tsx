@@ -6,6 +6,7 @@ import { useAirBookStore } from '@/lib/store';
 import { PricingModal } from './PricingModal';
 import { CircleCloudIcon } from './Logo';
 import { AuthModal } from './AuthModal';
+import { CreateWorkspaceModal } from './CreateWorkspaceModal';
 import { NotificationCenterPopover } from './NotificationCenterPopover';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -36,6 +37,7 @@ export const DesktopHeader: React.FC = () => {
   const router = useRouter();
   const [isPricingOpen, setIsPricingOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -55,16 +57,24 @@ export const DesktopHeader: React.FC = () => {
     fetch('/api/workspaces')
       .then(res => res.json())
       .then(data => {
-        if (data.success && Array.isArray(data.workspaces)) {
+        if (data.success && Array.isArray(data.workspaces) && data.workspaces.length > 0) {
           setWorkspaces(data.workspaces);
-          const current = data.workspaces.find((w: any) => w.id === workspaceId) || data.workspaces[0];
-          if (current?.plan) {
-            useAirBookStore.getState().setWorkspacePlan(current.plan, current.subscriptionStatus);
+          const current = (workspaceId ? data.workspaces.find((w: any) => w.id === workspaceId) : null) || data.workspaces[0];
+          if (current) {
+            // Reconcile active workspace identity if not yet loaded or on default placeholder
+            if (!workspaceId || workspaceName === 'Glow Esthetics Studio' || workspaceName === 'Aurelia Hair & Spa' || !workspaceName) {
+              useAirBookStore.getState().setWorkspaceId(current.id);
+              useAirBookStore.getState().setWorkspaceName(current.name);
+              useAirBookStore.getState().setWorkspaceSlug(current.slug);
+            }
+            if (current.plan) {
+              useAirBookStore.getState().setWorkspacePlan(current.plan, current.subscriptionStatus);
+            }
           }
         }
       })
       .catch(err => console.error('Failed to fetch workspaces', err));
-  }, [workspaceId]);
+  }, [workspaceId, workspaceName]);
 
   useEffect(() => {
     setMounted(true);
@@ -127,34 +137,56 @@ export const DesktopHeader: React.FC = () => {
             <div className="absolute left-0 top-11 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
               
               <div className="max-h-60 overflow-y-auto space-y-1">
-                {workspaces.map((ws) => (
-                  <button
-                    key={ws.id}
-                    onClick={() => {
-                      useAirBookStore.getState().setWorkspaceName(ws.name);
-                      useAirBookStore.getState().setWorkspaceSlug(ws.slug);
-                      setIsWorkspaceMenuOpen(false);
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
-                  >
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
-                      {ws.name.charAt(0)}
+                {workspaces.length > 0 ? (
+                  workspaces.map((ws) => (
+                    <button
+                      key={ws.id}
+                      onClick={() => {
+                        useAirBookStore.getState().setWorkspaceId(ws.id);
+                        useAirBookStore.getState().setWorkspaceName(ws.name);
+                        useAirBookStore.getState().setWorkspaceSlug(ws.slug);
+                        if (ws.plan) {
+                          useAirBookStore.getState().setWorkspacePlan(ws.plan, ws.subscriptionStatus);
+                        }
+                        setIsWorkspaceMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group cursor-pointer ${
+                        ws.name === workspaceName ? 'bg-black/5 dark:bg-white/5' : ''
+                      }`}
+                    >
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0" style={{ backgroundColor: ws.brandColor || '#007AFF' }}>
+                        {ws.name.charAt(0)}
+                      </div>
+                      <div className="flex flex-col flex-1 truncate">
+                        <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
+                        <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
+                      </div>
+                      {ws.name === workspaceName && (
+                        <Checkmark24Filled className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                      )}
+                    </button>
+                  ))
+                ) : (
+                  <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left bg-black/5 dark:bg-white/5">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0 bg-blue-600">
+                      {(workspaceName || 'A').charAt(0)}
                     </div>
                     <div className="flex flex-col flex-1 truncate">
-                      <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
-                      <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
+                      <span className="text-xs font-bold text-[var(--text-primary)] truncate">{workspaceName || 'Aurelia Hair & Spa'}</span>
+                      <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{currentSlug}</span>
                     </div>
-                  </button>
-                ))}
+                    <Checkmark24Filled className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  </div>
+                )}
               </div>
 
               <div className="pt-1 mt-1 border-t border-[var(--border-subtle)] space-y-0.5">
                 <button
                   onClick={() => {
                     setIsWorkspaceMenuOpen(false);
-                    setIsAuthOpen(true);
+                    setIsCreateWorkspaceOpen(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   <Sparkle24Filled className="w-4 h-4" />
                   <span>{t('createNewWorkspace')}</span>
@@ -643,6 +675,16 @@ export const DesktopHeader: React.FC = () => {
       {/* Modal Dialogs */}
       <PricingModal isOpen={isPricingOpen || isPricingModalOpen} onClose={() => { setIsPricingOpen(false); closePricingModal(); }} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <CreateWorkspaceModal
+        isOpen={isCreateWorkspaceOpen}
+        onClose={() => setIsCreateWorkspaceOpen(false)}
+        onWorkspaceCreated={(newWs) => {
+          setWorkspaces((prev) => {
+            const exists = prev.some((w) => w.id === newWs.id);
+            return exists ? prev : [newWs, ...prev];
+          });
+        }}
+      />
     </>
   );
 };

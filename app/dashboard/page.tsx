@@ -22,6 +22,7 @@ import { OnlineBookingModule } from '@/components/OnlineBookingModule';
 import { FloatingDock } from '@/components/FloatingDock';
 import { BookingDrawer } from '@/components/BookingDrawer';
 import { CommandPalette } from '@/components/CommandPalette';
+import { GeofenceVerificationGate } from '@/components/geofence/GeofenceVerificationGate';
 import { POSCheckoutModal } from '@/components/POSCheckoutModal';
 import { ClientNotesModal } from '@/components/ClientNotesModal';
 import { AppointmentDetailsModal } from '@/components/AppointmentDetailsModal';
@@ -60,7 +61,7 @@ export default function DashboardPage() {
 
   useDemoShortcut((nextDemo) => {
     if (nextDemo) {
-      addToast(`${t('demoModeOn')} — Glow Esthetics Studio`, 'success');
+      addToast(t('demoModeOn'), 'success');
     } else {
       addToast(`${t('demoMode')}: OFF`, 'info');
     }
@@ -72,6 +73,34 @@ export default function DashboardPage() {
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [posAppointment, setPOSAppointment] = useState<Appointment | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+
+  const [geofenceGate, setGeofenceGate] = useState<{
+    required: boolean;
+    salonName: string;
+    allowedRadiusMeters: number;
+    canSupervisorBypass: boolean;
+    hasSupervisorPinConfigured: boolean;
+    strictness: 'strict' | 'warn_and_audit';
+  } | null>(null);
+
+  useEffect(() => {
+    if (isDemoMode) return;
+    fetch('/api/geofence')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && data?.geofenceRequired) {
+          setGeofenceGate({
+            required: true,
+            salonName: data.salonName || 'Salon Studio',
+            allowedRadiusMeters: data.config?.radiusMeters || 250,
+            canSupervisorBypass: data.config?.allowSupervisorBypass ?? true,
+            hasSupervisorPinConfigured: data.hasSupervisorPin ?? false,
+            strictness: data.config?.strictness || 'strict',
+          });
+        }
+      })
+      .catch((e) => console.warn('Failed to verify salon geofence:', e));
+  }, [workspaceId, isDemoMode]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -100,6 +129,8 @@ export default function DashboardPage() {
           if (data?.success && Array.isArray(data.workspaces) && data.workspaces[0]?.id) {
             const firstWs = data.workspaces[0];
             setWorkspaceId(firstWs.id);
+            useAirBookStore.getState().setWorkspaceName(firstWs.name);
+            useAirBookStore.getState().setWorkspaceSlug(firstWs.slug);
             if (firstWs.plan) {
               useAirBookStore.getState().setWorkspacePlan(firstWs.plan, firstWs.subscriptionStatus);
             }
@@ -326,6 +357,19 @@ export default function DashboardPage() {
 
       {/* POS Station Inactivity Lock Screen */}
       <POSLockScreen />
+
+      {/* Geofence On-Premise Access Verification Gate */}
+      {geofenceGate?.required && (
+        <GeofenceVerificationGate
+          required={geofenceGate.required}
+          salonName={geofenceGate.salonName}
+          allowedRadiusMeters={geofenceGate.allowedRadiusMeters}
+          canSupervisorBypass={geofenceGate.canSupervisorBypass}
+          hasSupervisorPinConfigured={geofenceGate.hasSupervisorPinConfigured}
+          strictness={geofenceGate.strictness}
+          onVerified={() => setGeofenceGate(null)}
+        />
+      )}
 
       {/* Global Toast Notifications */}
       <Toast toasts={toasts} onDismiss={dismiss} />

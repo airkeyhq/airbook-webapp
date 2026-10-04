@@ -472,9 +472,9 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
   workspaceId: '',
   setWorkspaceId: (id) => set({ workspaceId: id }),
-  workspaceName: "Glow Esthetics Studio",
+  workspaceName: "Aurelia Hair & Spa",
   setWorkspaceName: (name) => set({ workspaceName: name }),
-  workspaceSlug: 'glow-esthetics-studio',
+  workspaceSlug: 'aurelia-studio',
   setWorkspaceSlug: (slug) => set({ workspaceSlug: slug }),
   workspacePlan: 'solo',
   subscriptionStatus: 'active',
@@ -493,8 +493,8 @@ export const useAirBookStore = create<AirBookState>((set) => ({
       const nextDemo = !state.isDemoMode;
       return {
         isDemoMode: nextDemo,
-        workspaceName: nextDemo ? "Glow Esthetics Studio" : state.workspaceName,
-        workspaceSlug: nextDemo ? "glow-esthetics-studio" : state.workspaceSlug,
+        workspaceName: nextDemo ? "Aurelia Hair & Spa" : state.workspaceName,
+        workspaceSlug: nextDemo ? "aurelia-studio" : state.workspaceSlug,
         selectedDateStr: nextDemo ? getTodayDateStr(0) : state.selectedDateStr,
         services: nextDemo ? DEMO_SERVICES : [],
         staffMembers: nextDemo ? DEMO_STAFF : [],
@@ -504,8 +504,8 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   loadDemoData: () =>
     set({
       isDemoMode: true,
-      workspaceName: "Glow Esthetics Studio",
-      workspaceSlug: "glow-esthetics-studio",
+      workspaceName: "Aurelia Hair & Spa",
+      workspaceSlug: "aurelia-studio",
       selectedDateStr: getTodayDateStr(0),
       services: DEMO_SERVICES,
       staffMembers: DEMO_STAFF,

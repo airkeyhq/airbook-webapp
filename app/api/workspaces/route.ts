@@ -1,12 +1,28 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { workspaces, services, staff, schedules } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, slug, businessType, ownerName, email, phone } = body;
+    let { name, slug, businessType, ownerName, email, phone } = body;
+
+    try {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+      if (session?.user?.email && !email) {
+        email = session.user.email;
+      }
+      if (session?.user?.name && !ownerName) {
+        ownerName = session.user.name;
+      }
+    } catch {
+      // Session extraction fallback
+    }
 
     if (!name || !slug) {
       return NextResponse.json({ error: 'Workspace name and slug are required.' }, { status: 400 });
@@ -289,7 +305,31 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, workspace: ws });
     }
 
-    const allWorkspaces = await db.select().from(workspaces).limit(20);
+    let userWorkspaces: (typeof workspaces.$inferSelect)[] = [];
+    try {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+      if (session?.user?.email) {
+        userWorkspaces = await db
+          .select()
+          .from(workspaces)
+          .where(eq(workspaces.email, session.user.email.toLowerCase()))
+          .orderBy(desc(workspaces.createdAt));
+      }
+    } catch {
+      // Session extraction fallback
+    }
+
+    if (userWorkspaces.length > 0) {
+      return NextResponse.json({ success: true, workspaces: userWorkspaces });
+    }
+
+    const allWorkspaces = await db
+      .select()
+      .from(workspaces)
+      .orderBy(desc(workspaces.createdAt))
+      .limit(20);
     return NextResponse.json({ success: true, workspaces: allWorkspaces });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to fetch workspaces.' }, { status: 500 });

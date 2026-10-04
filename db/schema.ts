@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import { pgTable, text, integer, boolean, timestamp, uuid, decimal, varchar, jsonb } from 'drizzle-orm/pg-core';
 
 // =============================================================================
@@ -126,6 +127,13 @@ export const workspaces = pgTable('workspaces', {
   // Direct Offline & Zelle Transfer Details
   zellePhoneOrEmail: text('zelle_phone_or_email'),
   zelleRecipientName: text('zelle_recipient_name'),
+  // Supervisor / Manager Emergency PIN
+  supervisorPinHash: text('supervisor_pin_hash'),
+  supervisorPinSalt: text('supervisor_pin_salt'),
+  // Salon Geolocation Perimeter Access Control
+  geofencing: jsonb('geofencing')
+    .$type<import('@/lib/geofence').GeofenceConfig>()
+    .default(sql`'{}'::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
