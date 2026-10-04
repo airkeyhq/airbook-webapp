@@ -96,7 +96,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4">
+        <div className="fixed inset-0 z-[300] flex items-end md:items-center justify-center p-0 md:p-4 overflow-y-auto">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -112,13 +112,13 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.98 }}
             transition={{ type: 'spring', damping: 28, stiffness: 380 }}
-            className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden"
+            className="relative w-full md:max-w-lg bg-[var(--bg-primary)] border-t md:border border-[var(--border-subtle)] rounded-t-[32px] md:rounded-3xl rounded-b-none md:rounded-b-3xl shadow-2xl z-10 flex flex-col overflow-visible my-auto"
           >
             {/* Mobile & Tablet Drag Handle */}
             <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 mb-1 md:hidden flex-shrink-0" />
 
             {/* Header */}
-            <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
+            <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] rounded-t-[32px] md:rounded-t-3xl">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                   <Sparkle24Filled className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -143,7 +143,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
             </div>
 
             {/* Body Form */}
-            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-3.5 flex-1">
+            <form onSubmit={handleSubmit} className="p-6 space-y-3.5 overflow-visible">
               <FloatingInput
                 label={t('workspaceName')}
                 required
@@ -161,18 +161,21 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
                 className="font-mono font-bold"
               />
 
-              <CustomSelect
-                label={t('businessTypeLabel')}
-                value={businessType}
-                onChange={(val) => setBusinessType(val)}
-                options={[
-                  { value: 'salon', label: t('tradeHairSalons') },
-                  { value: 'barbershop', label: t('tradeBarbershops') },
-                  { value: 'spa', label: t('tradeSpas') },
-                  { value: 'wellness', label: t('tradeWellness') },
-                  { value: 'aesthetics', label: t('tradeAesthetics') },
-                ]}
-              />
+              <div className="relative z-30">
+                <CustomSelect
+                  label={t('businessTypeLabel')}
+                  value={businessType}
+                  onChange={(val) => setBusinessType(val)}
+                  placement="bottom"
+                  options={[
+                    { value: 'salon', label: t('tradeHairSalons') },
+                    { value: 'barbershop', label: t('tradeBarbershops') },
+                    { value: 'spa', label: t('tradeSpas') },
+                    { value: 'wellness', label: t('tradeWellness') },
+                    { value: 'aesthetics', label: t('tradeAesthetics') },
+                  ]}
+                />
+              </div>
 
               <FloatingInput
                 label={t('workspacePhoneLabel')}
