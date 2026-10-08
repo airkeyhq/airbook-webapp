@@ -42,6 +42,16 @@ import {
   ArrowUp24Filled,
   Dismiss24Filled,
 } from '@fluentui/react-icons';
+import {
+  SalonScissorsIcon,
+  BarberRazorIcon,
+  MedSpaIcon,
+  NailAndLashesIcon,
+  TattooMachineIcon,
+  MassageZenIcon,
+  PetGroomingPawIcon,
+  FitnessDumbbellIcon,
+} from '@/components/icons/SpecialtyIcons';
 
 type IndustryTabKey =
   | 'hair'
@@ -268,14 +278,14 @@ export default function MarketingWebsite() {
   const [activeRetentionTab, setActiveRetentionTab] = useState<'rebook' | 'review'>('rebook');
 
   const INDUSTRY_TABS: { id: IndustryTabKey; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'hair', label: t('tabHair'), icon: Sparkle24Regular },
-    { id: 'barber', label: t('tabBarber'), icon: Person24Regular },
-    { id: 'medspa', label: t('tabMedspa'), icon: ShieldCheckmark24Regular },
-    { id: 'nails', label: t('tabNails'), icon: Tag24Regular },
-    { id: 'tattoo', label: t('tabTattoo'), icon: Star24Regular },
-    { id: 'massage', label: t('tabMassage'), icon: Heart24Regular },
-    { id: 'petgrooming', label: t('tabPetGrooming'), icon: Clock24Regular },
-    { id: 'fitness', label: t('tabFitness'), icon: CheckmarkCircle24Regular },
+    { id: 'hair', label: t('tabHair'), icon: SalonScissorsIcon },
+    { id: 'barber', label: t('tabBarber'), icon: BarberRazorIcon },
+    { id: 'medspa', label: t('tabMedspa'), icon: MedSpaIcon },
+    { id: 'nails', label: t('tabNails'), icon: NailAndLashesIcon },
+    { id: 'tattoo', label: t('tabTattoo'), icon: TattooMachineIcon },
+    { id: 'massage', label: t('tabMassage'), icon: MassageZenIcon },
+    { id: 'petgrooming', label: t('tabPetGrooming'), icon: PetGroomingPawIcon },
+    { id: 'fitness', label: t('tabFitness'), icon: FitnessDumbbellIcon },
   ];
 
   // Industry Solutions Carousel State & Auto-Advance Timer

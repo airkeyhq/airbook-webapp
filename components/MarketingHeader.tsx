@@ -35,6 +35,16 @@ import {
   ArrowRight24Filled,
   BookOpen24Regular,
 } from '@fluentui/react-icons';
+import {
+  SalonScissorsIcon,
+  BarberRazorIcon,
+  MedSpaIcon,
+  NailAndLashesIcon,
+  TattooMachineIcon,
+  MassageZenIcon,
+  PetGroomingPawIcon,
+  FitnessDumbbellIcon,
+} from '@/components/icons/SpecialtyIcons';
 
 export const MarketingHeader: React.FC = () => {
   const { t, language, setLanguage, availableLanguages } = useTranslation();
@@ -263,14 +273,14 @@ export const MarketingHeader: React.FC = () => {
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { slug: 'salons', label: t('tabHair'), icon: Sparkle24Regular, color: '#E11D48', bg: 'bg-rose-500/15' },
-                        { slug: 'barbers', label: t('tabBarber'), icon: Person24Regular, color: '#D97706', bg: 'bg-amber-500/15' },
-                        { slug: 'spas', label: t('tabMedspa'), icon: ShieldCheckmark24Regular, color: '#9333EA', bg: 'bg-purple-500/15' },
-                        { slug: 'nails', label: t('tabNails'), icon: Tag24Regular, color: '#DB2777', bg: 'bg-pink-500/15' },
-                        { slug: 'tattoo', label: t('tabTattoo'), icon: Star24Regular, color: '#475569', bg: 'bg-slate-500/15' },
-                        { slug: 'massage', label: t('tabMassage'), icon: Heart24Regular, color: '#059669', bg: 'bg-emerald-500/15' },
-                        { slug: 'pet-groomers', label: t('tabPetGrooming'), icon: Clock24Regular, color: '#0284C7', bg: 'bg-sky-500/15' },
-                        { slug: 'trainers', label: t('tabFitness'), icon: CheckmarkCircle24Regular, color: '#4F46E5', bg: 'bg-indigo-500/15' },
+                        { slug: 'salons', label: t('tabHair'), icon: SalonScissorsIcon, color: '#E11D48', bg: 'bg-rose-500/15' },
+                        { slug: 'barbers', label: t('tabBarber'), icon: BarberRazorIcon, color: '#D97706', bg: 'bg-amber-500/15' },
+                        { slug: 'spas', label: t('tabMedspa'), icon: MedSpaIcon, color: '#9333EA', bg: 'bg-purple-500/15' },
+                        { slug: 'nails', label: t('tabNails'), icon: NailAndLashesIcon, color: '#DB2777', bg: 'bg-pink-500/15' },
+                        { slug: 'tattoo', label: t('tabTattoo'), icon: TattooMachineIcon, color: '#475569', bg: 'bg-slate-500/15' },
+                        { slug: 'massage', label: t('tabMassage'), icon: MassageZenIcon, color: '#059669', bg: 'bg-emerald-500/15' },
+                        { slug: 'pet-groomers', label: t('tabPetGrooming'), icon: PetGroomingPawIcon, color: '#0284C7', bg: 'bg-sky-500/15' },
+                        { slug: 'trainers', label: t('tabFitness'), icon: FitnessDumbbellIcon, color: '#4F46E5', bg: 'bg-indigo-500/15' },
                       ].map((item) => {
                         const Icon = item.icon;
                         return (
@@ -718,14 +728,14 @@ export const MarketingHeader: React.FC = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { slug: 'salons', label: t('solShortHair'), icon: Sparkle24Regular, color: '#E11D48', bg: 'bg-rose-500/15' },
-                    { slug: 'barbers', label: t('solShortBarber'), icon: Person24Regular, color: '#D97706', bg: 'bg-amber-500/15' },
-                    { slug: 'spas', label: t('solShortMedspa'), icon: ShieldCheckmark24Regular, color: '#9333EA', bg: 'bg-purple-500/15' },
-                    { slug: 'nails', label: t('solShortNails'), icon: Tag24Regular, color: '#DB2777', bg: 'bg-pink-500/15' },
-                    { slug: 'tattoo', label: t('solShortTattoo'), icon: Star24Regular, color: '#475569', bg: 'bg-slate-500/15' },
-                    { slug: 'massage', label: t('solShortMassage'), icon: Heart24Regular, color: '#059669', bg: 'bg-emerald-500/15' },
-                    { slug: 'pet-groomers', label: t('solShortPet'), icon: Clock24Regular, color: '#0284C7', bg: 'bg-sky-500/15' },
-                    { slug: 'trainers', label: t('solShortFitness'), icon: CheckmarkCircle24Regular, color: '#4F46E5', bg: 'bg-indigo-500/15' },
+                    { slug: 'salons', label: t('solShortHair'), icon: SalonScissorsIcon, color: '#E11D48', bg: 'bg-rose-500/15' },
+                    { slug: 'barbers', label: t('solShortBarber'), icon: BarberRazorIcon, color: '#D97706', bg: 'bg-amber-500/15' },
+                    { slug: 'spas', label: t('solShortMedspa'), icon: MedSpaIcon, color: '#9333EA', bg: 'bg-purple-500/15' },
+                    { slug: 'nails', label: t('solShortNails'), icon: NailAndLashesIcon, color: '#DB2777', bg: 'bg-pink-500/15' },
+                    { slug: 'tattoo', label: t('solShortTattoo'), icon: TattooMachineIcon, color: '#475569', bg: 'bg-slate-500/15' },
+                    { slug: 'massage', label: t('solShortMassage'), icon: MassageZenIcon, color: '#059669', bg: 'bg-emerald-500/15' },
+                    { slug: 'pet-groomers', label: t('solShortPet'), icon: PetGroomingPawIcon, color: '#0284C7', bg: 'bg-sky-500/15' },
+                    { slug: 'trainers', label: t('solShortFitness'), icon: FitnessDumbbellIcon, color: '#4F46E5', bg: 'bg-indigo-500/15' },
                   ].map((item) => {
                     const Icon = item.icon;
                     return (
