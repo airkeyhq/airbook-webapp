@@ -590,32 +590,41 @@ export const MarketingHeader: React.FC = () => {
                 </div>
               </div>
 
-              {/* Platform & Changelog Links */}
+              {/* Platform & Infrastructure Links */}
               <div className="space-y-3">
                 <p className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)]">
                   {t('navPlatformHeader')}
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-2">
                   <Link
                     href="/platform/integrations"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
-                    {t('navIntegrations')}
+                    <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <PlugConnected24Regular className="w-4 h-4" />
+                    </div>
+                    <span>{t('navIntegrations')}</span>
                   </Link>
                   <Link
                     href="/platform/reminders"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
-                    {t('navSmsReminders')}
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+                      <Alert24Regular className="w-4 h-4" />
+                    </div>
+                    <span>{t('navSmsReminders')}</span>
                   </Link>
                   <Link
                     href="/platform/deposit-protection"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
-                    {t('navDepositSecurity')}
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                      <Shield24Regular className="w-4 h-4" />
+                    </div>
+                    <span>{t('navDepositSecurity')}</span>
                   </Link>
                 </div>
               </div>
@@ -662,9 +671,10 @@ export const MarketingHeader: React.FC = () => {
                     <Link
                       href="/data-protection"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] col-span-2"
+                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] col-span-2 flex items-center justify-between"
                     >
-                      Data Protection
+                      <span>{t('navDataProtection')}</span>
+                      <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
                     </Link>
 
                     {/* Founding Client Banner in Mobile Menu */}
@@ -692,14 +702,14 @@ export const MarketingHeader: React.FC = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { slug: 'salons', label: t('tabHair'), icon: Sparkle24Regular, color: '#E11D48', bg: 'bg-rose-500/15' },
-                    { slug: 'barbers', label: t('tabBarber'), icon: Person24Regular, color: '#D97706', bg: 'bg-amber-500/15' },
-                    { slug: 'spas', label: t('tabMedspa'), icon: ShieldCheckmark24Regular, color: '#9333EA', bg: 'bg-purple-500/15' },
-                    { slug: 'nails', label: t('tabNails'), icon: Tag24Regular, color: '#DB2777', bg: 'bg-pink-500/15' },
-                    { slug: 'tattoo', label: t('tabTattoo'), icon: Star24Regular, color: '#475569', bg: 'bg-slate-500/15' },
-                    { slug: 'massage', label: t('tabMassage'), icon: Heart24Regular, color: '#059669', bg: 'bg-emerald-500/15' },
-                    { slug: 'pet-groomers', label: t('tabPetGrooming'), icon: Clock24Regular, color: '#0284C7', bg: 'bg-sky-500/15' },
-                    { slug: 'trainers', label: t('tabFitness'), icon: CheckmarkCircle24Regular, color: '#4F46E5', bg: 'bg-indigo-500/15' },
+                    { slug: 'salons', label: t('solShortHair'), icon: Sparkle24Regular, color: '#E11D48', bg: 'bg-rose-500/15' },
+                    { slug: 'barbers', label: t('solShortBarber'), icon: Person24Regular, color: '#D97706', bg: 'bg-amber-500/15' },
+                    { slug: 'spas', label: t('solShortMedspa'), icon: ShieldCheckmark24Regular, color: '#9333EA', bg: 'bg-purple-500/15' },
+                    { slug: 'nails', label: t('solShortNails'), icon: Tag24Regular, color: '#DB2777', bg: 'bg-pink-500/15' },
+                    { slug: 'tattoo', label: t('solShortTattoo'), icon: Star24Regular, color: '#475569', bg: 'bg-slate-500/15' },
+                    { slug: 'massage', label: t('solShortMassage'), icon: Heart24Regular, color: '#059669', bg: 'bg-emerald-500/15' },
+                    { slug: 'pet-groomers', label: t('solShortPet'), icon: Clock24Regular, color: '#0284C7', bg: 'bg-sky-500/15' },
+                    { slug: 'trainers', label: t('solShortFitness'), icon: CheckmarkCircle24Regular, color: '#4F46E5', bg: 'bg-indigo-500/15' },
                   ].map((item) => {
                     const Icon = item.icon;
                     return (
@@ -712,7 +722,7 @@ export const MarketingHeader: React.FC = () => {
                         <div className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center flex-shrink-0`} style={{ color: item.color }}>
                           <Icon className="w-3.5 h-3.5" />
                         </div>
-                        <span className="truncate">{item.label}</span>
+                        <span className="truncate whitespace-nowrap">{item.label}</span>
                       </Link>
                     );
                   })}
