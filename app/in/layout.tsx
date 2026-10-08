@@ -429,7 +429,7 @@ export default function InternalConsoleLayout({
                 Admin Console Access Restricted
               </h2>
               <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
-                The Internal Engineering Console (<code className="font-mono text-xs text-blue-500">/in</code>) is exclusively restricted to executive administrators (<strong>eduardo@getairbook.com</strong> &amp; <strong>raul@getairbook.com</strong>).
+                The Internal Engineering Console (<code className="font-mono text-xs text-blue-500">/in</code>) is exclusively restricted to authorized system administrators.
               </p>
             </div>
             <div className="pt-4 flex justify-center">
