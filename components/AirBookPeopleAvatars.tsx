@@ -14,7 +14,7 @@ export const AirBookPeopleAvatars: React.FC<{ size?: number; className?: string 
   return (
     <span
       className={`inline-flex items-center -space-x-4 sm:-space-x-5 align-middle select-none mx-2 ${className}`}
-      aria-label="AirBook Team Character Avatars"
+      aria-hidden="true"
     >
       {/* Avatar 1: Soft Lavender Cloud with Cute Happy Smile */}
       <motion.svg

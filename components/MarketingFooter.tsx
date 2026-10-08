@@ -114,7 +114,7 @@ export const MarketingFooter: React.FC = () => {
           <div className="col-span-2 md:col-span-1 space-y-3">
             <Logo size={28} showText />
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Modern booking &amp; scheduling infrastructure for studios, suites, and independent pros worldwide.
+              {t('footerTagline')}
             </p>
             <p className="text-[11px] text-[var(--text-secondary)] font-medium flex items-center gap-1">
               <span>{t('builtWithHeartPart1')}</span>

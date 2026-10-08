@@ -141,7 +141,23 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
 
         const wsData = wsRes.success && wsRes.workspace ? wsRes.workspace : null;
 
-        if (!wsData) {
+        const recognizedDemoSlugs = [
+          'aurelia-studio',
+          'salon-aurelia',
+          'aurelia-haardesign',
+          'maison-aurelia',
+          'lelegance',
+          'lumina-spa',
+          'elysian-lounge',
+          'eduardos-lounge',
+          'demo',
+          'solaris-spa',
+          'preview',
+          'default',
+        ];
+        const isRecognizedDemo = recognizedDemoSlugs.includes(slug.toLowerCase());
+
+        if (!wsData && !isRecognizedDemo) {
           if (process.env.NODE_ENV === 'production') {
             setWorkspaceNotFound(true);
             setLoadingDb(false);
@@ -149,9 +165,11 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
           }
         }
 
+        const demoProfile = getDemoBusiness(language);
+
         const ws: WorkspaceInfo = {
           id: wsData?.id || 'ws-default',
-          name: wsData?.name || workspaceName || 'Luxe Hair & Spa Studio',
+          name: wsData?.name || (isRecognizedDemo ? demoProfile.name : workspaceName || 'Luxe Hair & Spa Studio'),
           slug: wsData?.slug || slug,
           address: wsData?.address || 'Downtown District · City Suite',
           phone: wsData?.phone || '(555) 234-8900',
@@ -483,12 +501,21 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
 
   if (workspaceNotFound) {
     return (
-      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center justify-center p-6 text-center gap-3">
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center justify-center p-6 text-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center">
           <Info24Regular className="w-8 h-8" />
         </div>
-        <h1 className="text-lg font-bold text-[var(--text-primary)]">{t('bookingPageNotFound')}</h1>
-        <p className="text-xs text-[var(--text-secondary)] max-w-sm">{t('bookingPageNotFoundDesc')}</p>
+        <div className="space-y-1">
+          <h1 className="text-lg font-bold text-[var(--text-primary)]">{t('bookingPageNotFound')}</h1>
+          <p className="text-xs text-[var(--text-secondary)] max-w-sm">{t('bookingPageNotFoundDesc')}</p>
+        </div>
+        <Link
+          href="/"
+          className="btn-secondary h-10 px-5 rounded-2xl text-xs font-bold inline-flex items-center gap-2 mt-2"
+        >
+          <ArrowLeft24Filled className="w-3.5 h-3.5" />
+          <span>{t('backToHome')}</span>
+        </Link>
       </div>
     );
   }
@@ -498,6 +525,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
     'salon-aurelia',
     'aurelia-haardesign',
     'maison-aurelia',
+    'lelegance',
     'lumina-spa',
     'elysian-lounge',
     'eduardos-lounge',
@@ -545,6 +573,14 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
               className="btn-secondary w-full h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold"
             >
               <span>{t('signIn')}</span>
+            </Link>
+
+            <Link
+              href="/"
+              className="btn-tertiary w-full h-9 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <ArrowLeft24Filled className="w-3.5 h-3.5" />
+              <span>{t('backToHome')}</span>
             </Link>
           </div>
 

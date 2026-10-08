@@ -99,6 +99,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       {/* Custom Trigger Button */}
       <button
         type="button"
+        aria-label={label ? `${label}: ${selectedOption ? selectedOption.label : placeholder}` : placeholder}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
         onClick={() => {
           if (!isOpen) {
             updatePosition();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, forwardRef } from 'react';
+import React, { useState, useId, forwardRef } from 'react';
 
 export interface FloatingInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -22,12 +22,15 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
       value,
       defaultValue,
       placeholder,
+      id: customId,
       onFocus,
       onBlur,
       ...props
     },
     ref
   ) => {
+    const generatedId = useId();
+    const inputId = customId || generatedId;
     const [isFocused, setIsFocused] = useState(false);
 
     // Check if input has value (controlled or uncontrolled)
@@ -51,7 +54,8 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
 
           <div className="relative min-w-0 flex-1 h-full flex flex-col justify-center">
             {/* Animated Floating Label */}
-            <span
+            <label
+              htmlFor={inputId}
               className={`absolute left-0 pointer-events-none select-none transition-all duration-150 ease-out truncate max-w-full ${
                 isFloatingActive
                   ? 'top-2 text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]'
@@ -59,11 +63,13 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
               }`}
             >
               {label}
-            </span>
+            </label>
 
             {/* Input field */}
             <input
               ref={ref}
+              id={inputId}
+              aria-label={label}
               value={value}
               defaultValue={defaultValue}
               placeholder={isFloatingActive ? placeholder : ''}
@@ -107,6 +113,7 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
       value,
       defaultValue,
       placeholder,
+      id: customId,
       onFocus,
       onBlur,
       rows = 3,
@@ -114,6 +121,8 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
     },
     ref
   ) => {
+    const generatedId = useId();
+    const textareaId = customId || generatedId;
     const [isFocused, setIsFocused] = useState(false);
     const hasValue =
       value !== undefined
@@ -130,7 +139,8 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
           isFocused ? 'border-[var(--color-accent-primary)] ring-2 ring-[#1A8EFF]/20' : ''
         } ${containerClassName}`}
       >
-        <span
+        <label
+          htmlFor={textareaId}
           className={`pointer-events-none select-none transition-all duration-150 ease-out truncate block ${
             isFloatingActive
               ? 'text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] mb-1'
@@ -138,9 +148,11 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
           }`}
         >
           {label}
-        </span>
+        </label>
         <textarea
           ref={ref}
+          id={textareaId}
+          aria-label={label}
           rows={rows}
           value={value}
           defaultValue={defaultValue}

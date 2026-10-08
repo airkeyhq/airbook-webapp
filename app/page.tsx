@@ -12,7 +12,7 @@ import { MarketingFooter } from '@/components/MarketingFooter';
 import { CurrencySelector } from '@/components/CurrencySelector';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
-import { getDemoSpecialists, getDemoClient } from '@/lib/i18n/demographics';
+import { getDemoSpecialists, getDemoClient, getDemoBusiness } from '@/lib/i18n/demographics';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -75,6 +75,7 @@ export default function MarketingWebsite() {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   // Interactive Live Hero Booking Simulator State
+  const demoBusiness = getDemoBusiness(language);
   const [demoStep, setDemoStep] = useState<1 | 2 | 3 | 4>(1);
   const [demoService, setDemoService] = useState(DEMO_SERVICES[0]);
   const demoSpecialists = getDemoSpecialists(language);
@@ -525,7 +526,7 @@ export default function MarketingWebsite() {
                 </div>
                 <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] text-[10px] font-mono font-bold text-[var(--text-secondary)] shadow-2xs whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#2BB5FF]" />
-                  <span>getairbook.com/book/lelegance</span>
+                  <span>getairbook.com/book/{demoBusiness.slug}</span>
                 </div>
               </div>
 
@@ -595,7 +596,7 @@ export default function MarketingWebsite() {
                       </div>
                       <div>
                         <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
-                          L&apos;Élégance Studio &amp; Spa
+                          {demoBusiness.name}
                         </h3>
                         <p className="text-[11px] text-[var(--text-secondary)] font-semibold">
                           {t('demoInteractiveTitle')}
