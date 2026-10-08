@@ -634,7 +634,7 @@ export const MarketingHeader: React.FC = () => {
                 <p className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)]">
                   {t('navResourcesHeader')}
                 </p>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="flex flex-col gap-2">
                   <Link
                     href="/help"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -643,55 +643,71 @@ export const MarketingHeader: React.FC = () => {
                     <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
                       <ChatHelp24Regular className="w-4 h-4" />
                     </div>
-                    <div>
-                      <p className="text-xs font-black text-[var(--text-primary)]">{t('navHelpCenterTitle')}</p>
-                      <p className="text-[11px] text-[var(--text-secondary)]">{t('navHelpCenterDesc')}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-black text-[var(--text-primary)] truncate">{t('navHelpCenterTitle')}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] truncate">{t('navHelpCenterDesc')}</p>
                     </div>
                   </Link>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link
-                      href="/blog"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] flex items-center justify-between"
-                    >
-                      <span>{t('blog')}</span>
-                      <span className="px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 text-[9px] font-black">AI/RSS</span>
-                    </Link>
-
-                    <Link
-                      href="/changelog"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] flex items-center justify-between"
-                    >
-                      <span>{t('navChangelog')}</span>
-                      <span className="px-1.5 py-0.5 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] text-[9px] font-black">v2.0</span>
-                    </Link>
-
-                    <Link
-                      href="/data-protection"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)] col-span-2 flex items-center justify-between"
-                    >
-                      <span>{t('navDataProtection')}</span>
-                      <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
-                    </Link>
-
-                    {/* Founding Client Banner in Mobile Menu */}
-                    <Link
-                      href="/founding"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-3.5 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/25 text-xs font-bold text-[#0284C7] dark:text-[#2BB5FF] col-span-2 flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
-                        <span>{t('foundingNav')}</span>
+                  <Link
+                    href="/blog"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+                        <BookOpen24Regular className="w-4 h-4" />
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase">
-                        2M Free
-                      </span>
-                    </Link>
-                  </div>
+                      <span className="truncate">{t('blog')}</span>
+                    </div>
+                    <span className="px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 text-[9px] font-black uppercase flex-shrink-0">
+                      AI/RSS
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/changelog"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <Tag24Regular className="w-4 h-4" />
+                      </div>
+                      <span className="truncate">{t('navChangelog')}</span>
+                    </div>
+                    <span className="px-1.5 py-0.5 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] text-[9px] font-black uppercase flex-shrink-0">
+                      v2.0
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/data-protection"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                        <ShieldCheckmark24Regular className="w-4 h-4" />
+                      </div>
+                      <span className="truncate">{t('navDataProtection')}</span>
+                    </div>
+                  </Link>
+
+                  {/* Founding Client Banner in Mobile Menu */}
+                  <Link
+                    href="/founding"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3.5 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/25 text-xs font-bold text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                      <span>{t('foundingNav')}</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase flex-shrink-0">
+                      2M Free
+                    </span>
+                  </Link>
                 </div>
               </div>
 
