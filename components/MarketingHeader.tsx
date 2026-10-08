@@ -751,14 +751,23 @@ export const MarketingHeader: React.FC = () => {
                     </div>
                   </Link>
                 ) : (
-                  <Link
-                    href="/founding"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
-                  >
-                    <span>{t('applyForAccess')}</span>
-                    <ArrowRight24Filled className="w-4 h-4" />
-                  </Link>
+                  <div className="flex flex-col gap-2.5 w-full">
+                    <Link
+                      href="/founding"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
+                    >
+                      <span>{t('applyForAccess')}</span>
+                      <ArrowRight24Filled className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="btn-secondary w-full h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold"
+                    >
+                      <span>{t('alreadyHaveAccount')}</span>
+                    </Link>
+                  </div>
                 )}
               </div>
             </motion.div>
