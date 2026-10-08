@@ -44,21 +44,23 @@ export default function InternalConsoleLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session, isPending: isSessionPending } = useSession();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const email = session?.user?.email || 'eduardo@getairbook.com';
-  const adminProfile = getAdminUser(email);
-  const userName = session?.user?.name || adminProfile?.name || 'Eduardo Gonzalez';
-  const userEmail = email;
-  const userRoleBadge = adminProfile?.role === 'ceo' ? 'CEO & Founder' : (adminProfile?.role === 'admin' ? 'Platform Admin & Co-Founder' : 'Core Platform Admin');
+  const email = session?.user?.email;
+  const adminProfile = email ? getAdminUser(email) : null;
+  const userName = session?.user?.name || adminProfile?.name || 'Authorized Admin';
+  const userEmail = email || '';
+  const userRoleBadge = adminProfile?.role === 'ceo' ? 'CEO & Founder' : (adminProfile?.role === 'admin' ? 'Platform Admin & Co-Founder' : 'Platform Admin');
   const userRoleTitle = adminProfile?.title || 'Platform Admin';
   const userAvatar = getAvatarUrl(userName, session?.user?.image, adminProfile?.avatarColor || '#007AFF');
-  const isUnauthorized = Boolean(session?.user?.email && !isAdminEmail(session.user.email));
+  
+  const isAuthorizedAdmin = Boolean(email && isAdminEmail(email));
+  const isUnauthorized = !isSessionPending && !isAuthorizedAdmin;
 
 
   const internalModules: InternalModuleOption[] = [
@@ -170,7 +172,7 @@ export default function InternalConsoleLayout({
         <div className="max-w-7xl mx-auto px-3.5 sm:px-8 h-16 flex items-center justify-between gap-2.5 sm:gap-4">
           {/* Brand Identity & Internal Badge */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            <Link href="/in" className="flex items-center gap-2 group">
+            <Link href={isAuthorizedAdmin ? "/in" : "/"} className="flex items-center gap-2 group">
               <Logo variant="3d" size={26} />
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-sm tracking-tight text-[var(--text-primary)]">
@@ -183,32 +185,33 @@ export default function InternalConsoleLayout({
             </Link>
           </div>
 
-          {/* Module Select Switcher Dropdown */}
-          <div ref={dropdownRef} className="relative flex-1 max-w-[200px] xs:max-w-xs sm:max-w-sm mx-auto">
-            <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-expanded={isOpen}
-              aria-haspopup="listbox"
-              className={`w-full h-10 px-2.5 sm:px-3.5 rounded-2xl bg-[var(--bg-secondary)] border ${
-                isOpen
-                  ? 'border-[var(--color-accent-primary)] ring-2 ring-[#1A8EFF]/20'
-                  : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
-              } text-[var(--text-primary)] transition-all duration-150 flex items-center justify-between gap-1.5 sm:gap-2 cursor-pointer shadow-xs`}
-            >
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <div className="w-6 h-6 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 text-blue-500">
-                  <ActiveIcon className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-black truncate text-[var(--text-primary)]">
-                  {currentModule.label}
-                </span>
-                {currentModule.badge && (
-                  <span className="hidden md:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
-                    {currentModule.badge}
+          {/* Module Select Switcher Dropdown - Strictly visible ONLY to verified admins */}
+          {isAuthorizedAdmin && (
+            <div ref={dropdownRef} className="relative flex-1 max-w-[200px] xs:max-w-xs sm:max-w-sm mx-auto">
+              <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                aria-expanded={isOpen}
+                aria-haspopup="listbox"
+                className={`w-full h-10 px-2.5 sm:px-3.5 rounded-2xl bg-[var(--bg-secondary)] border ${
+                  isOpen
+                    ? 'border-[var(--color-accent-primary)] ring-2 ring-[#1A8EFF]/20'
+                    : 'border-[var(--border-subtle)] hover:border-black/20 dark:hover:border-white/20'
+                } text-[var(--text-primary)] transition-all duration-150 flex items-center justify-between gap-1.5 sm:gap-2 cursor-pointer shadow-xs`}
+              >
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className="w-6 h-6 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0 text-blue-500">
+                    <ActiveIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-black truncate text-[var(--text-primary)]">
+                    {currentModule.label}
                   </span>
-                )}
-              </div>
+                  {currentModule.badge && (
+                    <span className="hidden md:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
+                      {currentModule.badge}
+                    </span>
+                  )}
+                </div>
 
               <motion.div
                 animate={{ rotate: isOpen ? 180 : 0 }}
@@ -306,104 +309,107 @@ export default function InternalConsoleLayout({
               )}
             </AnimatePresence>
           </div>
+          )}
 
           {/* User Component & Return to Dashboard */}
           <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
-            {/* Tactile User Profile Pill / Dropdown */}
-            <div ref={userMenuRef} className="relative z-[100]">
-              <button
-                type="button"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                aria-expanded={isUserMenuOpen}
-                aria-haspopup="menu"
-                className="h-9.5 sm:h-10 pl-1.5 pr-2.5 sm:pr-3 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
-              >
-                <div className="relative flex-shrink-0">
-                  <img
-                    src={userAvatar}
-                    alt={userName}
-                    className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full object-cover ring-2 ring-[var(--bg-primary)]"
-                  />
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 absolute bottom-0 right-0 ring-1.5 ring-[var(--bg-primary)]" />
-                </div>
-                <span className="text-xs font-black text-[var(--text-primary)] hidden sm:inline max-w-[120px] truncate">
-                  {userName}
-                </span>
-                <ChevronDown24Regular className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
-              </button>
+            {/* Tactile User Profile Pill / Dropdown - Strictly visible ONLY to verified admins */}
+            {isAuthorizedAdmin && (
+              <div ref={userMenuRef} className="relative z-[100]">
+                <button
+                  type="button"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  aria-expanded={isUserMenuOpen}
+                  aria-haspopup="menu"
+                  className="h-9.5 sm:h-10 pl-1.5 pr-2.5 sm:pr-3 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
+                >
+                  <div className="relative flex-shrink-0">
+                    <img
+                      src={userAvatar}
+                      alt={userName}
+                      className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full object-cover ring-2 ring-[var(--bg-primary)]"
+                    />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 absolute bottom-0 right-0 ring-1.5 ring-[var(--bg-primary)]" />
+                  </div>
+                  <span className="text-xs font-black text-[var(--text-primary)] hidden sm:inline max-w-[120px] truncate">
+                    {userName}
+                  </span>
+                  <ChevronDown24Regular className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+                </button>
 
-              {/* User Dropdown Menu Popover */}
-              <AnimatePresence>
-                {isUserMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                    transition={{ duration: 0.12, ease: 'easeOut' }}
-                    className="absolute right-0 top-full mt-2 w-64 p-2 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl overflow-hidden divide-y divide-[var(--border-subtle)]"
-                  >
-                    {/* User Profile Header */}
-                    <div className="p-2.5 space-y-1">
-                      <div className="flex items-center gap-2.5">
-                        <img
-                          src={userAvatar}
-                          alt={userName}
-                          className="w-9 h-9 rounded-full object-cover ring-2 ring-[var(--border-subtle)]"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-black text-[var(--text-primary)] truncate">
-                            {userName}
-                          </p>
-                          <p className="text-[11px] text-[var(--text-secondary)] truncate">
-                            {userEmail}
-                          </p>
+                {/* User Dropdown Menu Popover */}
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                      transition={{ duration: 0.12, ease: 'easeOut' }}
+                      className="absolute right-0 top-full mt-2 w-64 p-2 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl overflow-hidden divide-y divide-[var(--border-subtle)]"
+                    >
+                      {/* User Profile Header */}
+                      <div className="p-2.5 space-y-1">
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={userAvatar}
+                            alt={userName}
+                            className="w-9 h-9 rounded-full object-cover ring-2 ring-[var(--border-subtle)]"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-black text-[var(--text-primary)] truncate">
+                              {userName}
+                            </p>
+                            <p className="text-[11px] text-[var(--text-secondary)] truncate">
+                              {userEmail}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="pt-1 flex flex-wrap items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                            {userRoleBadge}
+                          </span>
+                          <span className="text-[9px] font-mono text-[var(--text-muted)]">
+                            {userRoleTitle}
+                          </span>
                         </div>
                       </div>
-                      <div className="pt-1 flex flex-wrap items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                          {userRoleBadge}
-                        </span>
-                        <span className="text-[9px] font-mono text-[var(--text-muted)]">
-                          {userRoleTitle}
-                        </span>
+
+                      {/* Navigation Options */}
+                      <div className="p-1 space-y-0.5">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+                        >
+                          <BuildingShop24Regular className="w-4 h-4 text-blue-500" />
+                          <span>Salon Dashboard</span>
+                        </Link>
+                        <Link
+                          href="/dashboard?tab=settings"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+                        >
+                          <Settings24Filled className="w-4 h-4 text-[var(--text-muted)]" />
+                          <span>Platform Settings</span>
+                        </Link>
                       </div>
-                    </div>
 
-                    {/* Navigation Options */}
-                    <div className="p-1 space-y-0.5">
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                      >
-                        <BuildingShop24Regular className="w-4 h-4 text-blue-500" />
-                        <span>Salon Dashboard</span>
-                      </Link>
-                      <Link
-                        href="/dashboard?tab=settings"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                      >
-                        <Settings24Filled className="w-4 h-4 text-[var(--text-muted)]" />
-                        <span>Platform Settings</span>
-                      </Link>
-                    </div>
-
-                    {/* Log Out Option */}
-                    <div className="p-1 pt-1.5">
-                      <button
-                        type="button"
-                        onClick={handleSignOut}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer text-left"
-                      >
-                        <SignOut24Filled className="w-4 h-4 text-red-500 flex-shrink-0" />
-                        <span>{t('signOut')}</span>
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                      {/* Log Out Option */}
+                      <div className="p-1 pt-1.5">
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer text-left"
+                        >
+                          <SignOut24Filled className="w-4 h-4 text-red-500 flex-shrink-0" />
+                          <span>{t('signOut')}</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Return to Dashboard CTA */}
             <Link
@@ -411,7 +417,7 @@ export default function InternalConsoleLayout({
               className="btn-secondary h-9.5 sm:h-10 px-3 sm:px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-xs"
             >
               <ArrowLeft24Filled className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">{t('dashboard')}</span>
+              <span>{t('dashboard')}</span>
             </Link>
           </div>
         </div>
@@ -419,7 +425,14 @@ export default function InternalConsoleLayout({
 
       {/* Main Content Area */}
       <main className="py-6 sm:py-8">
-        {isUnauthorized ? (
+        {isSessionPending ? (
+          <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3.5">
+            <div className="w-8 h-8 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin" />
+            <p className="text-xs font-medium text-[var(--text-muted)] animate-pulse">
+              Verifying console security credentials...
+            </p>
+          </div>
+        ) : !isAuthorizedAdmin ? (
           <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6">
             <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto shadow-sm">
               <ShieldLock24Regular className="w-8 h-8" />

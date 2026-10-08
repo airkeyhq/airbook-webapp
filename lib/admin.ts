@@ -60,6 +60,19 @@ export const ADMIN_USERS: Record<string, AdminUser> = {
     canManageRoadmap: true,
     canManageDeployments: true,
   },
+  'ededuardomoreno@gmail.com': {
+    email: 'ededuardomoreno@gmail.com',
+    name: 'Eduardo Moreno',
+    role: 'ceo',
+    title: 'CEO & Founder',
+    department: 'Executive / Product Engineering',
+    avatarColor: '#2BB5FF',
+    canAccessInternalConsole: true,
+    canManageFoundingApplications: true,
+    canManageCrm: true,
+    canManageRoadmap: true,
+    canManageDeployments: true,
+  },
 };
 
 export const ADMIN_EMAILS: string[] = Object.keys(ADMIN_USERS);
@@ -122,7 +135,11 @@ export function getAdminUser(email: string | null | undefined): AdminUser | null
 export function isCeo(email: string | null | undefined): boolean {
   if (!email || typeof email !== 'string') return false;
   const normalized = email.trim().toLowerCase();
-  return normalized === 'eduardo@getairbook.com' || normalized === 'eduardo@airbook.app';
+  return (
+    normalized === 'eduardo@getairbook.com' ||
+    normalized === 'eduardo@airbook.app' ||
+    normalized === 'ededuardomoreno@gmail.com'
+  );
 }
 
 /**
