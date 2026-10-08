@@ -38,8 +38,8 @@ export const SalonScissorsIcon: React.FC<IconProps> = ({ className = 'w-4 h-4', 
   </svg>
 );
 
-// 2. Barberías: Classic Folding Straight Razor (Navaja de Barbero)
-export const BarberRazorIcon: React.FC<IconProps> = ({ className = 'w-4 h-4', size = 24, ...props }) => (
+// 2. Barberías: Classic Gentleman Barbershop Handlebar Mustache (Bigote Clásico de Barbero)
+export const BarberMustacheIcon: React.FC<IconProps> = ({ className = 'w-4 h-4', size = 24, ...props }) => (
   <svg
     viewBox="0 0 24 24"
     width={size}
@@ -52,17 +52,16 @@ export const BarberRazorIcon: React.FC<IconProps> = ({ className = 'w-4 h-4', si
     className={className}
     {...props}
   >
-    {/* Razor handle folding down */}
-    <path d="M4 19.5C5.5 18 10 13 11 11.5" />
-    <path d="M5.5 21C7 19.5 11.5 14.5 12.5 13" />
-    <path d="M4 19.5C3.5 20.2 4.3 21.2 5.5 21" />
-    {/* Pivot pin */}
-    <circle cx="11.75" cy="12.25" r="0.75" fill="currentColor" />
-    {/* Open steel blade extending upwards right */}
-    <path d="M11.75 12.25L18.5 5.5C19.2 4.8 20.3 5 20.8 5.8L21 6.2C21.4 7 21 8 20.2 8.6L14.5 14" />
-    <path d="M13.2 13.5L19 7.7" strokeDasharray="0.5 2" />
+    {/* Iconic Handlebar Mustache: sculpted curves with upturned waxed tips */}
+    <path d="M12 11.5C10.2 9.5 6.5 9 3 11C2.2 11.5 2 12.6 2.5 13.4C3.2 14.5 5 15.5 7.5 15C10 14.5 11.2 13 12 11.5Z" />
+    <path d="M12 11.5C13.8 9.5 17.5 9 21 11C21.8 11.5 22 12.6 21.5 13.4C20.8 14.5 19 15.5 16.5 15C14 14.5 12.8 13 12 11.5Z" />
+    {/* Elegant upturned waxed curled tips */}
+    <path d="M2.5 13C2 12.2 2.2 10.8 3.5 10.2" />
+    <path d="M21.5 13C22 12.2 21.8 10.8 20.5 10.2" />
   </svg>
 );
+
+export const BarberRazorIcon = BarberMustacheIcon;
 
 // 3. MedSpas: Aesthetic Facial Glow & Botanical Lotus Leaf
 export const MedSpaIcon: React.FC<IconProps> = ({ className = 'w-4 h-4', size = 24, ...props }) => (
