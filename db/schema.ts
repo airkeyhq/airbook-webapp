@@ -553,12 +553,16 @@ export const notifications = pgTable('notifications', {
 export const foundingApplications = pgTable('founding_applications', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
+  firstName: varchar('first_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),
   email: varchar('email', { length: 255 }).notNull(),
   phone: varchar('phone', { length: 50 }).notNull(),
   businessName: text('business_name').notNull(),
   businessType: varchar('business_type', { length: 50 }).notNull(), // 'hair_salon' | 'barbershop' | 'spa_wellness' | 'medspa' | 'nails' | 'other'
   city: text('city').notNull(),
+  state: varchar('state', { length: 100 }),
   country: varchar('country', { length: 10 }).default('MX').notNull(),
+  preferredLanguage: varchar('preferred_language', { length: 10 }).default('es').notNull(), // 'es' | 'en' | 'de' | 'fr'
   instagramUrl: text('instagram_url'),
   websiteUrl: text('website_url'),
   staffCount: integer('staff_count').default(1).notNull(),

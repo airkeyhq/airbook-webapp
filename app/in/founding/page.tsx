@@ -38,12 +38,16 @@ import {
 interface FoundingApplication {
   id: string;
   name: string;
+  firstName?: string | null;
+  lastName?: string | null;
   email: string;
   phone: string;
   businessName: string;
   businessType: string;
   city: string;
+  state?: string | null;
   country: string;
+  preferredLanguage?: string | null;
   instagramUrl?: string | null;
   websiteUrl?: string | null;
   staffCount: number;
@@ -388,12 +392,30 @@ export default function FoundingApplicationsAdminPage() {
                       </span>
                       <span className="text-xs text-[var(--text-muted)]">•</span>
                       <span className="text-xs text-[var(--text-secondary)] font-medium">
-                        {app.city}, {app.country}
+                        {app.city}{app.state ? `, ${app.state}` : ''}, {app.country}
                       </span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-secondary)]">
-                      <span className="font-bold text-[var(--text-primary)]">{app.name}</span>
+                      <span className="font-bold text-[var(--text-primary)]">
+                        {app.firstName && app.lastName ? `${app.firstName} ${app.lastName}` : app.name}
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-bold uppercase text-[var(--text-muted)]">
+                        <img
+                          src={`https://hatscripts.github.io/circle-flags/flags/${
+                            app.preferredLanguage === 'en'
+                              ? 'us'
+                              : app.preferredLanguage === 'de'
+                              ? 'de'
+                              : app.preferredLanguage === 'fr'
+                              ? 'fr'
+                              : 'es'
+                          }.svg`}
+                          alt="Flag"
+                          className="w-3 h-3 rounded-full object-cover flex-shrink-0"
+                        />
+                        <span>{app.preferredLanguage || app.locale || 'es'}</span>
+                      </span>
                       <span>{app.email}</span>
                       <span>{app.phone}</span>
                     </div>
@@ -484,12 +506,22 @@ export default function FoundingApplicationsAdminPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div>
                       <p className="text-[var(--text-muted)] text-[11px]">Nombre</p>
-                      <p className="font-extrabold text-[var(--text-primary)]">{selectedApp.name}</p>
+                      <p className="font-extrabold text-[var(--text-primary)]">
+                        {selectedApp.firstName && selectedApp.lastName
+                          ? `${selectedApp.firstName} ${selectedApp.lastName}`
+                          : selectedApp.name}
+                      </p>
+                      {selectedApp.firstName && selectedApp.lastName && (
+                        <p className="text-[10px] text-[var(--text-muted)]">
+                          {selectedApp.firstName} • {selectedApp.lastName}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <p className="text-[var(--text-muted)] text-[11px]">Ubicación</p>
                       <p className="font-extrabold text-[var(--text-primary)]">
-                        {selectedApp.city}, {selectedApp.country}
+                        {selectedApp.city}
+                        {selectedApp.state ? `, ${selectedApp.state}` : ''}, {selectedApp.country}
                       </p>
                     </div>
                     <div className="min-w-0">
@@ -508,6 +540,27 @@ export default function FoundingApplicationsAdminPage() {
                       >
                         {selectedApp.phone}
                       </a>
+                    </div>
+                    <div>
+                      <p className="text-[var(--text-muted)] text-[11px]">Idioma de Contacto</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <img
+                          src={`https://hatscripts.github.io/circle-flags/flags/${
+                            selectedApp.preferredLanguage === 'en'
+                              ? 'us'
+                              : selectedApp.preferredLanguage === 'de'
+                              ? 'de'
+                              : selectedApp.preferredLanguage === 'fr'
+                              ? 'fr'
+                              : 'es'
+                          }.svg`}
+                          alt="Flag"
+                          className="w-3.5 h-3.5 rounded-full object-cover flex-shrink-0"
+                        />
+                        <span className="font-extrabold text-[var(--text-primary)] uppercase text-[11px]">
+                          {selectedApp.preferredLanguage || selectedApp.locale || 'es'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 

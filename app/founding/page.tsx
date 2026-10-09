@@ -47,11 +47,14 @@ export default function FoundingPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Form Fields
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [salonName, setSalonName] = useState('');
   const [city, setCity] = useState('');
+  const [stateName, setStateName] = useState('');
+  const [preferredLanguage, setPreferredLanguage] = useState(language || 'es');
   const [instagramUrl, setInstagramUrl] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [businessType, setBusinessType] = useState('hair_salon');
@@ -72,6 +75,53 @@ export default function FoundingPage() {
 
   // FAQ State
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const languageOptions: SelectOption[] = [
+    {
+      value: 'es',
+      label: 'Español',
+      icon: (
+        <img
+          src="https://hatscripts.github.io/circle-flags/flags/es.svg"
+          alt="Español"
+          className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+        />
+      ),
+    },
+    {
+      value: 'en',
+      label: 'English',
+      icon: (
+        <img
+          src="https://hatscripts.github.io/circle-flags/flags/us.svg"
+          alt="English"
+          className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+        />
+      ),
+    },
+    {
+      value: 'de',
+      label: 'Deutsch',
+      icon: (
+        <img
+          src="https://hatscripts.github.io/circle-flags/flags/de.svg"
+          alt="Deutsch"
+          className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+        />
+      ),
+    },
+    {
+      value: 'fr',
+      label: 'Français',
+      icon: (
+        <img
+          src="https://hatscripts.github.io/circle-flags/flags/fr.svg"
+          alt="Français"
+          className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+        />
+      ),
+    },
+  ];
 
   const businessTypeOptions: SelectOption[] = [
     { value: 'hair_salon', label: t('foundingOptHair') },
@@ -103,7 +153,14 @@ export default function FoundingPage() {
   };
 
   const validateStep1 = () => {
-    if (!fullName.trim() || !email.trim() || !phone.trim() || !salonName.trim() || !city.trim()) {
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !salonName.trim() ||
+      !city.trim()
+    ) {
       setErrorMessage(t('foundingErrRequired'));
       return false;
     }
@@ -147,17 +204,23 @@ export default function FoundingPage() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
+      const fullNameCombined = `${firstName.trim()} ${lastName.trim()}`.trim();
+
       const response = await fetch('/api/founding-applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: fullName.trim(),
+          name: fullNameCombined,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email: email.trim(),
           phone: phone.trim(),
           businessName: salonName.trim(),
           businessType,
           city: city.trim(),
+          state: stateName.trim(),
           country: countryCode || 'MX',
+          preferredLanguage,
           instagramUrl: instagramUrl.trim(),
           websiteUrl: websiteUrl.trim(),
           staffCount: parseInt(staffCount, 10) || 1,
@@ -165,7 +228,7 @@ export default function FoundingPage() {
           currentSoftware,
           primaryPainPoint: primaryPainPoint.trim(),
           feedbackCommitment: feedbackFreq,
-          locale: language,
+          locale: preferredLanguage,
           _airbook_hp_check: hpTrap,
         }),
       });
@@ -179,7 +242,7 @@ export default function FoundingPage() {
       setSubmittedData({
         id: data.id,
         referenceNumber: data.applicationReference || `AB-FC-${data.id.slice(0, 8).toUpperCase()}`,
-        name: fullName.trim(),
+        name: fullNameCombined,
       });
 
       // Scroll to top of confirmation card
@@ -543,14 +606,26 @@ export default function FoundingPage() {
                         transition={{ duration: 0.15 }}
                         className="space-y-3.5"
                       >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {/* First Name & Last Name (Responsive 2-column grid per Rule 5) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <FloatingInput
-                            label={t('foundingFormFullName')}
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            label={t('foundingFormFirstName')}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
                             icon={<Person24Regular className="w-4 h-4" />}
                             required
                           />
+                          <FloatingInput
+                            label={t('foundingFormLastName')}
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            icon={<Person24Regular className="w-4 h-4" />}
+                            required
+                          />
+                        </div>
+
+                        {/* Email & Phone */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                           <FloatingInput
                             label={t('foundingFormEmail')}
                             type="email"
@@ -559,9 +634,6 @@ export default function FoundingPage() {
                             icon={<Mail24Regular className="w-4 h-4" />}
                             required
                           />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                           <FloatingInput
                             label={t('foundingFormPhone')}
                             value={phone}
@@ -570,6 +642,10 @@ export default function FoundingPage() {
                             placeholder="+52 55 1234 5678"
                             required
                           />
+                        </div>
+
+                        {/* Salon Name & Preferred Language */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                           <FloatingInput
                             label={t('foundingFormSalonName')}
                             value={salonName}
@@ -577,30 +653,44 @@ export default function FoundingPage() {
                             icon={<Building24Regular className="w-4 h-4" />}
                             required
                           />
+                          <CustomSelect
+                            label={t('foundingFormLanguage')}
+                            options={languageOptions}
+                            value={preferredLanguage}
+                            onChange={(val) => setPreferredLanguage(val as any)}
+                          />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        {/* Granular Location: City & State */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <FloatingInput
                             label={t('foundingFormCity')}
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                             icon={<Location24Regular className="w-4 h-4" />}
-                            containerClassName="md:col-span-1"
                             required
                           />
+                          <FloatingInput
+                            label={t('foundingFormState')}
+                            value={stateName}
+                            onChange={(e) => setStateName(e.target.value)}
+                            icon={<Location24Regular className="w-4 h-4" />}
+                          />
+                        </div>
+
+                        {/* Social Links */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                           <FloatingInput
                             label={t('foundingFormInstagram')}
                             value={instagramUrl}
                             onChange={(e) => setInstagramUrl(e.target.value)}
                             placeholder="@misalon"
-                            containerClassName="md:col-span-1"
                           />
                           <FloatingInput
                             label={t('foundingFormWebsite')}
                             value={websiteUrl}
                             onChange={(e) => setWebsiteUrl(e.target.value)}
                             icon={<Globe24Regular className="w-4 h-4" />}
-                            containerClassName="md:col-span-1"
                           />
                         </div>
                       </motion.div>

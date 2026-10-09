@@ -35,12 +35,16 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const {
       name,
+      firstName: rawFirstName,
+      lastName: rawLastName,
       email,
       phone,
       businessName,
       businessType = 'hair_salon',
       city,
+      state: rawState = '',
       country = 'MX',
+      preferredLanguage: rawPreferredLanguage,
       instagramUrl = '',
       websiteUrl = '',
       staffCount = 1,
@@ -58,6 +62,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Automated submission rejected.' }, { status: 403 });
     }
 
+    // Resolve granular names
+    let finalFirstName = (rawFirstName || '').trim();
+    let finalLastName = (rawLastName || '').trim();
+    let finalFullName = (name || '').trim();
+
+    if (!finalFullName && (finalFirstName || finalLastName)) {
+      finalFullName = `${finalFirstName} ${finalLastName}`.trim();
+    } else if (finalFullName && (!finalFirstName || !finalLastName)) {
+      const parts = finalFullName.split(' ');
+      finalFirstName = parts[0] || '';
+      finalLastName = parts.slice(1).join(' ') || '';
+    }
+
+    // Resolve preferred language
+    const finalLanguage = (rawPreferredLanguage || locale || 'es').toLowerCase().trim();
+
     // Determine country from body or edge IP header
     const detectedEdgeCountry = (
       req.headers.get('x-vercel-ip-country') ||
@@ -70,8 +90,8 @@ export async function POST(req: NextRequest) {
     const finalCountry = country && country !== 'MX' && country !== 'GLOBAL' ? country : (detectedEdgeCountry || country || 'MX');
 
     // 2. Validate essential fields
-    if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      return NextResponse.json({ error: 'Name is required.' }, { status: 400 });
+    if (!finalFullName || finalFullName.length === 0) {
+      return NextResponse.json({ error: 'First name and last name are required.' }, { status: 400 });
     }
 
     if (!email || typeof email !== 'string') {
@@ -108,13 +128,17 @@ export async function POST(req: NextRequest) {
     const [createdApp] = await db
       .insert(foundingApplications)
       .values({
-        name: name.trim(),
+        name: finalFullName,
+        firstName: finalFirstName,
+        lastName: finalLastName,
         email: normalizedEmail,
         phone: phone.trim(),
         businessName: businessName.trim(),
         businessType: String(businessType),
         city: city.trim(),
+        state: rawState ? String(rawState).trim() : null,
         country: String(finalCountry),
+        preferredLanguage: finalLanguage,
         instagramUrl: instagramUrl ? String(instagramUrl).trim() : null,
         websiteUrl: websiteUrl ? String(websiteUrl).trim() : null,
         staffCount: parsedStaff,
@@ -124,26 +148,24 @@ export async function POST(req: NextRequest) {
         feedbackCommitment: String(feedbackCommitment),
         status: 'pending',
         qualificationScore,
-        locale: String(locale),
+        locale: finalLanguage,
       })
       .returning();
 
     // 5. Sync to Loops CRM audience & trigger event
     try {
-      const nameParts = name.trim().split(' ');
-      const firstName = nameParts[0] || name.trim();
-      const lastName = nameParts.slice(1).join(' ') || '';
-
       await syncContactToLoops({
         email: normalizedEmail,
-        firstName,
-        lastName,
+        firstName: finalFirstName,
+        lastName: finalLastName,
         userGroup: 'Founding Client Applicant',
         source: 'Founding Program Onboarding',
         customFields: {
           businessName: businessName.trim(),
           businessType: String(businessType),
           city: city.trim(),
+          state: rawState ? String(rawState).trim() : '',
+          preferredLanguage: finalLanguage,
           staffCount: parsedStaff,
           monthlyAppointments: String(monthlyAppointments),
           currentSoftware: String(currentSoftware),
@@ -491,10 +513,13 @@ export async function PATCH(req: NextRequest) {
         });
 
         // 9. Sync updated contact & send Loops approval event
+        const applicantFirst = updatedApp.firstName || applicantName.split(' ')[0] || applicantName;
+        const applicantLast = updatedApp.lastName || applicantName.split(' ').slice(1).join(' ') || '';
+
         await syncContactToLoops({
           email: applicantEmail,
-          firstName: applicantName.split(' ')[0] || applicantName,
-          lastName: applicantName.split(' ').slice(1).join(' ') || '',
+          firstName: applicantFirst,
+          lastName: applicantLast,
           userGroup: 'Founding Client Approved',
           source: 'Founding Program Approvals',
           customFields: {
@@ -506,6 +531,10 @@ export async function PATCH(req: NextRequest) {
             pilotEndsAt: stripeProvision.trialEndsAt.toISOString(),
             activationUrl,
             workspaceSlug: existingWs.slug,
+            preferredLanguage: updatedApp.preferredLanguage || updatedApp.locale || 'es',
+            city: updatedApp.city,
+            state: updatedApp.state || '',
+            country: updatedApp.country,
           },
         }).catch((err) => console.warn('Loops contact sync warning:', err));
 
