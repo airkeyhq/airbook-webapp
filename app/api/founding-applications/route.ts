@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
       ''
     ).trim().toUpperCase();
 
-    const finalCountry = country && country !== 'MX' && country !== 'GLOBAL' ? country : (detectedEdgeCountry || country || 'MX');
+    const finalCountry = (country && country !== 'GLOBAL' ? country : (detectedEdgeCountry || 'MX')).trim().toUpperCase();
 
     // 2. Validate essential fields
     if (!finalFullName || finalFullName.length === 0) {
