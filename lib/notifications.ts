@@ -1264,7 +1264,7 @@ export async function sendFoundingInvitationEmail(params: {
 
   console.log(`[Founding Client Invitation] Dispatching onboarding invitation to ${email} (${businessName}, ${tierName})...`);
 
-  // 1. Loops.so transactional email template if configured
+  // 1. Loops.so dedicated founding template if ID exists
   if (LOOPS_TRANSACTIONAL_IDS.foundingInvitation) {
     const loopsRes = await sendLoopsTransactional({
       email,
@@ -1280,12 +1280,30 @@ export async function sendFoundingInvitationEmail(params: {
       },
     });
     if (loopsRes.success) {
-      console.log(`[Loops.so] Founding invitation successfully sent to ${email}`);
+      console.log(`[Loops.so] Dedicated founding invitation successfully sent to ${email}`);
       return { success: true, mode: 'loops' as const };
     }
   }
 
-  // 2. Resend API fallback if RESEND_API_KEY is configured
+  // 2. Loops.so published Team Invitation template (Active in Loops)
+  if (LOOPS_TRANSACTIONAL_IDS.teamInvitation) {
+    const loopsTeamRes = await sendLoopsTransactional({
+      email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.teamInvitation,
+      dataVariables: {
+        organizationName: businessName,
+        inviterName: 'Equipo Fundador AirBook',
+        role: `${tierName} (${freeTrialMonths} Meses 100% Gratis + 50% Vitalicio)`,
+        signInUrl: activationUrl,
+      },
+    });
+    if (loopsTeamRes.success) {
+      console.log(`[Loops.so] Founding invite dispatched via published Team Invitation template to ${email}`);
+      return { success: true, mode: 'loops' as const };
+    }
+  }
+
+  // 3. Resend API fallback if RESEND_API_KEY is configured
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
     try {
@@ -1346,7 +1364,7 @@ export async function sendFoundingInvitationEmail(params: {
     }
   }
 
-  // 3. Fallback dev console
+  // 4. Fallback dev console
   console.log(
     `[Founding Invitation · Dev Mode] Activation URL for ${applicantName} (${email}): ${activationUrl}`
   );
