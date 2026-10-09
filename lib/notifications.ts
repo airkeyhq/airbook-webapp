@@ -26,6 +26,7 @@ export const LOOPS_TRANSACTIONAL_IDS = {
   // Group: Account Management
   magicLinkSignIn: process.env.LOOPS_TRANSACTIONAL_MAGIC_LINK_ID,
   teamInvitation: process.env.LOOPS_TRANSACTIONAL_TEAM_INVITE_ID,
+  foundingInvitation: process.env.LOOPS_TRANSACTIONAL_FOUNDING_INVITE_ID,
   securityAlert: process.env.LOOPS_TRANSACTIONAL_SECURITY_ALERT_ID,
   workspaceWelcome: process.env.LOOPS_TRANSACTIONAL_WORKSPACE_WELCOME_ID,
 
@@ -1236,5 +1237,119 @@ export async function sendLowStockAlertEmail(params: {
   }
   console.log(`[Low Stock Alert · Dev] Sent to ${params.managerEmail}`);
   return { success: true, mode: 'dev-fallback' };
+}
+
+/**
+ * Sends Founding Client invitation and workspace onboarding activation email.
+ * Includes matched tier, 2-month free pilot activation details, and single-click access link.
+ */
+export async function sendFoundingInvitationEmail(params: {
+  email: string;
+  applicantName: string;
+  businessName: string;
+  tierName: string;
+  activationUrl: string;
+  freeTrialMonths?: number;
+  grandfatheredDiscountPercent?: number;
+}) {
+  const {
+    email,
+    applicantName,
+    businessName,
+    tierName,
+    activationUrl,
+    freeTrialMonths = 2,
+    grandfatheredDiscountPercent = 50,
+  } = params;
+
+  console.log(`[Founding Client Invitation] Dispatching onboarding invitation to ${email} (${businessName}, ${tierName})...`);
+
+  // 1. Loops.so transactional email template if configured
+  if (LOOPS_TRANSACTIONAL_IDS.foundingInvitation) {
+    const loopsRes = await sendLoopsTransactional({
+      email,
+      transactionalId: LOOPS_TRANSACTIONAL_IDS.foundingInvitation,
+      dataVariables: {
+        applicantName,
+        businessName,
+        tierName,
+        freeTrialMonths: String(freeTrialMonths),
+        grandfatheredDiscount: `${grandfatheredDiscountPercent}%`,
+        activationUrl,
+        onboardingUrl: activationUrl,
+      },
+    });
+    if (loopsRes.success) {
+      console.log(`[Loops.so] Founding invitation successfully sent to ${email}`);
+      return { success: true, mode: 'loops' as const };
+    }
+  }
+
+  // 2. Resend API fallback if RESEND_API_KEY is configured
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM_EMAIL || 'AirBook Founding Team <welcome@getairbook.com>',
+          to: [email],
+          subject: `¡Bienvenido a AirBook! Tus 2 meses gratis de ${businessName} están listos`,
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 36px 24px; color: #0F172A; background-color: #ffffff; border-radius: 20px; border: 1px solid #E2E8F0;">
+              <div style="margin-bottom: 24px;">
+                <span style="display: inline-block; background-color: #E0F2FE; color: #0284C7; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 12px; border-radius: 9999px;">
+                  Programa de Clientes Fundadores · 2 Meses Gratis
+                </span>
+              </div>
+              <h1 style="font-size: 24px; font-weight: 800; color: #0F172A; margin: 0 0 16px; line-height: 1.3;">
+                ¡Felicidades, ${applicantName}! Tu postulación ha sido aprobada
+              </h1>
+              <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 20px;">
+                Nos alegra darte la bienvenida a <strong>AirBook</strong>. Tu espacio de trabajo para <strong>${businessName}</strong> ha sido configurado en el plan <strong>${tierName}</strong> con <strong>${freeTrialMonths} meses 100% gratuitos</strong>.
+              </p>
+              <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 18px; margin: 20px 0;">
+                <h3 style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; margin: 0 0 10px;">Beneficios Fundadores Activos</h3>
+                <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #334155; line-height: 1.7;">
+                  <li><strong>${freeTrialMonths} Meses 100% Gratis</strong> sin cobros automáticos en Stripe.</li>
+                  <li><strong>Tarifa Vitalicia (Grandfathered):</strong> ${grandfatheredDiscountPercent}% de descuento permanente al finalizar el piloto.</li>
+                  <li><strong>Acompañamiento VIP:</strong> Soporte directo de los fundadores para migrar tus servicios y clientes.</li>
+                </ul>
+              </div>
+              <div style="margin: 32px 0 24px; text-align: center;">
+                <a href="${activationUrl}" style="background-color: #2BB5FF; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 32px; border-radius: 14px; display: inline-block; box-shadow: 0 4px 12px -2px rgba(43,181,255,0.5);">
+                  Activar Mi Cuenta y Configurar Negocio →
+                </a>
+              </div>
+              <p style="font-size: 12px; color: #94A3B8; text-align: center; margin: 0 0 12px;">
+                O copia este enlace en tu navegador: <br/>
+                <a href="${activationUrl}" style="color: #2BB5FF; word-break: break-all;">${activationUrl}</a>
+              </p>
+              <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0 16px;" />
+              <p style="font-size: 12px; color: #94A3B8; margin: 0; line-height: 1.5;">
+                AirBook Inc. · Plataforma moderna de reservas y gestión para salones, spas y barberías.
+              </p>
+            </div>
+          `,
+        }),
+      });
+      if (res.ok) {
+        console.log(`[Resend] Founding invitation successfully delivered to ${email}`);
+        return { success: true, mode: 'resend' as const };
+      }
+    } catch (err) {
+      console.warn('[Resend] Error delivering founding email:', err);
+    }
+  }
+
+  // 3. Fallback dev console
+  console.log(
+    `[Founding Invitation · Dev Mode] Activation URL for ${applicantName} (${email}): ${activationUrl}`
+  );
+  return { success: true, mode: 'dev-console' as const };
 }
 

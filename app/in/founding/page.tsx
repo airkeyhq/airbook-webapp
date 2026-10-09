@@ -78,6 +78,13 @@ export default function FoundingApplicationsAdminPage() {
   const [drawerNotes, setDrawerNotes] = useState<string>('');
   const [drawerScore, setDrawerScore] = useState<number>(50);
   const [copiedRef, setCopiedRef] = useState(false);
+  const [activationUrl, setActivationUrl] = useState<string | null>(null);
+  const [copiedActivation, setCopiedActivation] = useState(false);
+  const [approvalFeedback, setApprovalFeedback] = useState<{
+    tier?: string;
+    emailSent?: boolean;
+    workspaceSlug?: string;
+  } | null>(null);
 
   // Fetch applications
   const fetchApplications = async () => {
@@ -104,6 +111,8 @@ export default function FoundingApplicationsAdminPage() {
     setDrawerStatus(app.status);
     setDrawerNotes(app.internalNotes || '');
     setDrawerScore(app.qualificationScore || 50);
+    setActivationUrl(null);
+    setApprovalFeedback(null);
     setIsDrawerOpen(true);
   };
 
@@ -132,12 +141,30 @@ export default function FoundingApplicationsAdminPage() {
         );
         setSelectedApp(data.application);
         setDrawerStatus(data.application.status);
+
+        if (data.provisioning?.activationUrl) {
+          setActivationUrl(data.provisioning.activationUrl);
+        }
+        if (data.provisioning?.tier) {
+          setApprovalFeedback({
+            tier: data.provisioning.tier,
+            emailSent: data.provisioning.emailSent,
+            workspaceSlug: data.provisioning.workspaceSlug,
+          });
+        }
       }
     } catch (err) {
       console.error('Error updating application:', err);
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  const handleCopyActivationUrl = () => {
+    if (!activationUrl) return;
+    navigator.clipboard.writeText(activationUrl);
+    setCopiedActivation(true);
+    setTimeout(() => setCopiedActivation(false), 2200);
   };
 
   // Metrics
@@ -576,6 +603,60 @@ export default function FoundingApplicationsAdminPage() {
                     placeholder="Ej. Hablé con la propietaria. Tienen 4 estilistas, vienen de Fresha buscando eliminar el 20% de comisión. Tienen excelente disposición para dar feedback."
                     rows={4}
                   />
+
+                  {/* Approved Workspace Feedback & Direct Onboarding Link */}
+                  {(selectedApp.status === 'approved' || selectedApp.status === 'activated' || approvalFeedback || activationUrl) && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-[#2BB5FF]/10 via-emerald-500/10 to-transparent border border-[#2BB5FF]/30 space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <p className="text-xs font-black text-[var(--text-primary)]">
+                            {t('foundingApprovalToast')}
+                          </p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                          {t('foundingGrandfatheredBadge')}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                        {t('foundingApprovalToastDesc', {
+                          tier: approvalFeedback?.tier?.toUpperCase() || 'SOLO / TEAM',
+                          email: selectedApp.email,
+                        })}
+                      </p>
+
+                      {activationUrl && (
+                        <div className="pt-2 border-t border-[var(--border-subtle)]/70 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] uppercase font-bold text-[var(--text-muted)]">
+                              Enlace Mágico de Activación
+                            </p>
+                            <p className="text-xs font-mono text-[var(--text-primary)] truncate">
+                              {activationUrl}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleCopyActivationUrl}
+                            className="btn-primary h-9 px-3.5 rounded-xl text-xs font-bold whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                          >
+                            {copiedActivation ? (
+                              <>
+                                <Checkmark24Filled className="w-3.5 h-3.5" />
+                                <span>{t('foundingActivationLinkCopied')}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy24Filled className="w-3.5 h-3.5" />
+                                <span>{t('foundingCopyActivationLink')}</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Pre-formatted WhatsApp Trigger */}
                   <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

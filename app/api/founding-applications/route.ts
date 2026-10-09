@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { foundingApplications } from '@/db/schema';
+import {
+  foundingApplications,
+  workspaces,
+  staff,
+  schedules,
+  services,
+  users,
+  organizations,
+  members,
+  invitations,
+} from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
 import { syncContactToLoops, sendLoopsEvent } from '@/lib/loops';
 import { checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
 import { requireAuthSession, requireAdminSession } from '@/lib/auth-guard';
+import { determineFoundingTier, AIRBOOK_PLAN_DEFINITIONS } from '@/lib/plans';
+import { provisionFoundingStripeCustomer } from '@/lib/stripe';
+import { sendFoundingInvitationEmail } from '@/lib/notifications';
+import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
@@ -249,25 +263,281 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Application not found.' }, { status: 404 });
     }
 
-    // Sync status change to Loops if approved
+    let provisioningResult: {
+      workspaceId?: string;
+      workspaceSlug?: string;
+      tier?: string;
+      stripeCustomerId?: string;
+      activationUrl?: string;
+      emailSent?: boolean;
+    } = {};
+
+    // Execute complete Onboarding, Stripe Grandfathering & Invitation flow when approved
     if (status === 'approved') {
       try {
+        const applicantEmail = updatedApp.email.toLowerCase().trim();
+        const applicantName = updatedApp.name.trim();
+        const businessName = updatedApp.businessName.trim();
+
+        // 1. Determine matched commercial tier based on team size and appointment volume
+        const matchedTier = determineFoundingTier({
+          staffCount: updatedApp.staffCount,
+          monthlyAppointments: updatedApp.monthlyAppointments,
+          businessType: updatedApp.businessType,
+        });
+        const tierDefinition = AIRBOOK_PLAN_DEFINITIONS[matchedTier];
+
+        // 2. Check if a workspace already exists for this business/email, or create one
+        let existingWs = await db
+          .select()
+          .from(workspaces)
+          .where(eq(workspaces.email, applicantEmail))
+          .limit(1)
+          .then((res) => res[0]);
+
+        const rawSlug = businessName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').slice(0, 50);
+        let finalSlug = rawSlug || `salon-${Math.random().toString(36).substring(2, 7)}`;
+
+        if (!existingWs) {
+          // Check slug uniqueness
+          const [slugConflict] = await db
+            .select({ id: workspaces.id })
+            .from(workspaces)
+            .where(eq(workspaces.slug, finalSlug))
+            .limit(1);
+
+          if (slugConflict) {
+            finalSlug = `${finalSlug}-${Math.random().toString(36).substring(2, 6)}`;
+          }
+
+          // 3. Create workspace in pilot status (2 months free grace period)
+          const [createdWs] = await db
+            .insert(workspaces)
+            .values({
+              name: businessName,
+              slug: finalSlug,
+              email: applicantEmail,
+              phone: updatedApp.phone,
+              managerName: applicantName,
+              plan: matchedTier,
+              subscriptionStatus: 'pilot_active',
+              brandColor: '#2BB5FF',
+              cancellationNoticeHours: 24,
+              depositRequiredPercent: 20,
+              smsCreditsRemaining: matchedTier === 'scale' ? 2500 : matchedTier === 'team' ? 500 : 100,
+            })
+            .returning();
+          existingWs = createdWs;
+
+          // Seed default owner staff profile
+          const [ownerStaff] = await db
+            .insert(staff)
+            .values({
+              workspaceId: existingWs.id,
+              name: applicantName,
+              email: applicantEmail,
+              phone: updatedApp.phone,
+              role: 'Master Specialist & Director',
+              avatarEmoji: '✨',
+              commissionPercent: 100,
+            })
+            .returning();
+
+          // Seed Monday-Friday default shift
+          for (let day = 1; day <= 5; day++) {
+            await db.insert(schedules).values({
+              staffId: ownerStaff.id,
+              dayOfWeek: day,
+              startTime: '09:00',
+              endTime: '18:00',
+              isWorkingDay: true,
+            });
+          }
+
+          // Seed core luxury services
+          const defaultServices = [
+            { name: 'Signature Styling & Precision Cut', category: 'Hair', durationMinutes: 45, priceCents: 7500, colorTag: '#FF4D8D' },
+            { name: 'Executive Grooming & Hot Towel', category: 'Barber', durationMinutes: 30, priceCents: 4500, colorTag: '#00C7BE' },
+            { name: 'HydraFacial Radiance Glow', category: 'Spa', durationMinutes: 60, priceCents: 16000, colorTag: '#9D50BB' },
+          ];
+
+          for (const srv of defaultServices) {
+            await db.insert(services).values({
+              workspaceId: existingWs.id,
+              name: srv.name,
+              category: srv.category,
+              durationMinutes: srv.durationMinutes,
+              priceCents: srv.priceCents,
+              colorTag: srv.colorTag,
+              depositCents: Math.round(srv.priceCents * 0.2),
+            });
+          }
+        } else {
+          // Update existing workspace to pilot_active on the approved tier
+          await db
+            .update(workspaces)
+            .set({
+              plan: matchedTier,
+              subscriptionStatus: 'pilot_active',
+            })
+            .where(eq(workspaces.id, existingWs.id));
+        }
+
+        // 4. Provision Stripe Customer with 60 Days Free Trial & Lifetime Grandfathered 50% Rate
+        const stripeProvision = await provisionFoundingStripeCustomer({
+          email: applicantEmail,
+          name: applicantName,
+          businessName,
+          workspaceId: existingWs.id,
+          tier: matchedTier as 'solo' | 'team' | 'scale',
+          trialDays: 60, // 2 full months
+        });
+
+        // Link Stripe Customer ID to workspace
+        await db
+          .update(workspaces)
+          .set({
+            stripeCustomerId: stripeProvision.customerId,
+          })
+          .where(eq(workspaces.id, existingWs.id));
+
+        // 5. Check or create User & Organization
+        let [dbUser] = await db.select().from(users).where(eq(users.email, applicantEmail)).limit(1);
+        if (!dbUser) {
+          const [newUser] = await db
+            .insert(users)
+            .values({
+              id: `usr_${crypto.randomUUID()}`,
+              name: applicantName,
+              email: applicantEmail,
+              emailVerified: false,
+            })
+            .returning();
+          dbUser = newUser;
+        }
+
+        let orgId = existingWs.organizationId;
+        if (!orgId) {
+          const [newOrg] = await db
+            .insert(organizations)
+            .values({
+              id: `org_${crypto.randomUUID()}`,
+              name: businessName,
+              slug: finalSlug,
+            })
+            .returning();
+          orgId = newOrg.id;
+
+          await db
+            .update(workspaces)
+            .set({ organizationId: orgId })
+            .where(eq(workspaces.id, existingWs.id));
+        }
+
+        // Add or ensure organization membership
+        const [existingMember] = await db
+          .select()
+          .from(members)
+          .where(eq(members.userId, dbUser.id))
+          .limit(1);
+
+        if (!existingMember) {
+          await db.insert(members).values({
+            id: `mem_${crypto.randomUUID()}`,
+            organizationId: orgId,
+            userId: dbUser.id,
+            role: 'owner',
+          });
+        }
+
+        // 6. Generate single-use invitation record with 30-day onboarding window
+        const inviteExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        const inviteToken = crypto.randomBytes(24).toString('hex');
+
+        // Delete any old pending invitation for this email
+        await db.delete(invitations).where(eq(invitations.email, applicantEmail));
+
+        await db.insert(invitations).values({
+          id: `inv_${inviteToken.slice(0, 16)}`,
+          organizationId: orgId,
+          email: applicantEmail,
+          role: 'owner',
+          status: 'pending',
+          expiresAt: inviteExpiresAt,
+          inviterId: adminCheck.user.id,
+        });
+
+        // 7. Generate Activation URL
+        const appBaseUrl =
+          process.env.NEXT_PUBLIC_APP_URL ||
+          (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
+          'https://getairbook.com';
+
+        const activationUrl = `${appBaseUrl}/login?email=${encodeURIComponent(
+          applicantEmail
+        )}&mode=signin&redirect=${encodeURIComponent(
+          `/onboarding?foundingId=${updatedApp.id}&token=${inviteToken}`
+        )}`;
+
+        // 8. Dispatch Founding Client Invitation Email
+        const emailResult = await sendFoundingInvitationEmail({
+          email: applicantEmail,
+          applicantName,
+          businessName,
+          tierName: tierDefinition.name,
+          activationUrl,
+          freeTrialMonths: 2,
+          grandfatheredDiscountPercent: stripeProvision.grandfatheredDiscountPercent,
+        });
+
+        // 9. Sync updated contact & send Loops approval event
+        await syncContactToLoops({
+          email: applicantEmail,
+          firstName: applicantName.split(' ')[0] || applicantName,
+          lastName: applicantName.split(' ').slice(1).join(' ') || '',
+          userGroup: 'Founding Client Approved',
+          source: 'Founding Program Approvals',
+          customFields: {
+            isFoundingApproved: true,
+            foundingTier: matchedTier,
+            foundingTierName: tierDefinition.name,
+            freeTrialMonths: 2,
+            stripeCustomerId: stripeProvision.customerId,
+            pilotEndsAt: stripeProvision.trialEndsAt.toISOString(),
+            activationUrl,
+            workspaceSlug: existingWs.slug,
+          },
+        }).catch((err) => console.warn('Loops contact sync warning:', err));
+
         await sendLoopsEvent({
-          email: updatedApp.email,
+          email: applicantEmail,
           eventName: 'founding_client_approved',
           eventProperties: {
-            businessName: updatedApp.businessName,
-            status: 'approved',
+            businessName,
+            tier: matchedTier,
+            tierName: tierDefinition.name,
+            activationUrl,
+            pilotDaysFree: 60,
           },
-        });
-      } catch (loopsErr) {
-        console.warn('Loops status event warning:', loopsErr);
+        }).catch((err) => console.warn('Loops event warning:', err));
+
+        provisioningResult = {
+          workspaceId: existingWs.id,
+          workspaceSlug: existingWs.slug,
+          tier: matchedTier,
+          stripeCustomerId: stripeProvision.customerId,
+          activationUrl,
+          emailSent: emailResult.success,
+        };
+      } catch (provisionErr: any) {
+        console.error('Error during founding approval provisioning:', provisionErr);
       }
     }
 
     return NextResponse.json({
       success: true,
       application: updatedApp,
+      provisioning: provisioningResult,
     });
   } catch (error: any) {
     console.error('Error updating founding application:', error);

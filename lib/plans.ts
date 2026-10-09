@@ -330,3 +330,34 @@ export function getRequiredTierForFeature(feature: PlanFeature): PlanTier {
   if (AIRBOOK_PLAN_DEFINITIONS.team.features.includes(feature)) return 'team';
   return 'scale';
 }
+
+/**
+ * Automatically calculates the recommended commercial tier for a Founding Client applicant
+ * based on operational size, team headcount, and monthly appointment volume.
+ *
+ * Tier Matrix:
+ * - Solo Pro ($29/mo): staffCount === 1 and volume <= 150 appointments
+ * - Team & Boutique ($79/mo): staffCount 2..10 or high-volume solo boutique
+ * - Scale Multi-Location ($199/mo): staffCount > 10, multiple locations, or 300+ monthly appointments with complex needs
+ */
+export function determineFoundingTier(params: {
+  staffCount: number;
+  monthlyAppointments?: string;
+  businessType?: string;
+}): PlanTier {
+  const staff = typeof params.staffCount === 'number' ? params.staffCount : parseInt(String(params.staffCount), 10) || 1;
+  const appts = params.monthlyAppointments || '';
+
+  // Multi-location or enterprise scale
+  if (staff > 10 || appts === '300+' && staff > 5) {
+    return 'scale';
+  }
+
+  // Multi-specialist boutique / salon team
+  if (staff >= 2 || appts === '150-300' || appts === '300+') {
+    return 'team';
+  }
+
+  // Solo artisan / independent specialist
+  return 'solo';
+}
