@@ -224,18 +224,18 @@ export default function FoundingApplicationsAdminPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2.5 sm:gap-3">
           <button
             type="button"
             onClick={fetchApplications}
-            className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2"
+            className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center justify-center gap-2"
           >
             <span>Actualizar</span>
           </button>
           <Link
             href="/founding"
             target="_blank"
-            className="btn-primary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2"
+            className="btn-primary h-10 px-4 rounded-2xl text-xs font-bold flex items-center justify-center gap-2"
           >
             <span>Ver Landing Pública</span>
             <Open24Regular className="w-4 h-4" />
@@ -415,66 +415,69 @@ export default function FoundingApplicationsAdminPage() {
       {/* Review & Qualification Modal / Drawer */}
       <AnimatePresence>
         {isDrawerOpen && selectedApp && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-end bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[300] flex flex-col justify-end md:flex-row md:items-center md:justify-end bg-black/60 backdrop-blur-sm">
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              className="w-full max-w-xl h-full bg-[var(--bg-primary)] border-l border-[var(--border-subtle)] shadow-2xl flex flex-col justify-between overflow-y-auto"
+              className="w-full md:max-w-xl max-h-[92vh] md:h-full bg-[var(--bg-primary)] border-t md:border-t-0 md:border-l border-[var(--border-subtle)] rounded-t-[32px] md:rounded-none shadow-2xl flex flex-col justify-between overflow-hidden"
             >
+              {/* Mobile Top Drag Handle */}
+              <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 md:hidden flex-shrink-0" />
+
               {/* Drawer Header */}
-              <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between gap-4 flex-shrink-0">
-                <div className="space-y-1 min-w-0">
+              <div className="p-4 sm:p-6 border-b border-[var(--border-subtle)] flex items-center justify-between gap-4 flex-shrink-0">
+                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase font-bold text-[var(--text-muted)]">
+                    <span className="text-[10px] font-mono uppercase font-bold text-[var(--text-muted)] truncate">
                       REF: AB-FC-{selectedApp.id.slice(0, 8).toUpperCase()}
                     </span>
                   </div>
-                  <h2 className="text-xl font-black text-[var(--text-primary)] truncate">
+                  <h2 className="text-lg sm:text-xl font-black text-[var(--text-primary)] truncate">
                     {selectedApp.businessName}
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsDrawerOpen(false)}
-                  className="p-2 rounded-2xl hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                  className="p-2 rounded-2xl hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer flex-shrink-0"
                 >
                   <Dismiss24Filled className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Drawer Body */}
-              <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 overflow-y-auto">
                 {/* Applicant Contact Card */}
                 <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3">
                   <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">
                     Contacto del Titular
                   </span>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div>
-                      <p className="text-[var(--text-muted)]">Nombre</p>
+                      <p className="text-[var(--text-muted)] text-[11px]">Nombre</p>
                       <p className="font-extrabold text-[var(--text-primary)]">{selectedApp.name}</p>
                     </div>
                     <div>
-                      <p className="text-[var(--text-muted)]">Ubicación</p>
+                      <p className="text-[var(--text-muted)] text-[11px]">Ubicación</p>
                       <p className="font-extrabold text-[var(--text-primary)]">
                         {selectedApp.city}, {selectedApp.country}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-[var(--text-muted)]">Correo</p>
-                      <a href={`mailto:${selectedApp.email}`} className="font-bold text-[#2BB5FF] hover:underline">
+                    <div className="min-w-0">
+                      <p className="text-[var(--text-muted)] text-[11px]">Correo</p>
+                      <a href={`mailto:${selectedApp.email}`} className="font-bold text-[#2BB5FF] hover:underline truncate block">
                         {selectedApp.email}
                       </a>
                     </div>
                     <div>
-                      <p className="text-[var(--text-muted)]">Teléfono / WhatsApp</p>
+                      <p className="text-[var(--text-muted)] text-[11px]">Teléfono / WhatsApp</p>
                       <a
                         href={`https://wa.me/${selectedApp.phone.replace(/\D/g, '')}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-bold text-emerald-500 hover:underline"
+                        className="font-bold text-emerald-500 hover:underline block"
                       >
                         {selectedApp.phone}
                       </a>
@@ -483,7 +486,7 @@ export default function FoundingApplicationsAdminPage() {
 
                   {/* Social links if provided */}
                   {(selectedApp.instagramUrl || selectedApp.websiteUrl) && (
-                    <div className="pt-2 border-t border-[var(--border-subtle)]/60 flex items-center gap-3 text-xs">
+                    <div className="pt-2 border-t border-[var(--border-subtle)]/60 flex flex-wrap items-center gap-3 text-xs">
                       {selectedApp.instagramUrl && (
                         <span className="text-[var(--text-secondary)] font-medium">
                           IG: <strong className="text-[var(--text-primary)]">{selectedApp.instagramUrl}</strong>
@@ -509,17 +512,17 @@ export default function FoundingApplicationsAdminPage() {
                   <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">
                     Operación y Escala
                   </span>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     <div>
-                      <p className="text-[var(--text-muted)]">Equipo</p>
+                      <p className="text-[var(--text-muted)] text-[11px]">Equipo</p>
                       <p className="font-black text-[var(--text-primary)]">{selectedApp.staffCount} Especialistas</p>
                     </div>
                     <div>
-                      <p className="text-[var(--text-muted)]">Citas Estimadas</p>
+                      <p className="text-[var(--text-muted)] text-[11px]">Citas Estimadas</p>
                       <p className="font-black text-[var(--text-primary)]">{selectedApp.monthlyAppointments}</p>
                     </div>
-                    <div>
-                      <p className="text-[var(--text-muted)]">Software Actual</p>
+                    <div className="col-span-2 sm:col-span-1">
+                      <p className="text-[var(--text-muted)] text-[11px]">Software Actual</p>
                       <p className="font-black text-[var(--text-primary)]">{selectedApp.currentSoftware}</p>
                     </div>
                   </div>
@@ -529,7 +532,7 @@ export default function FoundingApplicationsAdminPage() {
                       <p className="text-[10px] uppercase font-bold text-[var(--text-muted)]">
                         Problema u Obstáculo Declarado
                       </p>
-                      <p className="text-xs text-[var(--text-primary)] bg-[var(--bg-primary)] p-3 rounded-xl border border-[var(--border-subtle)]">
+                      <p className="text-xs text-[var(--text-primary)] bg-[var(--bg-primary)] p-3 rounded-xl border border-[var(--border-subtle)] leading-relaxed">
                         {selectedApp.primaryPainPoint}
                       </p>
                     </div>
@@ -542,7 +545,7 @@ export default function FoundingApplicationsAdminPage() {
                     Calificación de la Cuenta
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <CustomSelect
                       label="Estado"
                       options={[
@@ -575,7 +578,7 @@ export default function FoundingApplicationsAdminPage() {
                   />
 
                   {/* Pre-formatted WhatsApp Trigger */}
-                  <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3">
+                  <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         Mensaje de Seguimiento por WhatsApp
@@ -586,11 +589,11 @@ export default function FoundingApplicationsAdminPage() {
                     </div>
                     <a
                       href={`https://wa.me/${selectedApp.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda ${adminFirstName} del equipo de AirBook. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
+                        `Hola ${selectedApp.name.split(' ')[0]}, ¡muchas gracias por postularte como Cliente Fundador de AirBook! Te saluda el equipo de AirBook. Queremos coordinar tu llamada breve de alineación de 10 minutos para activar tus 2 meses 100% gratis.`
                       )}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn-primary h-8 px-3 rounded-xl text-xs font-bold whitespace-nowrap"
+                      className="btn-primary h-9 px-4 rounded-xl text-xs font-bold whitespace-nowrap text-center justify-center flex items-center"
                     >
                       WhatsApp
                     </a>
@@ -598,22 +601,14 @@ export default function FoundingApplicationsAdminPage() {
                 </div>
               </div>
 
-              {/* Drawer Footer */}
-              <div className="p-4 sm:p-5 border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] flex items-center justify-between gap-3 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="btn-secondary h-11 px-5 rounded-2xl text-xs font-bold cursor-pointer"
-                >
-                  Cerrar
-                </button>
-
-                <div className="flex items-center gap-2">
+              {/* Drawer Footer - Flush side-to-side banner with vertical stacking on mobile */}
+              <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 flex-shrink-0">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 order-1 sm:order-2 w-full sm:w-auto">
                   <button
                     type="button"
                     disabled={isUpdating}
                     onClick={() => handleUpdateStatus('approved')}
-                    className="btn-primary h-11 px-5 rounded-2xl text-xs font-bold flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 border-emerald-600 cursor-pointer shadow-md"
+                    className="btn-primary h-11 px-5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 border-emerald-600 cursor-pointer shadow-md w-full sm:w-auto"
                   >
                     <Sparkle24Filled className="w-4 h-4" />
                     <span>Aprobar 2M Gratis</span>
@@ -622,11 +617,19 @@ export default function FoundingApplicationsAdminPage() {
                     type="button"
                     disabled={isUpdating}
                     onClick={() => handleUpdateStatus()}
-                    className="btn-primary h-11 px-5 rounded-2xl text-xs font-bold cursor-pointer shadow-md"
+                    className="btn-primary h-11 px-5 rounded-2xl text-xs font-bold cursor-pointer shadow-md w-full sm:w-auto flex items-center justify-center"
                   >
                     {isUpdating ? 'Guardando…' : 'Guardar Cambios'}
                   </button>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="btn-secondary h-11 px-5 rounded-2xl text-xs font-bold cursor-pointer order-2 sm:order-1 w-full sm:w-auto flex items-center justify-center"
+                >
+                  Cerrar
+                </button>
               </div>
             </motion.div>
           </div>

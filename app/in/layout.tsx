@@ -175,10 +175,10 @@ export default function InternalConsoleLayout({
             <Link href={isAuthorizedAdmin ? "/in" : "/"} className="flex items-center gap-2 group">
               <Logo variant="3d" size={26} />
               <div className="flex items-center gap-1.5">
-                <span className="font-black text-sm tracking-tight text-[var(--text-primary)]">
+                <span className="font-black text-sm tracking-tight text-[var(--text-primary)] hidden xs:inline">
                   AirBook
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md text-[9px] font-mono font-extrabold uppercase tracking-wider bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+                <span className="hidden md:inline-block px-1.5 py-0.5 rounded-md text-[9px] font-mono font-extrabold uppercase tracking-wider bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                   Internal
                 </span>
               </div>
@@ -414,10 +414,11 @@ export default function InternalConsoleLayout({
             {/* Return to Dashboard CTA */}
             <Link
               href="/dashboard"
-              className="btn-secondary h-9.5 sm:h-10 px-3 sm:px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-xs"
+              className="btn-secondary h-9.5 sm:h-10 px-2.5 sm:px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-xs flex-shrink-0"
+              title={t('dashboard')}
             >
               <ArrowLeft24Filled className="w-3.5 h-3.5" />
-              <span>{t('dashboard')}</span>
+              <span className="hidden sm:inline">{t('dashboard')}</span>
             </Link>
           </div>
         </div>
