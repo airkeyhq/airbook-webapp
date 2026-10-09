@@ -17,14 +17,14 @@ import { checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
 import { requireAuthSession, requireAdminSession } from '@/lib/auth-guard';
 import { determineFoundingTier, AIRBOOK_PLAN_DEFINITIONS } from '@/lib/plans';
 import { provisionFoundingStripeCustomer } from '@/lib/stripe';
-import { sendFoundingInvitationEmail } from '@/lib/notifications';
+import { sendFoundingInvitationEmail, sendFoundingApplicationReceivedEmail } from '@/lib/notifications';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    // 0. Volumetric Rate Limiting (max 5 founding applications per 10 minutes per IP)
+    // 0. Volumetric Rate Limiting (max 15 founding applications per 10 minutes per IP)
     const rateLimit = checkRateLimit(req, {
-      limit: 5,
+      limit: 15,
       windowSeconds: 600,
       prefix: 'founding_application',
     });
@@ -189,17 +189,32 @@ export async function POST(req: NextRequest) {
       console.warn('Loops contact sync warning for founding applicant:', loopsErr);
     }
 
+    const applicationReference = `AB-FC-${createdApp.id.slice(0, 8).toUpperCase()}`;
+
+    // 6. Send immediate confirmation email with application reference
+    try {
+      await sendFoundingApplicationReceivedEmail({
+        email: normalizedEmail,
+        applicantName: finalFirstName || finalFullName,
+        businessName: businessName.trim(),
+        referenceNumber: applicationReference,
+        locale: finalLanguage,
+      });
+    } catch (emailErr) {
+      console.warn('Failed to send founding application confirmation email:', emailErr);
+    }
+
     return NextResponse.json({
       success: true,
       id: createdApp.id,
-      applicationReference: `AB-FC-${createdApp.id.slice(0, 8).toUpperCase()}`,
+      applicationReference,
       status: createdApp.status,
       createdAt: createdApp.createdAt,
     });
   } catch (error: any) {
     console.error('Error creating founding application:', error);
     return NextResponse.json(
-      { error: 'Failed to submit application. Please try again.' },
+      { error: error?.message || 'Internal server error processing application.' },
       { status: 500 }
     );
   }

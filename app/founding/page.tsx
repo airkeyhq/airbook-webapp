@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { MarketingHeader } from '@/components/MarketingHeader';
@@ -36,6 +36,38 @@ import {
 
 type FormStep = 1 | 2 | 3;
 
+const SUPPORTED_COUNTRIES = [
+  { code: 'MX', dialCode: '+52' },
+  { code: 'US', dialCode: '+1' },
+  { code: 'ES', dialCode: '+34' },
+  { code: 'CO', dialCode: '+57' },
+  { code: 'AR', dialCode: '+54' },
+  { code: 'CL', dialCode: '+56' },
+  { code: 'PE', dialCode: '+51' },
+  { code: 'DE', dialCode: '+49' },
+  { code: 'FR', dialCode: '+33' },
+  { code: 'GB', dialCode: '+44' },
+  { code: 'CA', dialCode: '+1' },
+  { code: 'IT', dialCode: '+39' },
+  { code: 'BR', dialCode: '+55' },
+];
+
+const COUNTRY_DIAL_MAP: Record<string, string> = {
+  MX: '+52',
+  US: '+1',
+  ES: '+34',
+  CO: '+57',
+  AR: '+54',
+  CL: '+56',
+  PE: '+51',
+  DE: '+49',
+  FR: '+33',
+  GB: '+44',
+  CA: '+1',
+  IT: '+39',
+  BR: '+55',
+};
+
 export default function FoundingPage() {
   const { t, language, countryCode, getLocalizedCountry } = useTranslation();
   const formRef = useRef<HTMLDivElement>(null);
@@ -45,25 +77,47 @@ export default function FoundingPage() {
   const [direction, setDirection] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Form Fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(countryCode || 'MX');
+  const [phoneDialCode, setPhoneDialCode] = useState(COUNTRY_DIAL_MAP[countryCode] || '+52');
   const [phone, setPhone] = useState('');
   const [salonName, setSalonName] = useState('');
   const [city, setCity] = useState('');
   const [stateName, setStateName] = useState('');
   const [preferredLanguage, setPreferredLanguage] = useState(language || 'es');
+  const [hasManuallySelectedLang, setHasManuallySelectedLang] = useState(false);
+  const [hasManuallySelectedDialCode, setHasManuallySelectedDialCode] = useState(false);
   const [instagramUrl, setInstagramUrl] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
-  const [businessType, setBusinessType] = useState('hair_salon');
+  const [businessType, setBusinessType] = useState('');
   const [staffCount, setStaffCount] = useState('1');
-  const [monthlyAppts, setMonthlyAppts] = useState('50-150');
-  const [currentSoftware, setCurrentSoftware] = useState('pen_paper');
+  const [monthlyAppts, setMonthlyAppts] = useState('');
+  const [currentSoftware, setCurrentSoftware] = useState('');
   const [primaryPainPoint, setPrimaryPainPoint] = useState('');
-  const [feedbackFreq, setFeedbackFreq] = useState('biweekly');
+  const [feedbackFreq, setFeedbackFreq] = useState('');
   const [hpTrap, setHpTrap] = useState('');
+
+  // Keep preferredLanguage synchronized with the site language if untouched
+  useEffect(() => {
+    if (!hasManuallySelectedLang && language) {
+      setPreferredLanguage(language);
+    }
+  }, [language, hasManuallySelectedLang]);
+
+  // Keep country and dial code synchronized with detected geo if untouched
+  useEffect(() => {
+    if (countryCode && COUNTRY_DIAL_MAP[countryCode]) {
+      setSelectedCountry((prev) => (prev === 'MX' && countryCode !== 'MX' ? countryCode : prev));
+      if (!hasManuallySelectedDialCode) {
+        setPhoneDialCode(COUNTRY_DIAL_MAP[countryCode]);
+      }
+    }
+  }, [countryCode, hasManuallySelectedDialCode]);
 
   // Submission State
   const [submittedData, setSubmittedData] = useState<{
@@ -75,6 +129,31 @@ export default function FoundingPage() {
 
   // FAQ State
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const countryOptions: SelectOption[] = SUPPORTED_COUNTRIES.map((c) => ({
+    value: c.code,
+    label: `${getLocalizedCountry(c.code)} (${c.dialCode})`,
+    icon: (
+      <img
+        src={`https://hatscripts.github.io/circle-flags/flags/${c.code.toLowerCase()}.svg`}
+        alt={c.code}
+        className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+      />
+    ),
+  }));
+
+  const dialCodeOptions: SelectOption[] = SUPPORTED_COUNTRIES.map((c) => ({
+    value: c.dialCode,
+    label: c.dialCode,
+    sublabel: getLocalizedCountry(c.code),
+    icon: (
+      <img
+        src={`https://hatscripts.github.io/circle-flags/flags/${c.code.toLowerCase()}.svg`}
+        alt={c.code}
+        className="w-4 h-4 rounded-full object-cover flex-shrink-0"
+      />
+    ),
+  }));
 
   const languageOptions: SelectOption[] = [
     {
@@ -132,6 +211,13 @@ export default function FoundingPage() {
     { value: 'other', label: t('foundingOptOther') },
   ];
 
+  const monthlyApptsOptions: SelectOption[] = [
+    { value: '1-50', label: '1 - 50' },
+    { value: '50-150', label: '50 - 150' },
+    { value: '150-300', label: '150 - 300' },
+    { value: '300+', label: '300+' },
+  ];
+
   const softwareOptions: SelectOption[] = [
     { value: 'pen_paper', label: t('foundingSoftPenPaper') },
     { value: 'fresha', label: t('foundingSoftFresha') },
@@ -148,25 +234,40 @@ export default function FoundingPage() {
     { value: 'monthly', label: t('foundingFreqMonthly') },
   ];
 
+  const handleCountryChange = (c: string) => {
+    setSelectedCountry(c);
+    if (fieldErrors.selectedCountry) {
+      setFieldErrors((prev) => ({ ...prev, selectedCountry: '' }));
+    }
+    if (!hasManuallySelectedDialCode && COUNTRY_DIAL_MAP[c]) {
+      setPhoneDialCode(COUNTRY_DIAL_MAP[c]);
+    }
+  };
+
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const validateStep1 = () => {
-    if (
-      !firstName.trim() ||
-      !lastName.trim() ||
-      !email.trim() ||
-      !phone.trim() ||
-      !salonName.trim() ||
-      !city.trim()
-    ) {
-      setErrorMessage(t('foundingErrRequired'));
-      return false;
+    const errors: Record<string, string> = {};
+    if (!firstName.trim()) errors.firstName = t('foundingFieldRequired');
+    if (!lastName.trim()) errors.lastName = t('foundingFieldRequired');
+    if (!email.trim()) {
+      errors.email = t('foundingFieldRequired');
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        errors.email = t('foundingErrEmail');
+      }
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      setErrorMessage(t('foundingErrEmail'));
+    if (!phone.trim()) errors.phone = t('foundingFieldRequired');
+    if (!salonName.trim()) errors.salonName = t('foundingFieldRequired');
+    if (!city.trim()) errors.city = t('foundingFieldRequired');
+    if (!selectedCountry) errors.selectedCountry = t('foundingFieldRequired');
+
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setErrorMessage(t('foundingErrRequired'));
       return false;
     }
     setErrorMessage(null);
@@ -174,7 +275,14 @@ export default function FoundingPage() {
   };
 
   const validateStep2 = () => {
-    if (!businessType || !staffCount) {
+    const errors: Record<string, string> = {};
+    if (!businessType) errors.businessType = t('foundingFieldRequired');
+    if (!staffCount || parseInt(staffCount, 10) < 1) errors.staffCount = t('foundingFieldRequired');
+    if (!monthlyAppts) errors.monthlyAppts = t('foundingFieldRequired');
+    if (!currentSoftware) errors.currentSoftware = t('foundingFieldRequired');
+
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
       setErrorMessage(t('foundingErrRequired'));
       return false;
     }
@@ -182,29 +290,57 @@ export default function FoundingPage() {
     return true;
   };
 
-  const handleNext = () => {
+  const validateStep3 = () => {
+    const errors: Record<string, string> = {};
+    if (!primaryPainPoint.trim()) errors.primaryPainPoint = t('foundingFieldRequired');
+    if (!feedbackFreq) errors.feedbackFreq = t('foundingFieldRequired');
+
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setErrorMessage(t('foundingErrRequired'));
+      return false;
+    }
+    setErrorMessage(null);
+    return true;
+  };
+
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (currentStep === 1 && !validateStep1()) return;
     if (currentStep === 2 && !validateStep2()) return;
 
     setDirection(1);
+    setErrorMessage(null);
+    setIsSubmitting(false);
     setCurrentStep((prev) => (prev < 3 ? ((prev + 1) as FormStep) : prev));
   };
 
-  const handleBack = () => {
+  const handleBack = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setDirection(-1);
     setErrorMessage(null);
+    setIsSubmitting(false);
     setCurrentStep((prev) => (prev > 1 ? ((prev - 1) as FormStep) : prev));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (currentStep !== 3) return;
+    e.stopPropagation();
+    if (currentStep !== 3 || isSubmitting) return;
+    if (!validateStep3()) return;
 
     try {
       setIsSubmitting(true);
       setErrorMessage(null);
 
       const fullNameCombined = `${firstName.trim()} ${lastName.trim()}`.trim();
+      const combinedPhone = `${phoneDialCode} ${phone.trim()}`.trim();
 
       const response = await fetch('/api/founding-applications', {
         method: 'POST',
@@ -214,12 +350,12 @@ export default function FoundingPage() {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           email: email.trim(),
-          phone: phone.trim(),
+          phone: combinedPhone,
           businessName: salonName.trim(),
           businessType,
           city: city.trim(),
           state: stateName.trim(),
-          country: countryCode || 'MX',
+          country: selectedCountry || 'MX',
           preferredLanguage,
           instagramUrl: instagramUrl.trim(),
           websiteUrl: websiteUrl.trim(),
@@ -236,7 +372,10 @@ export default function FoundingPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Submission error');
+        if (response.status === 429) {
+          throw new Error(t('foundingErrRateLimit'));
+        }
+        throw new Error(data.error || t('foundingErrSubmitGeneric'));
       }
 
       setSubmittedData({
@@ -251,7 +390,7 @@ export default function FoundingPage() {
       }, 100);
     } catch (err: any) {
       console.error('Founding application submission error:', err);
-      setErrorMessage(err.message || 'Failed to submit application. Please try again.');
+      setErrorMessage(err.message || t('foundingErrSubmitGeneric'));
     } finally {
       setIsSubmitting(false);
     }
@@ -608,74 +747,166 @@ export default function FoundingPage() {
                       >
                         {/* First Name & Last Name (Responsive 2-column grid per Rule 5) */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                          <FloatingInput
-                            label={t('foundingFormFirstName')}
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            icon={<Person24Regular className="w-4 h-4" />}
-                            required
-                          />
-                          <FloatingInput
-                            label={t('foundingFormLastName')}
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            icon={<Person24Regular className="w-4 h-4" />}
-                            required
-                          />
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormFirstName')}
+                              value={firstName}
+                              onChange={(e) => {
+                                setFirstName(e.target.value);
+                                if (fieldErrors.firstName) setFieldErrors((prev) => ({ ...prev, firstName: '' }));
+                              }}
+                              icon={<Person24Regular className="w-4 h-4" />}
+                              containerClassName={fieldErrors.firstName ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.firstName && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.firstName}</p>
+                            )}
+                          </div>
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormLastName')}
+                              value={lastName}
+                              onChange={(e) => {
+                                setLastName(e.target.value);
+                                if (fieldErrors.lastName) setFieldErrors((prev) => ({ ...prev, lastName: '' }));
+                              }}
+                              icon={<Person24Regular className="w-4 h-4" />}
+                              containerClassName={fieldErrors.lastName ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.lastName && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.lastName}</p>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Email & Phone */}
+                        {/* Email & Phone with Country Code Picker */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                          <FloatingInput
-                            label={t('foundingFormEmail')}
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            icon={<Mail24Regular className="w-4 h-4" />}
-                            required
-                          />
-                          <FloatingInput
-                            label={t('foundingFormPhone')}
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            icon={<Call24Regular className="w-4 h-4" />}
-                            placeholder="+52 55 1234 5678"
-                            required
-                          />
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormEmail')}
+                              type="email"
+                              value={email}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
+                              }}
+                              icon={<Mail24Regular className="w-4 h-4" />}
+                              containerClassName={fieldErrors.email ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.email && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.email}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <div className="flex gap-2">
+                              <div className="w-[110px] sm:w-[120px] flex-shrink-0">
+                                <CustomSelect
+                                  label={t('foundingFormCountry')}
+                                  options={dialCodeOptions}
+                                  value={phoneDialCode}
+                                  onChange={(val) => {
+                                    setPhoneDialCode(val);
+                                    setHasManuallySelectedDialCode(true);
+                                  }}
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <FloatingInput
+                                  label={t('foundingFormPhone')}
+                                  type="tel"
+                                  value={phone}
+                                  onChange={(e) => {
+                                    setPhone(e.target.value);
+                                    if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: '' }));
+                                  }}
+                                  icon={<Call24Regular className="w-4 h-4" />}
+                                  placeholder="55 1234 5678"
+                                  containerClassName={fieldErrors.phone ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                                  required
+                                />
+                              </div>
+                            </div>
+                            {fieldErrors.phone && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.phone}</p>
+                            )}
+                          </div>
                         </div>
 
                         {/* Salon Name & Preferred Language */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                          <FloatingInput
-                            label={t('foundingFormSalonName')}
-                            value={salonName}
-                            onChange={(e) => setSalonName(e.target.value)}
-                            icon={<Building24Regular className="w-4 h-4" />}
-                            required
-                          />
-                          <CustomSelect
-                            label={t('foundingFormLanguage')}
-                            options={languageOptions}
-                            value={preferredLanguage}
-                            onChange={(val) => setPreferredLanguage(val as any)}
-                          />
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormSalonName')}
+                              value={salonName}
+                              onChange={(e) => {
+                                setSalonName(e.target.value);
+                                if (fieldErrors.salonName) setFieldErrors((prev) => ({ ...prev, salonName: '' }));
+                              }}
+                              icon={<Building24Regular className="w-4 h-4" />}
+                              containerClassName={fieldErrors.salonName ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.salonName && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.salonName}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <CustomSelect
+                              label={t('foundingFormLanguage')}
+                              options={languageOptions}
+                              value={preferredLanguage}
+                              onChange={(val) => {
+                                setPreferredLanguage(val as any);
+                                setHasManuallySelectedLang(true);
+                              }}
+                            />
+                          </div>
                         </div>
 
-                        {/* Granular Location: City & State */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                          <FloatingInput
-                            label={t('foundingFormCity')}
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            icon={<Location24Regular className="w-4 h-4" />}
-                            required
-                          />
-                          <FloatingInput
-                            label={t('foundingFormState')}
-                            value={stateName}
-                            onChange={(e) => setStateName(e.target.value)}
-                            icon={<Location24Regular className="w-4 h-4" />}
-                          />
+                        {/* Granular Location: Country, City & State */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                          <div>
+                            <CustomSelect
+                              label={t('foundingFormCountry')}
+                              options={countryOptions}
+                              value={selectedCountry}
+                              onChange={handleCountryChange}
+                            />
+                            {fieldErrors.selectedCountry && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.selectedCountry}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormCity')}
+                              value={city}
+                              onChange={(e) => {
+                                setCity(e.target.value);
+                                if (fieldErrors.city) setFieldErrors((prev) => ({ ...prev, city: '' }));
+                              }}
+                              icon={<Location24Regular className="w-4 h-4" />}
+                              containerClassName={fieldErrors.city ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.city && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.city}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormState')}
+                              value={stateName}
+                              onChange={(e) => setStateName(e.target.value)}
+                              icon={<Location24Regular className="w-4 h-4" />}
+                            />
+                          </div>
                         </div>
 
                         {/* Social Links */}
@@ -709,41 +940,74 @@ export default function FoundingPage() {
                         className="space-y-3.5"
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                          <CustomSelect
-                            label={t('foundingFormBusinessType')}
-                            options={businessTypeOptions}
-                            value={businessType}
-                            onChange={setBusinessType}
-                          />
-                          <FloatingInput
-                            label={t('foundingFormStaffCount')}
-                            type="number"
-                            min="1"
-                            max="100"
-                            value={staffCount}
-                            onChange={(e) => setStaffCount(e.target.value)}
-                            required
-                          />
+                          <div>
+                            <CustomSelect
+                              label={t('foundingFormBusinessType')}
+                              options={businessTypeOptions}
+                              value={businessType}
+                              placeholder={t('foundingFormBusinessType')}
+                              onChange={(val) => {
+                                setBusinessType(val);
+                                if (fieldErrors.businessType) setFieldErrors((prev) => ({ ...prev, businessType: '' }));
+                              }}
+                            />
+                            {fieldErrors.businessType && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.businessType}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <FloatingInput
+                              label={t('foundingFormStaffCount')}
+                              type="number"
+                              min="1"
+                              max="100"
+                              value={staffCount}
+                              onChange={(e) => {
+                                setStaffCount(e.target.value);
+                                if (fieldErrors.staffCount) setFieldErrors((prev) => ({ ...prev, staffCount: '' }));
+                              }}
+                              containerClassName={fieldErrors.staffCount ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                              required
+                            />
+                            {fieldErrors.staffCount && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.staffCount}</p>
+                            )}
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                          <CustomSelect
-                            label={t('foundingFormMonthlyAppts')}
-                            options={[
-                              { value: '1-50', label: '1 - 50 citas / mes' },
-                              { value: '50-150', label: '50 - 150 citas / mes' },
-                              { value: '150-300', label: '150 - 300 citas / mes' },
-                              { value: '300+', label: '300+ citas / mes' },
-                            ]}
-                            value={monthlyAppts}
-                            onChange={setMonthlyAppts}
-                          />
-                          <CustomSelect
-                            label={t('foundingFormCurrentSoftware')}
-                            options={softwareOptions}
-                            value={currentSoftware}
-                            onChange={setCurrentSoftware}
-                          />
+                          <div>
+                            <CustomSelect
+                              label={t('foundingFormMonthlyAppts')}
+                              options={monthlyApptsOptions}
+                              value={monthlyAppts}
+                              placeholder={t('foundingFormMonthlyAppts')}
+                              onChange={(val) => {
+                                setMonthlyAppts(val);
+                                if (fieldErrors.monthlyAppts) setFieldErrors((prev) => ({ ...prev, monthlyAppts: '' }));
+                              }}
+                            />
+                            {fieldErrors.monthlyAppts && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.monthlyAppts}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <CustomSelect
+                              label={t('foundingFormCurrentSoftware')}
+                              options={softwareOptions}
+                              value={currentSoftware}
+                              placeholder={t('foundingFormCurrentSoftware')}
+                              onChange={(val) => {
+                                setCurrentSoftware(val);
+                                if (fieldErrors.currentSoftware) setFieldErrors((prev) => ({ ...prev, currentSoftware: '' }));
+                              }}
+                            />
+                            {fieldErrors.currentSoftware && (
+                              <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.currentSoftware}</p>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -760,20 +1024,38 @@ export default function FoundingPage() {
                         transition={{ duration: 0.15 }}
                         className="space-y-3.5"
                       >
-                        <FloatingTextarea
-                          label={t('foundingFormPainPoint')}
-                          value={primaryPainPoint}
-                          onChange={(e) => setPrimaryPainPoint(e.target.value)}
-                          placeholder="e.g. Comisiones excesivas del 20%, citas perdidas, falta de control en el inventario..."
-                          rows={3}
-                        />
+                        <div>
+                          <FloatingTextarea
+                            label={t('foundingFormPainPoint')}
+                            value={primaryPainPoint}
+                            onChange={(e) => {
+                              setPrimaryPainPoint(e.target.value);
+                              if (fieldErrors.primaryPainPoint) setFieldErrors((prev) => ({ ...prev, primaryPainPoint: '' }));
+                            }}
+                            placeholder="e.g. Comisiones excesivas del 20%, citas perdidas, falta de control en el inventario..."
+                            rows={3}
+                            containerClassName={fieldErrors.primaryPainPoint ? '!border-rose-500 !ring-2 !ring-rose-500/20' : ''}
+                          />
+                          {fieldErrors.primaryPainPoint && (
+                            <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.primaryPainPoint}</p>
+                          )}
+                        </div>
 
-                        <CustomSelect
-                          label={t('foundingFormFeedbackFreq')}
-                          options={feedbackOptions}
-                          value={feedbackFreq}
-                          onChange={setFeedbackFreq}
-                        />
+                        <div>
+                          <CustomSelect
+                            label={t('foundingFormFeedbackFreq')}
+                            options={feedbackOptions}
+                            value={feedbackFreq}
+                            placeholder={t('foundingFormFeedbackFreq')}
+                            onChange={(val) => {
+                              setFeedbackFreq(val);
+                              if (fieldErrors.feedbackFreq) setFieldErrors((prev) => ({ ...prev, feedbackFreq: '' }));
+                            }}
+                          />
+                          {fieldErrors.feedbackFreq && (
+                            <p className="mt-1 text-[11px] font-bold text-rose-500 pl-1">{fieldErrors.feedbackFreq}</p>
+                          )}
+                        </div>
 
                         {/* Security & Guarantee Note */}
                         <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-start gap-3">
@@ -790,6 +1072,7 @@ export default function FoundingPage() {
                   <div className="flex items-center justify-between gap-3 pt-4 border-t border-[var(--border-subtle)]">
                     {currentStep > 1 ? (
                       <button
+                        key="btn-back"
                         type="button"
                         onClick={handleBack}
                         className="btn-secondary h-11 px-5 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
@@ -803,6 +1086,7 @@ export default function FoundingPage() {
 
                     {currentStep < 3 ? (
                       <button
+                        key="btn-next"
                         type="button"
                         onClick={handleNext}
                         className="btn-primary h-11 px-6 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
@@ -812,6 +1096,7 @@ export default function FoundingPage() {
                       </button>
                     ) : (
                       <button
+                        key="btn-submit"
                         type="submit"
                         disabled={isSubmitting}
                         className="btn-primary h-11 px-6 rounded-2xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
@@ -830,7 +1115,7 @@ export default function FoundingPage() {
                 </form>
               </div>
             ) : (
-              /* CONFIRMATION / SUCCESS LETTER STATE (Directly mirroring Maria's letter from AirBook Mexico) */
+              /* CONFIRMATION / SUCCESS LETTER STATE */
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -868,7 +1153,13 @@ export default function FoundingPage() {
                   </div>
                 </div>
 
-                {/* Personalized Letter Box from Maria @ AirBook Mexico */}
+                {/* Email Confirmation Notice */}
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-2.5">
+                  <Mail24Regular className="w-5 h-5 flex-shrink-0" />
+                  <span>{t('foundingSuccessEmailSentNotice')}</span>
+                </div>
+
+                {/* Personalized Letter Box */}
                 <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-secondary)]/50 border border-[var(--border-subtle)] space-y-4 text-xs sm:text-sm text-[var(--text-primary)] leading-relaxed">
                   <div className="font-black text-sm text-[#2BB5FF]">
                     {t('foundingSuccessLetterGreeting')} {submittedData.name},
@@ -882,7 +1173,7 @@ export default function FoundingPage() {
                   <div className="pt-3 border-t border-[var(--border-subtle)]/60 text-xs">
                     <p className="text-[var(--text-muted)] font-medium">{t('foundingSuccessLetterSignoff')}</p>
                     <p className="font-extrabold text-[var(--text-primary)] mt-0.5">
-                      {t('foundingSuccessLetterAuthor', { country: getLocalizedCountry() })}
+                      {t('foundingSuccessLetterAuthor', { country: getLocalizedCountry(selectedCountry) })}
                     </p>
                   </div>
                 </div>

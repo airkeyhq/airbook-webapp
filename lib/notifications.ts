@@ -1371,3 +1371,124 @@ export async function sendFoundingInvitationEmail(params: {
   return { success: true, mode: 'dev-console' as const };
 }
 
+/**
+ * Sends confirmation email immediately upon receiving a Founding Client application.
+ */
+export async function sendFoundingApplicationReceivedEmail(params: {
+  email: string;
+  applicantName: string;
+  businessName: string;
+  referenceNumber: string;
+  locale?: string;
+}) {
+  const { email, applicantName, businessName, referenceNumber, locale = 'es' } = params;
+
+  console.log(`[Founding Application] Sending submission confirmation to ${email} (Ref: ${referenceNumber})...`);
+
+  const lang = locale.toLowerCase();
+  const isEn = lang.startsWith('en');
+  const isDe = lang.startsWith('de');
+  const isFr = lang.startsWith('fr');
+
+  const subject = isEn
+    ? `Application Received: Welcome to the AirBook Founding Program (${referenceNumber})`
+    : isDe
+    ? `Bewerbung eingegangen: Willkommen beim AirBook Gründer-Programm (${referenceNumber})`
+    : isFr
+    ? `Candidature reçue : Bienvenue dans le Programme Fondateur AirBook (${referenceNumber})`
+    : `Postulación Recibida: Bienvenido al Programa Fundador de AirBook (${referenceNumber})`;
+
+  const badgeText = isEn
+    ? 'AirBook Founding Program · Application Received'
+    : isDe
+    ? 'AirBook Gründer-Programm · Bewerbung Eingegangen'
+    : isFr
+    ? 'Programme Fondateur AirBook · Candidature Enregistrée'
+    : 'Programa de Clientes Fundadores · Postulación Registrada';
+
+  const headingText = isEn
+    ? `Thank you, ${applicantName}!`
+    : isDe
+    ? `Vielen Dank, ${applicantName}!`
+    : isFr
+    ? `Merci beaucoup, ${applicantName} !`
+    : `¡Muchas gracias, ${applicantName}!`;
+
+  const bodyP1 = isEn
+    ? `We have received your application for <strong>${businessName}</strong>. Our founding team is reviewing your details to ensure AirBook is the perfect fit for your studio.`
+    : isDe
+    ? `Wir haben Ihre Bewerbung für <strong>${businessName}</strong> erhalten. Unser Gründerteam prüft Ihre Angaben, um sicherzustellen, dass AirBook die perfekte Lösung für Ihren Salon ist.`
+    : isFr
+    ? `Nous avons bien reçu votre candidature pour <strong>${businessName}</strong>. Notre équipe fondatrice examine vos réponses afin de vérifier qu’AirBook est la solution idéale pour votre salon.`
+    : `Hemos recibido tu postulación para <strong>${businessName}</strong>. Nuestro equipo fundador está evaluando tu información para garantizar que AirBook sea la solución ideal para tu negocio.`;
+
+  const bodyP2 = isEn
+    ? 'We will review your application within 1 to 2 business days. If approved, you will receive an invitation email to activate your account with <strong>2 months 100% free</strong>.'
+    : isDe
+    ? 'Wir bearbeiten Ihre Bewerbung innerhalb von 1 bis 2 Werktagen. Nach der Freigabe erhalten Sie eine Einladung zur Aktivierung Ihres Kontos mit <strong>2 kostenlosen Monaten</strong>.'
+    : isFr
+    ? 'Votre dossier sera examiné sous 1 à 2 jours ouvrés. Dès validation, vous recevrez un e-mail d’invitation pour activer votre compte avec <strong>2 mois 100% gratuits</strong>.'
+    : 'Revisaremos tu postulación en un plazo de 1 a 2 días hábiles. Al ser aprobada, recibirás un correo de invitación con tu enlace directo para activar tu espacio de trabajo con <strong>2 meses 100% gratis</strong>.';
+
+  const refLabel = isEn ? 'Reference Number' : isDe ? 'Referenznummer' : isFr ? 'Référence de Dossier' : 'Número de Referencia';
+
+  // 1. Send via Resend API if configured
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM_EMAIL || 'AirBook Founding Team <welcome@getairbook.com>',
+          to: [email],
+          subject,
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 36px 24px; color: #0F172A; background-color: #ffffff; border-radius: 20px; border: 1px solid #E2E8F0;">
+              <div style="margin-bottom: 24px;">
+                <span style="display: inline-block; background-color: #E0F2FE; color: #0284C7; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 12px; border-radius: 9999px;">
+                  ${badgeText}
+                </span>
+              </div>
+              <h1 style="font-size: 24px; font-weight: 800; color: #0F172A; margin: 0 0 16px; line-height: 1.3;">
+                ${headingText}
+              </h1>
+              <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 16px;">
+                ${bodyP1}
+              </p>
+              <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 20px; margin: 20px 0;">
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; display: block; margin-bottom: 4px;">
+                  ${refLabel}
+                </span>
+                <span style="font-size: 16px; font-mono; font-weight: 800; color: #0F172A;">
+                  ${referenceNumber}
+                </span>
+              </div>
+              <p style="font-size: 14px; line-height: 1.6; color: #475569; margin: 0 0 24px;">
+                ${bodyP2}
+              </p>
+              <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0 16px;" />
+              <p style="font-size: 12px; color: #94A3B8; margin: 0; line-height: 1.5;">
+                AirBook Inc. · ${businessName} · founding@getairbook.com
+              </p>
+            </div>
+          `,
+        }),
+      });
+      if (res.ok) {
+        console.log(`[Resend] Founding application confirmation email delivered to ${email}`);
+        return { success: true, mode: 'resend' as const };
+      }
+    } catch (err) {
+      console.warn('[Resend] Error delivering founding application confirmation email:', err);
+    }
+  }
+
+  console.log(`[Founding Application Confirmation · Log] Application email recorded for ${applicantName} (${email}, Ref: ${referenceNumber})`);
+  return { success: true, mode: 'logged' as const };
+}
+
+

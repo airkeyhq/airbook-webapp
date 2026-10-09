@@ -25,6 +25,14 @@ if (typeof setInterval !== 'undefined') {
  */
 export function getClientIp(req: Request | NextRequest): string {
   const headers = req.headers;
+
+  // 1. Check Cloudflare connecting IP
+  const cfIp = headers.get('cf-connecting-ip');
+  if (cfIp && cfIp.trim() !== '' && cfIp.trim() !== '::1' && cfIp.trim() !== '127.0.0.1') {
+    return cfIp.trim();
+  }
+
+  // 2. Check X-Forwarded-For (first IP is the real client)
   const forwardedFor = headers.get('x-forwarded-for');
   if (forwardedFor) {
     const firstIp = forwardedFor.split(',')[0].trim();
@@ -33,14 +41,17 @@ export function getClientIp(req: Request | NextRequest): string {
     }
   }
 
-  const cfIp = headers.get('cf-connecting-ip');
-  if (cfIp) return cfIp.trim();
-
+  // 3. Check X-Real-IP
   const realIp = headers.get('x-real-ip');
-  if (realIp) return realIp.trim();
+  if (realIp && realIp.trim() !== '' && realIp.trim() !== '::1' && realIp.trim() !== '127.0.0.1') {
+    return realIp.trim();
+  }
 
-  const vercelIp = headers.get('x-vercel-ip-country') ? 'vercel-client' : null;
-  if (vercelIp) return vercelIp;
+  // 4. Check True-Client-IP / Fastly / Akamai
+  const trueClientIp = headers.get('true-client-ip');
+  if (trueClientIp && trueClientIp.trim() !== '') {
+    return trueClientIp.trim();
+  }
 
   return '127.0.0.1';
 }
