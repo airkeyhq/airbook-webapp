@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   COMPETITORS,
   CompetitorProfile,
@@ -28,7 +29,7 @@ import {
   Payment24Regular,
   Star24Filled,
   Warning24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   AppsListDetail24Regular,
   DocumentBulletList24Regular,
   PeopleCommunity24Regular,
@@ -213,7 +214,7 @@ export default function CompetitorsPage() {
     if (item.airbookStatus === 'live') {
       return (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-          <CheckmarkCircle24Filled className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+          <Icon regular={CheckmarkCircle24Regular} size="xs" className="text-emerald-500 flex-shrink-0" />
           <span>Live in AirBook</span>
         </span>
       );
@@ -255,7 +256,7 @@ export default function CompetitorsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-              <AppsListDetail24Regular className="w-3.5 h-3.5" />
+              <Icon regular={AppsListDetail24Regular} size="sm" />
               <span>Competitive Intelligence & Financial Pricing Suite</span>
             </div>
 
@@ -273,7 +274,7 @@ export default function CompetitorsPage() {
               href="/in/100tasks"
               className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2"
             >
-              <DocumentBulletList24Regular className="w-4 h-4 text-blue-500" />
+              <Icon regular={DocumentBulletList24Regular} size="sm" className="text-blue-500" />
               <span>View 100tasks Tracker</span>
             </Link>
           </div>
@@ -282,7 +283,7 @@ export default function CompetitorsPage() {
         {/* AirBook 10x Moat Ribbon */}
         <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3 relative z-10">
           <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-            <Sparkle24Regular className="w-3.5 h-3.5 text-blue-500" />
+            <Icon regular={Sparkle24Regular} size="sm" className="text-blue-500" />
             <span>AirBook Core Moat Pillars</span>
           </h3>
 
@@ -295,7 +296,7 @@ export default function CompetitorsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 text-emerald-500">
-                      <CheckmarkCircle24Filled className="w-4 h-4 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                       <span className="text-[10px] font-mono font-bold uppercase text-emerald-600 dark:text-emerald-400">
                         Moat Pillar #{idx + 1}
                       </span>
@@ -328,7 +329,7 @@ export default function CompetitorsPage() {
                 : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
             }`}
           >
-            <AppsListDetail24Regular className="w-4 h-4" />
+            <Icon regular={AppsListDetail24Regular} size="sm" />
             <span>Competitive Matrix & 35-Feature Teardown</span>
           </button>
 
@@ -340,7 +341,7 @@ export default function CompetitorsPage() {
                 : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
             }`}
           >
-            <Payment24Regular className="w-4 h-4" />
+            <Icon regular={Payment24Regular} size="sm" />
             <span>Financial Pricing Study & Unit Economics Suite</span>
             <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider ${
               activeMainTab === 'pricing' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-500'
@@ -362,7 +363,7 @@ export default function CompetitorsPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               {/* Search Input */}
               <div className="md:col-span-8 relative">
-                <Search24Regular className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+                <Icon regular={Search24Regular} size="sm" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -459,7 +460,7 @@ export default function CompetitorsPage() {
                   {/* Action Trigger Footer */}
                   <div className="pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors">
                     <span>Inspect Teardown</span>
-                    <ChevronRight24Regular className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <Icon regular={ChevronRight24Regular} size="sm" className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               );
@@ -471,7 +472,7 @@ export default function CompetitorsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-                  <Sparkle24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={Sparkle24Regular} size="sm" />
                   <span>Full Industry Benchmark · 35 Core Capabilities</span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-primary)]">
@@ -515,7 +516,7 @@ export default function CompetitorsPage() {
                       : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
                   }`}
                 >
-                  <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-emerald-400" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-400" />
                   <span>Live in AirBook</span>
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
                     selectedStatus === 'live' ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/5 text-[var(--text-muted)]'
@@ -584,7 +585,7 @@ export default function CompetitorsPage() {
 
                 {/* Matrix Search Input */}
                 <div className="relative sm:w-72 flex-shrink-0">
-                  <Search24Regular className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
+                  <Icon regular={Search24Regular} size="sm" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
                   <input
                     type="text"
                     value={matrixSearchQuery}
@@ -604,7 +605,7 @@ export default function CompetitorsPage() {
                     <th className="py-4 px-4 min-w-[220px]">Feature Dimension</th>
                     <th className="py-4 px-4 bg-blue-500/15 text-blue-600 dark:text-blue-400 font-black min-w-[240px] border-x border-blue-500/20">
                       <div className="flex items-center gap-1.5">
-                        <Sparkle24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-blue-500" />
                         <span>AirBook (Ours)</span>
                       </div>
                     </th>
@@ -764,7 +765,7 @@ export default function CompetitorsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-600 dark:text-amber-400">
-                  <Warning24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={Warning24Regular} size="sm" />
                   <span>Feature Gap Analysis & Roadmap Tracker ({GAP_ANALYSIS_FEATURES.length} Identified Gaps)</span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-primary)]">
@@ -780,7 +781,7 @@ export default function CompetitorsPage() {
                 className="btn-primary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2 flex-shrink-0"
               >
                 <span>View All Issues on Linear Roadmap</span>
-                <ArrowRight24Filled className="w-4 h-4" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             </div>
 
@@ -832,7 +833,7 @@ export default function CompetitorsPage() {
                       className="btn-secondary h-8 px-3 rounded-xl text-[11px] font-bold flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:border-blue-500"
                     >
                       <span>Open Spec</span>
-                      <Open24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Open24Filled} active size="sm" />
                     </Link>
                   </div>
                 </div>
@@ -921,7 +922,7 @@ export default function CompetitorsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-                  <Payment24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={Payment24Regular} size="sm" />
                   <span>Real-Time Financial Simulator</span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-primary)]">
@@ -1172,7 +1173,7 @@ export default function CompetitorsPage() {
           <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-6">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                <CheckmarkCircle24Filled className="w-3.5 h-3.5" />
+                <Icon regular={CheckmarkCircle24Regular} size="sm" />
                 <span>Institutional Unit Economics Model</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-primary)]">
@@ -1409,7 +1410,7 @@ export default function CompetitorsPage() {
                   onClick={() => setActiveCompetitor(null)}
                   className="btn-tertiary w-9 h-9 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} active size="sm" />
                 </button>
               </div>
 
@@ -1428,7 +1429,7 @@ export default function CompetitorsPage() {
                 {/* Pricing Breakdown Card */}
                 <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <Payment24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Payment24Regular} size="sm" />
                     <span>Pricing & Contract Terms</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -1461,7 +1462,7 @@ export default function CompetitorsPage() {
                 {activeCompetitor.darkPatterns.length > 0 && (
                   <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 space-y-2">
                     <h4 className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                      <Warning24Regular className="w-3.5 h-3.5" />
+                      <Icon regular={Warning24Regular} size="sm" />
                       <span>Dark Pattern & Lock-In Forensics</span>
                     </h4>
                     <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
@@ -1478,7 +1479,7 @@ export default function CompetitorsPage() {
                 {/* AirBook 10x Moat Advantage */}
                 <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-2">
                   <h4 className="text-xs font-black text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                    <Sparkle24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Sparkle24Regular} size="sm" />
                     <span>How AirBook Wins (10x Advantage)</span>
                   </h4>
                   <p className="text-xs text-[var(--text-primary)] font-medium leading-relaxed">
@@ -1495,7 +1496,7 @@ export default function CompetitorsPage() {
                     <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                       {activeCompetitor.strengths.map((str, idx) => (
                         <li key={idx} className="flex items-start gap-1.5">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0 mt-0.5" />
                           <span>{str}</span>
                         </li>
                       ))}
@@ -1509,7 +1510,7 @@ export default function CompetitorsPage() {
                     <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                       {activeCompetitor.weaknesses.map((wk, idx) => (
                         <li key={idx} className="flex items-start gap-1.5">
-                          <Dismiss24Filled className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 mt-0.5" />
+                          <Icon filled={Dismiss24Filled} active size="sm" className="text-rose-500 flex-shrink-0 mt-0.5" />
                           <span>{wk}</span>
                         </li>
                       ))}
@@ -1525,7 +1526,7 @@ export default function CompetitorsPage() {
                   className="btn-primary h-10 px-5 rounded-2xl text-xs font-bold flex items-center gap-2"
                 >
                   <span>Review Task #4 in 100tasks</span>
-                  <ArrowRight24Filled className="w-4 h-4" />
+                  <Icon filled={ArrowRight24Filled} active size="sm" />
                 </Link>
                 <button
                   onClick={() => setActiveCompetitor(null)}

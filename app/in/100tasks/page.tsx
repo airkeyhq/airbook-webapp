@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   VENTURE_STAGES,
   VENTURE_TASKS,
@@ -14,7 +15,7 @@ import {
 } from './data';
 import {
   DocumentBulletList24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Clock24Regular,
   Dismiss24Filled,
   Sparkle24Regular,
@@ -242,21 +243,21 @@ export default function Venture100TasksPage() {
       case 'verified_codebase':
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
-            <ShieldCheckmark24Regular className="w-3 h-3" />
+            <Icon regular={ShieldCheckmark24Regular} size="xs" />
             <span>{t('tasksVerifiedInCodebase')}</span>
           </span>
         );
       case 'pending_founder_action':
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
-            <Clock24Regular className="w-3 h-3" />
+            <Icon regular={Clock24Regular} size="xs" />
             <span>{t('tasksPendingFounderAction')}</span>
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 whitespace-nowrap">
-            <Clock24Regular className="w-3 h-3" />
+            <Icon regular={Clock24Regular} size="xs" />
             <span>In Pipeline</span>
           </span>
         );
@@ -270,7 +271,7 @@ export default function Venture100TasksPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-              <DocumentBulletList24Regular className="w-3.5 h-3.5" />
+              <Icon regular={DocumentBulletList24Regular} size="sm" />
               <span>Venture Builder Methodology · Evidence-Verified</span>
             </div>
 
@@ -289,7 +290,7 @@ export default function Venture100TasksPage() {
               onClick={handleExport}
               className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2"
             >
-              <ArrowDownload24Filled className="w-4 h-4" />
+              <Icon filled={ArrowDownload24Filled} active size="sm" />
               <span>{t('tasksExportSummary')}</span>
             </button>
             <button
@@ -297,7 +298,7 @@ export default function Venture100TasksPage() {
               className="btn-tertiary h-10 px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 text-[var(--text-muted)] hover:text-rose-500"
               title={t('tasksResetProgress')}
             >
-              <ArrowReset24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowReset24Filled} active size="sm" />
               <span>{t('tasksResetProgress')}</span>
             </button>
           </div>
@@ -395,7 +396,7 @@ export default function Venture100TasksPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search Input */}
           <div className="md:col-span-5 relative">
-            <Search24Regular className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+            <Icon regular={Search24Regular} size="sm" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -524,9 +525,9 @@ export default function Venture100TasksPage() {
                     {stageCompleted}/{stageTasks.length} Done
                   </span>
                   {isExpanded ? (
-                    <ChevronDown24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+                    <Icon regular={ChevronDown24Regular} size="sm" className="text-[var(--text-muted)]" />
                   ) : (
-                    <ChevronRight24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+                    <Icon regular={ChevronRight24Regular} size="sm" className="text-[var(--text-muted)]" />
                   )}
                 </div>
               </button>
@@ -567,7 +568,7 @@ export default function Venture100TasksPage() {
                             title="Click to advance status"
                           >
                             {currentStatus === 'completed' ? (
-                              <Checkmark24Regular className="w-4 h-4" />
+                              <Icon regular={Checkmark24Regular} size="sm" />
                             ) : (
                               <span className="text-[11px] font-mono font-bold">
                                 {task.id}
@@ -586,7 +587,7 @@ export default function Venture100TasksPage() {
                               {renderVerificationBadge(task.verificationStatus)}
                               {hasNotes && (
                                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                  <Edit24Regular className="w-3 h-3" />
+                                  <Icon regular={Edit24Regular} size="xs" />
                                   <span>Notes</span>
                                 </span>
                               )}
@@ -622,7 +623,7 @@ export default function Venture100TasksPage() {
                               className="btn-secondary h-8 px-2.5 rounded-xl text-[11px] font-bold flex items-center gap-1 text-blue-500"
                               title={task.airbookModuleLink.label}
                             >
-                              <Open24Filled className="w-3 h-3" />
+                              <Icon filled={Open24Filled} active size="xs" />
                               <span className="hidden sm:inline">
                                 {task.airbookModuleLink.label}
                               </span>
@@ -633,7 +634,7 @@ export default function Venture100TasksPage() {
                             onClick={() => setActiveTask(task)}
                             className="btn-tertiary h-8 w-8 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                           >
-                            <ChevronRight24Regular className="w-4 h-4" />
+                            <Icon regular={ChevronRight24Regular} size="sm" />
                           </button>
                         </div>
                       </div>
@@ -691,7 +692,7 @@ export default function Venture100TasksPage() {
                   onClick={() => setActiveTask(null)}
                   className="btn-tertiary w-9 h-9 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} active size="sm" />
                 </button>
               </div>
 
@@ -711,7 +712,7 @@ export default function Venture100TasksPage() {
                 <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                      <ShieldCheckmark24Regular className="w-4 h-4" />
+                      <Icon regular={ShieldCheckmark24Regular} size="sm" />
                       <span>{t('tasksResolutionAudit')}</span>
                     </h4>
                     {renderVerificationBadge(activeTask.verificationStatus)}
@@ -732,7 +733,7 @@ export default function Venture100TasksPage() {
                 {/* Deliverables & Subtask Evidence Breakdown */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <Tag24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Tag24Regular} size="sm" />
                     <span>{t('tasksDeliverablesAnswers')}</span>
                   </h4>
                   <div className="space-y-2.5">
@@ -744,11 +745,11 @@ export default function Venture100TasksPage() {
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             {item.status === 'completed' ? (
-                              <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                              <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                             ) : item.status === 'in_progress' ? (
-                              <Clock24Regular className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                              <Icon regular={Clock24Regular} size="sm" className="text-blue-500 flex-shrink-0" />
                             ) : (
-                              <Document24Regular className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
+                              <Icon regular={Document24Regular} size="sm" className="text-[var(--text-muted)] flex-shrink-0" />
                             )}
                             <span className="text-xs font-bold text-[var(--text-primary)]">
                               {item.name}
@@ -757,7 +758,7 @@ export default function Venture100TasksPage() {
 
                           {item.fileRef && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                              <Code24Regular className="w-3 h-3" />
+                              <Icon regular={Code24Regular} size="xs" />
                               <span>{item.fileRef}</span>
                             </span>
                           )}
@@ -775,7 +776,7 @@ export default function Venture100TasksPage() {
                 {activeTask.tips && (
                   <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-1.5">
                     <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                      <Sparkle24Regular className="w-3.5 h-3.5" />
+                      <Icon regular={Sparkle24Regular} size="sm" />
                       <span>{t('tasksProTips')}</span>
                     </h4>
                     <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -819,7 +820,7 @@ export default function Venture100TasksPage() {
                       className="btn-primary h-9 px-3.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
                     >
                       <span>Open</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   </div>
                 )}
@@ -827,7 +828,7 @@ export default function Venture100TasksPage() {
                 {/* Execution Scratchpad Notes */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <Edit24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Edit24Regular} size="sm" />
                     <span>{t('tasksNotesTitle')}</span>
                   </h4>
                   <textarea
@@ -872,7 +873,7 @@ export default function Venture100TasksPage() {
                       : 'btn-primary'
                   }`}
                 >
-                  <Checkmark24Regular className="w-4 h-4" />
+                  <Icon regular={Checkmark24Regular} size="sm" />
                   <span>
                     {taskStatuses[activeTask.id] === 'completed'
                       ? 'Mark Incomplete'

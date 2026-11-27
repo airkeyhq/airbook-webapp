@@ -9,6 +9,7 @@ import { signIn, signUp } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { FloatingInput } from '@/components/FloatingInput';
 import { Dismiss24Filled, ArrowRight24Filled, Sparkle24Filled, Mail24Regular, LockClosed24Regular, Building24Regular, ShieldCheckmark24Regular } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
 
 interface AuthModalProps {
@@ -100,7 +101,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="p-1.5 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="lg" />
             </button>
           </div>
 
@@ -142,7 +143,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   placeholder="e.g. Glow Beauty Studio"
                   value={workspaceName}
                   onChange={(e) => setWorkspaceNameInput(e.target.value)}
-                  icon={<Building24Regular className="w-4 h-4" />}
+                  icon={<Icon regular={Building24Regular} size="md" />}
                 />
 
                 <FloatingInput
@@ -163,12 +164,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               placeholder="name@business.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              icon={<Mail24Regular className="w-4 h-4" />}
+              icon={<Icon regular={Mail24Regular} size="md" />}
             />
 
             {message && (
               <div className="p-2.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs flex items-center gap-2">
-                <ShieldCheckmark24Regular className="w-4 h-4 flex-shrink-0" />
+                <Icon regular={ShieldCheckmark24Regular} size="md" />
                 <span>{message}</span>
               </div>
             )}
@@ -179,7 +180,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               disabled={loading}
               className="btn-primary w-full disabled:opacity-50 mt-2"
             >
-              <Sparkle24Filled className="w-4 h-4" />
+              <Icon filled={Sparkle24Filled} size="md" />
               <span>{loading ? 'Sending...' : 'Send Magic Link'}</span>
             </motion.button>
           </form>

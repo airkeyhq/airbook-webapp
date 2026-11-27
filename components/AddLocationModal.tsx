@@ -8,12 +8,13 @@ import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import {
-  Building24Filled,
+  Building24Regular,
   Dismiss24Filled,
   Add24Filled,
   Save24Filled,
   Sparkle24Filled,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface AddLocationModalProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
           <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center flex-shrink-0">
-                <Building24Filled className="w-5 h-5 text-blue-600" />
+                <Icon regular={Building24Regular} size="lg" className="text-blue-600" />
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">
@@ -133,7 +134,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="lg" />
             </button>
           </div>
 
@@ -206,7 +207,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
                 disabled={isSubmitting}
                 className="btn-primary"
               >
-                <Add24Filled className="w-4 h-4" />
+                <Icon filled={Add24Filled} size="md" />
                 <span>{isSubmitting ? 'Deploying Branch…' : 'Deploy Location Branch'}</span>
               </button>
             </div>

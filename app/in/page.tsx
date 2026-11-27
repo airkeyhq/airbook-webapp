@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Image24Regular,
   Code24Regular,
@@ -108,7 +109,7 @@ export default function InternalHubPage() {
       <div className="p-8 sm:p-12 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] relative overflow-hidden shadow-xs">
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-            <LockClosed24Regular className="w-3.5 h-3.5" />
+            <Icon regular={LockClosed24Regular} size="sm" />
             <span>AirBook Engineering & Product Suite</span>
           </div>
 
@@ -129,7 +130,7 @@ export default function InternalHubPage() {
       {/* Internal Module Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {internalModules.map((mod) => {
-          const Icon = mod.icon;
+          const ModIcon = mod.icon;
           return (
             <Link
               key={mod.href}
@@ -139,7 +140,7 @@ export default function InternalHubPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="w-12 h-12 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] group-hover:scale-105 transition-transform duration-150">
-                    <Icon className="w-6 h-6 text-blue-500" />
+                    <Icon regular={ModIcon} size="lg" className="text-blue-500" />
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-black/5 dark:bg-white/5 border ${mod.badgeColor}`}>
                     {mod.tag}
@@ -158,7 +159,7 @@ export default function InternalHubPage() {
 
               <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors">
                 <span>Launch Workspace</span>
-                <ArrowRight24Filled className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <Icon filled={ArrowRight24Filled} active size="sm" className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           );

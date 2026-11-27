@@ -9,6 +9,7 @@ import { useToast } from '@/components/Toast';
 import { CustomSelect } from './CustomSelect';
 import { FloatingInput, FloatingTextarea } from './FloatingInput';
 import { EmptyState } from './EmptyState';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Send24Filled,
   Send24Regular,
@@ -312,7 +313,7 @@ export const MarketingModule: React.FC = () => {
             onClick={() => setIsCampaignDrawerOpen(true)}
             className="btn-primary self-start sm:self-auto flex-shrink-0"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} size="sm" />
             <span>{t('newBroadcastCampaign')}</span>
           </button>
         )}
@@ -323,7 +324,7 @@ export const MarketingModule: React.FC = () => {
         {/* Metric 1: SMS Credits Balance */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
-            <Phone24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Phone24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               {t('smsCreditsBalance')}
             </span>
@@ -337,7 +338,7 @@ export const MarketingModule: React.FC = () => {
               onClick={() => setIsTopUpOpen(true)}
               className="px-3.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Add24Filled className="w-3.5 h-3.5" />
+              <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
               <span>{t('topUpBtn')}</span>
             </button>
           </div>
@@ -346,7 +347,7 @@ export const MarketingModule: React.FC = () => {
         {/* Metric 2: Email Marketing Engine */}
         <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
-            <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Mail24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               {t('emailMarketing')}
             </span>
@@ -382,7 +383,7 @@ export const MarketingModule: React.FC = () => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
-                  <Star24Regular className="w-5 h-5" />
+                  <Icon regular={Star24Regular} size="md" />
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -433,7 +434,7 @@ export const MarketingModule: React.FC = () => {
                   className="w-8 h-8 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                   aria-label={t('moreActions')}
                 >
-                  <MoreHorizontal24Filled className="w-4 h-4" />
+                  <Icon filled={MoreHorizontal24Filled} size="sm" />
                 </button>
 
                 <AnimatePresence>
@@ -454,7 +455,7 @@ export const MarketingModule: React.FC = () => {
                         }}
                         className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-left"
                       >
-                        <Send24Filled className="w-3.5 h-3.5 text-[var(--text-primary)] flex-shrink-0" />
+                        <Icon filled={Send24Filled} size="sm" tone="primary" className="w-3.5 h-3.5 flex-shrink-0" />
                         <span>{testSmsSending ? t('sendingTestState') : t('sendTestSms')}</span>
                       </button>
                     </motion.div>
@@ -470,7 +471,7 @@ export const MarketingModule: React.FC = () => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
-                  <ArrowRepeatAll24Regular className="w-5 h-5" />
+                  <Icon regular={ArrowRepeatAll24Regular} size="md" />
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -553,11 +554,11 @@ export const MarketingModule: React.FC = () => {
                 <div className="flex items-start sm:items-center gap-3.5">
                   <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-primary)] flex items-center justify-center flex-shrink-0">
                     {camp.channel === 'sms' ? (
-                      <Phone24Regular className="w-5 h-5" />
+                      <Icon regular={Phone24Regular} size="md" />
                     ) : camp.channel === 'email' ? (
-                      <Mail24Regular className="w-5 h-5" />
+                      <Icon regular={Mail24Regular} size="md" />
                     ) : (
-                      <Send24Regular className="w-5 h-5" />
+                      <Icon regular={Send24Regular} size="md" />
                     )}
                   </div>
 
@@ -637,7 +638,7 @@ export const MarketingModule: React.FC = () => {
                       className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors flex items-center justify-center text-[var(--text-secondary)] cursor-pointer"
                       aria-label={t('close')}
                     >
-                      <Dismiss24Filled className="w-4 h-4" />
+                      <Icon filled={Dismiss24Filled} size="sm" />
                     </button>
                   </div>
 
@@ -729,7 +730,7 @@ export const MarketingModule: React.FC = () => {
                         disabled={sendingCampaign}
                         className="btn-primary disabled:opacity-50"
                       >
-                        <Send24Filled className="w-4 h-4" />
+                        <Icon filled={Send24Filled} size="sm" />
                         <span>{sendingCampaign ? t('dispatchingState') : t('launchCampaign')}</span>
                       </button>
                     </div>
@@ -783,7 +784,7 @@ export const MarketingModule: React.FC = () => {
                       className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors flex items-center justify-center text-[var(--text-secondary)] cursor-pointer"
                       aria-label={t('close')}
                     >
-                      <Dismiss24Filled className="w-4 h-4" />
+                      <Icon filled={Dismiss24Filled} size="sm" />
                     </button>
                   </div>
 

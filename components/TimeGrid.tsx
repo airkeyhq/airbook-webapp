@@ -5,6 +5,9 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { format, addDays, startOfWeek, isSameDay, parseISO } from 'date-fns';
 import { EmptyState } from './EmptyState';
+import { InlineIndicator } from '@/components/primitives/Indicator';
+import { NowLine } from '@/components/primitives/NowLine';
+import { Icon } from '@/components/primitives/Icon';
 import { Clock24Regular, Add24Filled, Person24Regular, Money24Regular, CheckmarkCircle24Regular, Eye24Filled, Payment24Filled, Calendar24Filled, Sparkle24Filled, CheckmarkCircle24Filled, Calendar24Regular } from '@fluentui/react-icons';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i); // 0:00 to 23:00
@@ -193,7 +196,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
             onClick={() => openBookingDrawer()}
             className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} size="md" />
             <span>{t('newAppointment')}</span>
           </button>
         </div>
@@ -264,7 +267,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                       }}
                       className="px-3.5 py-2 rounded-2xl bg-black text-white dark:bg-white dark:text-black text-xs font-extrabold shadow-sm hover:opacity-90 flex items-center gap-1.5"
                     >
-                      <Eye24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Eye24Filled} size="sm" />
                       <span>{t('details')}</span>
                     </button>
                   </div>
@@ -363,9 +366,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                       </div>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] flex-shrink-0">
-                      {staffApts.length}
-                    </span>
+                    <InlineIndicator value={staffApts.length} variant="outlined" rolling />
                   </div>
                 );
               })}
@@ -380,13 +381,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
           <div className="sticky left-0 w-14 sm:w-16 flex-shrink-0 z-10 bg-[var(--grid-bg)] border-r border-[var(--border-subtle)]">
             {/* Current Time Dot */}
             {nowOffsetPx !== null && (
-              <div 
-                className="absolute right-0 z-20 flex items-center justify-center translate-x-[4px] -translate-y-1/2 opacity-90 pointer-events-none"
-                style={{ top: `${nowOffsetPx}px` }}
-              >
-                <span className="absolute w-3.5 h-3.5 rounded-full bg-[#FF3B30]/40 animate-ping" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B30] shadow-sm z-10" />
-              </div>
+              <NowLine
+                orientation="horizontal"
+                offset={nowOffsetPx}
+                showLine={false}
+                className="!left-auto !right-[-5px] z-20 opacity-90"
+              />
             )}
 
             {/* Time Labels */}
@@ -406,12 +406,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
           <div className="flex flex-1 min-w-0 relative">
             {/* Full-width Continuous Current Time Line connected to left time dot */}
             {nowOffsetPx !== null && (
-              <div 
-                className="absolute left-0 right-0 z-30 -translate-y-1/2 pointer-events-none"
-                style={{ top: `${nowOffsetPx}px` }}
-              >
-                <div className="h-[2px] w-full bg-[#FF3B30] shadow-sm" />
-              </div>
+              <NowLine orientation="horizontal" offset={nowOffsetPx} showDot={false} />
             )}
 
             {/* DAY VIEW: Staff Member Columns */}
@@ -437,7 +432,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                             className="group h-20 w-full border-b border-[var(--border-subtle)] relative cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center"
                           >
                             <span className="opacity-0 group-hover:opacity-100 transition-opacity absolute px-2 py-1 rounded-md bg-black/80 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm z-20">
-                              <Add24Filled className="w-3 h-3" /> {t('bookSlot')} {staff.name.split(' ')[0]}
+                              <Icon filled={Add24Filled} size="xs" /> {t('bookSlot')} {staff.name.split(' ')[0]}
                             </span>
                           </div>
                         );
@@ -524,7 +519,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ onSelectAppointment }) => {
                             className="group h-20 w-full border-b border-[var(--border-subtle)] relative cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center"
                           >
                             <span className="opacity-0 group-hover:opacity-100 transition-opacity absolute px-2 py-1 rounded-md bg-black/80 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm z-20">
-                              <Add24Filled className="w-3 h-3" /> {t('new')}
+                              <Icon filled={Add24Filled} size="xs" /> {t('new')}
                             </span>
                           </div>
                         );

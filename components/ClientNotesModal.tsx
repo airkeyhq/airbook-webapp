@@ -7,6 +7,8 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
 import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
+import { DatePicker } from '@/components/primitives/DatePicker';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Save24Filled,
   Dismiss24Filled,
@@ -17,7 +19,7 @@ import {
   Calendar24Filled,
   Calendar24Regular,
   Delete24Filled,
-  Shield24Filled,
+  Shield24Regular,
   DocumentSignature24Regular,
   DocumentSignature24Filled,
   DocumentBulletList24Regular,
@@ -30,7 +32,7 @@ import {
   Camera24Filled,
   Image24Regular,
   Eye24Filled,
-  Sparkle24Filled,
+  Sparkle24Regular,
 } from '@fluentui/react-icons';
 import { WaiverPadModal } from '@/components/WaiverPadModal';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
@@ -509,7 +511,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   className="w-9 h-9 rounded-xl bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center justify-center"
                   title={`Call ${phone}`}
                 >
-                  <Phone24Regular className="w-4 h-4" />
+                  <Icon regular={Phone24Regular} size="sm" />
                 </a>
               )}
               {email && (
@@ -518,7 +520,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   className="w-9 h-9 rounded-xl bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center justify-center"
                   title={`Email ${email}`}
                 >
-                  <Mail24Regular className="w-4 h-4" />
+                  <Icon regular={Mail24Regular} size="sm" />
                 </a>
               )}
               <button
@@ -526,7 +528,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                 onClick={onClose}
                 className="w-9 h-9 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center justify-center cursor-pointer"
               >
-                <Dismiss24Filled className="w-4 h-4" />
+                <Icon filled={Dismiss24Filled} size="sm" />
               </button>
             </div>
           </div>
@@ -565,7 +567,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                   badge: totalVisits > 0 ? totalVisits : undefined,
                 },
               ].map((tab) => {
-                const Icon = tab.icon;
+                const TabIcon = tab.icon;
                 const isActive = activeTab === tab.id;
                 return (
                   <button
@@ -578,7 +580,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] font-semibold'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <Icon regular={TabIcon} size="sm" className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span className="truncate text-[10px] sm:text-xs font-bold">{tab.label}</span>
                     {tab.badge !== undefined && (
                       <span className="hidden sm:inline-flex px-1.5 py-0.2 rounded-full bg-black/5 dark:bg-white/10 text-[9px] font-mono font-black">
@@ -613,7 +615,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         onClick={handleOpenAddSpec}
                         className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1.5"
                       >
-                        <Add24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
                         <span>{t('addCustomSpec')}</span>
                       </button>
                     )}
@@ -684,7 +686,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       {selectedIndustry !== 'custom' && activePreset?.suggestedValues && activePreset.suggestedValues.length > 0 && (
                         <div className="space-y-1.5 pt-1">
                           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-                            <Sparkle24Filled className="w-3.5 h-3.5 text-blue-500" />
+                            <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-blue-500" />
                             <span className="text-[10px] uppercase font-bold tracking-wider">
                               {t('smartSuggestions')}
                             </span>
@@ -725,7 +727,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                           onClick={handleAddSpec}
                           className="btn-primary py-2 px-4 text-xs"
                         >
-                          <Add24Filled className="w-3.5 h-3.5" />
+                          <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
                           <span>{t('addCustomSpec')}</span>
                         </button>
                       </div>
@@ -755,7 +757,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                             className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors flex-shrink-0 cursor-pointer"
                             title="Delete Spec"
                           >
-                            <Delete24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Delete24Filled} size="sm" className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ))}
@@ -785,7 +787,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       onClick={() => setIsAddingTag(!isAddingTag)}
                       className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer inline-flex items-center gap-1"
                     >
-                      <Add24Filled className="w-3 h-3" />
+                      <Icon filled={Add24Filled} size="xs" />
                       <span>{t('addCustomTag')}</span>
                     </button>
                   </div>
@@ -877,7 +879,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       onClick={() => setIsAddingPhoto(true)}
                       className="btn-primary py-1.5 px-3 text-xs flex items-center gap-1.5"
                     >
-                      <Camera24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Camera24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('addBeforeAfterPhoto')}</span>
                     </button>
                   )}
@@ -893,11 +895,16 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         value={photoTitle}
                         onChange={(e) => setPhotoTitle(e.target.value)}
                       />
-                      <FloatingInput
+                      <DatePicker
+                        floating
                         label={t('sessionDate')}
-                        type="date"
-                        value={photoDate}
-                        onChange={(e) => setPhotoDate(e.target.value)}
+                        value={photoDate ? new Date(`${photoDate}T00:00:00`) : new Date()}
+                        onChange={(d) => {
+                          const yyyy = d.getFullYear();
+                          const mm = String(d.getMonth() + 1).padStart(2, '0');
+                          const dd = String(d.getDate()).padStart(2, '0');
+                          setPhotoDate(`${yyyy}-${mm}-${dd}`);
+                        }}
                       />
                     </div>
 
@@ -920,7 +927,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                               className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors cursor-pointer"
                               title="Remove"
                             >
-                              <Dismiss24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ) : (
@@ -932,7 +939,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                               onChange={(e) => handleImageFile(e, 'before')}
                             />
                             <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-[var(--text-muted)] group-hover:text-blue-500">
-                              <Camera24Regular className="w-5 h-5" />
+                              <Icon regular={Camera24Regular} size="md" />
                             </div>
                             <div>
                               <p className="text-xs font-bold text-[var(--text-primary)]">{t('photoBefore')}</p>
@@ -959,7 +966,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                               className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors cursor-pointer"
                               title="Remove"
                             >
-                              <Dismiss24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ) : (
@@ -971,7 +978,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                               onChange={(e) => handleImageFile(e, 'after')}
                             />
                             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
-                              <Sparkle24Filled className="w-5 h-5 text-blue-500" />
+                              <Icon regular={Sparkle24Regular} size="md" className="text-blue-500" />
                             </div>
                             <div>
                               <p className="text-xs font-bold text-[var(--text-primary)]">{t('photoAfter')}</p>
@@ -1009,7 +1016,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         onClick={handleAddPhotoRecord}
                         className="btn-primary py-2 px-4 text-xs"
                       >
-                        <Camera24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Camera24Filled} size="sm" className="w-3.5 h-3.5" />
                         <span>{t('addBeforeAfterPhoto')}</span>
                       </button>
                     </div>
@@ -1055,7 +1062,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                                 className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                                 title={t('deletePhotoConfirm')}
                               >
-                                <Delete24Filled className="w-3.5 h-3.5" />
+                                <Icon filled={Delete24Filled} size="sm" className="w-3.5 h-3.5" />
                               </button>
                             </div>
 
@@ -1096,7 +1103,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
 
                             {item.notes && (
                               <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 text-[11px] text-[var(--text-secondary)] flex items-start gap-1.5 leading-relaxed">
-                                <Note24Regular className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
+                                <Icon regular={Note24Regular} size="sm" className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
                                 <span>{item.notes}</span>
                               </div>
                             )}
@@ -1121,9 +1128,9 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                     }`}>
                       {isKycVerifiedState ? (
-                        <ShieldCheckmark24Filled className="w-5 h-5 text-emerald-500" />
+                        <Icon regular={ShieldCheckmark24Regular} size="md" className="text-emerald-500" />
                       ) : (
-                        <Shield24Filled className="w-5 h-5 text-[#2BB5FF]" />
+                        <Icon regular={Shield24Regular} size="md" className="text-[#2BB5FF]" />
                       )}
                     </div>
                     <div className="min-w-0">
@@ -1153,7 +1160,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       onClick={() => setIsKycModalOpen(true)}
                       className="btn-primary py-2 px-3.5 text-xs flex-shrink-0 self-start sm:self-center"
                     >
-                      <ShieldCheckmark24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ShieldCheckmark24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('verifyIdentity')}</span>
                     </button>
                   )}
@@ -1175,7 +1182,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       onClick={() => setIsWaiverModalOpen(true)}
                       className="btn-primary py-1.5 px-3 text-xs"
                     >
-                      <DocumentSignature24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={DocumentSignature24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('signNewWaiver')}</span>
                     </button>
                   )}
@@ -1359,7 +1366,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                 onClick={handleSaveClient}
                 className="btn-primary w-full disabled:opacity-50"
               >
-                <Save24Filled className="w-4 h-4" />
+                <Icon filled={Save24Filled} size="sm" />
                 <span>{isSaving ? t('saving') : t('save')}</span>
               </button>
 
@@ -1374,7 +1381,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                       : 'bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400'
                   }`}
                 >
-                  <Delete24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Delete24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{confirmDelete ? t('confirmDeleteClient') : t('deleteClientRecord')}</span>
                 </button>
               )}
@@ -1431,7 +1438,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                 onClick={() => setViewingPhoto(null)}
                 className="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
               >
-                <Dismiss24Filled className="w-4 h-4" />
+                <Icon filled={Dismiss24Filled} size="sm" />
               </button>
             </div>
             <img

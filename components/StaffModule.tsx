@@ -8,6 +8,7 @@ import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
+import { Icon } from '@/components/primitives/Icon';
 import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -158,7 +159,7 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
     <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 space-y-3.5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <label className="text-xs font-extrabold text-[var(--text-primary)] flex items-center gap-1.5">
-          <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+          <Icon regular={Clock24Regular} size="sm" tone="secondary" />
           <span>{t('workingShiftsAndHours')}</span>
         </label>
         <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full border border-[var(--border-subtle)]">
@@ -175,7 +176,7 @@ const StaffScheduleConfigurator: React.FC<StaffScheduleConfiguratorProps> = ({ s
           onClick={applyDefaultWeekdays}
           className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-black/5 dark:bg-white/10 text-[var(--text-primary)] hover:bg-black/10 transition-colors flex items-center gap-1"
         >
-          <Sparkle24Filled className="w-3 h-3 text-[var(--text-secondary)]" />
+          <Icon filled={Sparkle24Filled} size="xs" tone="secondary" />
           <span>{t('applyDefaultWeekdays')}</span>
         </button>
         <button
@@ -701,7 +702,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
             onClick={() => setIsAddModalOpen(true)}
             className="btn-primary self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4 flex-shrink-0" />
+            <Icon filled={Add24Filled} size="sm" className="flex-shrink-0" />
             <span>{t('addStaffMember')}</span>
           </motion.button>
         )}
@@ -731,7 +732,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <People24Regular className="w-4 h-4" />
+              <Icon regular={People24Regular} size="sm" />
               <span>{t('currentTeam')}</span>
             </button>
             <button
@@ -743,7 +744,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <Mail24Regular className="w-4 h-4" />
+              <Icon regular={Mail24Regular} size="sm" />
               <span>{t('pendingInvites')}</span>
               {pendingInvitesList.length > 0 && (
                 <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-accent-primary)] text-white text-[10px] font-extrabold">
@@ -761,7 +762,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start sm:items-center gap-3">
                 <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex-shrink-0">
-                  <Color24Regular className="w-5 h-5" />
+                  <Icon regular={Color24Regular} size="md" />
                 </div>
                 <div>
                   <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
@@ -783,7 +784,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Sparkle24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('colorModeAutoBalanced')}</span>
                 </button>
                 <button
@@ -795,7 +796,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Edit24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Edit24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('colorModeCustom')}</span>
                 </button>
               </div>
@@ -902,7 +903,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           {/* Invite Form Card */}
           <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Add24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Add24Regular} size="sm" tone="secondary" />
               <span>{t('inviteTeamMembers')}</span>
             </h3>
             <form onSubmit={handleSendInvite} className="space-y-3.5">
@@ -942,7 +943,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   disabled={sendingInvite}
                   className="btn-primary"
                 >
-                  <Mail24Filled className="w-4 h-4" />
+                  <Icon filled={Mail24Filled} size="sm" />
                   <span>{sendingInvite ? t('saving') : t('invite')}</span>
                 </motion.button>
               </div>
@@ -952,7 +953,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           {/* Pending Invites List & Empty State */}
           <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Mail24Regular} size="sm" tone="secondary" />
               <span>{t('pendingInvites')}</span>
             </h3>
 
@@ -985,7 +986,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       onClick={() => handleRevokeInvite(inv.id)}
                       className="px-3.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors flex items-center gap-1.5"
                     >
-                      <Dismiss24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('revokeInvite')}</span>
                     </button>
                   </div>
@@ -1069,7 +1070,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         onClick={() => setSelectedStaffForEdit(null)}
                         className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                       >
-                        <Dismiss24Filled className="w-5 h-5" />
+                        <Icon filled={Dismiss24Filled} size="md" />
                       </button>
                     </div>
 
@@ -1155,7 +1156,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         disabled={submitting}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        <Save24Filled className="w-4 h-4" />
+                        <Icon filled={Save24Filled} size="sm" />
                         <span>{submitting ? t('saving') : t('save')}</span>
                       </button>
 
@@ -1165,7 +1166,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         onClick={() => setShowMoreActions(!showMoreActions)}
                         className="btn-secondary w-full flex items-center justify-center gap-2 text-xs font-bold"
                       >
-                        <MoreHorizontal24Filled className="w-4 h-4" />
+                        <Icon filled={MoreHorizontal24Filled} size="sm" />
                         <span>{t('moreActions')}</span>
                       </button>
 
@@ -1183,7 +1184,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                               onClick={handleToggleActive}
                               className="w-full py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-primary)] text-xs font-bold transition-all flex items-center justify-center gap-2"
                             >
-                              <DismissCircle24Filled className="w-4 h-4 text-amber-500" />
+                              <Icon filled={DismissCircle24Filled} size="sm" className="text-amber-500" />
                               <span>{selectedStaffForEdit.isActive !== false ? t('temporarilyDeactivate') : t('activeOnShift')}</span>
                             </button>
 
@@ -1193,7 +1194,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                               onClick={handleDeleteStaff}
                               className="w-full py-2.5 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-all flex items-center justify-center gap-2"
                             >
-                              <Delete24Filled className="w-4 h-4" />
+                              <Icon filled={Delete24Filled} size="sm" />
                               <span>{t('removeTeamMember')}</span>
                             </button>
                           </motion.div>
@@ -1242,7 +1243,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         onClick={() => setIsAddModalOpen(false)}
                         className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                       >
-                        <Dismiss24Filled className="w-5 h-5" />
+                        <Icon filled={Dismiss24Filled} size="md" />
                       </button>
                     </div>
                     <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -1316,7 +1317,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                         disabled={submitting}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        <Save24Filled className="w-4 h-4" />
+                        <Icon filled={Save24Filled} size="sm" />
                         <span>{submitting ? t('saving') : t('save')}</span>
                       </button>
                     </div>

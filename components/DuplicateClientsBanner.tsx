@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Sparkle24Regular, ChevronRight24Filled } from '@fluentui/react-icons';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import type { DuplicateGroup, ClientItemLike } from '@/lib/client-duplicates';
 import { MergeClientsModal } from './MergeClientsModal';
 
@@ -34,7 +35,7 @@ export const DuplicateClientsBanner = <T extends ClientItemLike>({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <div className="rounded-full bg-[#2BB5FF]/20 p-2 text-[#2BB5FF] shrink-0 mt-0.5">
-              <Sparkle24Regular className="w-5 h-5 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="lg" tone="accent" />
             </div>
             <div className="min-w-0">
               <h3 className="font-extrabold text-sm text-[var(--text-primary)] tracking-tight">
@@ -70,7 +71,7 @@ export const DuplicateClientsBanner = <T extends ClientItemLike>({
               className="btn-primary text-xs h-9 px-3.5 w-full sm:w-auto flex items-center justify-center gap-1.5"
             >
               <span>{t('reviewAndMerge')}</span>
-              <ChevronRight24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ChevronRight24Filled} size="sm" />
             </button>
           </div>
         </div>

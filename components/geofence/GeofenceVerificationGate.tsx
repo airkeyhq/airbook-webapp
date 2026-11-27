@@ -4,19 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { signOut } from '@/lib/auth-client';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Location24Filled,
   Location24Regular,
-  ShieldCheckmark24Filled,
   ShieldCheckmark24Regular,
-  Shield24Filled,
+  Shield24Regular,
   Key24Filled,
   Navigation24Filled,
   ArrowClockwise24Filled,
   Dismiss24Filled,
   SignOut24Filled,
   Alert24Regular,
-  LockClosed24Filled,
+  LockClosed24Regular,
 } from '@fluentui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -224,11 +224,11 @@ export function GeofenceVerificationGate({
                 }`}
               >
                 {status === 'inside' ? (
-                  <ShieldCheckmark24Filled className="w-6 h-6" />
+                  <Icon regular={ShieldCheckmark24Regular} size="xl" />
                 ) : status === 'outside' || status === 'permission_denied' ? (
-                  <Shield24Filled className="w-6 h-6" />
+                  <Icon regular={Shield24Regular} size="xl" />
                 ) : (
-                  <Location24Filled className="w-6 h-6" />
+                  <Icon regular={Location24Regular} size="xl" />
                 )}
               </div>
               <div>
@@ -255,7 +255,7 @@ export function GeofenceVerificationGate({
             {/* Status Feedback Banners */}
             {status === 'inside' && (
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-3">
-                <ShieldCheckmark24Filled className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                <Icon regular={ShieldCheckmark24Regular} size="lg" className="text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                 <div>
                   <span className="font-bold">{t('geofenceVerifiedSuccess')}</span>
                   <p className="text-[11px] opacity-80 mt-0.5">
@@ -270,7 +270,7 @@ export function GeofenceVerificationGate({
             {(status === 'outside' || status === 'permission_denied' || status === 'error') && errorMessage && (
               <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 text-xs space-y-1.5">
                 <div className="flex items-center gap-2 font-bold">
-                  <Alert24Regular className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                  <Icon regular={Alert24Regular} size="md" className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
                   <span>{t('geofenceAccessRestricted')}</span>
                 </div>
                 <p className="text-[11px] opacity-90 leading-relaxed">{errorMessage}</p>
@@ -297,12 +297,12 @@ export function GeofenceVerificationGate({
                   </>
                 ) : status === 'outside' || status === 'error' ? (
                   <>
-                    <ArrowClockwise24Filled className="w-4 h-4" />
+                    <Icon filled={ArrowClockwise24Filled} size="sm" />
                     <span>{t('geofenceRetryGps')}</span>
                   </>
                 ) : (
                   <>
-                    <Navigation24Filled className="w-4 h-4" />
+                    <Icon filled={Navigation24Filled} size="sm" />
                     <span>{t('geofenceVerifyLocationCta')}</span>
                   </>
                 )}
@@ -318,14 +318,14 @@ export function GeofenceVerificationGate({
                     onClick={() => setShowSupervisorBypass(true)}
                     className="text-[11px] font-bold text-[var(--color-accent-primary)] hover:underline flex items-center gap-1.5 mx-auto"
                   >
-                    <Key24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Key24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('geofenceSupervisorOverrideToggle')}</span>
                   </button>
                 ) : (
                   <form onSubmit={handleSupervisorBypass} className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <LockClosed24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                        <Icon regular={LockClosed24Regular} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                         {t('geofenceSupervisorPinTitle')}
                       </span>
                       <button
@@ -366,7 +366,7 @@ export function GeofenceVerificationGate({
                       {pinLoading ? (
                         <span className="animate-spin w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full" />
                       ) : (
-                        <Key24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Key24Filled} size="sm" className="w-3.5 h-3.5" />
                       )}
                       <span>{t('geofenceAuthorizeBypass')}</span>
                     </button>
@@ -388,7 +388,7 @@ export function GeofenceVerificationGate({
               disabled={signingOut}
               className="btn-tertiary px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-500/10 flex items-center gap-1.5"
             >
-              <SignOut24Filled className="w-3.5 h-3.5" />
+              <Icon filled={SignOut24Filled} size="sm" className="w-3.5 h-3.5" />
               <span>{signingOut ? t('geofenceSigningOut') : t('geofenceSignOut')}</span>
             </button>
           </div>

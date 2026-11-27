@@ -9,6 +9,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession, signOut } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
 import { getAdminUser, isAdminEmail } from '@/lib/admin';
+import { Icon } from '@/components/primitives/Icon';
 import {
   LockClosed24Regular,
   Image24Regular,
@@ -218,7 +219,7 @@ export default function InternalConsoleLayout({
                 transition={{ duration: 0.15 }}
                 className="flex-shrink-0 text-[var(--text-muted)]"
               >
-                <ChevronDown24Regular className="w-3.5 h-3.5" />
+                <Icon regular={ChevronDown24Regular} size="sm" />
               </motion.div>
             </button>
 
@@ -235,7 +236,7 @@ export default function InternalConsoleLayout({
                 >
                   <div className="p-1.5 space-y-1">
                     {internalModules.map((item) => {
-                      const Icon = item.icon;
+                      const ItemIcon = item.icon;
                       const isSelected =
                         pathname.startsWith(item.href) ||
                         (item.href === '/in/crm' && pathname === '/in');
@@ -261,7 +262,7 @@ export default function InternalConsoleLayout({
                                   : 'bg-[var(--bg-secondary)] border-[var(--border-subtle)] text-[var(--text-secondary)]'
                               }`}
                             >
-                              <Icon className="w-4 h-4" />
+                              <Icon regular={ItemIcon} size="sm" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
@@ -287,7 +288,7 @@ export default function InternalConsoleLayout({
                           </div>
 
                           {isSelected && (
-                            <Checkmark24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <Icon filled={Checkmark24Filled} active size="sm" className="text-blue-500 flex-shrink-0" />
                           )}
                         </button>
                       );
@@ -334,7 +335,7 @@ export default function InternalConsoleLayout({
                   <span className="text-xs font-black text-[var(--text-primary)] hidden sm:inline max-w-[120px] truncate">
                     {userName}
                   </span>
-                  <ChevronDown24Regular className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+                  <Icon regular={ChevronDown24Regular} size="sm" className="text-[var(--text-muted)] flex-shrink-0" />
                 </button>
 
                 {/* User Dropdown Menu Popover */}
@@ -381,7 +382,7 @@ export default function InternalConsoleLayout({
                           onClick={() => setIsUserMenuOpen(false)}
                           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
                         >
-                          <BuildingShop24Regular className="w-4 h-4 text-blue-500" />
+                          <Icon regular={BuildingShop24Regular} size="sm" className="text-blue-500" />
                           <span>Salon Dashboard</span>
                         </Link>
                         <Link
@@ -389,7 +390,7 @@ export default function InternalConsoleLayout({
                           onClick={() => setIsUserMenuOpen(false)}
                           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
                         >
-                          <Settings24Filled className="w-4 h-4 text-[var(--text-muted)]" />
+                          <Icon filled={Settings24Filled} active size="sm" className="text-[var(--text-muted)]" />
                           <span>Platform Settings</span>
                         </Link>
                       </div>
@@ -401,7 +402,7 @@ export default function InternalConsoleLayout({
                           onClick={handleSignOut}
                           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer text-left"
                         >
-                          <SignOut24Filled className="w-4 h-4 text-red-500 flex-shrink-0" />
+                          <Icon filled={SignOut24Filled} active size="sm" className="text-red-500 flex-shrink-0" />
                           <span>{t('signOut')}</span>
                         </button>
                       </div>
@@ -417,7 +418,7 @@ export default function InternalConsoleLayout({
               className="btn-secondary h-9.5 sm:h-10 px-2.5 sm:px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-xs flex-shrink-0"
               title={t('dashboard')}
             >
-              <ArrowLeft24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowLeft24Filled} active size="sm" />
               <span className="hidden sm:inline">{t('dashboard')}</span>
             </Link>
           </div>
@@ -436,7 +437,7 @@ export default function InternalConsoleLayout({
         ) : !isAuthorizedAdmin ? (
           <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6">
             <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto shadow-sm">
-              <ShieldLock24Regular className="w-8 h-8" />
+              <Icon regular={ShieldLock24Regular} className="w-8 h-8" />
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-black tracking-tight text-[var(--text-primary)]">
@@ -448,7 +449,7 @@ export default function InternalConsoleLayout({
             </div>
             <div className="pt-4 flex justify-center">
               <Link href="/dashboard" className="btn-primary h-11 px-6 rounded-2xl text-xs font-bold flex items-center gap-2">
-                <ArrowLeft24Filled className="w-4 h-4" />
+                <Icon filled={ArrowLeft24Filled} active size="sm" />
                 <span>Return to Salon Dashboard</span>
               </Link>
             </div>

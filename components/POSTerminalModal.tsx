@@ -6,15 +6,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { FloatingInput } from '@/components/FloatingInput';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Payment24Filled,
+  Payment24Regular,
   Dismiss24Filled,
   Add24Filled,
-  CheckmarkCircle24Filled,
-  Warning24Filled,
-  Wifi124Filled,
-  WifiOff24Filled,
+  CheckmarkCircle24Regular,
+  Warning24Regular,
+  Wifi124Regular,
+  WifiOff24Regular,
   ArrowSync24Filled,
+  ArrowSync24Regular,
 } from '@fluentui/react-icons';
 
 interface POSTerminalModalProps {
@@ -177,7 +180,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
           <div className="px-6 py-4 flex items-center justify-between flex-shrink-0 border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-                <Payment24Filled className="w-5 h-5 text-blue-600" />
+                <Icon regular={Payment24Regular} size="md" className="text-blue-600" />
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('terminalTitle')}</h3>
@@ -187,7 +190,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
               </div>
             </div>
             <button type="button" onClick={onClose} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer">
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="md" />
             </button>
           </div>
 
@@ -196,7 +199,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
             {/* Demo Mode Notice */}
             {isDemo && (
               <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 flex items-start gap-2.5">
-                <Warning24Filled className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <Icon regular={Warning24Regular} size="sm" className="text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">
                   Demo Mode — Simulated readers shown. Complete Stripe Connect onboarding and pair a physical reader to accept live in-person payments.
                 </p>
@@ -207,7 +210,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
             {paymentStatus === 'collecting' && (
               <div className="p-5 rounded-3xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex flex-col items-center gap-3 text-center">
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}>
-                  <ArrowSync24Filled className="w-8 h-8 text-blue-600" />
+                  <Icon regular={ArrowSync24Regular} className="w-8 h-8 text-blue-600" />
                 </motion.div>
                 <div>
                   <p className="text-sm font-extrabold text-blue-700 dark:text-blue-400">{t('terminalCollecting')}</p>
@@ -218,7 +221,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
 
             {paymentStatus === 'success' && (
               <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 flex flex-col items-center gap-3 text-center">
-                <CheckmarkCircle24Filled className="w-8 h-8 text-emerald-600" />
+                <Icon regular={CheckmarkCircle24Regular} className="w-8 h-8 text-emerald-600" />
                 <div>
                   <p className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400">{t('terminalPaymentSuccess')}</p>
                   <p className="text-xs text-emerald-600/70">${(amountCents / 100).toFixed(2)} collected in-person.</p>
@@ -234,11 +237,11 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                     <span className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-muted)]">{t('terminalSelectReader')}</span>
                     <div className="flex items-center gap-2">
                       <button type="button" onClick={fetchReaders} className="p-1.5 rounded-lg hover:bg-black/5 transition-colors cursor-pointer">
-                        <ArrowSync24Filled className={`w-3.5 h-3.5 text-[var(--text-muted)] ${isLoadingReaders ? 'animate-spin' : ''}`} />
+                        <Icon filled={ArrowSync24Filled} size="sm" tone="muted" className={`w-3.5 h-3.5 ${isLoadingReaders ? 'animate-spin' : ''}`} />
                       </button>
                       <button type="button" onClick={() => setShowPairForm(!showPairForm)}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-extrabold cursor-pointer">
-                        <Add24Filled className="w-3 h-3" />
+                        <Icon filled={Add24Filled} size="xs" />
                         <span>{t('terminalPairNew')}</span>
                       </button>
                     </div>
@@ -267,7 +270,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                           <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
                             reader.status === 'online' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-400'
                           }`}>
-                            {reader.status === 'online' ? <Wifi124Filled className="w-2.5 h-2.5" /> : <WifiOff24Filled className="w-2.5 h-2.5" />}
+                            {reader.status === 'online' ? <Icon regular={Wifi124Regular} className="w-2.5 h-2.5" /> : <Icon regular={WifiOff24Regular} className="w-2.5 h-2.5" />}
                             <span>{reader.status}</span>
                           </div>
                         </button>
@@ -320,7 +323,7 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
               <button type="button" onClick={handleCollectPayment}
                 disabled={!selectedReaderId || isCollecting}
                 className="btn-primary flex-1 disabled:opacity-50">
-                <Payment24Filled className="w-4 h-4" />
+                <Icon filled={Payment24Filled} size="sm" />
                 <span>{t('terminalCollectPayment')} · ${(amountCents / 100).toFixed(2)}</span>
               </button>
             </div>

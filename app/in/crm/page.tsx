@@ -6,6 +6,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useSession } from "@/lib/auth-client";
 import { getAdminUser } from "@/lib/admin";
 import { CustomSelect } from "@/components/CustomSelect";
+import { Icon } from "@/components/primitives/Icon";
 import {
   PIPELINE_STAGES,
   SalonDeal,
@@ -26,7 +27,7 @@ import {
   ChevronRight24Regular,
   Send24Filled,
   ArrowSync24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Warning24Regular,
   ArrowRight24Filled,
   ArrowLeft24Filled,
@@ -331,7 +332,7 @@ export default function CrmSalesPage() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-6 right-4 sm:right-6 z-[1000] p-4 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl flex items-center gap-2 border border-emerald-400/40"
           >
-            <CheckmarkCircle24Filled className="w-5 h-5 flex-shrink-0" />
+            <Icon regular={CheckmarkCircle24Regular} size="md" className="flex-shrink-0" />
             <span>{syncToast}</span>
           </motion.div>
         )}
@@ -342,7 +343,7 @@ export default function CrmSalesPage() {
         <div className="space-y-2 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[11px] font-bold text-blue-600 dark:text-blue-400">
-              <BuildingShop24Regular className="w-3.5 h-3.5" />
+              <Icon regular={BuildingShop24Regular} size="sm" />
               <span>{t('crmLiveDb')} ({deals.length} Workspaces)</span>
             </div>
 
@@ -369,7 +370,7 @@ export default function CrmSalesPage() {
             className="btn-secondary h-11 px-3.5 sm:px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
             title="Refresh database records & sync live Stripe connected balances"
           >
-            <ArrowSync24Filled className={`w-4 h-4 text-blue-500 ${isSyncing ? 'animate-spin' : ''}`} />
+            <Icon filled={ArrowSync24Filled} active size="sm" className={`text-blue-500 ${isSyncing ? 'animate-spin' : ''}`} />
             <span className="truncate">{isSyncing ? 'Syncing...' : t('crmSyncStripe')}</span>
           </button>
 
@@ -378,7 +379,7 @@ export default function CrmSalesPage() {
             onClick={() => setIsNewDealModalOpen(true)}
             className="btn-primary h-11 px-4 sm:px-5 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-sm cursor-pointer"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} active size="sm" />
             <span>{t('crmNewDeal')}</span>
           </button>
         </div>
@@ -468,28 +469,28 @@ export default function CrmSalesPage() {
               onClick={() => setActiveView("kanban")}
               className={"px-3 py-2 sm:px-3.5 sm:py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer " + (activeView === "kanban" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}
             >
-              <Grid24Regular className="w-4 h-4" />
+              <Icon regular={Grid24Regular} size="sm" />
               <span>{t('crmViewKanban')}</span>
             </button>
             <button
               onClick={() => setActiveView("table")}
               className={"px-3 py-2 sm:px-3.5 sm:py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer " + (activeView === "table" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}
             >
-              <Table24Regular className="w-4 h-4" />
+              <Icon regular={Table24Regular} size="sm" />
               <span>{t('crmViewTable')}</span>
             </button>
             <button
               onClick={() => setActiveView("activity")}
               className={"px-3 py-2 sm:px-3.5 sm:py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer " + (activeView === "activity" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}
             >
-              <Clock24Regular className="w-4 h-4" />
+              <Icon regular={Clock24Regular} size="sm" />
               <span>{t('crmViewActivity')}</span>
             </button>
           </div>
 
           {/* Search Bar */}
           <div className="relative flex-1 max-w-md">
-            <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Icon regular={Search24Regular} size="sm" className="text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -660,14 +661,14 @@ export default function CrmSalesPage() {
                                 title="Move to previous stage"
                                 className="w-7 h-7 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors active:scale-95"
                               >
-                                <ArrowLeft24Filled className="w-3.5 h-3.5" />
+                                <Icon filled={ArrowLeft24Filled} active size="sm" />
                               </button>
                               <button
                                 onClick={(e) => handleQuickMove(deal, 'next', e)}
                                 title="Move to next stage"
                                 className="w-7 h-7 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] hover:text-blue-500 transition-colors active:scale-95"
                               >
-                                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                                <Icon filled={ArrowRight24Filled} active size="sm" />
                               </button>
                             </div>
                           </div>
@@ -741,7 +742,7 @@ export default function CrmSalesPage() {
                     </span>
                     <button className="text-blue-500 font-bold flex items-center gap-1">
                       <span>View Details</span>
-                      <ChevronRight24Regular className="w-3.5 h-3.5" />
+                      <Icon regular={ChevronRight24Regular} size="sm" />
                     </button>
                   </div>
                 </div>
@@ -793,12 +794,12 @@ export default function CrmSalesPage() {
                         <td className="py-3.5 px-4">
                           {isVerified ? (
                             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1">
-                              <CheckmarkCircle24Filled className="w-3 h-3" />
+                              <Icon regular={CheckmarkCircle24Regular} size="xs" />
                               <span>Stripe Verified</span>
                             </span>
                           ) : (
                             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 inline-flex items-center gap-1">
-                              <Warning24Regular className="w-3 h-3" />
+                              <Icon regular={Warning24Regular} size="xs" />
                               <span>Dev / Unverified</span>
                             </span>
                           )}
@@ -859,7 +860,7 @@ export default function CrmSalesPage() {
                             onClick={() => setActiveDeal(deal)}
                             className="btn-tertiary h-7 w-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] ml-auto"
                           >
-                            <ChevronRight24Regular className="w-4 h-4" />
+                            <Icon regular={ChevronRight24Regular} size="sm" />
                           </button>
                         </td>
                       </tr>
@@ -877,7 +878,7 @@ export default function CrmSalesPage() {
         <div className="max-w-3xl mx-auto rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-5 sm:p-7 space-y-6 shadow-xs">
           <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
             <h3 className="text-sm font-black text-[var(--text-primary)] flex items-center gap-2">
-              <Clock24Regular className="w-4 h-4 text-blue-500" />
+              <Icon regular={Clock24Regular} size="sm" className="text-blue-500" />
               <span>{t('crmActivityHistory')}</span>
             </h3>
             <span className="text-xs font-mono font-bold text-[var(--text-muted)]">
@@ -979,7 +980,7 @@ export default function CrmSalesPage() {
                   onClick={() => setActiveDeal(null)}
                   className="btn-tertiary w-9 h-9 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} active size="sm" />
                 </button>
               </div>
 
@@ -1037,7 +1038,7 @@ export default function CrmSalesPage() {
                 {/* Owner & Contact Information */}
                 <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <People24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={People24Regular} size="sm" />
                     <span>{t('crmDecisionMaker')}</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -1079,7 +1080,7 @@ export default function CrmSalesPage() {
                 {/* Notes & Migration Strategy */}
                 <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-2">
                   <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                    <Sparkle24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Sparkle24Regular} size="sm" />
                     <span>{t('crmMigrationRationale')}</span>
                   </h4>
                   <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium whitespace-pre-line">
@@ -1090,7 +1091,7 @@ export default function CrmSalesPage() {
                 {/* Activity Log & Add Note */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <Clock24Regular className="w-3.5 h-3.5" />
+                    <Icon regular={Clock24Regular} size="sm" />
                     <span>{t('crmActivityHistory')} ({activeDeal.activities.length})</span>
                   </h4>
 
@@ -1108,7 +1109,7 @@ export default function CrmSalesPage() {
                       onClick={handleAddNote}
                       className="btn-primary h-11 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer flex-shrink-0"
                     >
-                      <Send24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Send24Filled} active size="sm" />
                       <span>{t('crmLogBtn')}</span>
                     </button>
                   </div>
@@ -1173,7 +1174,7 @@ export default function CrmSalesPage() {
                   onClick={() => setIsNewDealModalOpen(false)}
                   className="btn-tertiary w-8 h-8 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} active size="sm" />
                 </button>
               </div>
 
@@ -1335,7 +1336,7 @@ export default function CrmSalesPage() {
                     disabled={isSubmitting}
                     className="btn-primary h-11 px-5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
-                    <Add24Filled className="w-4 h-4" />
+                    <Icon filled={Add24Filled} active size="sm" />
                     <span>{isSubmitting ? t('crmCreatingRecord') : t('crmCreateDealBtn')}</span>
                   </button>
                 </div>

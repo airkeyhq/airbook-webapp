@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import { DataTrending24Regular, Money24Regular, People24Regular, Sparkle24Regular, ArrowUp24Regular } from '@fluentui/react-icons';
 import { useAirBookStore } from '@/lib/store';
 
@@ -81,7 +82,7 @@ export const AnalyticsModule: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Money24Regular} size="sm" tone="secondary" />
                 <span>{t('metricTotalRevenue')}</span>
               </div>
               <p className="text-xl font-black text-[var(--text-primary)] font-mono">${rev.toLocaleString()}</p>
@@ -89,7 +90,7 @@ export const AnalyticsModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <DataTrending24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={DataTrending24Regular} size="sm" tone="secondary" />
                 <span>{t('netProfit')}</span>
               </div>
               <p className="text-xl font-black text-[var(--text-primary)] font-mono">${net.toLocaleString()}</p>
@@ -97,7 +98,7 @@ export const AnalyticsModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                 <span>{t('appointments')}</span>
               </div>
               <p className="text-xl font-black text-[var(--text-primary)] font-mono">{apts}</p>
@@ -105,7 +106,7 @@ export const AnalyticsModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={People24Regular} size="sm" tone="secondary" />
                 <span>{t('metricTotalClients')}</span>
               </div>
               <p className="text-xl font-black text-[var(--text-primary)] font-mono">{clientsCount}</p>

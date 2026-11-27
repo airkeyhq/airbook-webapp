@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Checkmark24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
+import { SparkleBurst } from '@/components/primitives/SparkleBurst';
 
 export interface CheckboxProps {
   checked: boolean;
@@ -13,6 +15,11 @@ export interface CheckboxProps {
   size?: 'sm' | 'md' | 'lg';
   variant?: 'square-rounded' | 'rounded' | 'circle';
   accent?: 'primary' | 'emerald' | 'dark';
+  /**
+   * Releases a radial spark burst micro-interaction when toggled.
+   * @default false
+   */
+  spark?: boolean;
   className?: string;
   id?: string;
   name?: string;
@@ -27,10 +34,12 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   size = 'md',
   variant = 'square-rounded',
   accent = 'primary',
+  spark = false,
   className = '',
   id,
   name,
 }) => {
+  const [burstKey, setBurstKey] = React.useState(0);
   // Geometric variant corner radiuses
   const radiusClasses = {
     'square-rounded': {
@@ -64,7 +73,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   const accentStyles = {
     primary: {
-      active: 'bg-[#2BB5FF] border-[#1A8EFF] text-white shadow-[0_2px_8px_-1px_rgba(43,181,255,0.45)] hover:bg-[#1A8EFF]',
+      active:
+        'bg-[var(--color-accent-primary)] border-[1.5px] border-[#1A8EFF] text-white shadow-[0_4px_12px_-2px_rgba(43,181,255,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:bg-[var(--color-accent-primary-hover)] hover:shadow-[0_6px_16px_-2px_rgba(43,181,255,0.7),inset_0_1px_1px_rgba(255,255,255,0.4)]',
       focusRing: 'focus-visible:ring-[#2BB5FF]/40',
       hoverBorder: 'hover:border-[#2BB5FF]/50',
     },
@@ -80,8 +90,12 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     },
   }[accent];
 
-  const handleToggle = () => {
+  const handleToggle = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (!disabled) {
+      if (spark) {
+        setBurstKey((prev) => prev + 1);
+      }
       onChange(!checked);
     }
   };
@@ -90,6 +104,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     if (disabled) return;
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
+      if (spark) {
+        setBurstKey((prev) => prev + 1);
+      }
       onChange(!checked);
     }
   };
@@ -130,8 +147,17 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         transition={{ type: 'spring', damping: 20, stiffness: 400 }}
         className="flex items-center justify-center"
       >
-        <Checkmark24Filled className={`${iconSizes} text-white`} />
+        <Icon filled={Checkmark24Filled} className={`${iconSizes} text-white`} />
       </motion.div>
+      {spark && (
+        <SparkleBurst
+          burstKey={burstKey}
+          shape={variant === 'circle' ? 'circle' : 'square-rounded'}
+          radiusClass={radiusClasses}
+          particle="mixed"
+          tone={accent === 'emerald' ? 'emerald' : 'electric'}
+        />
+      )}
     </div>
   );
 

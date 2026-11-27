@@ -10,6 +10,7 @@ import { ColorPicker } from '@/components/ColorPicker';
 import { EmptyState } from '@/components/EmptyState';
 import { GoToAppPill } from '@/components/GoToAppPill';
 import { Checkbox } from '@/components/Checkbox';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -348,7 +349,7 @@ export default function DesignSystemTokenLabPage() {
         {/* Mobile Tree Nav Trigger Button */}
         <div className="lg:hidden w-full flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <Navigation24Filled className="w-4 h-4 text-blue-500" />
+            <Icon filled={Navigation24Filled} active size="sm" className="text-blue-500" />
             <span className="text-xs font-bold text-[var(--text-primary)]">
               {activeItemData.category.label} / {activeItemData.item.label}
             </span>
@@ -370,7 +371,7 @@ export default function DesignSystemTokenLabPage() {
         >
           {/* Tree Search Box */}
           <div className="relative">
-            <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Icon regular={Search24Regular} size="sm" className="text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={treeQuery}
@@ -384,7 +385,7 @@ export default function DesignSystemTokenLabPage() {
                 onClick={() => setTreeQuery('')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
-                <Dismiss24Filled className="w-3.5 h-3.5" />
+                <Icon filled={Dismiss24Filled} active size="sm" />
               </button>
             )}
           </div>
@@ -403,9 +404,9 @@ export default function DesignSystemTokenLabPage() {
                   >
                     <div className="flex items-center gap-2">
                       {isOpen ? (
-                        <FolderOpen24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={FolderOpen24Regular} size="sm" className="text-blue-500" />
                       ) : (
-                        <Folder24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+                        <Icon regular={Folder24Regular} size="sm" className="text-[var(--text-muted)]" />
                       )}
                       <span className="tracking-tight">{category.label}</span>
                     </div>
@@ -415,9 +416,9 @@ export default function DesignSystemTokenLabPage() {
                         {category.items.length}
                       </span>
                       {isOpen ? (
-                        <ChevronDown24Regular className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                        <Icon regular={ChevronDown24Regular} size="sm" className="text-[var(--text-muted)]" />
                       ) : (
-                        <ChevronRight24Regular className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                        <Icon regular={ChevronRight24Regular} size="sm" className="text-[var(--text-muted)]" />
                       )}
                     </div>
                   </button>
@@ -445,7 +446,7 @@ export default function DesignSystemTokenLabPage() {
                               }`}
                             >
                               <div className="flex items-center gap-2 truncate">
-                                <Document24Regular className={`w-3.5 h-3.5 flex-shrink-0 ${isSelected ? 'text-blue-500' : 'text-[var(--text-muted)]'}`} />
+                                <Icon regular={Document24Regular} size="sm" className={`flex-shrink-0 ${isSelected ? 'text-blue-500' : 'text-[var(--text-muted)]'}`} />
                                 <span className="truncate">{item.label}</span>
                               </div>
 
@@ -512,7 +513,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>Live Stage Preview</span>
                       </div>
 
@@ -625,7 +626,7 @@ export default function DesignSystemTokenLabPage() {
                         }}
                         className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2 self-start sm:self-auto"
                       >
-                        <Flash24Filled className={`w-4 h-4 text-blue-500 ${demoPinging ? 'animate-spin' : ''}`} />
+                        <Icon filled={Flash24Filled} active size="sm" className={`text-blue-500 ${demoPinging ? 'animate-spin' : ''}`} />
                         <span>{demoPinging ? 'Pinging Cluster…' : 'Ping Endpoint'}</span>
                       </button>
                     </div>
@@ -641,7 +642,7 @@ export default function DesignSystemTokenLabPage() {
                             : 'bg-rose-500/10 border border-rose-500/20 text-rose-800 dark:text-rose-200'
                         }`}
                       >
-                        <Warning24Regular className="w-4 h-4 flex-shrink-0" />
+                        <Icon regular={Warning24Regular} size="sm" className="flex-shrink-0" />
                         <span>
                           {statusMode === 'warning'
                             ? 'Degraded Performance: Response latency is exceeding 800ms.'
@@ -655,7 +656,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
-                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Code24Regular} size="sm" className="text-blue-500" />
                         <span>Implementation Pattern</span>
                       </span>
                       <button
@@ -667,7 +668,7 @@ export default function DesignSystemTokenLabPage() {
                         }
                         className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
                       >
-                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        {copiedSnippet ? <Icon filled={Checkmark24Filled} active size="sm" className="text-emerald-500" /> : <Icon filled={Copy24Filled} active size="sm" />}
                         <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
                       </button>
                     </div>
@@ -691,7 +692,7 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>Custom React Tooltip Physics</span>
                     </div>
 
@@ -730,14 +731,14 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>Priority Companion Banners</span>
                     </div>
 
                     <div className="space-y-4">
                       {/* Warning Banner */}
                       <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-200 text-xs font-semibold flex items-center gap-3">
-                        <Warning24Regular className="w-5 h-5 flex-shrink-0 text-amber-500" />
+                        <Icon regular={Warning24Regular} size="md" className="flex-shrink-0 text-amber-500" />
                         <div>
                           <p className="font-bold">Degraded Performance (Warning)</p>
                           <p className="text-[11px] opacity-80 mt-0.5">Response times are higher than expected. Background jobs are queued.</p>
@@ -746,7 +747,7 @@ export default function DesignSystemTokenLabPage() {
 
                       {/* Critical Banner */}
                       <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-800 dark:text-rose-200 text-xs font-semibold flex items-center gap-3">
-                        <Dismiss24Filled className="w-5 h-5 flex-shrink-0 text-rose-500" />
+                        <Icon filled={Dismiss24Filled} active size="md" className="flex-shrink-0 text-rose-500" />
                         <div>
                           <p className="font-bold">Service Disrupted (Critical)</p>
                           <p className="text-[11px] opacity-80 mt-0.5">Authentication endpoint failed. Check database and API credentials.</p>
@@ -763,14 +764,14 @@ export default function DesignSystemTokenLabPage() {
                     {/* Correct */}
                     <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border-2 border-emerald-500/30 space-y-4 shadow-xs">
                       <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs">
-                        <CheckmarkCircle24Regular className="w-4 h-4" />
+                        <Icon regular={CheckmarkCircle24Regular} size="sm" />
                         <span>CORRECT (*Filled CTAs & *Regular Labels)</span>
                       </div>
 
                       <div className="space-y-3">
                         <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] flex items-center justify-between">
                           <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
-                            <Calendar24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+                            <Icon regular={Calendar24Regular} size="sm" className="text-[var(--text-muted)]" />
                             <span>Schedule Header (*Regular)</span>
                           </span>
                           <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-md">
@@ -780,7 +781,7 @@ export default function DesignSystemTokenLabPage() {
 
                         <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] flex items-center justify-between">
                           <button type="button" className="btn-primary px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
-                            <Add24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Add24Filled} active size="sm" />
                             <span>Book Appointment (*Filled)</span>
                           </button>
                           <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-md">
@@ -793,14 +794,14 @@ export default function DesignSystemTokenLabPage() {
                     {/* Prohibited */}
                     <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border-2 border-rose-500/30 space-y-4 shadow-xs opacity-80">
                       <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-extrabold text-xs">
-                        <Warning24Regular className="w-4 h-4" />
+                        <Icon regular={Warning24Regular} size="sm" />
                         <span>PROHIBITED (Rule Violations)</span>
                       </div>
 
                       <div className="space-y-3">
                         <div className="p-3 rounded-2xl bg-[var(--bg-secondary)] flex items-center justify-between">
                           <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2 line-through text-rose-500">
-                            <Calendar24Filled className="w-4 h-4 text-rose-500" />
+                            <Icon filled={Calendar24Filled} active size="sm" className="text-rose-500" />
                             <span>*Filled Icon on Static Label</span>
                           </span>
                           <span className="text-[10px] font-mono font-bold text-rose-600 bg-rose-500/10 px-2 py-0.5 rounded-md">
@@ -828,7 +829,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>Interactive Checkmark Taxonomy & Controls</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full uppercase self-start sm:self-auto">
@@ -866,7 +867,7 @@ export default function DesignSystemTokenLabPage() {
                                 : 'btn-primary'
                             }`}
                           >
-                            <Checkmark24Filled className="w-4 h-4" />
+                            <Icon filled={Checkmark24Filled} active size="sm" />
                             <span>{actionConfirmed ? 'All Notifications Marked Read!' : 'Mark All Read (*Filled)'}</span>
                           </button>
                         </div>
@@ -895,7 +896,7 @@ export default function DesignSystemTokenLabPage() {
                             'Zero-fee Tap to Pay iPhone/Android POS',
                           ].map((item, idx) => (
                             <div key={idx} className="flex items-center gap-2 text-xs text-[var(--text-primary)]">
-                              <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                              <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                               <span className="truncate">{item}</span>
                             </div>
                           ))}
@@ -921,7 +922,7 @@ export default function DesignSystemTokenLabPage() {
                         <div className="p-3 rounded-xl bg-[var(--bg-primary)] border border-emerald-500/30 flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className="w-8 h-8 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
-                              <ShieldCheckmark24Regular className="w-4 h-4" />
+                              <Icon regular={ShieldCheckmark24Regular} size="sm" />
                             </div>
                             <div className="min-w-0">
                               <h4 className="text-xs font-black text-[var(--text-primary)] truncate">
@@ -1012,7 +1013,7 @@ export default function DesignSystemTokenLabPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                       <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
                         <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                          <Checkmark24Filled className="w-4 h-4" />
+                          <Icon filled={Checkmark24Filled} active size="sm" />
                           <span>Actions & Triggers</span>
                         </div>
                         <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
@@ -1022,7 +1023,7 @@ export default function DesignSystemTokenLabPage() {
 
                       <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
                         <div className="flex items-center gap-2 text-xs font-bold text-blue-500">
-                          <CheckmarkCircle24Regular className="w-4 h-4" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" />
                           <span>Display Manifests</span>
                         </div>
                         <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
@@ -1032,7 +1033,7 @@ export default function DesignSystemTokenLabPage() {
 
                       <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2">
                         <div className="flex items-center gap-2 text-xs font-bold text-purple-500">
-                          <ShieldCheckmark24Regular className="w-4 h-4" />
+                          <Icon regular={ShieldCheckmark24Regular} size="sm" />
                           <span>Trust & Identity</span>
                         </div>
                         <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
@@ -1046,7 +1047,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
-                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Code24Regular} size="sm" className="text-blue-500" />
                         <span>Tactile Custom Checkbox Component Code</span>
                       </span>
                       <button
@@ -1058,7 +1059,7 @@ export default function DesignSystemTokenLabPage() {
                         }
                         className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
                       >
-                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        {copiedSnippet ? <Icon filled={Checkmark24Filled} active size="sm" className="text-emerald-500" /> : <Icon filled={Copy24Filled} active size="sm" />}
                         <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
                       </button>
                     </div>
@@ -1087,7 +1088,7 @@ export default function DesignSystemTokenLabPage() {
               {activeItemId === 'zero-emojis' && (
                 <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                    <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />
+                    <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-500" />
                     <span>Strict Zero Emoji Policy</span>
                   </div>
 
@@ -1097,15 +1098,15 @@ export default function DesignSystemTokenLabPage() {
                     </p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)]">
-                        <Sparkle24Regular className="w-3.5 h-3.5 text-blue-500" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-blue-500" />
                         <span>AI Assistant</span>
                       </span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)]">
-                        <Clock24Regular className="w-3.5 h-3.5 text-amber-500" />
+                        <Icon regular={Clock24Regular} size="sm" className="text-amber-500" />
                         <span>45 min Buffer</span>
                       </span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)]">
-                        <LockClosed24Regular className="w-3.5 h-3.5 text-emerald-500" />
+                        <Icon regular={LockClosed24Regular} size="sm" className="text-emerald-500" />
                         <span>Passwordless</span>
                       </span>
                     </div>
@@ -1118,7 +1119,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>Tactile Electric Blue Conversion CTA</span>
                       </div>
                       <button
@@ -1139,7 +1140,7 @@ export default function DesignSystemTokenLabPage() {
                         disabled={btnLoading}
                         className="btn-primary h-12 px-8 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg"
                       >
-                        <Add24Filled className={`w-4 h-4 ${btnLoading ? 'animate-spin' : ''}`} />
+                        <Icon filled={Add24Filled} active size="sm" className={btnLoading ? 'animate-spin' : ''} />
                         <span>{btnLoading ? 'Confirming Booking…' : 'Get Started Free'}</span>
                       </button>
                     </div>
@@ -1151,13 +1152,13 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>Tactile Surface Secondary Pill</span>
                     </div>
 
                     <div className="p-10 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center">
                       <button type="button" className="btn-secondary h-12 px-8 rounded-2xl text-xs font-bold flex items-center gap-2">
-                        <Copy24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <Icon filled={Copy24Filled} active size="sm" className="text-[var(--text-secondary)]" />
                         <span>Explore Live Storefront</span>
                       </button>
                     </div>
@@ -1169,13 +1170,13 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>Ghost Auxiliary & Dismissal Pill</span>
                     </div>
 
                     <div className="p-10 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center">
                       <button type="button" className="btn-tertiary h-12 px-8 rounded-2xl text-xs font-bold flex items-center gap-2 text-rose-500">
-                        <Delete24Filled className="w-4 h-4" />
+                        <Icon filled={Delete24Filled} active size="sm" />
                         <span>Revoke Secret Key</span>
                       </button>
                     </div>
@@ -1189,7 +1190,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>Concentric Nested Capsule Live Stage</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-xl">
@@ -1222,7 +1223,7 @@ export default function DesignSystemTokenLabPage() {
                   {/* Concentric Geometric Formula Anatomy Breakdown */}
                   <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                      <Icon filled={Sparkle24Filled} active size="sm" className="text-[#2BB5FF]" />
                       <span>Concentric Geometry Anatomy &amp; Radius Invariant</span>
                     </div>
 
@@ -1287,7 +1288,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
-                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Code24Regular} size="sm" className="text-blue-500" />
                         <span>Implementation Pattern</span>
                       </span>
                       <button
@@ -1299,7 +1300,7 @@ export default function DesignSystemTokenLabPage() {
                         }
                         className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
                       >
-                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        {copiedSnippet ? <Icon filled={Checkmark24Filled} active size="sm" className="text-emerald-500" /> : <Icon filled={Copy24Filled} active size="sm" />}
                         <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
                       </button>
                     </div>
@@ -1329,7 +1330,7 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>52px Atomic Floating Label Physics</span>
                     </div>
 
@@ -1339,7 +1340,7 @@ export default function DesignSystemTokenLabPage() {
                         label="Service Title (Filled)"
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
-                        icon={<Sparkle24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                        icon={<Icon regular={Sparkle24Regular} size="sm" className="text-[var(--text-muted)]" />}
                       />
 
                       <FloatingInput
@@ -1347,7 +1348,7 @@ export default function DesignSystemTokenLabPage() {
                         label="Practitioner Formula Notes (Empty)"
                         value={emptyInputText}
                         onChange={(e) => setEmptyInputText(e.target.value)}
-                        icon={<Tag24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                        icon={<Icon regular={Tag24Regular} size="sm" className="text-[var(--text-muted)]" />}
                         rightElement={
                           <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600">
                             Auto-Save
@@ -1363,7 +1364,7 @@ export default function DesignSystemTokenLabPage() {
                 <div className="space-y-6">
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                      <Eye24Regular className="w-4 h-4 text-blue-500" />
+                      <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                       <span>Custom Select Popover Container</span>
                     </div>
 
@@ -1384,7 +1385,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>AirBook Color Studio DNA (Custom HSL Spectrum)</span>
                       </div>
                       <span className="font-mono font-bold text-xs text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-xl">
@@ -1438,7 +1439,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
-                        <Code24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Code24Regular} size="sm" className="text-blue-500" />
                         <span>Implementation Pattern</span>
                       </span>
                       <button
@@ -1450,7 +1451,7 @@ export default function DesignSystemTokenLabPage() {
                         }
                         className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
                       >
-                        {copiedSnippet ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
+                        {copiedSnippet ? <Icon filled={Checkmark24Filled} active size="sm" className="text-emerald-500" /> : <Icon filled={Copy24Filled} active size="sm" />}
                         <span>{copiedSnippet ? 'Copied' : 'Copy JSX'}</span>
                       </button>
                     </div>
@@ -1474,7 +1475,7 @@ export default function DesignSystemTokenLabPage() {
                   <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                     <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                        <Eye24Regular className="w-4 h-4 text-blue-500" />
+                        <Icon regular={Eye24Regular} size="sm" className="text-blue-500" />
                         <span>Electric Range Slider with Duration Readout</span>
                       </div>
                       <span className="font-mono font-bold text-xs text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-xl">
@@ -1564,7 +1565,7 @@ export default function DesignSystemTokenLabPage() {
               {activeItemId === 'badge-pills' && (
                 <div className="p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)]">
-                    <Tag24Regular className="w-4 h-4 text-blue-500" />
+                    <Icon regular={Tag24Regular} size="sm" className="text-blue-500" />
                     <span>Non-Wrapping Microcopy Badges</span>
                   </div>
 

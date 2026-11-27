@@ -8,11 +8,12 @@ import { LanguageSelector } from '@/components/LanguageSelector';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { CustomSelect, SelectOption } from '@/components/CustomSelect';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Filled,
   ArrowRight24Filled,
   ArrowLeft24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Clock24Regular,
   ShieldCheckmark24Regular,
   Person24Regular,
@@ -229,7 +230,7 @@ export default function FoundingFormPage() {
               {/* Form Title & Stepper */}
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#2BB5FF]/10 text-[#2BB5FF] text-[10px] font-black uppercase tracking-wider">
-                  <ClipboardCheckmark24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={ClipboardCheckmark24Regular} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('foundingFormTitle')}</span>
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] tracking-tight">
@@ -298,7 +299,7 @@ export default function FoundingFormPage() {
                           label={t('foundingFormFullName')}
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          icon={<Person24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Person24Regular} size="sm" />}
                           required
                         />
                         <FloatingInput
@@ -306,7 +307,7 @@ export default function FoundingFormPage() {
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          icon={<Mail24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Mail24Regular} size="sm" />}
                           required
                         />
                       </div>
@@ -316,7 +317,7 @@ export default function FoundingFormPage() {
                           label={t('foundingFormPhone')}
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          icon={<Call24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Call24Regular} size="sm" />}
                           placeholder="+52 55 1234 5678"
                           required
                         />
@@ -324,7 +325,7 @@ export default function FoundingFormPage() {
                           label={t('foundingFormSalonName')}
                           value={salonName}
                           onChange={(e) => setSalonName(e.target.value)}
-                          icon={<Building24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Building24Regular} size="sm" />}
                           required
                         />
                       </div>
@@ -334,7 +335,7 @@ export default function FoundingFormPage() {
                           label={t('foundingFormCity')}
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
-                          icon={<Location24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Location24Regular} size="sm" />}
                           containerClassName="md:col-span-1"
                           required
                         />
@@ -349,7 +350,7 @@ export default function FoundingFormPage() {
                           label={t('foundingFormWebsite')}
                           value={websiteUrl}
                           onChange={(e) => setWebsiteUrl(e.target.value)}
-                          icon={<Globe24Regular className="w-4 h-4" />}
+                          icon={<Icon regular={Globe24Regular} size="sm" />}
                           containerClassName="md:col-span-1"
                         />
                       </div>
@@ -436,7 +437,7 @@ export default function FoundingFormPage() {
                       />
 
                       <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-start gap-3">
-                        <ShieldCheckmark24Regular className="w-5 h-5 text-[#2BB5FF] flex-shrink-0 mt-0.5" />
+                        <Icon regular={ShieldCheckmark24Regular} size="md" className="text-[#2BB5FF] flex-shrink-0 mt-0.5" />
                         <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                           {t('passwordlessSecurityNotice')}
                         </p>
@@ -453,7 +454,7 @@ export default function FoundingFormPage() {
                       onClick={handleBack}
                       className="btn-secondary h-11 px-5 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                     >
-                      <ArrowLeft24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('foundingFormBack')}</span>
                     </button>
                   ) : (
@@ -467,7 +468,7 @@ export default function FoundingFormPage() {
                       className="btn-primary h-11 px-6 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
                     >
                       <span>{t('foundingFormNext')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
                     </button>
                   ) : (
                     <button
@@ -479,7 +480,7 @@ export default function FoundingFormPage() {
                         <span>{t('foundingFormSubmitting')}</span>
                       ) : (
                         <>
-                          <Sparkle24Filled className="w-4 h-4" />
+                          <Icon filled={Sparkle24Filled} size="sm" />
                           <span>{t('foundingFormSubmit')}</span>
                         </>
                       )}
@@ -499,7 +500,7 @@ export default function FoundingFormPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                    <CheckmarkCircle24Filled className="w-6 h-6" />
+                    <Icon regular={CheckmarkCircle24Regular} size="lg" />
                   </div>
                   <div>
                     <span className="text-[10px] uppercase font-black tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -521,7 +522,7 @@ export default function FoundingFormPage() {
                     className="p-1 rounded-lg hover:bg-[var(--bg-primary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
                     title={t('foundingSuccessActionShare')}
                   >
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -548,7 +549,7 @@ export default function FoundingFormPage() {
               {/* Timeline Status */}
               <div className="p-4 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/20 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2.5">
-                  <Clock24Regular className="w-5 h-5 text-[#2BB5FF]" />
+                  <Icon regular={Clock24Regular} size="md" className="text-[#2BB5FF]" />
                   <span className="text-xs font-bold text-[var(--text-primary)]">
                     {t('foundingSuccessStatus')}
                   </span>
@@ -571,7 +572,7 @@ export default function FoundingFormPage() {
                   className="btn-primary w-full sm:w-auto h-11 px-6 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-md"
                 >
                   <span>{t('operatorApp')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </motion.div>

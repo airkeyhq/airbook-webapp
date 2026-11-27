@@ -34,3 +34,14 @@ All frontend UI code and components in this application MUST adhere to human-com
 3. **Iconography Invariant**:
    - Interactive clickable actions: Strictly `*Filled` Fluent vector icons.
    - Static metadata, labels, and headers: Strictly `*Regular` Fluent vector icons.
+
+## 5. Anti-Slop Color & Gradient Discipline
+We explicitly recognize and prohibit two visual AI-slop symptoms that give an application a generic "Vibe Coded" feel:
+
+1. **Palette Sprinkles (Zero Decorative Color)**:
+   - **Symptom**: Using color just to use it—sprinkling arbitrary pastel or rainbow hues across adjacent cards, badges, icons, or sections without semantic meaning in an attempt to prettify.
+   - **Cure**: Color is strictly functional, never decorative. Reserve chromatic tokens for live system states (success, warning, danger, active), semantic categories that genuinely require differentiation, or the single primary interactive accent (`#2BB5FF`). Default surfaces, containers, and icon badges MUST use neutral surface/border tokens (`--bg-primary`, `--bg-secondary`, `--border-subtle`, `--text-primary`, `--text-secondary`).
+
+2. **Gradient Sprinkles (Zero Gratuitous Gradients)**:
+   - **Symptom**: Using color gradients (`bg-gradient-to-*`, multi-stop gradients, gradient text, or rainbow borders) anywhere as surface decoration in an attempt to prettify, especially combining multiple hues in one gradient.
+   - **Cure**: NEVER sprinkle gradients onto cards, banners, buttons, badges, or headings. Prefer crisp, flat, solid surface tokens with hairline borders (`border-[var(--border-subtle)]`) and milled specular shadows. Multi-color gradients are strictly prohibited unless explicitly required for a real data visualization or optical brand mark.

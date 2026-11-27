@@ -15,8 +15,10 @@ import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { MCPStudio } from '@/components/MCPStudio';
 import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
+import { Card } from '@/components/primitives/Card';
 import { getAvatarUrl } from '@/lib/avatars';
 import { GeofenceSettingsCard } from '@/components/geofence/GeofenceSettingsCard';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Person24Filled,
   Person24Regular,
@@ -31,6 +33,7 @@ import {
   ShieldCheckmark24Regular,
   ShieldCheckmark24Filled,
   DocumentCheckmark24Regular,
+  DocumentCheckmark24Filled,
   Link24Regular,
   Alert24Regular,
   LockClosed24Regular,
@@ -46,12 +49,14 @@ import {
   Clock24Regular,
   Payment24Regular,
   Payment24Filled,
+  Delete24Regular,
   Delete24Filled,
   Eye24Filled,
   EyeOff24Filled,
   Checkmark24Regular,
   Checkmark24Filled,
   CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Edit24Filled,
   Save24Filled,
   Fingerprint24Filled,
@@ -119,23 +124,28 @@ function Toggle({
         className="w-5 h-5 rounded-full bg-white dark:bg-slate-200 shadow-sm flex items-center justify-center text-[10px]"
       >
         {locked ? (
-          <LockClosed16Filled className="w-3 h-3 text-slate-500 dark:text-slate-700" />
+          <Icon filled={LockClosed16Filled} size="xs" className="text-slate-500 dark:text-slate-700" />
         ) : null}
       </motion.div>
     </button>
   );
 }
 
-/* ─── Section wrapper ─── */
+/* ─── Section wrapper (Level 1 Envelope Card) ─── */
 function Section({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-        <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
-        <span>{title}</span>
-      </h3>
+    <Card
+      variant="envelope"
+      trayHeader={
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+          <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
+          <span>{title}</span>
+        </h3>
+      }
+      innerClassName="space-y-4"
+    >
       {children}
-    </div>
+    </Card>
   );
 }
 
@@ -662,7 +672,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={() => profilePhotoRef.current?.click()}
                       className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5 hover:bg-black/10 transition-colors"
                     >
-                      <Add24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{avatarUrl ? t('changePhoto') : t('uploadPhoto')}</span>
                     </button>
                     {avatarUrl && (
@@ -702,7 +712,7 @@ export const SettingsModule: React.FC = () => {
                   type="submit"
                   className="btn-primary self-start"
                 >
-                  <Save24Filled className="w-4 h-4" />
+                  <Icon filled={Save24Filled} size="sm" />
                   <span>{t('save')}</span>
                 </motion.button>
               </form>
@@ -768,7 +778,7 @@ export const SettingsModule: React.FC = () => {
                     }}
                     className="control-md rounded-xl btn-primary gap-1.5 flex-shrink-0 cursor-pointer"
                   >
-                    <Payment24Filled className="w-4 h-4" />
+                    <Icon filled={Payment24Filled} size="sm" />
                     <span>{t('connectStripe')}</span>
                   </button>
                 </div>
@@ -809,7 +819,7 @@ export const SettingsModule: React.FC = () => {
                     onClick={handleInstantPayout}
                     className="btn-primary"
                   >
-                    <Sparkle24Filled className="w-4 h-4" />
+                    <Icon filled={Sparkle24Filled} size="sm" />
                     <span>{isInstantPayoutLoading ? t('loading') : t('instantPayoutToCard')}</span>
                   </motion.button>
 
@@ -820,14 +830,14 @@ export const SettingsModule: React.FC = () => {
                       rel="noopener noreferrer"
                       className="h-10 px-4 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/5 text-xs font-bold text-[var(--text-primary)] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                     >
-                      <Open24Filled className="w-4 h-4" />
+                      <Icon filled={Open24Filled} size="sm" />
                       <span>{t('openStripeDashboard')}</span>
                     </a>
                   )}
                 </div>
 
                 <div className="flex items-center gap-2 pt-2 border-t border-black/5 dark:border-white/10 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                  <CheckmarkCircle24Filled className="w-4 h-4 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                   <span>{t('stripeConnected')} · {t('expressPayoutsActive')}</span>
                 </div>
 
@@ -836,7 +846,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <Payment24Regular className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <Icon regular={Payment24Regular} size="sm" className="text-purple-600 dark:text-purple-400" />
                         <span>{t('zelleSettingsTitle')}</span>
                       </p>
                       <p className="text-[11px] text-[var(--text-secondary)]">
@@ -855,7 +865,7 @@ export const SettingsModule: React.FC = () => {
                       value={zellePhoneOrEmail}
                       onChange={(e) => setZellePhoneOrEmail(e.target.value)}
                       placeholder="e.g. (555) 234-5678 or salon@zelle.com"
-                      icon={<Payment24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                      icon={<Icon regular={Payment24Regular} size="sm" tone="muted" />}
                     />
 
                     <FloatingInput
@@ -864,7 +874,7 @@ export const SettingsModule: React.FC = () => {
                       value={zelleRecipientName}
                       onChange={(e) => setZelleRecipientName(e.target.value)}
                       placeholder="e.g. Alex Johnson"
-                      icon={<Person24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                      icon={<Icon regular={Person24Regular} size="sm" tone="muted" />}
                     />
                   </div>
 
@@ -890,7 +900,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <Mail24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <Icon regular={Mail24Regular} size="md" className="text-[var(--text-secondary)]" />
                         <span>{t('emailNotifs')}</span>
                       </p>
                       <p className="text-[11px] text-[var(--text-secondary)]">
@@ -942,7 +952,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <Chat24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <Icon regular={Chat24Regular} size="md" className="text-[var(--text-secondary)]" />
                         <span>{t('smsNotifs')}</span>
                       </p>
                       <p className="text-[11px] text-[var(--text-secondary)]">
@@ -988,7 +998,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <Alert24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                        <Icon regular={Alert24Regular} size="md" className="text-[var(--text-secondary)]" />
                         <span>{t('pushNotifs')}</span>
                       </p>
                       <p className="text-[11px] text-[var(--text-secondary)]">
@@ -1041,7 +1051,7 @@ export const SettingsModule: React.FC = () => {
                     onClick={() => addToast(t('settingsSaved'), 'success')}
                     className="btn-primary"
                   >
-                    <Save24Filled className="w-4 h-4" />
+                    <Icon filled={Save24Filled} size="sm" />
                     <span>{t('save')}</span>
                   </motion.button>
 
@@ -1051,7 +1061,7 @@ export const SettingsModule: React.FC = () => {
                     onClick={handleSendTestNotification}
                     className="h-10 px-4 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/5 active:scale-97 text-xs font-bold text-[var(--text-primary)] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Send24Filled className="w-4 h-4" />
+                    <Icon filled={Send24Filled} size="sm" />
                     <span>{isSendingTestNotif ? t('loading') : t('sendTestNotification')}</span>
                   </button>
                 </div>
@@ -1072,7 +1082,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={handleRevokeAllOthers}
                       className="px-3 py-1.5 rounded-xl border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-xs font-bold text-red-600 dark:text-red-400 transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
                     >
-                      <Dismiss24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{t('revokeAllOtherSessions')}</span>
                     </button>
                   )}
@@ -1155,7 +1165,7 @@ export const SettingsModule: React.FC = () => {
                     {wsName.charAt(0)}
                   </div>
                   <button type="button" className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5 hover:bg-black/10 transition-colors">
-                    <Add24Filled className="w-3.5 h-3.5" /><span>{t('uploadLogo')}</span>
+                    <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" /><span>{t('uploadLogo')}</span>
                   </button>
                 </div>
 
@@ -1197,7 +1207,7 @@ export const SettingsModule: React.FC = () => {
                   />
                 </div>
                 <motion.button whileTap={{ scale: 0.97 }} type="submit" className="btn-primary self-start">
-                  <Save24Filled className="w-4 h-4" />
+                  <Icon filled={Save24Filled} size="sm" />
                   <span>{t('save')}</span>
                 </motion.button>
               </form>
@@ -1207,7 +1217,7 @@ export const SettingsModule: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Building24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={Building24Regular} size="sm" tone="secondary" />
                   <span>{t('chairsAndStations')}</span>
                   <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
                     {stations.length} {t('statusActive')}
@@ -1222,7 +1232,7 @@ export const SettingsModule: React.FC = () => {
                   }}
                   className="btn-primary"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="sm" />
                   <span>{t('addStation')}</span>
                 </button>
               </div>
@@ -1241,7 +1251,7 @@ export const SettingsModule: React.FC = () => {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] flex items-center justify-center flex-shrink-0">
-                        <Building24Regular className="w-4 h-4" />
+                        <Icon regular={Building24Regular} size="sm" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors truncate">
@@ -1264,7 +1274,7 @@ export const SettingsModule: React.FC = () => {
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer"
                         title={t('editStation')}
                       >
-                        <Edit24Filled className="w-4 h-4" />
+                        <Icon filled={Edit24Filled} size="sm" />
                       </button>
                       <button
                         type="button"
@@ -1275,7 +1285,7 @@ export const SettingsModule: React.FC = () => {
                         className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                         title={t('deleteStation')}
                       >
-                        <Delete24Filled className="w-4 h-4" />
+                        <Icon filled={Delete24Filled} size="sm" />
                       </button>
                     </div>
                   </div>
@@ -1320,7 +1330,7 @@ export const SettingsModule: React.FC = () => {
                 onClick={() => addToast('Booking policies saved.', 'success')}
                 className="btn-primary"
               >
-                <Save24Filled className="w-4 h-4" />
+                <Icon filled={Save24Filled} active size="md" />
                 <span>{t('save')}</span>
               </motion.button>
             </Section>
@@ -1376,7 +1386,7 @@ export const SettingsModule: React.FC = () => {
                       addToast(t('settingsSaved'), 'success');
                     }
                   }}
-                  icon={<LockClosed24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                  icon={<Icon regular={LockClosed24Regular} size="sm" tone="muted" />}
                 />
               </div>
 
@@ -1386,7 +1396,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                        <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                        <Icon regular={Fingerprint24Regular} size="sm" tone="accent" />
                         <span>{t('passkeyBiometrics')}</span>
                       </p>
                       <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
@@ -1410,7 +1420,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={handleRegisterPasskey}
                       className="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                     >
-                      <Fingerprint24Regular className="w-4 h-4" />
+                      <Icon filled={Fingerprint24Filled} size="sm" />
                       <span>{isRegisteringPasskey ? t('loading') || 'Registering…' : t('registerPasskey')}</span>
                     </button>
                   </div>
@@ -1423,7 +1433,7 @@ export const SettingsModule: React.FC = () => {
                   onClick={() => lockPos()}
                   className="btn-primary"
                 >
-                  <LockClosed24Filled className="w-4 h-4" />
+                  <Icon filled={LockClosed24Filled} size="sm" />
                   <span>{t('lockStation')}</span>
                 </button>
               </div>
@@ -1432,7 +1442,7 @@ export const SettingsModule: React.FC = () => {
             {/* Danger Zone */}
             <div className="p-5 rounded-3xl border border-red-500/20 bg-red-500/5 space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 flex items-center gap-2">
-                <Delete24Filled className="w-4 h-4" />
+                <Icon regular={Delete24Regular} size="sm" />
                 <span>{t('dangerZone')}</span>
               </h3>
               <p className="text-xs text-[var(--text-secondary)]">
@@ -1478,7 +1488,7 @@ export const SettingsModule: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-[var(--text-primary)] flex items-center gap-2">
-                    <Payment24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                    <Icon regular={Payment24Regular} size="sm" className="text-[#2BB5FF]" />
                     <span>{t('billingSettingsTitle')}</span>
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -1492,7 +1502,7 @@ export const SettingsModule: React.FC = () => {
                     onClick={openPricingModal}
                     className="btn-primary text-xs font-black px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer shadow-sm"
                   >
-                    <Sparkle24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('changePlanBtn')}</span>
                   </button>
                 </div>
@@ -1527,7 +1537,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={handleOpenBillingPortal}
                       className="btn-secondary text-xs font-bold px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Open24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Open24Filled} size="sm" className="w-3.5 h-3.5" />
                       <span>{isOpeningPortal ? t('redirectingToStripe') : t('manageBillingPortal')}</span>
                     </button>
                   </div>
@@ -1616,7 +1626,7 @@ export const SettingsModule: React.FC = () => {
               {/* Beta Access Badge Status */}
               <div className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs">
                 <div className="flex items-center gap-2">
-                  <LockClosed24Regular className={`w-4 h-4 ${canAccessAddons ? 'text-emerald-500' : 'text-amber-500'}`} />
+                  <Icon regular={LockClosed24Regular} size="sm" className={canAccessAddons ? 'text-emerald-500' : 'text-amber-500'} />
                   <span className="font-bold text-[var(--text-primary)]">{t('betaAccessTitle')}</span>
                 </div>
                 {canAccessAddons ? (
@@ -1644,7 +1654,7 @@ export const SettingsModule: React.FC = () => {
                   <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-500/20 space-y-3">
                     <div className="flex items-start gap-3">
                       <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex-shrink-0">
-                        <LockClosed24Regular className="w-5 h-5" />
+                        <Icon regular={LockClosed24Regular} size="md" />
                       </div>
                       <div>
                         <h4 className="text-xs font-black text-[var(--text-primary)]">{t('betaAccessTitle')}</h4>
@@ -1662,7 +1672,7 @@ export const SettingsModule: React.FC = () => {
                         onClick={() => setIsBetaModalOpen(true)}
                         className="btn-primary"
                       >
-                        <LockClosed16Filled className="w-3.5 h-3.5" />
+                        <Icon filled={LockClosed16Filled} size="sm" className="w-3.5 h-3.5" />
                         <span>{t('enterBetaCode')}</span>
                       </button>
                     </div>
@@ -1699,7 +1709,7 @@ export const SettingsModule: React.FC = () => {
                       color: 'bg-black dark:bg-white',
                     },
                   ].map((mod) => {
-                    const Icon = mod.icon;
+                    const ModIcon = mod.icon;
                     return (
                       <div
                         key={mod.id}
@@ -1717,13 +1727,13 @@ export const SettingsModule: React.FC = () => {
                         }`}
                       >
                         <div className="flex items-start gap-3 flex-1 min-w-0 pr-4">
-                          <Icon className={`w-5 h-5 ${mod.iconColor} mt-0.5 flex-shrink-0`} />
+                          <Icon regular={ModIcon} size="md" className={`${mod.iconColor} mt-0.5 flex-shrink-0`} />
                           <div>
                             <div className="flex items-center gap-1.5">
                               <h4 className="text-xs font-bold text-[var(--text-primary)]">{mod.title}</h4>
                               {!canAccessAddons && (
                                 <span className="px-1.5 py-0.2 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[9px] font-extrabold flex items-center gap-0.5">
-                                  <LockClosed16Filled className="w-2.5 h-2.5" /> Beta
+                                  <Icon regular={LockClosed24Regular} className="w-2.5 h-2.5" /> Beta
                                 </span>
                               )}
                             </div>
@@ -1748,7 +1758,7 @@ export const SettingsModule: React.FC = () => {
                   onClick={saveAddons}
                   className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Save24Filled className="w-4 h-4" />
+                  <Icon filled={Save24Filled} size="sm" />
                   <span>{t('save')}</span>
                 </motion.button>
               </Section>
@@ -1771,7 +1781,7 @@ export const SettingsModule: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h3 className="text-base font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                    <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-500" />
+                    <Icon regular={ShieldCheckmark24Regular} size="md" className="text-emerald-500" />
                     <span>{t('complianceTitle')}</span>
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-xl">
@@ -1784,7 +1794,7 @@ export const SettingsModule: React.FC = () => {
                   onClick={handleExportComplianceCsv}
                   className="btn-primary flex-shrink-0"
                 >
-                  <DocumentCheckmark24Regular className="w-4 h-4" />
+                  <Icon filled={DocumentCheckmark24Filled} size="sm" />
                   <span>{t('exportAuditReport')}</span>
                 </button>
               </div>
@@ -1802,7 +1812,7 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-secondary)] text-xs font-semibold">
-                  <CheckmarkCircle24Filled className="w-3.5 h-3.5" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('hipaaVerified')}</span>
                 </div>
 
@@ -1818,7 +1828,7 @@ export const SettingsModule: React.FC = () => {
               <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)]">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                    <ShieldCheckmark24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <Icon regular={ShieldCheckmark24Regular} size="sm" tone="secondary" />
                     <span>{t('immutableAuditRecords')}</span>
                   </h4>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
@@ -1949,7 +1959,7 @@ export const SettingsModule: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
               <div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <Building24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={Building24Regular} size="sm" tone="secondary" />
                   <span>{t('multiLocationTitle')}</span>
                   {locations.length > 0 && (
                     <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
@@ -1966,7 +1976,7 @@ export const SettingsModule: React.FC = () => {
                 onClick={() => setIsAddLocationOpen(true)}
                 className="btn-primary self-start sm:self-auto flex-shrink-0"
               >
-                <Add24Filled className="w-4 h-4" />
+                <Icon filled={Add24Filled} size="sm" />
                 <span>{t('addLocation')}</span>
               </button>
             </div>
@@ -2148,7 +2158,7 @@ export const SettingsModule: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                      <LockClosed24Regular className="w-5 h-5" />
+                      <Icon regular={LockClosed24Regular} size="md" />
                     </div>
                     <h3 className="text-base font-black text-[var(--text-primary)]">{t('enterBetaCode')}</h3>
                   </div>
@@ -2156,7 +2166,7 @@ export const SettingsModule: React.FC = () => {
                     onClick={() => setIsBetaModalOpen(false)}
                     className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-400"
                   >
-                    <Dismiss24Filled className="w-4 h-4" />
+                    <Icon filled={Dismiss24Filled} size="sm" />
                   </button>
                 </div>
 
@@ -2248,7 +2258,7 @@ export const SettingsModule: React.FC = () => {
                   {/* Header */}
                   <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                     <div className="flex items-center gap-2.5">
-                      <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+                      <Icon regular={Building24Regular} size="md" tone="secondary" />
                       <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('addStation')}</h3>
                     </div>
                     <button
@@ -2256,7 +2266,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={() => setIsAddStationModalOpen(false)}
                       className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                     >
-                      <Dismiss24Filled className="w-5 h-5" />
+                      <Icon filled={Dismiss24Filled} size="md" />
                     </button>
                   </div>
 
@@ -2299,7 +2309,7 @@ export const SettingsModule: React.FC = () => {
                       type="submit"
                       className="btn-primary flex-1 flex items-center justify-center gap-1.5"
                     >
-                      <CheckmarkCircle24Filled className="w-4 h-4" />
+                      <Icon filled={CheckmarkCircle24Filled} size="sm" />
                       <span>{t('addStation')}</span>
                     </button>
                   </div>
@@ -2348,7 +2358,7 @@ export const SettingsModule: React.FC = () => {
                   {/* Header */}
                   <div className="w-full px-6 py-4 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] rounded-t-[32px] md:rounded-t-3xl">
                     <div className="flex items-center gap-2.5">
-                      <Building24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+                      <Icon regular={Building24Regular} size="md" tone="secondary" />
                       <h3 className="text-base font-extrabold text-[var(--text-primary)]">{t('editChairStation')}</h3>
                     </div>
                     <button
@@ -2356,7 +2366,7 @@ export const SettingsModule: React.FC = () => {
                       onClick={() => setEditingStationId(null)}
                       className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                     >
-                      <Dismiss24Filled className="w-5 h-5" />
+                      <Icon filled={Dismiss24Filled} size="md" />
                     </button>
                   </div>
 
@@ -2398,7 +2408,7 @@ export const SettingsModule: React.FC = () => {
                       type="submit"
                       className="btn-primary flex-1 flex items-center justify-center gap-1.5"
                     >
-                      <Save24Filled className="w-4 h-4" />
+                      <Icon filled={Save24Filled} size="sm" />
                       <span>{t('save')}</span>
                     </button>
                   </div>

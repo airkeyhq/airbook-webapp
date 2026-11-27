@@ -8,6 +8,7 @@ import { Logo, CircleCloudIcon } from '@/components/Logo';
 import { useAirBookStore } from '@/lib/store';
 import { useSession } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ArrowLeft24Filled,
   ArrowRight24Filled,
@@ -142,7 +143,7 @@ export default function OnboardingPage() {
         href="/login"
         className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors z-20"
       >
-        <ArrowLeft24Filled className="w-3.5 h-3.5" />
+        <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
         <span>{t('backToLogin')}</span>
       </Link>
 
@@ -245,7 +246,7 @@ export default function OnboardingPage() {
                         onClick={() => fileInputRef.current?.click()}
                         className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-semibold text-[var(--text-primary)] transition-colors flex items-center gap-1.5"
                       >
-                        <Add24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
                         <span>{iconUrl ? t('changeImage') : t('uploadImage')}</span>
                       </button>
                       {iconUrl && (
@@ -312,7 +313,7 @@ export default function OnboardingPage() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {BUSINESS_TYPES.map((type) => {
-                    const Icon = type.icon;
+                    const TypeIcon = type.icon;
                     const isSelected = selectedType === type.id;
                     return (
                       <motion.button
@@ -327,9 +328,9 @@ export default function OnboardingPage() {
                             : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/10 text-[var(--text-primary)] hover:bg-black/8'
                         }`}
                       >
-                        <Icon className="w-5 h-5" />
+                        <Icon regular={TypeIcon} size="md" />
                         <span>{t(type.labelKey)}</span>
-                        {isSelected && <CheckmarkCircle24Regular className="w-3.5 h-3.5" />}
+                        {isSelected && <Icon regular={CheckmarkCircle24Regular} size="sm" className="w-3.5 h-3.5" />}
                       </motion.button>
                     );
                   })}
@@ -360,7 +361,7 @@ export default function OnboardingPage() {
                 {/* Email input */}
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
-                    <Mail24Regular className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Icon regular={Mail24Regular} size="sm" className="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
                       placeholder={t('teamMemberEmailPlaceholder')}
@@ -380,7 +381,7 @@ export default function OnboardingPage() {
                     onClick={handleAddEmail}
                     className="p-2.5 rounded-xl bg-black text-white dark:bg-white dark:text-black hover:opacity-80 transition-opacity"
                   >
-                    <Add24Filled className="w-4 h-4" />
+                    <Icon filled={Add24Filled} size="sm" />
                   </button>
                 </div>
 
@@ -398,7 +399,7 @@ export default function OnboardingPage() {
                           onClick={() => setInviteEmails((prev) => prev.filter((e) => e !== em))}
                           className="hover:opacity-70"
                         >
-                          <Dismiss24Filled className="w-3 h-3" />
+                          <Icon filled={Dismiss24Filled} size="xs" />
                         </button>
                       </div>
                     ))}
@@ -428,7 +429,7 @@ export default function OnboardingPage() {
                   transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.1 }}
                   className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-blue-500 via-violet-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-blue-500/25"
                 >
-                  <Sparkle24Regular className="w-9 h-9 text-white" />
+                  <Icon regular={Sparkle24Regular} className="w-9 h-9 text-white" />
                 </motion.div>
 
                 <div>
@@ -453,11 +454,11 @@ export default function OnboardingPage() {
                     { label: t('tabTeam'), desc: t('featureTeamDesc'), icon: People24Regular },
                     { label: t('analyticsTitle'), desc: t('featureAnalyticsDesc'), icon: DataTrending24Regular },
                   ].map((f) => {
-                    const Icon = f.icon;
+                    const FeatureIcon = f.icon;
                     return (
                       <div key={f.label} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 text-left space-y-1">
                         <div className="flex items-center gap-1.5 font-bold text-[var(--text-primary)]">
-                          <Icon className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                          <Icon regular={FeatureIcon} size="sm" className="w-3.5 h-3.5 text-[#2BB5FF]" />
                           <span>{f.label}</span>
                         </div>
                         <p className="text-[10px] text-[var(--text-secondary)]">{f.desc}</p>
@@ -480,7 +481,7 @@ export default function OnboardingPage() {
                 onClick={() => goTo((step - 1) as Step)}
                 className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
-                <ArrowLeft24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
                 <span>{t('back')}</span>
               </button>
             ) : (
@@ -515,7 +516,7 @@ export default function OnboardingPage() {
                 className="px-6 py-2.5 rounded-2xl bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-lg shadow-[#2BB5FF]/30 flex items-center gap-2 disabled:opacity-40 transition-all"
               >
                 <span>{step === 2 && !selectedType ? t('skip') : t('continue')}</span>
-                <ArrowRight24Filled className="w-4 h-4" />
+                <Icon filled={ArrowRight24Filled} size="sm" />
               </motion.button>
             ) : (
               <motion.button
@@ -526,7 +527,7 @@ export default function OnboardingPage() {
                 className="px-8 py-3 rounded-2xl bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white font-extrabold text-xs shadow-xl shadow-[#2BB5FF]/30 flex items-center gap-2 transition-all"
               >
                 <span>{t('openDashboard')}</span>
-                <ArrowRight24Filled className="w-4 h-4" />
+                <Icon filled={ArrowRight24Filled} size="sm" />
               </motion.button>
             )}
           </div>

@@ -13,6 +13,7 @@ import { CurrencySelector } from '@/components/CurrencySelector';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { getDemoSpecialists, getDemoClient, getDemoBusiness } from '@/lib/i18n/demographics';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -384,9 +385,9 @@ export default function MarketingWebsite() {
               href="/changelog"
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[#2BB5FF]/50 transition-all text-[11px] font-extrabold text-[var(--text-primary)] shadow-xs group"
             >
-              <Sparkle24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
               <span>{t('heroBadge')}</span>
-              <ArrowRight24Filled className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[#2BB5FF] group-hover:translate-x-0.5 transition-all" />
+              <Icon filled={ArrowRight24Filled} active size="xs" className="text-[var(--text-muted)] group-hover:text-[#2BB5FF] group-hover:translate-x-0.5 transition-all" />
             </Link>
           </motion.div>
 
@@ -465,18 +466,18 @@ export default function MarketingWebsite() {
                 href="/dashboard"
                 className="btn-primary w-full sm:w-auto h-12 px-7 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
-                <Sparkle24Filled className="w-4 h-4" />
+                <Icon filled={Sparkle24Filled} active size="sm" />
                 <span>{t('goToDashboard')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             ) : (
               <Link
                 href="/founding"
                 className="btn-primary w-full sm:w-auto h-12 px-7 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
-                <Sparkle24Filled className="w-4 h-4" />
+                <Icon filled={Sparkle24Filled} active size="sm" />
                 <span>{t('applyForFoundingProgram')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             )}
 
@@ -490,7 +491,7 @@ export default function MarketingWebsite() {
               }}
               className="btn-secondary w-full sm:w-auto h-12 px-6 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             >
-              <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Globe24Regular} size="sm" className="text-[var(--text-secondary)]" />
               <span>{t('exploreLiveStorefront')}</span>
             </button>
           </motion.div>
@@ -503,15 +504,15 @@ export default function MarketingWebsite() {
             className="flex flex-wrap items-center justify-center gap-4 text-[11px] font-bold text-[var(--text-secondary)] pt-1"
           >
             <span className="flex items-center gap-1.5">
-              <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-emerald-500" />
+              <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500" />
               {t('freeForeverPlan')}
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-emerald-500" />
+              <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500" />
               {t('noCreditCard')}
             </span>
             <span className="flex items-center gap-1.5">
-              <Sparkle24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
               {t('passwordlessGuarantee')}
             </span>
           </motion.div>
@@ -531,7 +532,7 @@ export default function MarketingWebsite() {
               {/* Perspective Header Badge */}
               <div className="flex items-center justify-between px-1 h-8">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs whitespace-nowrap">
-                  <Globe24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                  <Icon regular={Globe24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>{t('demoClientPerspective')}</span>
                 </div>
                 <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] text-[10px] font-mono font-bold text-[var(--text-secondary)] shadow-2xs whitespace-nowrap">
@@ -636,7 +637,7 @@ export default function MarketingWebsite() {
                               : 'text-[var(--text-muted)] bg-[var(--bg-secondary)]'
                           }`}
                         >
-                          {demoStep > 1 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          {demoStep > 1 ? <Icon filled={CheckmarkCircle24Filled} active size="sm" /> : null}
                           <span>{t('demoStepService')}</span>
                         </button>
 
@@ -659,7 +660,7 @@ export default function MarketingWebsite() {
                               : 'text-[var(--text-muted)] opacity-50 cursor-not-allowed'
                           }`}
                         >
-                          {demoStep > 2 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          {demoStep > 2 ? <Icon filled={CheckmarkCircle24Filled} active size="sm" /> : null}
                           <span>{t('demoStepSpecialist')}</span>
                         </button>
 
@@ -681,7 +682,7 @@ export default function MarketingWebsite() {
                               : 'text-[var(--text-muted)] opacity-50 cursor-not-allowed'
                           }`}
                         >
-                          {demoStep === 4 ? <CheckmarkCircle24Filled className="w-3.5 h-3.5" /> : null}
+                          {demoStep === 4 ? <Icon filled={CheckmarkCircle24Filled} active size="sm" /> : null}
                           <span>{t('demoStepTime')}</span>
                         </button>
                       </div>
@@ -751,7 +752,7 @@ export default function MarketingWebsite() {
                                     {srv.name}
                                   </p>
                                   {isSelected && (
-                                    <CheckmarkCircle24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+                                    <Icon filled={CheckmarkCircle24Filled} active size="sm" className="text-[#2BB5FF] flex-shrink-0" />
                                   )}
                                 </div>
                                 <div className="flex items-center justify-between mt-1.5">
@@ -785,7 +786,7 @@ export default function MarketingWebsite() {
                               onClick={() => setDemoStep(1)}
                               className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                             >
-                              <ChevronLeft24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={ChevronLeft24Filled} active size="sm" />
                               <span>{t('demoBack')}</span>
                             </button>
                             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
@@ -838,7 +839,7 @@ export default function MarketingWebsite() {
                                     {stf.station}
                                   </span>
                                   {isSelected && (
-                                    <CheckmarkCircle24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+                                    <Icon filled={CheckmarkCircle24Filled} active size="sm" className="text-[#2BB5FF] flex-shrink-0" />
                                   )}
                                 </div>
                               </button>
@@ -864,7 +865,7 @@ export default function MarketingWebsite() {
                               onClick={() => setDemoStep(2)}
                               className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                             >
-                              <ChevronLeft24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={ChevronLeft24Filled} active size="sm" />
                               <span>{t('demoBack')}</span>
                             </button>
                             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
@@ -926,13 +927,13 @@ export default function MarketingWebsite() {
                             }}
                             className="btn-primary w-full h-11 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer"
                           >
-                            <Calendar24Filled className="w-4 h-4" />
+                            <Icon filled={Calendar24Filled} active size="sm" />
                             <span>
                               {t('demoSimulateBook')} (${(demoService.price * 0.25).toFixed(2)} Deposit)
                             </span>
                           </button>
                           <p className="text-[10px] text-center text-[var(--text-muted)] font-semibold mt-2 flex items-center justify-center gap-1">
-                            <LockClosed24Regular className="w-3 h-3 text-[var(--text-muted)]" />
+                            <Icon regular={LockClosed24Regular} size="xs" className="text-[var(--text-muted)]" />
                             <span>{t('demoDepositProtected')} • Apple Pay &amp; Google Pay</span>
                           </p>
                         </div>
@@ -949,7 +950,7 @@ export default function MarketingWebsite() {
                         className="space-y-3 text-center py-1"
                       >
                         <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-3 text-left">
-                          <CheckmarkCircle24Filled className="w-6 h-6 flex-shrink-0 text-emerald-500" />
+                          <Icon regular={CheckmarkCircle24Regular} size="lg" className="flex-shrink-0 text-emerald-500" />
                           <div>
                             <p className="text-xs font-black leading-tight">
                               {t('demoBookingSuccess')}
@@ -989,7 +990,7 @@ export default function MarketingWebsite() {
                           }}
                           className="btn-secondary w-full h-10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
                         >
-                          <Sparkle24Filled className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                          <Icon filled={Sparkle24Filled} active size="sm" className="text-[#2BB5FF]" />
                           <span>{t('demoBookAnother')}</span>
                         </button>
                       </motion.div>
@@ -1000,7 +1001,7 @@ export default function MarketingWebsite() {
                 {/* Footer Assurance */}
                 <div className="border-t border-[var(--border-subtle)] pt-2.5 flex items-center justify-between text-[10px] text-[var(--text-muted)] font-medium">
                   <span className="flex items-center gap-1">
-                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500" />
+                    <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-500" />
                     <span>{t('demoDepositProtected')}</span>
                   </span>
                   <span className="font-mono">{t('demoDepositBadge')}</span>
@@ -1013,7 +1014,7 @@ export default function MarketingWebsite() {
               {/* Perspective Header Badge */}
               <div className="flex items-center justify-between px-1 h-8">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-[11px] font-black tracking-wide text-[var(--text-primary)] shadow-xs whitespace-nowrap">
-                  <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-[#AF52DE]" />
+                  <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-[#AF52DE]" />
                   <span>{t('demoOperatorPerspective')}</span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shadow-2xs whitespace-nowrap">
@@ -1029,7 +1030,7 @@ export default function MarketingWebsite() {
                 {/* Live Header with Pulse Radar */}
                 <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
                   <div className="flex items-center gap-2">
-                    <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <Icon regular={Clock24Regular} size="sm" className="text-[var(--text-secondary)]" />
                     <span className="text-[11px] font-black uppercase tracking-wider text-[var(--text-primary)]">
                       {t('demoRosterTitle')}
                     </span>
@@ -1176,7 +1177,7 @@ export default function MarketingWebsite() {
                         </div>
                         <div className="flex items-center justify-between pt-1 border-t border-[#2BB5FF]/20 text-[10px] font-bold">
                           <span className="flex items-center gap-1 text-[#2BB5FF]">
-                            <Sparkle24Regular className="w-3 h-3" />
+                            <Icon regular={Sparkle24Regular} size="xs" />
                             {t('demoUpcomingBooking')}
                           </span>
                           <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] border border-emerald-500/20">
@@ -1220,7 +1221,7 @@ export default function MarketingWebsite() {
             className="flex flex-col items-center text-center space-y-4"
           >
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-[var(--text-primary)]">
-              <CursorClick24Regular className="w-10 h-10 stroke-[1.2]" />
+              <Icon regular={CursorClick24Regular} className="w-10 h-10 stroke-[1.2]" />
             </div>
             <p className="text-sm sm:text-base font-bold text-[var(--text-secondary)] max-w-[220px] leading-snug">
               {t('peopleValue1')}
@@ -1236,7 +1237,7 @@ export default function MarketingWebsite() {
             className="flex flex-col items-center text-center space-y-4"
           >
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-[var(--text-primary)]">
-              <PeopleCommunity24Regular className="w-10 h-10 stroke-[1.2]" />
+              <Icon regular={PeopleCommunity24Regular} className="w-10 h-10 stroke-[1.2]" />
             </div>
             <p className="text-sm sm:text-base font-bold text-[var(--text-secondary)] max-w-[220px] leading-snug">
               {t('peopleValue2')}
@@ -1252,7 +1253,7 @@ export default function MarketingWebsite() {
             className="flex flex-col items-center text-center space-y-4"
           >
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-[var(--text-primary)]">
-              <Sparkle24Regular className="w-10 h-10 stroke-[1.2]" />
+              <Icon regular={Sparkle24Regular} className="w-10 h-10 stroke-[1.2]" />
             </div>
             <p className="text-sm sm:text-base font-bold text-[var(--text-secondary)] max-w-[220px] leading-snug">
               {t('peopleValue3')}
@@ -1292,7 +1293,7 @@ export default function MarketingWebsite() {
                     01
                   </span>
                   <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[#2BB5FF] transition-colors">
-                    <Globe24Regular className="w-4 h-4" />
+                    <Icon regular={Globe24Regular} size="sm" />
                   </div>
                 </div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] tracking-tight">{t('step1Title')}</h3>
@@ -1306,7 +1307,7 @@ export default function MarketingWebsite() {
                     02
                   </span>
                   <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[#2BB5FF] transition-colors">
-                    <Calendar24Regular className="w-4 h-4" />
+                    <Icon regular={Calendar24Regular} size="sm" />
                   </div>
                 </div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] tracking-tight">{t('step2Title')}</h3>
@@ -1320,7 +1321,7 @@ export default function MarketingWebsite() {
                     03
                   </span>
                   <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[#2BB5FF] transition-colors">
-                    <Chat24Regular className="w-4 h-4" />
+                    <Icon regular={Chat24Regular} size="sm" />
                   </div>
                 </div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] tracking-tight">{t('step3Title')}</h3>
@@ -1334,7 +1335,7 @@ export default function MarketingWebsite() {
                     04
                   </span>
                   <div className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[#2BB5FF] transition-colors">
-                    <Star24Regular className="w-4 h-4" />
+                    <Icon regular={Star24Regular} size="sm" />
                   </div>
                 </div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] tracking-tight">{t('step4Title')}</h3>
@@ -1366,7 +1367,7 @@ export default function MarketingWebsite() {
                 {/* Pillar 1: Formulas & Dwell Times */}
                 <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
                   <div className="w-9 h-9 rounded-xl bg-[#AF52DE]/10 text-[#AF52DE] flex items-center justify-center flex-shrink-0 mt-0.5 border border-[#AF52DE]/20">
-                    <Tag24Regular className="w-5 h-5" />
+                    <Icon regular={Tag24Regular} size="md" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-xs font-black text-[var(--text-primary)]">
@@ -1381,7 +1382,7 @@ export default function MarketingWebsite() {
                 {/* Pillar 2: Digital Waivers & Allergy Intake */}
                 <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
                   <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/20">
-                    <ShieldCheckmark24Regular className="w-5 h-5" />
+                    <Icon regular={ShieldCheckmark24Regular} size="md" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-xs font-black text-[var(--text-primary)]">
@@ -1396,7 +1397,7 @@ export default function MarketingWebsite() {
                 {/* Pillar 3: Loyalty Credit & VIP Status */}
                 <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-[var(--bg-primary)]/80 border border-[var(--border-subtle)] shadow-xs">
                   <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-500/20">
-                    <Star24Regular className="w-5 h-5" />
+                    <Icon regular={Star24Regular} size="md" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-xs font-black text-[var(--text-primary)]">
@@ -1419,14 +1420,14 @@ export default function MarketingWebsite() {
                 {/* Client Ticket Header */}
                 <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
                   <div className="flex items-center gap-2">
-                    <Person24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <Icon regular={Person24Regular} size="sm" className="text-[var(--text-secondary)]" />
                     <span className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
                       {t('demoClientRecordTitle')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide border border-amber-500/20 shadow-xs">
-                      <Star24Regular className="w-3.5 h-3.5 text-amber-500" />
+                      <Icon regular={Star24Regular} size="sm" className="text-amber-500" />
                       {t('demoClientVipBadge')}
                     </span>
                     <span className="text-[10px] font-mono font-bold text-[#AF52DE] bg-[#AF52DE]/10 px-2.5 py-1 rounded-full border border-[#AF52DE]/20">
@@ -1463,7 +1464,7 @@ export default function MarketingWebsite() {
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5 text-[11px]">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                      <Tag24Regular className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                      <Icon regular={Tag24Regular} size="sm" className="text-[var(--text-secondary)]" />
                       {t('demoFormulaLabel')}
                     </span>
                     {/* Formulation Color Swatch Dots */}
@@ -1489,11 +1490,11 @@ export default function MarketingWebsite() {
                 {/* Security & Instant Sync Footer */}
                 <div className="pt-2.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[10px] font-bold text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                    <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                     {t('demoStripeProtected')}
                   </span>
                   <span className="flex items-center gap-1.5 text-[#2BB5FF]">
-                    <CheckmarkCircle24Regular className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
+                    <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-[#2BB5FF] flex-shrink-0" />
                     {t('demoCalendarSynced')}
                   </span>
                 </div>
@@ -1533,7 +1534,7 @@ export default function MarketingWebsite() {
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
                     activeRetentionTab === 'rebook' ? 'bg-[#2BB5FF] text-white shadow-xs' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                   }`}>
-                    <Chat24Regular className="w-5 h-5" />
+                    <Icon regular={Chat24Regular} size="md" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
@@ -1558,7 +1559,7 @@ export default function MarketingWebsite() {
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
                     activeRetentionTab === 'review' ? 'bg-amber-500 text-white shadow-xs' : 'bg-amber-500/10 text-amber-500'
                   }`}>
-                    <Star24Regular className="w-5 h-5" />
+                    <Icon regular={Star24Regular} size="md" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
@@ -1605,7 +1606,7 @@ export default function MarketingWebsite() {
                       {/* Messages Navigation Header */}
                     <div className="flex items-center justify-between pt-3 pb-1">
                       <div className="flex items-center gap-1 w-9">
-                        <ChevronLeft24Filled className="w-4 h-4 text-[#2BB5FF] cursor-pointer" />
+                        <Icon filled={ChevronLeft24Filled} active size="sm" className="text-[#2BB5FF] cursor-pointer" />
                         <span className="text-xs font-semibold text-[#2BB5FF]">12</span>
                       </div>
                       
@@ -1626,7 +1627,7 @@ export default function MarketingWebsite() {
                           <p className="text-xs font-black text-[var(--text-primary)]">
                             {activeRetentionTab === 'rebook' ? t('retentionRebookSender') : t('retentionReviewSender')}
                           </p>
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-[#2BB5FF]" />
                         </div>
                         <p className="text-[9px] text-[var(--text-muted)] font-medium">
                           {activeRetentionTab === 'rebook' ? t('retentionRebookStudio') : t('retentionReviewStudio')}
@@ -1688,7 +1689,7 @@ export default function MarketingWebsite() {
                               {/* Native OS Neutral Action Pill */}
                               <div className="w-full py-2 px-3.5 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/15 dark:hover:bg-white/15 border border-black/5 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[var(--text-primary)] transition-all cursor-pointer group shadow-xs">
                                 <span>{t('retentionRebookActionPill')}</span>
-                                <ChevronRight24Filled className="w-3.5 h-3.5 opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
+                                <Icon filled={ChevronRight24Filled} active size="sm" className="opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
                               </div>
                             </div>
                           </div>
@@ -1740,7 +1741,7 @@ export default function MarketingWebsite() {
                               {/* Native OS Neutral Action Pill */}
                               <div className="w-full py-2 px-3.5 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/15 dark:hover:bg-white/15 border border-black/5 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[var(--text-primary)] transition-all cursor-pointer group shadow-xs">
                                 <span>{t('retentionReviewActionPill')}</span>
-                                <ChevronRight24Filled className="w-3.5 h-3.5 opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
+                                <Icon filled={ChevronRight24Filled} active size="sm" className="opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
                               </div>
                             </div>
                           </div>
@@ -1758,7 +1759,7 @@ export default function MarketingWebsite() {
                     <div className="flex items-center gap-2 p-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] px-3 text-xs text-[var(--text-muted)]">
                       <span className="flex-1 font-medium">iMessage</span>
                       <div className="w-5 h-5 rounded-full bg-[#2BB5FF] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
-                        <ArrowUp24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={ArrowUp24Filled} active size="sm" />
                       </div>
                     </div>
                     {/* Home Indicator Bar */}
@@ -1797,7 +1798,7 @@ export default function MarketingWebsite() {
               aria-label="Previous specialty"
               className="w-9 h-9 rounded-full bg-[var(--bg-primary)] hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] flex items-center justify-center transition-all active:scale-95 cursor-pointer flex-shrink-0 z-10 shadow-xs"
             >
-              <ChevronLeft24Filled className="w-4 h-4" />
+              <Icon filled={ChevronLeft24Filled} active size="sm" />
             </button>
 
             {/* Active Specialty Pill & Label with Slide Transition */}
@@ -1831,7 +1832,7 @@ export default function MarketingWebsite() {
               aria-label="Next specialty"
               className="w-9 h-9 rounded-full bg-[var(--bg-primary)] hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-primary)] border border-[var(--border-subtle)] flex items-center justify-center transition-all active:scale-95 cursor-pointer flex-shrink-0 z-10 shadow-xs"
             >
-              <ChevronRight24Filled className="w-4 h-4" />
+              <Icon filled={ChevronRight24Filled} active size="sm" />
             </button>
 
             {/* Continuous Linear Progress Bar indicating Auto-Advance Timer */}
@@ -1868,15 +1869,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Client formula history &amp; processing timers</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Color swatch ratio &amp; developer logs</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Digital patch test waiver signatures</span>
                         </li>
                       </ul>
@@ -1909,7 +1910,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Logged by Roxanne V.</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Profile Synced</span>
@@ -1935,7 +1936,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Master Color Artistry</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Bespoke Suite</span>
@@ -1956,15 +1957,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Self-serve iPad walk-in kiosk queue</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Tap-to-Pay contactless checkouts in &lt;5s</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Automated 3-week haircut re-booking SMS</span>
                         </li>
                       </ul>
@@ -2000,7 +2001,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Next Client SMS Dispatched</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Live Kiosk</span>
@@ -2026,7 +2027,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Precision Fade &amp; Shave</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Walk-In Kiosk</span>
@@ -2047,15 +2048,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Digital consent waivers with finger signatures</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Client allergy &amp; contraindication charts</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Before and after photo comparison records</span>
                         </li>
                       </ul>
@@ -2083,14 +2084,14 @@ export default function MarketingWebsite() {
                           Sophia Montgomery
                         </span>
                         <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                          <LockClosed24Regular className="w-3.5 h-3.5" />
+                          <Icon regular={LockClosed24Regular} size="sm" />
                           <span>eSign Verified</span>
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>$140.00 Deposit Secured</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Direct Payout</span>
@@ -2116,7 +2117,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Clinical Skincare &amp; Esthetics</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">eSign Intake</span>
@@ -2137,15 +2138,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Multi-service tiered add-ons (Art, Gel, Length)</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Group party simultaneous booking engine</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Card deposit protection against no-shows</span>
                         </li>
                       </ul>
@@ -2178,7 +2179,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>$75.00 Deposit Captured</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">No-Show Guard</span>
@@ -2204,7 +2205,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Artistic Nail Styling</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Group Party Engine</span>
@@ -2225,15 +2226,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Multi-hour block session scheduling</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Consultation deposit lock &amp; design notes</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Digital liability waiver signatures</span>
                         </li>
                       </ul>
@@ -2266,7 +2267,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Waiver Signed &amp; $200 Held</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Deposit Guard</span>
@@ -2292,7 +2293,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Fine-Line Atelier</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Deposit Guard</span>
@@ -2313,15 +2314,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Treatment room prep &amp; cleanup buffer times</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Intake health notes &amp; pressure preferences</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Recurring wellness packages &amp; gift cards</span>
                         </li>
                       </ul>
@@ -2354,7 +2355,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Wellness Pass Active</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">3 / 6 Remaining</span>
@@ -2380,7 +2381,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Holistic Therapy &amp; Sanctuary</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Turnover Buffer</span>
@@ -2401,15 +2402,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Service tiers by breed &amp; pet weight</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Coat care notes &amp; rabies cert tracking</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>Automated &quot;Pet is ready for pickup&quot; SMS</span>
                         </li>
                       </ul>
@@ -2442,7 +2443,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Pickup SMS Dispatched</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Auto Notification</span>
@@ -2468,7 +2469,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Canine Spa &amp; Styling</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Pickup SMS</span>
@@ -2489,15 +2490,15 @@ export default function MarketingWebsite() {
 
                       <ul className="text-xs sm:text-sm space-y-2 font-bold text-[var(--text-primary)]">
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>1-on-1 personal training slot reservations</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>10-session punch card credit tracking</span>
                         </li>
                         <li className="flex items-center gap-2.5">
-                          <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                           <span>24h cancellation cutoff enforcement</span>
                         </li>
                       </ul>
@@ -2547,7 +2548,7 @@ export default function MarketingWebsite() {
 
                       <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] w-full">
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                           <span>Auto-Deducted via GPS</span>
                         </div>
                         <span className="text-[10px] text-[var(--text-muted)]">Session #8 of 10</span>
@@ -2573,7 +2574,7 @@ export default function MarketingWebsite() {
 
                     <div className="absolute bottom-4 left-4 right-4 z-10 p-3 rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 text-white flex items-center justify-between shadow-lg">
                       <div className="flex items-center gap-2">
-                        <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                         <span className="text-xs font-bold tracking-tight">Athletic Conditioning</span>
                       </div>
                       <span className="text-[10px] text-white/80 font-medium">Punch Passbook</span>
@@ -2678,23 +2679,23 @@ export default function MarketingWebsite() {
                   {/* Features List */}
                   <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('soloFeat1')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('soloFeat2')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('soloFeat3')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('soloFeat4')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('soloFeat5')}</span>
                     </li>
                   </ul>
@@ -2708,7 +2709,7 @@ export default function MarketingWebsite() {
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
                       <span>{t('goToDashboard')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   ) : (
                     <Link
@@ -2716,7 +2717,7 @@ export default function MarketingWebsite() {
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
                       <span>{t('applyForAccess')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   )}
                 </div>
@@ -2727,7 +2728,7 @@ export default function MarketingWebsite() {
                 {/* Floating Top Badge */}
                 <div className="absolute -top-3.5 left-8 z-20">
                   <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#2BB5FF] text-white text-[10px] font-black uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(43,181,255,0.6)] border border-white/40">
-                    <Sparkle24Regular className="w-3 h-3 text-white" />
+                    <Icon regular={Sparkle24Regular} size="xs" className="text-white" />
                     {t('mostPopular')}
                   </span>
                 </div>
@@ -2772,23 +2773,23 @@ export default function MarketingWebsite() {
                   {/* Features List */}
                   <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('teamFeat1')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('teamFeat2')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('teamFeat3')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('teamFeat4')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('teamFeat5')}</span>
                     </li>
                   </ul>
@@ -2802,7 +2803,7 @@ export default function MarketingWebsite() {
                       className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
                     >
                       <span>{t('goToDashboard')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   ) : (
                     <Link
@@ -2810,7 +2811,7 @@ export default function MarketingWebsite() {
                       className="btn-primary w-full h-12 rounded-2xl text-xs font-black tracking-wide flex items-center justify-center gap-2"
                     >
                       <span>{t('applyForFoundingProgram')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   )}
                 </div>
@@ -2855,23 +2856,23 @@ export default function MarketingWebsite() {
                   {/* Features List */}
                   <ul className="text-xs space-y-3.5 text-[var(--text-secondary)] font-semibold">
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('scaleFeat1')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('scaleFeat2')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('scaleFeat3')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('scaleFeat4')}</span>
                     </li>
                     <li className="flex items-center gap-2.5 min-h-[20px]">
-                      <CheckmarkCircle24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                       <span>{t('scaleFeat5')}</span>
                     </li>
                   </ul>
@@ -2885,7 +2886,7 @@ export default function MarketingWebsite() {
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
                       <span>{t('goToDashboard')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   ) : (
                     <Link
@@ -2893,7 +2894,7 @@ export default function MarketingWebsite() {
                       className="btn-secondary w-full h-12 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
                     >
                       <span>{t('applyForAccess')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </Link>
                   )}
                 </div>
@@ -2905,19 +2906,19 @@ export default function MarketingWebsite() {
         {/* Bottom Trust & Guarantee Ribbon */}
         <div className="max-w-4xl mx-auto mt-12 p-4 sm:p-5 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-around gap-4 text-xs font-bold text-[var(--text-secondary)] shadow-xs">
           <div className="flex items-center gap-2">
-            <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
             <span>{t('pricingGuarantee1')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckmarkCircle24Regular className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+            <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-[#2BB5FF] flex-shrink-0" />
             <span>{t('pricingGuarantee2')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Payment24Regular className="w-4 h-4 text-[#AF52DE] flex-shrink-0" />
+            <Icon regular={Payment24Regular} size="sm" className="text-[#AF52DE] flex-shrink-0" />
             <span>{t('pricingGuarantee3')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <LockClosed24Regular className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <Icon regular={LockClosed24Regular} size="sm" className="text-amber-500 flex-shrink-0" />
             <span>{t('pricingGuarantee4')}</span>
           </div>
         </div>
@@ -2936,22 +2937,22 @@ export default function MarketingWebsite() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto text-center">
           <div className="space-y-1.5 p-4">
-            <CheckmarkCircle24Regular className="w-6 h-6 text-emerald-500 mx-auto" />
+            <Icon regular={CheckmarkCircle24Regular} size="lg" className="text-emerald-500 mx-auto" />
             <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{t('launchFastPoint1')}</h4>
             <p className="text-[11px] text-[var(--text-secondary)]">{t('launchFastPoint1Desc')}</p>
           </div>
           <div className="space-y-1.5 p-4">
-            <CheckmarkCircle24Regular className="w-6 h-6 text-emerald-500 mx-auto" />
+            <Icon regular={CheckmarkCircle24Regular} size="lg" className="text-emerald-500 mx-auto" />
             <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{t('launchFastPoint2')}</h4>
             <p className="text-[11px] text-[var(--text-secondary)]">{t('launchFastPoint2Desc')}</p>
           </div>
           <div className="space-y-1.5 p-4">
-            <CheckmarkCircle24Regular className="w-6 h-6 text-emerald-500 mx-auto" />
+            <Icon regular={CheckmarkCircle24Regular} size="lg" className="text-emerald-500 mx-auto" />
             <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{t('launchFastPoint3')}</h4>
             <p className="text-[11px] text-[var(--text-secondary)]">{t('launchFastPoint3Desc')}</p>
           </div>
           <div className="space-y-1.5 p-4">
-            <CheckmarkCircle24Regular className="w-6 h-6 text-emerald-500 mx-auto" />
+            <Icon regular={CheckmarkCircle24Regular} size="lg" className="text-emerald-500 mx-auto" />
             <h4 className="text-xs font-extrabold text-[var(--text-primary)]">{t('launchFastPoint4')}</h4>
             <p className="text-[11px] text-[var(--text-secondary)]">{t('launchFastPoint4Desc')}</p>
           </div>
@@ -2974,7 +2975,7 @@ export default function MarketingWebsite() {
                 className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
               >
                 <span>{t('goToDashboard')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             ) : (
               <Link
@@ -2982,14 +2983,14 @@ export default function MarketingWebsite() {
                 className="btn-primary h-12 px-8 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2"
               >
                 <span>{t('applyForFoundingProgram')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             )}
             <Link
               href={session?.user ? '/book/aurelia-studio' : `/onboarding?redirect=${encodeURIComponent('/book/aurelia-studio')}&reason=demo_storefront`}
               className="btn-secondary h-12 px-6 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs"
             >
-              <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+              <Icon regular={Globe24Regular} size="sm" className="text-[var(--text-muted)]" />
               <span>{t('talkToSales')}</span>
             </Link>
           </div>

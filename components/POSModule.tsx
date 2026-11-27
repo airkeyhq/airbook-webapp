@@ -7,7 +7,9 @@ import { useAirBookStore, Appointment } from '@/lib/store';
 import { POSCheckoutModal } from '@/components/POSCheckoutModal';
 import { POSTerminalModal } from '@/components/POSTerminalModal';
 import { EmptyState } from '@/components/EmptyState';
+import { InlineIndicator } from '@/components/primitives/Indicator';
 import { getAvatarUrl } from '@/lib/avatars';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Payment24Filled,
   Calendar24Regular,
@@ -171,7 +173,7 @@ export const POSModule: React.FC = () => {
             onClick={() => { setTerminalAmountCents(Math.round(totalRevenue * 100) || 5000); setIsTerminalOpen(true); }}
             className="btn-secondary h-10 px-4 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold"
           >
-            <Payment24Filled className="w-4 h-4" />
+            <Icon filled={Payment24Filled} size="sm" />
             <span>{t('terminalReader')}</span>
           </motion.button>
           <motion.button
@@ -179,7 +181,7 @@ export const POSModule: React.FC = () => {
             onClick={handleOpenWalkinCheckout}
             className="btn-primary self-start sm:self-auto"
           >
-            <Payment24Filled className="w-4 h-4" />
+            <Icon filled={Payment24Filled} size="sm" />
             <span>{t('quickWalkinSale')}</span>
           </motion.button>
         </div>
@@ -202,7 +204,7 @@ export const POSModule: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-                <Calendar24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Calendar24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('appointmentsToday')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">{todayApts.length}</p>
@@ -210,7 +212,7 @@ export const POSModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-                <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Money24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('revenueToday')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">${totalRevenue}</p>
@@ -218,7 +220,7 @@ export const POSModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-                <CheckmarkCircle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={CheckmarkCircle24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('completed')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">{completedCount}</p>
@@ -226,7 +228,7 @@ export const POSModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-                <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Tag24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">${avgTicket}</p>
@@ -246,12 +248,14 @@ export const POSModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Calendar24Regular className="w-4 h-4" />
+                <Icon regular={Calendar24Regular} size="sm" />
                 <span>{t('posQueueTitle')}</span>
                 {todayApts.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {todayApts.length}
-                  </span>
+                  <InlineIndicator
+                    value={todayApts.length}
+                    variant={activeTab === 'queue' ? 'pill-solid' : 'pill-muted'}
+                    rolling
+                  />
                 )}
               </button>
 
@@ -264,12 +268,14 @@ export const POSModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Receipt24Regular className="w-4 h-4" />
+                <Icon regular={Receipt24Regular} size="sm" />
                 <span>{t('recentInvoices')}</span>
                 {invoices.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {invoices.length}
-                  </span>
+                  <InlineIndicator
+                    value={invoices.length}
+                    variant={activeTab === 'invoices' ? 'pill-solid' : 'pill-muted'}
+                    rolling
+                  />
                 )}
               </button>
             </div>
@@ -310,7 +316,7 @@ export const POSModule: React.FC = () => {
                                 </h4>
                                 {isPaid ? (
                                   <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
-                                    <CheckmarkCircle24Filled className="w-3 h-3" />
+                                    <Icon regular={CheckmarkCircle24Regular} size="xs" />
                                     <span>{t('statusPaid')}</span>
                                   </span>
                                 ) : (
@@ -320,7 +326,7 @@ export const POSModule: React.FC = () => {
                                 )}
                               </div>
                               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 flex items-center gap-2">
-                                <Clock24Regular className="w-3.5 h-3.5" />
+                                <Icon regular={Clock24Regular} size="sm" className="w-3.5 h-3.5" />
                                 <span>{apt.startTime}</span>
                                 <span>·</span>
                                 <span className="font-semibold">{apt.serviceName}</span>
@@ -382,7 +388,7 @@ export const POSModule: React.FC = () => {
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex items-center justify-center flex-shrink-0">
-                            <Receipt24Regular className="w-4 h-4" />
+                            <Icon regular={Receipt24Regular} size="sm" />
                           </div>
                           <div className="min-w-0">
                             <p className="font-bold text-[var(--text-primary)] truncate">

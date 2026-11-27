@@ -9,8 +9,10 @@ import { useAirBookStore } from '@/lib/store';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
+import { InlineIndicator } from '@/components/primitives/Indicator';
 import { isPasskeySupported, authenticateStationPasskey } from '@/lib/passkey';
 import { CircleCloudIcon } from '@/components/Logo';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Add24Filled,
   Phone24Filled,
@@ -24,6 +26,7 @@ import {
   Person24Regular,
   Person24Filled,
   Open24Filled,
+  Open24Regular,
   ArrowRight24Filled,
   Tag24Regular,
   ShieldCheckmark24Regular,
@@ -333,7 +336,7 @@ export const WalkInKioskModule: React.FC = () => {
             onClick={() => setIsLaunchModalOpen(true)}
             className="btn-secondary h-10 px-4 rounded-2xl flex items-center gap-1.5 text-xs font-bold"
           >
-            <Open24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon filled={Open24Filled} size="sm" tone="secondary" />
             <span>{t('launchIpadKiosk')}</span>
           </button>
 
@@ -342,7 +345,7 @@ export const WalkInKioskModule: React.FC = () => {
             onClick={() => setIsCheckInOpen(true)}
             className="btn-primary self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} size="sm" />
             <span>{t('walkInCheckIn')}</span>
           </button>
         </div>
@@ -366,7 +369,7 @@ export const WalkInKioskModule: React.FC = () => {
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                  <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={Clock24Regular} size="sm" tone="secondary" />
                   <span>{t('waiting')}</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
@@ -386,7 +389,7 @@ export const WalkInKioskModule: React.FC = () => {
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                  <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                   <span>{t('inChair')}</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
@@ -406,7 +409,7 @@ export const WalkInKioskModule: React.FC = () => {
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                  <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={Clock24Regular} size="sm" tone="secondary" />
                   <span>{t('estWait')}</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
@@ -437,12 +440,14 @@ export const WalkInKioskModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Clock24Regular className="w-4 h-4" />
+                <Icon regular={Clock24Regular} size="sm" />
                 <span>{t('statusWaiting')}</span>
                 {waitingGuests.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {waitingGuests.length}
-                  </span>
+                  <InlineIndicator
+                    value={waitingGuests.length}
+                    variant={activeTab === 'waiting' ? 'pill-solid' : 'pill-muted'}
+                    rolling
+                  />
                 )}
               </button>
 
@@ -455,12 +460,14 @@ export const WalkInKioskModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Sparkle24Regular className="w-4 h-4" />
+                <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'in_chair'} size="sm" />
                 <span>{t('statusInChair')}</span>
                 {inChairGuests.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {inChairGuests.length}
-                  </span>
+                  <InlineIndicator
+                    value={inChairGuests.length}
+                    variant={activeTab === 'in_chair' ? 'pill-solid' : 'pill-muted'}
+                    rolling
+                  />
                 )}
               </button>
             </div>
@@ -511,7 +518,7 @@ export const WalkInKioskModule: React.FC = () => {
                             title={t('sendReadyAlert')}
                             className="btn-secondary"
                           >
-                            <Phone24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Phone24Filled} size="sm" className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">{t('smsCta')}</span>
                           </button>
 
@@ -520,7 +527,7 @@ export const WalkInKioskModule: React.FC = () => {
                             onClick={() => handleUpdateStatus(guest.id, 'in_chair')}
                             className="btn-primary"
                           >
-                            <Sparkle24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5" />
                             <span>{t('seatInChair')}</span>
                           </button>
 
@@ -529,7 +536,7 @@ export const WalkInKioskModule: React.FC = () => {
                             onClick={() => handleRemoveGuest(guest.id)}
                             className="p-1.5 rounded-xl text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                           >
-                            <Dismiss24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -578,7 +585,7 @@ export const WalkInKioskModule: React.FC = () => {
                             onClick={() => handleUpdateStatus(guest.id, 'completed')}
                             className="btn-primary"
                           >
-                            <CheckmarkCircle24Filled className="w-4 h-4" />
+                            <Icon filled={CheckmarkCircle24Filled} size="sm" />
                             <span>{t('markCompleted')}</span>
                           </button>
                         </div>
@@ -632,7 +639,7 @@ export const WalkInKioskModule: React.FC = () => {
                     onClick={() => setIsCheckInOpen(false)}
                     className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
 
@@ -690,7 +697,7 @@ export const WalkInKioskModule: React.FC = () => {
                       disabled={submitting}
                       className="btn-primary w-full sm:w-auto disabled:opacity-50"
                     >
-                      <Add24Filled className="w-4 h-4" />
+                      <Icon filled={Add24Filled} size="sm" />
                       <span>{submitting ? t('addingToQueue') : t('addToQueue')}</span>
                     </button>
                   </div>
@@ -724,7 +731,7 @@ export const WalkInKioskModule: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)] border border-[var(--color-accent-primary)]/20 flex items-center justify-center">
-                      <Open24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
+                      <Icon regular={Open24Regular} size="md" tone="accent" />
                     </div>
                     <div>
                       <h3 className="text-base font-extrabold text-[var(--text-primary)] tracking-tight">
@@ -740,7 +747,7 @@ export const WalkInKioskModule: React.FC = () => {
                     onClick={() => setIsLaunchModalOpen(false)}
                     className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
 
@@ -752,7 +759,7 @@ export const WalkInKioskModule: React.FC = () => {
                 <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <LockClosed24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                      <Icon regular={LockClosed24Regular} size="sm" tone="accent" />
                       <span className="text-xs font-extrabold text-[var(--text-primary)]">
                         {t('kioskStaffExitPinNotice')}
                       </span>
@@ -783,7 +790,7 @@ export const WalkInKioskModule: React.FC = () => {
                     }}
                     className="w-full sm:w-auto flex-1 btn-primary h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold"
                   >
-                    <Sparkle24Filled className="w-4 h-4" />
+                    <Icon filled={Sparkle24Filled} size="sm" />
                     <span>{t('kioskStartSession')}</span>
                   </button>
                 </div>
@@ -820,7 +827,7 @@ export const WalkInKioskModule: React.FC = () => {
                   }}
                   className="px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold text-[var(--text-secondary)] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <LockClosed24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={LockClosed24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('exitKiosk')}</span>
                 </button>
               </div>
@@ -868,7 +875,7 @@ export const WalkInKioskModule: React.FC = () => {
                         className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black text-sm shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
                       >
                         <span>{t('kioskChooseService')}</span>
-                        <ArrowRight24Filled className="w-4 h-4" />
+                        <Icon filled={ArrowRight24Filled} size="sm" />
                       </button>
                     </div>
                   </motion.div>
@@ -919,7 +926,7 @@ export const WalkInKioskModule: React.FC = () => {
                         onClick={handleAddWalkIn}
                         className="w-2/3 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        <Sparkle24Filled className="w-4 h-4" />
+                        <Icon filled={Sparkle24Filled} size="sm" />
                         <span>{t('joinQueue')}</span>
                       </button>
                     </div>
@@ -933,7 +940,7 @@ export const WalkInKioskModule: React.FC = () => {
                     className="p-8 rounded-[36px] bg-[var(--bg-secondary)] border border-emerald-500/30 shadow-2xl text-center space-y-6"
                   >
                     <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-600 flex items-center justify-center mx-auto">
-                      <CheckmarkCircle24Filled className="w-8 h-8" />
+                      <Icon regular={CheckmarkCircle24Regular} className="w-8 h-8" />
                     </div>
 
                     <div className="space-y-1">
@@ -997,7 +1004,7 @@ export const WalkInKioskModule: React.FC = () => {
                       <CircleCloudIcon size={32} />
                     </div>
                     <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-[var(--color-accent-primary)] text-white flex items-center justify-center border-2 border-[var(--bg-primary)] shadow-sm">
-                      <LockClosed24Filled className="w-3.5 h-3.5" />
+                      <Icon regular={LockClosed24Regular} size="sm" className="w-3.5 h-3.5" />
                     </div>
                   </div>
 
@@ -1020,7 +1027,7 @@ export const WalkInKioskModule: React.FC = () => {
                     disabled={isPasskeyLoading}
                     className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                   >
-                    <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                    <Icon filled={Fingerprint24Filled} size="sm" tone="accent" />
                     <span>{isPasskeyLoading ? t('loading') || 'Verifying…' : t('unlockWithPasskey')}</span>
                   </motion.button>
                 )}
@@ -1080,7 +1087,7 @@ export const WalkInKioskModule: React.FC = () => {
                     onClick={handleExitClear}
                     className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold uppercase text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-4 h-4" />
+                    <Icon filled={Dismiss24Filled} size="sm" />
                   </button>
 
                   {/* Zero Button */}
@@ -1098,7 +1105,7 @@ export const WalkInKioskModule: React.FC = () => {
                     onClick={handleExitBackspace}
                     className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
                   >
-                    <Backspace24Filled className="w-5 h-5" />
+                    <Icon filled={Backspace24Filled} size="md" />
                   </button>
                 </div>
 
@@ -1115,7 +1122,7 @@ export const WalkInKioskModule: React.FC = () => {
                     {t('kioskBackToQueue')}
                   </button>
                   <div className="flex items-center justify-center text-[10px] text-[var(--text-muted)] gap-1.5">
-                    <ShieldCheckmark24Regular className="w-3.5 h-3.5 opacity-60" />
+                    <Icon regular={ShieldCheckmark24Regular} size="sm" className="w-3.5 h-3.5 opacity-60" />
                     <span>{t('emergencyUnlock')}</span>
                   </div>
                 </div>

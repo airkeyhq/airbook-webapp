@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   DocumentText24Regular,
   ShieldCheckmark24Regular,
@@ -12,7 +13,7 @@ import {
   Clock24Regular,
   Key24Regular,
   ArrowRight24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
 } from '@fluentui/react-icons';
 
 export default function TermsOfServicePage() {
@@ -110,7 +111,7 @@ export default function TermsOfServicePage() {
           <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
             <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-[#0284C7] dark:text-[#2BB5FF] space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <CheckmarkCircle24Filled className="w-5 h-5 text-[#2BB5FF]" />
+                <Icon regular={CheckmarkCircle24Regular} size="md" className="text-[#2BB5FF]" />
                 You Own 100% of Your Client and Studio Records
               </p>
               <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -126,7 +127,7 @@ export default function TermsOfServicePage() {
           <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
             <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-[#0284C7] dark:text-[#2BB5FF] space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <CheckmarkCircle24Filled className="w-5 h-5 text-[#2BB5FF]" />
+                <Icon regular={CheckmarkCircle24Regular} size="md" className="text-[#2BB5FF]" />
                 Eres el Dueño del 100% de los Registros de tus Clientes
               </p>
               <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -290,7 +291,7 @@ export default function TermsOfServicePage() {
         {/* Top Hero Banner */}
         <div className="max-w-4xl space-y-4 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] text-xs font-black uppercase tracking-wider">
-            <DocumentText24Regular className="w-4 h-4" />
+            <Icon regular={DocumentText24Regular} size="sm" />
             <span>{content.badge[lang]}</span>
           </div>
 
@@ -337,14 +338,14 @@ export default function TermsOfServicePage() {
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Privacy Policy</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
               <Link
                 href="/data-protection"
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Data Protection Architecture</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
             </div>
           </aside>
@@ -352,7 +353,7 @@ export default function TermsOfServicePage() {
           {/* Right Detailed Sections */}
           <div className="lg:col-span-8 space-y-10">
             {sections.map((sec) => {
-              const Icon = sec.icon;
+              const SecIcon = sec.icon;
               return (
                 <section
                   key={sec.id}
@@ -361,7 +362,7 @@ export default function TermsOfServicePage() {
                 >
                   <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] pb-4">
                     <div className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5" />
+                      <Icon regular={SecIcon} size="md" />
                     </div>
                     <h2 className="text-lg sm:text-xl font-black text-[var(--text-primary)] tracking-tight">
                       {sec.title[lang]}

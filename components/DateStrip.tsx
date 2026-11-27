@@ -5,6 +5,7 @@ import { getAvatarUrl, getProviderColor } from '@/lib/avatars';
 import { format, addDays, startOfWeek } from 'date-fns';
 import { ArrowLeft24Filled, ArrowRight24Filled, People24Filled } from '@fluentui/react-icons';
 import { motion } from 'framer-motion';
+import { Icon } from '@/components/primitives/Icon';
 
 export const DateStrip: React.FC = () => {
   const {
@@ -94,14 +95,14 @@ export const DateStrip: React.FC = () => {
               aria-label={t('previous')}
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
-              <ArrowLeft24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowLeft24Filled} size="sm" />
             </button>
             <button
               onClick={handleNext}
               aria-label={t('next')}
               className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowRight24Filled} size="sm" />
             </button>
           </div>
         </div>
@@ -161,7 +162,7 @@ export const DateStrip: React.FC = () => {
                   : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <People24Filled className="w-3.5 h-3.5" />
+              <Icon filled={People24Filled} size="sm" />
               <span>{t('allStaff')} ({activeStaff.length})</span>
             </button>
 

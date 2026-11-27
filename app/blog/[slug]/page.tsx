@@ -8,6 +8,7 @@ import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { BLOG_POSTS, BlogPost } from '@/lib/blog/articles';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -95,7 +96,7 @@ export default function BlogPostReaderPage() {
             href="/blog"
             className="btn-secondary px-3.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs"
           >
-            <ArrowLeft24Filled className="w-3.5 h-3.5" />
+            <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
             <span>{t('backToBlog')}</span>
           </Link>
 
@@ -106,12 +107,12 @@ export default function BlogPostReaderPage() {
           >
             {copied ? (
               <>
-                <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                 <span className="text-emerald-500">{t('linkCopied')}</span>
               </>
             ) : (
               <>
-                <Share24Filled className="w-3.5 h-3.5" />
+                <Icon filled={Share24Filled} size="sm" className="w-3.5 h-3.5" />
                 <span>{t('shareArticle')}</span>
               </>
             )}
@@ -122,15 +123,15 @@ export default function BlogPostReaderPage() {
         <header className="space-y-4">
           <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--text-muted)]">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] font-black uppercase text-[10px] tracking-wider border border-[#2BB5FF]/20 shadow-xs whitespace-nowrap">
-              <Tag24Regular className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
+              <Icon regular={Tag24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
               <span>{post.categoryLabel[language]}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
-              <Clock24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+              <Icon regular={Clock24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{post.readTime[language]}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
-              <Calendar24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+              <Icon regular={Calendar24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
               <time dateTime={post.isoDate}>{post.date}</time>
             </span>
           </div>
@@ -167,7 +168,7 @@ export default function BlogPostReaderPage() {
           className="p-6 sm:p-8 rounded-[28px] bg-[var(--bg-secondary)] border-2 border-[#2BB5FF]/30 shadow-md space-y-3.5"
         >
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#2BB5FF]">
-            <Sparkle24Regular className="w-4 h-4" />
+            <Icon regular={Sparkle24Regular} size="sm" />
             <span id="key-takeaways-heading">{t('keyTakeawaysTitle')}</span>
           </div>
           <ul className="space-y-2.5 text-xs sm:text-sm text-[var(--text-secondary)] font-medium leading-relaxed">
@@ -189,7 +190,7 @@ export default function BlogPostReaderPage() {
             className="p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5"
           >
             <div className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-              <BookOpen24Regular className="w-3.5 h-3.5" />
+              <Icon regular={BookOpen24Regular} size="sm" className="w-3.5 h-3.5" />
               <span>{t('tableOfContents')}</span>
             </div>
             <ul className="text-xs space-y-1.5 font-bold">
@@ -268,9 +269,9 @@ export default function BlogPostReaderPage() {
                   } space-y-1.5 shadow-2xs`}
                 >
                   <div className="text-xs font-black flex items-center gap-1.5">
-                    {section.callout.type === 'tip' && <Lightbulb24Regular className="w-4 h-4 text-blue-500" />}
-                    {section.callout.type === 'stat' && <ShieldCheckmark24Regular className="w-4 h-4 text-emerald-500" />}
-                    {section.callout.type === 'playbook' && <Sparkle24Regular className="w-4 h-4 text-amber-500" />}
+                    {section.callout.type === 'tip' && <Icon regular={Lightbulb24Regular} size="sm" className="text-blue-500" />}
+                    {section.callout.type === 'stat' && <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-500" />}
+                    {section.callout.type === 'playbook' && <Icon regular={Sparkle24Regular} size="sm" className="text-amber-500" />}
                     <span>{section.callout.title[language]}</span>
                   </div>
                   <p className="text-xs leading-relaxed font-medium">
@@ -300,7 +301,7 @@ export default function BlogPostReaderPage() {
                 className="btn-primary w-full sm:w-auto px-6 h-11 rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md"
               >
                 <span>{t('goToDashboard')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
             ) : (
               <Link
@@ -308,14 +309,14 @@ export default function BlogPostReaderPage() {
                 className="btn-primary w-full sm:w-auto px-6 h-11 rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md"
               >
                 <span>{t('applyForFoundingProgram')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
             )}
             <Link
               href="/blog"
               className="btn-secondary w-full sm:w-auto px-5 h-11 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs"
             >
-              <ArrowLeft24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
               <span>{t('backToBlog')}</span>
             </Link>
           </div>

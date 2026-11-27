@@ -9,6 +9,7 @@ import {
   Sparkle24Regular,
   CheckmarkCircle24Filled,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { useAirBookStore } from '@/lib/store';
@@ -205,7 +206,7 @@ export const BookingDrawer: React.FC = () => {
                 onClick={closeBookingDrawer}
                 className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
               >
-                <Dismiss24Filled className="w-5 h-5" />
+                <Icon filled={Dismiss24Filled} size="lg" />
               </motion.button>
             </div>
             <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -235,7 +236,7 @@ export const BookingDrawer: React.FC = () => {
                   isSearching ? (
                     <div className="w-3.5 h-3.5 border-2 border-[var(--text-muted)]/30 border-t-[#2BB5FF] rounded-full animate-spin" />
                   ) : selectedClient ? (
-                    <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500" />
+                    <Icon filled={CheckmarkCircle24Filled} size="md" tone="success" />
                   ) : null
                 }
               />
@@ -261,7 +262,7 @@ export const BookingDrawer: React.FC = () => {
                     onClick={() => setSelectedClient(null)}
                     className="p-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-3 h-3" />
+                    <Icon filled={Dismiss24Filled} size="xs" />
                     <span>{t('unlinkClient')}</span>
                   </button>
                 </div>
@@ -272,7 +273,7 @@ export const BookingDrawer: React.FC = () => {
                 <div className="absolute z-50 left-0 right-0 top-full mt-1 max-h-60 overflow-y-auto rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150">
                   <div className="px-2.5 py-1.5 flex items-center justify-between text-[10px] font-bold tracking-wider text-[var(--text-muted)] uppercase border-b border-[var(--border-subtle)]/60 pb-1.5 mb-1">
                     <span className="flex items-center gap-1.5 text-[#2BB5FF]">
-                      <Sparkle24Regular className="w-3.5 h-3.5" />
+                      <Icon regular={Sparkle24Regular} size="sm" />
                       {t('existingClientSuggestions')}
                     </span>
                     <span className="text-[10px] font-semibold text-[var(--text-muted)] font-mono">{suggestions.length}</span>
@@ -385,12 +386,22 @@ export const BookingDrawer: React.FC = () => {
               />
 
               {/* Start Time */}
-              <FloatingInput
+              <CustomSelect
                 label={t('time')}
-                type="time"
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="font-mono"
+                onChange={setStartTime}
+                options={Array.from({ length: 25 }, (_, i) => {
+                  const totalMins = 8 * 60 + i * 30;
+                  const h = Math.floor(totalMins / 60);
+                  const m = totalMins % 60;
+                  const val = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                  const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+                  const ampm = h >= 12 ? 'PM' : 'AM';
+                  return {
+                    value: val,
+                    label: `${hour12}:${String(m).padStart(2, '0')} ${ampm}`,
+                  };
+                })}
               />
             </div>
 
@@ -403,7 +414,7 @@ export const BookingDrawer: React.FC = () => {
                 type="submit"
                 className="btn-primary w-full"
               >
-                <Sparkle24Filled className="w-4 h-4" />
+                <Icon filled={Sparkle24Filled} size="md" />
                 <span>{t('createAppointment')}</span>
               </motion.button>
             </div>

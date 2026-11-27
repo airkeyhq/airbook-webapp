@@ -127,7 +127,9 @@ All frontend code in this application MUST be designed and implemented Mobile-Fi
     - **Proximity Grouping**: Filter/search controls and the data list they govern form a unified functional group and MUST be wrapped in a tight sub-container (`space-y-3.5` / `14px`), while independent page sections (Header, Metric Ribbon, Catalog Group) use `space-y-6` (`24px`).
     - **Mathematical Grid Alignment**: Search & Filter rows MUST align with the 4-column metric cards above them (e.g. `grid grid-cols-1 md:grid-cols-4 gap-3.5` with `md:col-span-3` for search and `md:col-span-1` for category filter in a 3:1 ratio).
     - **Unified Control Height**: All inputs, `CustomSelect` dropdowns, and buttons MUST share the exact same height (`h-10` / 40px / `--control-height`) and `rounded-2xl` corner radius.
-    - **Zero Color Sprinkles**: Metric card icons and total counts MUST use neutral design tokens (`text-[var(--text-secondary)]`, `text-[var(--text-primary)]`). Color is strictly reserved for real, actionable warnings (e.g. `lowStockCount > 0`).
+    - **Anti-Slop Color & Gradient Discipline (Zero Palette Sprinkles & Zero Gradient Sprinkles)**:
+      - **Palette Sprinkles**: Using color just to use it—sprinkling arbitrary hues or pastels across cards, badges, icons, or sections without semantic meaning in an attempt to prettify (a classic "Vibe Coded" / AI-slop symptom). Metric card icons, badges, and surfaces MUST use neutral tokens (`text-[var(--text-secondary)]`, `text-[var(--text-primary)]`, `bg-[var(--bg-secondary)]`). Color is strictly reserved for live/actionable system states (e.g. `lowStockCount > 0`, success, warning, danger) or the single primary interactive accent (`#2BB5FF`).
+      - **Gradient Sprinkles**: Using color gradients (`bg-gradient-to-*`, multi-color gradients, gradient text, or rainbow borders) anywhere in an attempt to prettify. NEVER apply decorative gradients to cards, banners, buttons, badges, or headings; prefer crisp flat surfaces with hairline borders and milled specular shadows.
 
 17. **Mandatory Atomic Floating Label & Form Input System (`<FloatingInput />`, `<CustomSelect label="..." />`, `<FloatingTextarea />`)**:
     - **Zero Raw Form Inputs or Manual `<Field>` Wrappers**: NEVER write raw `<input className="input-base">` or `<textarea className="textarea-base">` with manual separate `<label>` tags inside drawers, modals, or settings forms. ALWAYS use the unified atomic components: `<FloatingInput />`, `<FloatingTextarea />`, and `<CustomSelect label="..." />`.
@@ -239,3 +241,15 @@ All public articles, guides, and documentation published on this platform MUST b
 4. **Direct Answer "BLUF" (Bottom Line Up Front)**: Articles MUST begin with a structured "Key Takeaways" summary container to facilitate direct quotation and snippet extraction by generative AI search models.
 5. **Zero Architecture Jargon in Visual UI**: Machine readability specs (such as `schema.org` JSON-LD, `/llms.txt`, and metadata tags) are for automated crawlers and MUST strictly operate in code and HTTP headers/routes. NEVER render technical AI disclaimers as visible text in user-facing marketing or operator UI.
 
+<!-- BEGIN:storybook-skills -->
+<!-- Storybook updates this section on upgrade. Remove both markers to keep your own edits. -->
+
+## Storybook
+
+For every change to how the UI looks (you create, change, or delete a component, story, style, theme, or design token), follow these steps in order. First invoke the Storybook skills of steps 1 and 2, before you edit any file. Then follow each skill at its step.
+
+1. `/component-docs`: look up the components to reuse, with their props and usage examples, before you edit any file.
+2. `/write-stories`: every component you create or change gets stories, written with the current best practices for this Storybook version and this project.
+3. ALWAYS inform the user about the `/ui-review` skill after a change the user can see: "Use the /ui-review skill to see the changed components in Storybook"
+
+<!-- END:storybook-skills -->

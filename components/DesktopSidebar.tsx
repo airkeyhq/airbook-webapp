@@ -4,6 +4,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Indicator, InlineIndicator } from '@/components/primitives/Indicator';
+import { Icon as OzoneIcon } from '@/components/primitives/Icon';
 import {
   Calendar24Filled,
   Person24Filled,
@@ -84,9 +86,9 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
             className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-[var(--text-primary)] flex items-center justify-center transition-colors flex-shrink-0"
           >
             {isSidebarCollapsed ? (
-              <ChevronRight24Filled className="w-4 h-4" />
+              <OzoneIcon filled={ChevronRight24Filled} size="md" />
             ) : (
-              <ChevronLeft24Filled className="w-4 h-4" />
+              <OzoneIcon filled={ChevronLeft24Filled} size="md" />
             )}
           </motion.button>
 
@@ -119,7 +121,12 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <Indicator
+                    show={isSidebarCollapsed && item.badge !== undefined && item.badge > 0}
+                    color="danger"
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                  </Indicator>
                   {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
 
@@ -130,20 +137,11 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                 )}
 
                 {!isSidebarCollapsed && item.badge !== undefined && (
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-mono flex-shrink-0 ${
-                      isActive
-                        ? 'bg-black/20 dark:bg-black/40 text-current'
-                        : 'bg-black/5 dark:bg-white/10 text-[var(--text-muted)]'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-
-                {/* Collapsed Badge Dot Indicator */}
-                {isSidebarCollapsed && item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500 ring-2 ring-white dark:ring-[#141720]" />
+                  <InlineIndicator
+                    value={item.badge}
+                    variant={isActive ? 'pill-solid' : 'pill-muted'}
+                    rolling
+                  />
                 )}
               </motion.button>
 
@@ -157,9 +155,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                     </span>
                   )}
                   {item.badge !== undefined && item.badge > 0 && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500 text-white">
-                      {item.badge}
-                    </span>
+                    <InlineIndicator value={item.badge} variant="pill-solid" />
                   )}
                   <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 dark:bg-white rotate-45" />
                 </div>
@@ -174,7 +170,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
         {!isSidebarCollapsed ? (
           <div className="p-3.5 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
             <div className="flex items-center gap-1.5 font-extrabold text-amber-600 dark:text-amber-400">
-              <Sparkle24Filled className="w-4 h-4 flex-shrink-0" />
+              <OzoneIcon filled={Sparkle24Filled} size="md" />
               <span>{t('upgradeTo')}</span>
               <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider leading-none">PRO</span>
             </div>
@@ -196,7 +192,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
               onClick={openPricingModal}
               className="mx-auto w-10 h-10 rounded-2xl glass-panel bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 cursor-pointer hover:scale-105 transition-transform"
             >
-              <Sparkle24Filled className="w-4 h-4" />
+              <OzoneIcon filled={Sparkle24Filled} size="md" />
             </button>
             <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[60] drop-shadow-2xl">
               <span>{t('upgradeToPro')}</span>

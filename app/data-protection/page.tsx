@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ShieldCheckmark24Regular,
   LockClosed24Regular,
@@ -12,7 +13,7 @@ import {
   Payment24Regular,
   Server24Regular,
   ArrowRight24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Globe24Regular,
   Sparkle24Regular,
 } from '@fluentui/react-icons';
@@ -74,7 +75,7 @@ export default function DataProtectionPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <ShieldCheckmark24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>AES-256 Encryption at Rest</span>
                 </div>
                 <p className="text-xs">
@@ -84,7 +85,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <LockClosed24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={LockClosed24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>TLS 1.3 In-Transit Encryption</span>
                 </div>
                 <p className="text-xs">
@@ -94,7 +95,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Automated Hourly Snapshots</span>
                 </div>
                 <p className="text-xs">
@@ -104,7 +105,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <Globe24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={Globe24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Global Edge CDN &amp; DDoS Shield</span>
                 </div>
                 <p className="text-xs">
@@ -122,7 +123,7 @@ export default function DataProtectionPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <ShieldCheckmark24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Cifrado AES-256 en Reposo</span>
                 </div>
                 <p className="text-xs">
@@ -132,7 +133,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <LockClosed24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={LockClosed24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Cifrado TLS 1.3 en Tránsito</span>
                 </div>
                 <p className="text-xs">
@@ -142,7 +143,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Respaldos Automáticos Cada Hora</span>
                 </div>
                 <p className="text-xs">
@@ -152,7 +153,7 @@ export default function DataProtectionPage() {
 
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-1.5">
                 <div className="flex items-center gap-2 font-black text-xs text-[var(--text-primary)]">
-                  <Globe24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={Globe24Regular} size="sm" className="text-[#2BB5FF]" />
                   <span>Red Edge Global y Protección DDoS</span>
                 </div>
                 <p className="text-xs">
@@ -191,7 +192,7 @@ export default function DataProtectionPage() {
             </p>
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-300 space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <CheckmarkCircle24Filled className="w-5 h-5 text-emerald-600" />
+                <Icon regular={CheckmarkCircle24Regular} size="md" className="text-emerald-600" />
                 How Passkey Authentication Protects You:
               </p>
               <ul className="space-y-1.5 text-xs">
@@ -209,7 +210,7 @@ export default function DataProtectionPage() {
             </p>
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-300 space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <CheckmarkCircle24Filled className="w-5 h-5 text-emerald-600" />
+                <Icon regular={CheckmarkCircle24Regular} size="md" className="text-emerald-600" />
                 Cómo te protegen las Llaves de Acceso (Passkeys):
               </p>
               <ul className="space-y-1.5 text-xs">
@@ -412,7 +413,7 @@ export default function DataProtectionPage() {
         {/* Top Hero Banner */}
         <div className="max-w-4xl space-y-4 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] text-xs font-black uppercase tracking-wider">
-            <ShieldCheckmark24Regular className="w-4 h-4" />
+            <Icon regular={ShieldCheckmark24Regular} size="sm" />
             <span>{content.badge[lang]}</span>
           </div>
 
@@ -459,14 +460,14 @@ export default function DataProtectionPage() {
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Privacy Policy</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
               <Link
                 href="/terms"
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Terms of Service</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             </div>
           </aside>
@@ -474,7 +475,7 @@ export default function DataProtectionPage() {
           {/* Right Detailed Sections */}
           <div className="lg:col-span-8 space-y-10">
             {sections.map((sec) => {
-              const Icon = sec.icon;
+              const SecIcon = sec.icon;
               return (
                 <section
                   key={sec.id}
@@ -483,7 +484,7 @@ export default function DataProtectionPage() {
                 >
                   <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] pb-4">
                     <div className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5" />
+                      <Icon regular={SecIcon} size="md" />
                     </div>
                     <h2 className="text-lg sm:text-xl font-black text-[var(--text-primary)] tracking-tight">
                       {sec.title[lang]}

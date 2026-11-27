@@ -23,6 +23,7 @@ import { getDemoSpecialists, getDemoBusiness } from '@/lib/i18n/demographics';
 import { signIn, useSession } from '@/lib/auth-client';
 import { getAvatarUrl } from '@/lib/avatars';
 import GoogleColor from '@lobehub/icons/es/Google/components/Color';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Cut24Regular,
   Clock24Regular,
@@ -31,7 +32,7 @@ import {
   Calendar24Regular,
   Person24Regular,
   PeopleTeam24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Sparkle24Regular,
   Sparkle24Filled,
   ArrowLeft24Filled,
@@ -503,7 +504,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
     return (
       <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center justify-center p-6 text-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center">
-          <Info24Regular className="w-8 h-8" />
+          <Icon regular={Info24Regular} className="w-8 h-8" />
         </div>
         <div className="space-y-1">
           <h1 className="text-lg font-bold text-[var(--text-primary)]">{t('bookingPageNotFound')}</h1>
@@ -513,7 +514,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
           href="/"
           className="btn-secondary h-10 px-5 rounded-2xl text-xs font-bold inline-flex items-center gap-2 mt-2"
         >
-          <ArrowLeft24Filled className="w-3.5 h-3.5" />
+          <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
           <span>{t('backToHome')}</span>
         </Link>
       </div>
@@ -543,12 +544,12 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
 
         <div className="w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center flex flex-col items-center gap-5 relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center shadow-md">
-            <ShieldCheckmark24Regular className="w-8 h-8" />
+            <Icon regular={ShieldCheckmark24Regular} className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-              <Sparkle24Filled className="w-3 h-3 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="xs" className="text-[#2BB5FF]" />
               <span>FREEMIUM PASS REQUIRED</span>
             </div>
             <h1 className="text-lg sm:text-xl font-black text-[var(--text-primary)] tracking-tight">
@@ -565,7 +566,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
               className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold shadow-md"
             >
               <span>{t('unlockDemoBtn')}</span>
-              <ArrowRight24Filled className="w-4 h-4" />
+              <Icon filled={ArrowRight24Filled} size="sm" />
             </Link>
 
             <Link
@@ -579,7 +580,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
               href="/"
               className="btn-tertiary w-full h-9 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
             >
-              <ArrowLeft24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
               <span>{t('backToHome')}</span>
             </Link>
           </div>
@@ -613,7 +614,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                 {workspace?.name || workspaceName}
               </h1>
               <p className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1 mt-0.5 truncate">
-                <Location24Regular className="w-3.5 h-3.5 flex-shrink-0 text-blue-500" />
+                <Icon regular={Location24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0 text-blue-500" />
                 <span className="truncate">{workspace?.address}</span>
               </p>
             </div>
@@ -651,7 +652,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   onClick={() => setStep((s) => (s - 1) as any)}
                   className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-primary)] mr-1 cursor-pointer transition-colors"
                 >
-                  <ArrowLeft24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
                 </button>
               )}
               <span>{t('stepOf', { current: step, total: 3 })}</span>
@@ -668,7 +669,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
         {isSuccess ? (
           <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="py-8 text-center flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-md">
-              <CheckmarkCircle24Filled className="w-10 h-10" />
+              <Icon regular={CheckmarkCircle24Regular} className="w-10 h-10" />
             </div>
 
             <div>
@@ -722,7 +723,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                 rel="noopener noreferrer"
                 className="flex-1 py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2 transition-all shadow-xs"
               >
-                <Calendar24Filled className="w-4 h-4 text-blue-500" />
+                <Icon filled={Calendar24Filled} size="sm" className="text-blue-500" />
                 <span>{t('addToGoogleCalendar')}</span>
               </a>
 
@@ -731,7 +732,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                 onClick={handleDownloadIcs}
                 className="flex-1 py-2.5 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
               >
-                <ArrowDownload24Filled className="w-4 h-4 text-emerald-500" />
+                <Icon filled={ArrowDownload24Filled} size="sm" className="text-emerald-500" />
                 <span>{t('downloadIcsCalendar')}</span>
               </button>
             </div>
@@ -764,7 +765,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5">
-                    <PeopleTeam24Regular className="w-4 h-4 text-blue-500" />
+                    <Icon regular={PeopleTeam24Regular} size="sm" className="text-blue-500" />
                     <span>{isParty ? `${t('yourParty')} (${guests.length})` : t('whoIsBookingFor')}</span>
                   </h3>
                 </div>
@@ -820,7 +821,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                               className="p-2 rounded-xl hover:bg-red-500/10 text-red-500 transition-colors flex-shrink-0 cursor-pointer"
                               title={t('removeGuest')}
                             >
-                              <Dismiss24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                             </button>
                           )}
                         </div>
@@ -848,9 +849,9 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                               </div>
                             </div>
                             {pickerFor?.guestId === guest.id && pickerFor.field === 'service' ? (
-                              <ChevronUp24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                              <Icon filled={ChevronUp24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                             ) : (
-                              <ChevronDown24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                              <Icon filled={ChevronDown24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                             )}
                           </button>
 
@@ -902,7 +903,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="w-6 h-6 rounded-full overflow-hidden bg-blue-500/10 flex items-center justify-center flex-shrink-0">
                                 {guest.staffId === 'anyone' ? (
-                                  <Sparkle24Regular className="w-3.5 h-3.5 text-blue-500" />
+                                  <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-blue-500" />
                                 ) : (
                                   <img
                                     src={getAvatarUrl(stf?.name || 'Staff', stf?.avatarUrl)}
@@ -921,9 +922,9 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                               </div>
                             </div>
                             {pickerFor?.guestId === guest.id && pickerFor.field === 'staff' ? (
-                              <ChevronUp24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                              <Icon filled={ChevronUp24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                             ) : (
-                              <ChevronDown24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                              <Icon filled={ChevronDown24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                             )}
                           </button>
 
@@ -948,7 +949,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                                 }`}
                               >
                                 <div className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center flex-shrink-0">
-                                  <Sparkle24Regular className="w-3.5 h-3.5 text-blue-400" />
+                                  <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-blue-400" />
                                 </div>
                                 <div className="min-w-0">
                                   <p className="text-xs font-bold">{t('anyoneAvailable')}</p>
@@ -1000,7 +1001,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   onClick={addGuest}
                   className="w-full py-2.5 rounded-2xl border border-dashed border-blue-500/40 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors cursor-pointer"
                 >
-                  <Add24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Add24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('addAnotherGuest')}</span>
                 </button>
 
@@ -1015,7 +1016,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <span>{t('continueToDateTime')}</span>
-                  <ArrowRight24Filled className="w-4 h-4" />
+                  <Icon filled={ArrowRight24Filled} size="sm" />
                 </motion.button>
               </motion.div>
             )}
@@ -1025,7 +1026,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5">
-                    <Calendar24Regular className="w-4 h-4 text-blue-500" />
+                    <Icon regular={Calendar24Regular} size="sm" className="text-blue-500" />
                     <span>{t('pickDateAndSlot')}</span>
                   </h3>
 
@@ -1038,7 +1039,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                       className="p-1 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-30 cursor-pointer"
                       title={t('prevMonth')}
                     >
-                      <ChevronLeft24Filled className="w-3.5 h-3.5 text-[var(--text-primary)]" />
+                      <Icon filled={ChevronLeft24Filled} size="sm" tone="primary" className="w-3.5 h-3.5" />
                     </button>
                     <span className="text-xs font-extrabold px-2 text-[var(--text-primary)] min-w-[85px] text-center">
                       {format(currentMonth, 'MMM yyyy')}
@@ -1049,7 +1050,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                       className="p-1 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
                       title={t('nextMonth')}
                     >
-                      <ChevronRight24Filled className="w-3.5 h-3.5 text-[var(--text-primary)]" />
+                      <Icon filled={ChevronRight24Filled} size="sm" tone="primary" className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -1144,7 +1145,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   className="w-full py-3.5 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <span>{t('continueToConfirm')}</span>
-                  <ArrowRight24Filled className="w-4 h-4" />
+                  <Icon filled={ArrowRight24Filled} size="sm" />
                 </motion.button>
               </motion.div>
             )}
@@ -1252,12 +1253,12 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   {/* Policy disclosures */}
                   <div className="pt-2 border-t border-blue-500/15 text-[10px] text-[var(--text-secondary)] space-y-1">
                     <p className="flex items-center gap-1.5">
-                      <ShieldCheckmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                      <Icon regular={ShieldCheckmark24Regular} size="sm" className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                       <span>{t('cancellationPolicyNotice', { hours: workspace?.cancellationNoticeHours || 24 })}</span>
                     </p>
                     {workspace?.depositRequiredPercent ? (
                       <p className="flex items-center gap-1.5">
-                        <Tag24Regular className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                        <Icon regular={Tag24Regular} size="sm" className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
                         <span>
                           {t('depositRequiredPolicy', { percent: workspace.depositRequiredPercent })} · ${depositAmount}
                         </span>
@@ -1291,7 +1292,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   onClick={handleConfirmBooking}
                   className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white font-extrabold text-xs shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
-                  <ShieldCheckmark24Regular className="w-4 h-4" />
+                  <Icon regular={ShieldCheckmark24Regular} size="sm" />
                   <span>
                     {submitting
                       ? (depositAmount > 0 ? t('depositPaymentRedirect') : t('confirmingBooking'))

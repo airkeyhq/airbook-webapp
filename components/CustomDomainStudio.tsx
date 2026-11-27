@@ -4,18 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { FloatingInput } from '@/components/FloatingInput';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Globe24Filled,
   Globe24Regular,
   Checkmark24Filled,
   ArrowSync24Filled,
   LockClosed24Regular,
-  Warning24Filled,
+  Warning24Regular,
   Info24Regular,
   Copy24Filled,
   Delete24Filled,
   Save24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
 } from '@fluentui/react-icons';
 
 export const CustomDomainStudio: React.FC = () => {
@@ -163,7 +164,7 @@ export const CustomDomainStudio: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Globe24Regular} size="sm" tone="secondary" />
               <span>{t('customDomainTitle')}</span>
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
@@ -179,7 +180,7 @@ export const CustomDomainStudio: React.FC = () => {
                 disabled={isRemoving}
                 className="px-3.5 py-2 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 text-xs font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
               >
-                <Delete24Filled className="w-3.5 h-3.5" />
+                <Icon filled={Delete24Filled} size="sm" className="w-3.5 h-3.5" />
                 <span>{t('removeDomain')}</span>
               </button>
             </div>
@@ -195,9 +196,9 @@ export const CustomDomainStudio: React.FC = () => {
                 : 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300'
             }`}>
               {domainVerified ? (
-                <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-600" />
+                <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-600" />
               ) : (
-                <Warning24Filled className="w-4 h-4 text-amber-600" />
+                <Icon regular={Warning24Regular} size="sm" className="text-amber-600" />
               )}
               <span>
                 {domainVerified
@@ -207,7 +208,7 @@ export const CustomDomainStudio: React.FC = () => {
             </div>
 
             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold ${sslBadge.color}`}>
-              <LockClosed24Regular className="w-3.5 h-3.5" />
+              <Icon regular={LockClosed24Regular} size="sm" className="w-3.5 h-3.5" />
               <span>{sslBadge.label}</span>
             </div>
           </div>
@@ -230,7 +231,7 @@ export const CustomDomainStudio: React.FC = () => {
             disabled={isSaving || !domainInput.trim() || domainInput.trim() === savedDomain}
             className="btn-primary h-[52px] flex-shrink-0"
           >
-            <Save24Filled className="w-4 h-4" />
+            <Icon filled={Save24Filled} size="sm" />
             <span>{isSaving ? '...' : t('save')}</span>
           </button>
         </div>
@@ -240,7 +241,7 @@ export const CustomDomainStudio: React.FC = () => {
       {savedDomain && !domainVerified && (
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
           <div className="flex items-center gap-2">
-            <Info24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+            <Icon regular={Info24Regular} size="md" tone="secondary" />
             <div>
               <h4 className="text-sm font-extrabold text-[var(--text-primary)]">{t('dnsInstructions')}</h4>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -267,9 +268,9 @@ export const CustomDomainStudio: React.FC = () => {
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-[11px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer flex-shrink-0"
                 >
                   {copiedId === 'cname' ? (
-                    <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-400" />
+                    <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-400" />
                   ) : (
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                   )}
                   <span>{copiedId === 'cname' ? '✓' : 'Copy'}</span>
                 </button>
@@ -293,9 +294,9 @@ export const CustomDomainStudio: React.FC = () => {
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-[11px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer flex-shrink-0"
                 >
                   {copiedId === 'arecord' ? (
-                    <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-400" />
+                    <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-400" />
                   ) : (
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                   )}
                   <span>{copiedId === 'arecord' ? '✓' : 'Copy'}</span>
                 </button>
@@ -315,7 +316,7 @@ export const CustomDomainStudio: React.FC = () => {
               disabled={isVerifying}
               className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <ArrowSync24Filled className={`w-4 h-4 ${isVerifying ? 'animate-spin' : ''}`} />
+              <Icon filled={ArrowSync24Filled} size="sm" className={isVerifying ? 'animate-spin' : ''} />
               <span>{isVerifying ? t('verifyingDomain') : t('verifyDomain')}</span>
             </button>
           </div>
@@ -328,9 +329,9 @@ export const CustomDomainStudio: React.FC = () => {
                 : 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300'
             }`}>
               {verifyResult.verified ? (
-                <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-600 flex-shrink-0 mt-0.5" />
               ) : (
-                <Warning24Filled className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <Icon regular={Warning24Regular} size="sm" className="text-amber-600 flex-shrink-0 mt-0.5" />
               )}
               <p className="flex-1">{verifyResult.message}</p>
             </div>

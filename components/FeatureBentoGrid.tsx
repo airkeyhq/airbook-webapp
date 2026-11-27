@@ -4,15 +4,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getDemoClient } from '@/lib/i18n/demographics';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Calendar24Regular,
   Person24Regular,
   Payment24Regular,
   Sparkle24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Clock24Regular,
   Tag24Regular,
-  ShieldCheckmark24Filled,
+  ShieldCheckmark24Regular,
 } from '@fluentui/react-icons';
 
 export const FeatureBentoGrid: React.FC = () => {
@@ -44,7 +45,7 @@ export const FeatureBentoGrid: React.FC = () => {
           {/* Top Text */}
           <div className="space-y-3 z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-sky-900/50 backdrop-blur-md flex items-center justify-center text-[#0284C7] shadow-xs">
-              <Calendar24Regular className="w-6 h-6" />
+              <Icon regular={Calendar24Regular} size="lg" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               {t('bentoCard1Title')}
@@ -59,11 +60,11 @@ export const FeatureBentoGrid: React.FC = () => {
             <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-none border border-slate-200/80 dark:border-slate-800 space-y-3.5">
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Clock24Regular className="w-3.5 h-3.5 text-[#0284C7]" />
+                  <Icon regular={Clock24Regular} size="sm" className="w-3.5 h-3.5 text-[#0284C7]" />
                   {t('bentoCard1PreviewTime')}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-[10px] font-extrabold flex items-center gap-1">
-                  <CheckmarkCircle24Filled className="w-3 h-3" />
+                  <Icon regular={CheckmarkCircle24Regular} size="xs" />
                   {t('bentoCard1PreviewStatus')}
                 </span>
               </div>
@@ -109,13 +110,13 @@ export const FeatureBentoGrid: React.FC = () => {
 
           {/* Centered Graphic Silhouette Icon */}
           <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-            <Sparkle24Regular className="w-56 h-56 text-white" />
+            <Icon regular={Sparkle24Regular} className="w-56 h-56 text-white" />
           </div>
 
           {/* Bottom Card Content */}
           <div className="relative z-20 space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-xs">
-              <Sparkle24Regular className="w-6 h-6" />
+              <Icon regular={Sparkle24Regular} size="lg" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               {t('bentoCard2Title')}
@@ -137,7 +138,7 @@ export const FeatureBentoGrid: React.FC = () => {
           {/* Top Text */}
           <div className="space-y-3 z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-amber-900/50 backdrop-blur-md flex items-center justify-center text-amber-800 shadow-xs">
-              <Person24Regular className="w-6 h-6" />
+              <Icon regular={Person24Regular} size="lg" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               {t('bentoCard3Title')}
@@ -229,7 +230,7 @@ export const FeatureBentoGrid: React.FC = () => {
             {/* Client Preference Tags */}
             <div className="flex items-center gap-2 mt-2">
               <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-[10px] font-extrabold text-amber-950 dark:text-amber-200 shadow-xs flex items-center gap-1">
-                <Tag24Regular className="w-3 h-3 text-amber-600" />
+                <Icon regular={Tag24Regular} size="xs" className="text-amber-600" />
                 Formula #7B
               </span>
               <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-[10px] font-extrabold text-amber-950 dark:text-amber-200 shadow-xs">
@@ -250,7 +251,7 @@ export const FeatureBentoGrid: React.FC = () => {
           {/* Top Text */}
           <div className="space-y-3 z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/80 dark:bg-purple-900/50 backdrop-blur-md flex items-center justify-center text-[#9333EA] shadow-xs">
-              <Payment24Regular className="w-6 h-6" />
+              <Icon regular={Payment24Regular} size="lg" />
             </div>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               {t('bentoCard4Title')}
@@ -269,7 +270,7 @@ export const FeatureBentoGrid: React.FC = () => {
               {/* Tap to Pay Visual Screen */}
               <div className="rounded-2xl bg-slate-800/90 p-4 text-center space-y-2 border border-slate-700">
                 <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
-                  <ShieldCheckmark24Filled className="w-5 h-5" />
+                  <Icon regular={ShieldCheckmark24Regular} size="md" />
                 </div>
                 <div>
                   <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">

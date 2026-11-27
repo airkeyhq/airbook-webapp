@@ -8,6 +8,7 @@ import { useAirBookStore } from '@/lib/store';
 import { useToast } from '@/components/Toast';
 import { EmptyState } from '@/components/EmptyState';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -23,7 +24,7 @@ import {
   People24Regular,
   Money24Regular,
   Sparkle24Regular,
-  ShieldCheckmark24Filled,
+  ShieldCheckmark24Regular,
 } from '@fluentui/react-icons';
 import { getAvatarUrl } from '@/lib/avatars';
 import { ClientNotesModal, CustomSpecItem, ClientPhotoItem } from '@/components/ClientNotesModal';
@@ -271,7 +272,7 @@ export const ClientsModule: React.FC = () => {
             onClick={() => setIsAddModalOpen(true)}
             className="btn-primary self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} size="sm" />
             <span>{t('addClient')}</span>
           </motion.button>
         )}
@@ -281,7 +282,7 @@ export const ClientsModule: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={People24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalClients')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">{totalClientsCount}</p>
@@ -289,7 +290,7 @@ export const ClientsModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricVipMembers')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">{vipCount}</p>
@@ -297,7 +298,7 @@ export const ClientsModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Money24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalRevenue')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">${totalLifetimeRevenue.toFixed(0)}</p>
@@ -305,7 +306,7 @@ export const ClientsModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Tag24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgLifetimeValue')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">${avgSpendPerClient.toFixed(0)}</p>
@@ -378,7 +379,7 @@ export const ClientsModule: React.FC = () => {
             {/* Search & Tag Filter Bar */}
             <div className="space-y-3">
               <div className="relative">
-                <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Icon regular={Search24Regular} size="sm" tone="muted" className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -392,7 +393,7 @@ export const ClientsModule: React.FC = () => {
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -464,14 +465,14 @@ export const ClientsModule: React.FC = () => {
 
                           {specsCount > 0 && (
                             <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-bold flex items-center gap-1">
-                              <Note24Regular className="w-3 h-3" />
+                              <Icon regular={Note24Regular} size="xs" />
                               <span>{specsCount} {t('specs')}</span>
                             </span>
                           )}
 
                           {cli.isKycVerified && (
                             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
-                              <ShieldCheckmark24Filled className="w-3 h-3 text-emerald-500" />
+                              <Icon regular={ShieldCheckmark24Regular} size="xs" className="text-emerald-500" />
                               <span>{t('idVerified')}</span>
                             </span>
                           )}
@@ -480,13 +481,13 @@ export const ClientsModule: React.FC = () => {
                         <p className="text-xs text-[var(--text-secondary)] flex flex-wrap items-center gap-x-3 gap-y-1">
                           {cli.email && (
                             <span className="flex items-center gap-1 truncate">
-                              <Mail24Regular className="w-3 h-3 opacity-70" />
+                              <Icon regular={Mail24Regular} size="xs" className="opacity-70" />
                               {cli.email}
                             </span>
                           )}
                           {cli.phone && (
                             <span className="flex items-center gap-1 truncate">
-                              <Phone24Regular className="w-3 h-3 opacity-70" />
+                              <Icon regular={Phone24Regular} size="xs" className="opacity-70" />
                               {cli.phone}
                             </span>
                           )}
@@ -511,7 +512,7 @@ export const ClientsModule: React.FC = () => {
                         </p>
                       </div>
 
-                      <ChevronRight24Regular className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" />
+                      <Icon regular={ChevronRight24Regular} size="sm" tone="secondary" className="group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" />
                     </div>
                   </div>
                 );
@@ -581,7 +582,7 @@ export const ClientsModule: React.FC = () => {
                         onClick={() => setIsAddModalOpen(false)}
                         className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
                       >
-                        <Dismiss24Filled className="w-5 h-5" />
+                        <Icon filled={Dismiss24Filled} size="md" />
                       </button>
                     </div>
                     <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -648,7 +649,7 @@ export const ClientsModule: React.FC = () => {
                         disabled={submitting}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        <Save24Filled className="w-4 h-4" />
+                        <Icon filled={Save24Filled} size="sm" />
                         <span>{submitting ? t('saving') : t('save')}</span>
                       </motion.button>
                     </div>

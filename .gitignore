@@ -53,3 +53,4 @@ i18n-audit-report.md
 
 .aidesigner/*
 !.aidesigner/.gitkeep
+storybook-static

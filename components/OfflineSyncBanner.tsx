@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WifiOff24Filled, Wifi124Filled, Dismiss24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 export const OfflineSyncBanner: React.FC = () => {
   const [isOnline, setIsOnline] = useState(true);
@@ -41,7 +42,7 @@ export const OfflineSyncBanner: React.FC = () => {
           transition={{ type: 'spring', damping: 24, stiffness: 320 }}
           className="fixed top-0 inset-x-0 z-50 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-white text-xs font-extrabold shadow-lg"
         >
-          <WifiOff24Filled className="w-4 h-4 flex-shrink-0" />
+          <Icon filled={WifiOff24Filled} size="md" />
           <span>You are offline. AirBook will sync automatically when your connection returns.</span>
         </motion.div>
       )}
@@ -56,14 +57,14 @@ export const OfflineSyncBanner: React.FC = () => {
           transition={{ type: 'spring', damping: 24, stiffness: 320 }}
           className="fixed top-0 inset-x-0 z-50 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 text-white text-xs font-extrabold shadow-lg"
         >
-          <Wifi124Filled className="w-4 h-4 flex-shrink-0" />
+          <Icon filled={Wifi124Filled} size="md" />
           <span>Back online — AirBook is synced and ready.</span>
           <button
             type="button"
             onClick={() => setShowReconnect(false)}
             className="ml-2 hover:opacity-70 transition-opacity cursor-pointer"
           >
-            <Dismiss24Filled className="w-3.5 h-3.5" />
+            <Icon filled={Dismiss24Filled} size="sm" />
           </button>
         </motion.div>
       )}

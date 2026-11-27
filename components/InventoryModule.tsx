@@ -10,6 +10,7 @@ import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
 import { useAirBookStore } from '@/lib/store';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -309,7 +310,7 @@ export const InventoryModule: React.FC = () => {
             onClick={() => setIsAddModalOpen(true)}
             className="btn-primary self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4 flex-shrink-0" />
+            <Icon filled={Add24Filled} size="sm" className="flex-shrink-0" />
             <span>{t('addProduct')}</span>
           </motion.button>
         )}
@@ -318,7 +319,7 @@ export const InventoryModule: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Box24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Box24Regular} size="sm" tone="secondary" />
             <span>{t('totalStockUnits')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">{metrics.totalUnits}</p>
@@ -326,7 +327,7 @@ export const InventoryModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Warning24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Warning24Regular} size="sm" tone="secondary" />
             <span>{t('lowStock')}</span>
           </div>
           <p className={`text-xl font-black font-mono ${metrics.lowStockCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[var(--text-primary)]'}`}>
@@ -336,7 +337,7 @@ export const InventoryModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Money24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Money24Regular} size="sm" tone="secondary" />
             <span>{t('inventoryValuation')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -346,7 +347,7 @@ export const InventoryModule: React.FC = () => {
 
         <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
           <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <ArrowTrending24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={ArrowTrending24Regular} size="sm" tone="secondary" />
             <span>{t('metricRetailPotential')}</span>
           </div>
           <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -358,7 +359,7 @@ export const InventoryModule: React.FC = () => {
       {metrics.lowStockCount > 0 && (
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Warning24Regular className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <Icon regular={Warning24Regular} size="md" className="text-amber-600 flex-shrink-0" />
             <span>
               <strong>{metrics.lowStockCount} {t('lowStock')}:</strong>{' '}
               {products
@@ -399,7 +400,7 @@ export const InventoryModule: React.FC = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
               <div className="relative md:col-span-3">
-                <Search24Regular className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Icon regular={Search24Regular} size="sm" tone="muted" className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -413,7 +414,7 @@ export const InventoryModule: React.FC = () => {
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -456,7 +457,7 @@ export const InventoryModule: React.FC = () => {
                           {prod.imageUrl ? (
                             <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
                           ) : (
-                            <ShoppingBag24Regular className="w-6 h-6 text-[var(--text-muted)]" />
+                            <Icon regular={ShoppingBag24Regular} size="lg" tone="muted" />
                           )}
                         </div>
 
@@ -567,7 +568,7 @@ export const InventoryModule: React.FC = () => {
                         onClick={() => setIsAddModalOpen(false)}
                         className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
                       >
-                        <Dismiss24Filled className="w-5 h-5" />
+                        <Icon filled={Dismiss24Filled} size="md" />
                       </button>
                     </div>
                     <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -667,7 +668,7 @@ export const InventoryModule: React.FC = () => {
                         disabled={submitting}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        <Save24Filled className="w-4 h-4" />
+                        <Icon filled={Save24Filled} size="sm" />
                         <span>{submitting ? t('saving') : t('save')}</span>
                       </button>
                     </div>
@@ -710,7 +711,7 @@ export const InventoryModule: React.FC = () => {
                           {editImageUrl ? (
                             <img src={editImageUrl} alt={editName} className="w-full h-full object-cover" />
                           ) : (
-                            <ShoppingBag24Regular className="w-5 h-5 text-[var(--text-muted)]" />
+                            <Icon regular={ShoppingBag24Regular} size="md" tone="muted" />
                           )}
                         </div>
                         <div>
@@ -723,7 +724,7 @@ export const InventoryModule: React.FC = () => {
                         onClick={() => setEditingProduct(null)}
                         className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
                       >
-                        <Dismiss24Filled className="w-5 h-5" />
+                        <Icon filled={Dismiss24Filled} size="md" />
                       </button>
                     </div>
                     <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -821,7 +822,7 @@ export const InventoryModule: React.FC = () => {
                         disabled={submitting}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        <Save24Filled className="w-4 h-4" />
+                        <Icon filled={Save24Filled} size="sm" />
                         <span>{submitting ? t('saving') : t('save')}</span>
                       </button>
 
@@ -831,7 +832,7 @@ export const InventoryModule: React.FC = () => {
                         disabled={submitting}
                         className="btn-secondary w-full text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
-                        <Delete24Filled className="w-4 h-4" />
+                        <Icon filled={Delete24Filled} size="sm" />
                         <span>{t('deleteProduct')}</span>
                       </button>
                     </div>

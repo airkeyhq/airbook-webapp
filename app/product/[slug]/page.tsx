@@ -7,11 +7,11 @@ import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import Logo from '@/components/Logo';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ArrowRight24Filled,
   Calendar24Filled,
   Calendar24Regular,
-  CheckmarkCircle24Filled,
   CheckmarkCircle24Regular,
   Clock24Regular,
   ChevronDown24Filled,
@@ -21,7 +21,6 @@ import {
   PeopleCommunity24Regular,
   ShieldCheckmark24Regular,
   Sparkle24Regular,
-  Sparkle24Filled,
   Star24Regular,
   Tag24Regular,
   LockClosed24Regular,
@@ -426,7 +425,7 @@ export default function ProductDetailPage() {
         <div className="max-w-4xl mx-auto text-center space-y-6">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
-            <Sparkle24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+            <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-[#2BB5FF]" />
             <span>{config.badge[lang]}</span>
           </div>
 
@@ -453,7 +452,7 @@ export default function ProductDetailPage() {
               className="btn-primary h-12 px-6 rounded-2xl text-sm font-extrabold text-white inline-flex items-center justify-center gap-2 shadow-lg w-full sm:w-auto"
             >
               <span>{t('applyForFoundingProgram')}</span>
-              <ArrowRight24Filled className="w-4 h-4" />
+              <Icon filled={ArrowRight24Filled} size="sm" />
             </Link>
             <Link
               href="/"
@@ -466,15 +465,15 @@ export default function ProductDetailPage() {
           {/* Trust points */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-bold text-[var(--text-muted)] pt-3">
             <span className="flex items-center gap-1.5">
-              <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-emerald-500" />
+              <Icon regular={CheckmarkCircle24Regular} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
               {t('freeForeverPlan')}
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-emerald-500" />
+              <Icon regular={CheckmarkCircle24Regular} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
               {t('noCreditCard')}
             </span>
             <span className="flex items-center gap-1.5">
-              <Sparkle24Filled className="w-3.5 h-3.5 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-[#2BB5FF]" />
               {t('passwordlessGuarantee')}
             </span>
           </div>
@@ -494,7 +493,7 @@ export default function ProductDetailPage() {
                   className="w-10 h-10 rounded-2xl flex items-center justify-center"
                   style={{ backgroundColor: config.bgPastel, color: config.accentColor }}
                 >
-                  <CheckmarkCircle24Regular className="w-5 h-5" />
+                  <Icon regular={CheckmarkCircle24Regular} size="md" />
                 </div>
                 <h3 className="text-base font-black text-[var(--text-primary)] tracking-tight">
                   {pillar.title[lang]}
@@ -527,7 +526,7 @@ export default function ProductDetailPage() {
                 className="p-6 rounded-3xl bg-[var(--bg-secondary)]/60 border border-[var(--border-subtle)] space-y-2.5"
               >
                 <div className="w-8 h-8 rounded-xl bg-white dark:bg-black flex items-center justify-center shadow-xs">
-                  <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF]" />
+                  <Icon regular={Sparkle24Regular} size="sm" className="text-[#2BB5FF]" />
                 </div>
                 <h4 className="text-sm font-extrabold text-[var(--text-primary)]">
                   {feat.title[lang]}
@@ -555,7 +554,7 @@ export default function ProductDetailPage() {
             className="btn-primary h-12 px-8 rounded-2xl text-sm font-extrabold text-white inline-flex items-center justify-center gap-2 shadow-lg"
           >
             <span>{t('applyForFoundingProgram')}</span>
-            <ArrowRight24Filled className="w-4 h-4" />
+            <Icon filled={ArrowRight24Filled} size="sm" />
           </Link>
         </div>
       </section>

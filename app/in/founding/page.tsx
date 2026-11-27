@@ -9,6 +9,7 @@ import { getAdminUser } from '@/lib/admin';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { CustomSelect } from '@/components/CustomSelect';
 import { EmptyState } from '@/components/EmptyState';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Filled,
   Sparkle24Regular,
@@ -269,7 +270,7 @@ export default function FoundingApplicationsAdminPage() {
             className="btn-primary h-10 px-4 rounded-2xl text-xs font-bold flex items-center justify-center gap-2"
           >
             <span>Ver Landing Pública</span>
-            <Open24Regular className="w-4 h-4" />
+            <Icon regular={Open24Regular} size="sm" />
           </Link>
         </div>
       </div>
@@ -317,7 +318,7 @@ export default function FoundingApplicationsAdminPage() {
               label="Buscar por salón, titular, email o ciudad..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              icon={<Search24Regular className="w-4 h-4" />}
+              icon={<Icon regular={Search24Regular} size="sm" />}
             />
           </div>
 
@@ -451,7 +452,7 @@ export default function FoundingApplicationsAdminPage() {
                       className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <span>Revisar</span>
-                      <ArrowRight24Filled className="w-3 h-3" />
+                      <Icon filled={ArrowRight24Filled} active size="xs" />
                     </button>
                   </div>
                 </div>
@@ -492,7 +493,7 @@ export default function FoundingApplicationsAdminPage() {
                   onClick={() => setIsDrawerOpen(false)}
                   className="p-2 rounded-2xl hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer flex-shrink-0"
                 >
-                  <Dismiss24Filled className="w-5 h-5" />
+                  <Icon filled={Dismiss24Filled} active size="md" />
                 </button>
               </div>
 
@@ -580,7 +581,7 @@ export default function FoundingApplicationsAdminPage() {
                           className="text-[#2BB5FF] font-medium hover:underline flex items-center gap-1"
                         >
                           <span>Web</span>
-                          <Open24Regular className="w-3.5 h-3.5" />
+                          <Icon regular={Open24Regular} size="sm" />
                         </a>
                       )}
                     </div>
@@ -696,12 +697,12 @@ export default function FoundingApplicationsAdminPage() {
                           >
                             {copiedActivation ? (
                               <>
-                                <Checkmark24Filled className="w-3.5 h-3.5" />
+                                <Icon filled={Checkmark24Filled} active size="sm" />
                                 <span>{t('foundingActivationLinkCopied')}</span>
                               </>
                             ) : (
                               <>
-                                <Copy24Filled className="w-3.5 h-3.5" />
+                                <Icon filled={Copy24Filled} active size="sm" />
                                 <span>{t('foundingCopyActivationLink')}</span>
                               </>
                             )}
@@ -744,7 +745,7 @@ export default function FoundingApplicationsAdminPage() {
                     onClick={() => handleUpdateStatus('approved')}
                     className="btn-primary h-11 px-5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 border-emerald-600 cursor-pointer shadow-md w-full sm:w-auto"
                   >
-                    <Sparkle24Filled className="w-4 h-4" />
+                    <Icon filled={Sparkle24Filled} active size="sm" />
                     <span>Aprobar 2M Gratis</span>
                   </button>
                   <button

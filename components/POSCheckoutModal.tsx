@@ -3,17 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Payment24Filled,
   Payment24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Dismiss24Filled,
   Print24Filled,
   Mail24Filled,
   Money24Filled,
+  Money24Regular,
   Receipt24Regular,
   Person24Regular,
-  Sparkle24Filled,
   Sparkle24Regular,
   GiftCard24Filled,
   GiftCard24Regular,
@@ -351,7 +352,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="md" />
             </button>
           </div>
           <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -362,7 +363,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
             {isCompleted ? (
               <div className="py-4 text-center flex flex-col items-center gap-4">
                 <div className="w-16 h-16 rounded-3xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-inner">
-                  <CheckmarkCircle24Filled className="w-10 h-10" />
+                  <Icon regular={CheckmarkCircle24Regular} className="w-10 h-10" />
                 </div>
 
                 <div>
@@ -396,7 +397,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                     onClick={handlePrintReceipt}
                     className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                    <Print24Filled className="w-4 h-4" />
+                    <Icon filled={Print24Filled} size="sm" />
                     <span>{t('printThermalReceipt')}</span>
                   </button>
 
@@ -406,7 +407,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                     onClick={handleSendEmailReceipt}
                     className="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)] flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-60"
                   >
-                    <Mail24Filled className="w-4 h-4 text-blue-500" />
+                    <Icon filled={Mail24Filled} size="sm" className="text-blue-500" />
                     <span>{emailSent ? t('receiptSent') : t('emailReceipt')}</span>
                   </button>
 
@@ -429,7 +430,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       Client Name
                     </label>
                     <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
-                      <Person24Regular className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
+                      <Icon regular={Person24Regular} size="sm" tone="secondary" className="flex-shrink-0" />
                       <input
                         type="text"
                         value={editableClientName}
@@ -673,7 +674,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <Money24Filled className="w-4 h-4 text-emerald-500" />
+                        <Icon regular={Money24Regular} filled={Money24Filled} active={paymentMethod === 'cash'} size="sm" className="text-emerald-500" />
                         <span>{t('cashPayment')}</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -691,7 +692,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <Payment24Filled className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <Icon regular={Payment24Regular} filled={Payment24Filled} active={paymentMethod === 'zelle'} size="sm" className="text-purple-600 dark:text-purple-400" />
                         <span>{t('zellePayment')}</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400">
@@ -722,7 +723,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <GiftCard24Filled className="w-4 h-4 text-pink-500" />
+                        <Icon regular={GiftCard24Regular} filled={GiftCard24Filled} active={paymentMethod === 'gift_card'} size="sm" className="text-pink-500" />
                         <span>{t('tabGiftCards')}</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold text-pink-600 dark:text-pink-400">
@@ -772,7 +773,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                   <div className="p-4 rounded-2xl bg-purple-500/5 border border-purple-500/20 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                        <Sparkle24Filled className="w-3.5 h-3.5" />
+                        <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5" />
                         {t('zelleInstructions')}
                       </span>
                       <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10">
@@ -813,7 +814,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                           }}
                           className="w-full py-1.5 rounded-lg bg-purple-600/10 hover:bg-purple-600/20 text-purple-600 dark:text-purple-400 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                         >
-                          <Copy24Filled className="w-3.5 h-3.5" />
+                          <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                           <span>{zelleCopied ? t('zelleCopied') : t('copyZelleInfo')}</span>
                         </button>
                       </div>
@@ -885,7 +886,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 {paymentMethod === 'stripe_terminal' && (
                   <div className="p-3.5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                      <Sparkle24Filled className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin" />
+                      <Icon regular={Sparkle24Regular} size="sm" className="text-blue-600 dark:text-blue-400 animate-spin" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-[var(--text-primary)]">
@@ -910,7 +911,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                 onClick={handleProcessPayment}
                 className="btn-primary w-full disabled:opacity-50"
               >
-                <Payment24Filled className="w-4 h-4" />
+                <Icon filled={Payment24Filled} size="sm" />
                 <span>
                   {submitting ? 'Processing Payment…' : `Charge $${finalTotal.toFixed(2)}`}
                 </span>

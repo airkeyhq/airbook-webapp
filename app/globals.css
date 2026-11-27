@@ -32,6 +32,16 @@
 
     --color-indicator-today: #FF3B30;       /* Signature Apple Red */
 
+    /* 5. Status & Feedback Color Tokens (Ozone UI) */
+    --color-status-success: #10B981;        /* Emerald 500 */
+    --color-status-success-subtle: rgba(16, 185, 129, 0.1);
+    --color-status-warning: #F59E0B;        /* Amber 500 */
+    --color-status-warning-subtle: rgba(245, 158, 11, 0.1);
+    --color-status-danger: #F43F5E;         /* Rose 500 */
+    --color-status-danger-subtle: rgba(244, 63, 94, 0.1);
+    --color-status-info: #2BB5FF;           /* Electric Sky */
+    --color-status-info-subtle: rgba(43, 181, 255, 0.1);
+
     /* Legacy CSS Variable Mappings */
     --control-height: var(--size-control-base);
     --control-height-sm: var(--size-control-sm);
@@ -112,7 +122,7 @@ html {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+  font-family: var(--font-geist-sans, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif);
   -webkit-tap-highlight-color: transparent;
 }
 

@@ -6,10 +6,11 @@ import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { PlanFeature, canAccessFeature, getRequiredTierForFeature, AIRBOOK_PLAN_DEFINITIONS } from '@/lib/plans';
 import {
-  LockClosed24Filled,
+  LockClosed24Regular,
   Sparkle24Filled,
   ArrowRight24Filled,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface PlanGateProps {
   feature: PlanFeature;
@@ -44,7 +45,7 @@ export const PlanGate: React.FC<PlanGateProps> = ({
       <div className="relative z-10 max-w-md mx-auto space-y-4">
         {/* Tier Lock Badge */}
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] dark:text-[#2BB5FF] border border-[#2BB5FF]/30 text-[11px] font-black uppercase tracking-wider">
-          <LockClosed24Filled className="w-3.5 h-3.5" />
+          <Icon regular={LockClosed24Regular} size="sm" />
           <span>{planInfo.name}</span>
         </div>
 
@@ -66,9 +67,9 @@ export const PlanGate: React.FC<PlanGateProps> = ({
             onClick={openPricingModal}
             className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-black tracking-wide"
           >
-            <Sparkle24Filled className="w-4 h-4 text-white" />
+            <Icon filled={Sparkle24Filled} active size="md" className="text-white" />
             <span>{t('upgradeToAccess')}</span>
-            <ArrowRight24Filled className="w-3.5 h-3.5 text-white" />
+            <Icon filled={ArrowRight24Filled} active size="sm" className="text-white" />
           </motion.button>
         </div>
       </div>

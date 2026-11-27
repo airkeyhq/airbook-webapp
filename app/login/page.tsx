@@ -10,6 +10,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { FloatingInput } from '@/components/FloatingInput';
 import { isPasskeySupported, signInWithPasskey } from '@/lib/passkey';
 import { isAdminEmail, getAdminUser } from '@/lib/admin';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ArrowLeft24Filled,
   ArrowRight24Filled,
@@ -141,7 +142,7 @@ function LoginFormContent() {
         href="/"
         className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors z-20"
       >
-        <ArrowLeft24Filled className="w-3.5 h-3.5" />
+        <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" />
         <span>{t('backToHome')}</span>
       </Link>
 
@@ -195,7 +196,7 @@ function LoginFormContent() {
           <div className="space-y-4 pt-1">
             <div className="p-4 rounded-3xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/20 space-y-2.5 text-center">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] text-[10px] font-black uppercase tracking-wider">
-                <Sparkle24Regular className="w-3.5 h-3.5" />
+                <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5" />
                 <span>{t('foundingBannerBadge')}</span>
               </div>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -208,7 +209,7 @@ function LoginFormContent() {
               className="btn-primary w-full h-12 flex items-center justify-center gap-2 cursor-pointer text-xs font-extrabold shadow-md"
             >
               <span>{t('joinFoundingWaitlist')}</span>
-              <ArrowRight24Filled className="w-4 h-4" />
+              <Icon filled={ArrowRight24Filled} size="sm" />
             </Link>
 
             <div className="text-center pt-1">
@@ -232,7 +233,7 @@ function LoginFormContent() {
                 disabled={passkeyLoading}
                 className="w-full py-3 px-4 rounded-2xl bg-black text-white dark:bg-white dark:text-black hover:opacity-90 active:scale-98 border border-[var(--border-subtle)] text-xs font-extrabold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
               >
-                <Fingerprint24Filled className="w-5 h-5 text-[var(--color-accent-primary)]" />
+                <Icon filled={Fingerprint24Filled} size="md" tone="accent" />
                 <span>{passkeyLoading ? t('passkeyVerifying') : t('signInWithPasskey')}</span>
               </motion.button>
             )}
@@ -272,7 +273,7 @@ function LoginFormContent() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                icon={<Mail24Regular className="w-4 h-4 text-[var(--text-muted)]" />}
+                icon={<Icon regular={Mail24Regular} size="sm" tone="muted" />}
               />
 
               <StatusBanner error={error} success={successMessage} />
@@ -283,7 +284,7 @@ function LoginFormContent() {
                 disabled={loading}
                 className="btn-primary w-full py-3 h-12 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Sparkle24Filled className="w-4 h-4" />
+                <Icon filled={Sparkle24Filled} size="sm" />
                 <span>{loading ? t('sendingLink') : t('sendMagicLink')}</span>
               </motion.button>
             </form>
@@ -320,9 +321,9 @@ function StatusBanner({ error, success }: { error: string | null; success: strin
       }`}
     >
       {isError ? (
-        <Warning24Regular className="w-4 h-4 flex-shrink-0" />
+        <Icon regular={Warning24Regular} size="sm" className="flex-shrink-0" />
       ) : (
-        <ShieldCheckmark24Regular className="w-4 h-4 text-green-500 flex-shrink-0" />
+        <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-green-500 flex-shrink-0" />
       )}
       <span>{error ?? success}</span>
     </motion.div>

@@ -8,9 +8,9 @@ import { useToast } from '@/components/Toast';
 import { useAirBookStore } from '@/lib/store';
 import { normalizePlanTier, PlanTier } from '@/lib/plans';
 import { CurrencySelector } from '@/components/CurrencySelector';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Dismiss24Filled,
-  Sparkle24Filled,
   Sparkle24Regular,
   Checkmark24Regular,
   ArrowRight24Filled,
@@ -156,13 +156,13 @@ export const PricingModal: React.FC<PricingModalProps> = ({
             onClick={onClose}
             className="absolute top-5 right-5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] cursor-pointer"
           >
-            <Dismiss24Filled className="w-5 h-5" />
+            <Icon filled={Dismiss24Filled} size="md" className="w-5 h-5" />
           </button>
 
           {/* Header */}
           <div className="text-center max-w-xl mx-auto mb-6 sm:mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] text-[11px] font-black uppercase tracking-wider mb-2 border border-[#2BB5FF]/20">
-              <Sparkle24Filled className="w-3.5 h-3.5" />
+              <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5" />
               <span>{t('pricingSubtitle')}</span>
             </div>
             <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[var(--text-primary)]">
@@ -225,7 +225,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                   {p.popular && (
                     <div className="absolute -top-3 left-6 z-20">
                       <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase tracking-wider shadow-sm border border-white/40">
-                        <Sparkle24Regular className="w-3 h-3 text-white" />
+                        <Icon regular={Sparkle24Regular} size="xs" className="text-white" />
                         {t('mostPopular')}
                       </span>
                     </div>
@@ -276,7 +276,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                     <ul className="space-y-2.5 text-xs text-[var(--text-secondary)] font-semibold">
                       {p.features.map((feat, i) => (
                         <li key={i} className="flex items-start gap-2 min-h-[18px]">
-                          <Checkmark24Regular className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <Icon regular={Checkmark24Regular} size="sm" className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
                           <span className="text-[11px] leading-tight">{feat}</span>
                         </li>
                       ))}
@@ -301,7 +301,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                       ) : (
                         <>
                           <span>{t('selectPlanBtn')}</span>
-                          <ArrowRight24Filled className="w-3.5 h-3.5" />
+                          <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
                         </>
                       )}
                     </motion.button>

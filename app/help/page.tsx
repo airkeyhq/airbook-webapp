@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Search24Regular,
@@ -16,7 +17,7 @@ import {
   ChatHelp24Regular,
   ChevronDown24Filled,
   ArrowRight24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Key24Regular,
   Dismiss24Filled,
   ThumbLike24Regular,
@@ -628,7 +629,7 @@ export default function HelpCenterPage() {
         {/* Top Hero with Live Search Bar */}
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] text-xs font-black uppercase tracking-wider">
-            <ChatHelp24Regular className="w-4 h-4" />
+            <Icon regular={ChatHelp24Regular} size="sm" />
             <span>{content.badge[lang]}</span>
           </div>
 
@@ -639,7 +640,7 @@ export default function HelpCenterPage() {
           {/* Interactive Search Bar */}
           <div className="relative max-w-xl mx-auto pt-2">
             <div className="relative flex items-center">
-              <Search24Regular className="absolute left-4 w-5 h-5 text-[var(--text-muted)] pointer-events-none" />
+              <Icon regular={Search24Regular} size="md" className="absolute left-4 text-[var(--text-muted)] pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
@@ -662,7 +663,7 @@ export default function HelpCenterPage() {
           {/* Category Filter Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
             {categories.map((cat) => {
-              const Icon = cat.icon;
+              const CatIcon = cat.icon;
               const isSelected = (selectedCategory === cat.id) || (!selectedCategory && cat.id === 'all');
               return (
                 <button
@@ -675,7 +676,7 @@ export default function HelpCenterPage() {
                       : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon regular={CatIcon} size="sm" />
                   <span>{cat.label}</span>
                 </button>
               );
@@ -696,7 +697,7 @@ export default function HelpCenterPage() {
 
           {filteredArticles.length === 0 ? (
             <div className="text-center py-12 p-8 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3">
-              <Search24Regular className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
+              <Icon regular={Search24Regular} className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
               <p className="text-sm font-extrabold text-[var(--text-primary)]">No matching guides found</p>
               <p className="text-xs text-[var(--text-secondary)]">
                 Try searching for &quot;Stripe&quot;, &quot;booking link&quot;, &quot;deposits&quot;, or &quot;passkeys&quot;.
@@ -719,7 +720,7 @@ export default function HelpCenterPage() {
                         {art.categoryName[lang]}
                       </span>
                       <span className="text-[11px] font-mono text-[var(--text-muted)] flex items-center gap-1">
-                        <Clock24Regular className="w-3 h-3" />
+                        <Icon regular={Clock24Regular} size="xs" />
                         {art.readTime}
                       </span>
                     </div>
@@ -735,7 +736,7 @@ export default function HelpCenterPage() {
 
                   <div className="flex items-center gap-1.5 text-xs font-black text-[#2BB5FF] pt-2 border-t border-[var(--border-subtle)]/70">
                     <span>Read Guide</span>
-                    <ArrowRight24Filled className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    <Icon filled={ArrowRight24Filled} active size="sm" className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               ))}
@@ -765,8 +766,11 @@ export default function HelpCenterPage() {
                     <span className="text-sm font-extrabold text-[var(--text-primary)]">
                       {faq.q[lang]}
                     </span>
-                    <ChevronDown24Filled
-                      className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 flex-shrink-0 ${
+                    <Icon
+                      filled={ChevronDown24Filled}
+                      active
+                      size="sm"
+                      className={`text-[var(--text-muted)] transition-transform duration-200 flex-shrink-0 ${
                         isOpen ? 'rotate-180 text-[#2BB5FF]' : ''
                       }`}
                     />
@@ -794,7 +798,7 @@ export default function HelpCenterPage() {
         {/* Concierge Support CTA Banner */}
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#FFF0F5]/80 via-[#FDF2F8]/50 to-[#EFF6FF]/80 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-sky-950/20 border border-pink-100/80 dark:border-pink-900/30 text-center space-y-4 max-w-4xl mx-auto shadow-sm">
           <div className="w-12 h-12 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center mx-auto">
-            <ChatHelp24Regular className="w-6 h-6" />
+            <Icon regular={ChatHelp24Regular} size="lg" />
           </div>
           <h3 className="text-2xl font-black text-[var(--text-primary)] tracking-tight">
             {content.conciergeTitle[lang]}
@@ -808,7 +812,7 @@ export default function HelpCenterPage() {
               className="btn-primary h-12 px-6 rounded-2xl text-xs font-extrabold text-white inline-flex items-center justify-center gap-2 shadow-md w-full sm:w-auto"
             >
               <span>{content.contactSupportBtn[lang]}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowRight24Filled} active size="sm" />
             </a>
             <Link
               href="/founding"
@@ -866,7 +870,7 @@ export default function HelpCenterPage() {
                   className="p-2 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer flex-shrink-0"
                   aria-label="Close Guide"
                 >
-                  <Dismiss24Filled className="w-5 h-5" />
+                  <Icon filled={Dismiss24Filled} active size="md" />
                 </button>
               </div>
 
@@ -896,7 +900,7 @@ export default function HelpCenterPage() {
               {activeArticle.proTip && (
                 <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-300 space-y-1 text-xs leading-relaxed">
                   <p className="font-extrabold flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
-                    <Sparkle24Regular className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                    <Icon regular={Sparkle24Regular} size="sm" className="text-amber-600 dark:text-amber-400" />
                     <span>{content.proTipLabel[lang]}</span>
                   </p>
                   <p>{activeArticle.proTip[lang]}</p>
@@ -911,7 +915,7 @@ export default function HelpCenterPage() {
                     className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold shadow-md"
                   >
                     <span>{activeArticle.actionLink.label[lang]}</span>
-                    <Open24Filled className="w-4 h-4" />
+                    <Icon filled={Open24Filled} active size="sm" />
                   </Link>
                 </div>
               )}
@@ -920,7 +924,7 @@ export default function HelpCenterPage() {
               <div className="border-t border-[var(--border-subtle)] pt-4 flex items-center justify-between text-xs text-[var(--text-muted)]">
                 {feedbackGiven ? (
                   <p className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                    <CheckmarkCircle24Filled className="w-4 h-4" />
+                    <Icon regular={CheckmarkCircle24Regular} size="sm" />
                     <span>{content.thankYouFeedback[lang]}</span>
                   </p>
                 ) : (
@@ -932,7 +936,7 @@ export default function HelpCenterPage() {
                         onClick={() => setFeedbackGiven('yes')}
                         className="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] hover:bg-[#2BB5FF]/15 hover:text-[#0284C7] font-bold transition-all flex items-center gap-1 cursor-pointer"
                       >
-                        <ThumbLike24Regular className="w-3.5 h-3.5" />
+                        <Icon regular={ThumbLike24Regular} size="sm" />
                         <span>Yes</span>
                       </button>
                       <button
@@ -940,7 +944,7 @@ export default function HelpCenterPage() {
                         onClick={() => setFeedbackGiven('no')}
                         className="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] hover:bg-rose-500/15 hover:text-rose-600 font-bold transition-all flex items-center gap-1 cursor-pointer"
                       >
-                        <ThumbDislike24Regular className="w-3.5 h-3.5" />
+                        <Icon regular={ThumbDislike24Regular} size="sm" />
                         <span>No</span>
                       </button>
                     </div>

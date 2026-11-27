@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CircleCloudIcon3D, CircleCloudIconFlat } from './Logo';
 import { CustomSelect } from '@/components/CustomSelect';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Globe24Regular,
@@ -746,7 +747,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
             }`}
             style={{ width: Math.max(20, sizePx * 0.28), height: Math.max(20, sizePx * 0.28) }}
           >
-            <Checkmark24Filled className="w-full h-full p-0.5" />
+            <Icon filled={Checkmark24Filled} active className="w-full h-full p-0.5" />
           </div>
         )}
       </div>
@@ -760,7 +761,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
         {/* Left Column: Style Controls (5 cols) */}
         <div className="lg:col-span-5 p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-6 shadow-xs">
           <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2 pb-3 border-b border-[var(--border-subtle)]">
-            <Sparkle24Regular className="w-4 h-4 text-blue-500" />
+            <Icon regular={Sparkle24Regular} size="md" className="text-blue-500" />
             <span>{t('avatarCustomizer')}</span>
           </h4>
 
@@ -1002,12 +1003,12 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                   {
                     value: 'blue',
                     label: t('badgeTypeBlue'),
-                    icon: <CheckmarkCircle24Filled className="w-4 h-4 text-blue-500" />,
+                    icon: <Icon filled={CheckmarkCircle24Filled} active size="md" className="text-blue-500" />,
                   },
                   {
                     value: 'gold',
                     label: t('badgeTypeGold'),
-                    icon: <CheckmarkCircle24Filled className="w-4 h-4 text-amber-500" />,
+                    icon: <Icon filled={CheckmarkCircle24Filled} active size="md" className="text-amber-500" />,
                   },
                 ]}
               />
@@ -1035,7 +1036,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                 disabled={isExporting}
                 className="btn-primary h-10 px-5 text-xs font-extrabold flex items-center gap-2 cursor-pointer shadow-md"
               >
-                <ArrowDownload24Filled className="w-4 h-4" />
+                <Icon filled={ArrowDownload24Filled} size="sm" />
                 <span>{t('downloadMasterAvatar')}</span>
               </button>
 
@@ -1045,9 +1046,9 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                 className="btn-secondary h-10 px-4 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
               >
                 {copiedKey === 'master-png' ? (
-                  <Checkmark24Filled className="w-4 h-4 text-emerald-500" />
+                  <Icon filled={Checkmark24Filled} size="sm" className="text-emerald-500" />
                 ) : (
-                  <Copy24Filled className="w-4 h-4" />
+                  <Icon filled={Copy24Filled} size="sm" />
                 )}
                 <span>{copiedKey === 'master-png' ? t('avatarCopied') : t('copyAvatarPng')}</span>
               </button>
@@ -1070,7 +1071,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <DocumentArrowDown24Filled className="w-4 h-4" />
+              <Icon filled={DocumentArrowDown24Filled} size="sm" />
               <span>{t('viewModeProduction')}</span>
             </button>
             <button
@@ -1082,7 +1083,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <Eye24Filled className="w-4 h-4" />
+              <Icon filled={Eye24Filled} size="sm" />
               <span>{t('viewModeMockups')}</span>
             </button>
           </div>
@@ -1099,7 +1100,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                 disabled={isExporting}
                 className="w-full btn-primary h-12 px-5 text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md"
               >
-                <FolderZip24Filled className="w-4 h-4" />
+                <Icon filled={FolderZip24Filled} size="sm" />
                 <span>{t('downloadPackageBtn')}</span>
               </button>
 
@@ -1142,7 +1143,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         className="btn-primary flex-1 min-w-0 h-9 px-3 text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                         title={t('downloadForPlatform', { platform: p.name })}
                       >
-                        <ArrowDownload24Filled className="w-3.5 h-3.5 flex-shrink-0" />
+                        <Icon filled={ArrowDownload24Filled} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                         <span>{t('download')}</span>
                       </button>
 
@@ -1154,9 +1155,9 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         aria-label={t('copyAvatarPng')}
                       >
                         {copiedKey === p.id ? (
-                          <Checkmark24Filled className="w-4 h-4 text-emerald-500" />
+                          <Icon filled={Checkmark24Filled} size="sm" className="text-emerald-500" />
                         ) : (
-                          <Copy24Filled className="w-4 h-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" />
+                          <Icon filled={Copy24Filled} size="sm" tone="secondary" className="hover:text-[var(--text-primary)]" />
                         )}
                       </button>
                     </div>
@@ -1180,7 +1181,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                   {
                     value: 'all',
                     label: t('allOutlets'),
-                    icon: <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />,
+                    icon: <Icon regular={Globe24Regular} size="sm" tone="secondary" />,
                   },
                   ...SOCIAL_PLATFORMS.map((p) => ({
                     value: p.id,
@@ -1207,7 +1208,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('instagram', 1080, 1080)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>1080 × 1080</span>
                       </button>
                     </div>
@@ -1217,7 +1218,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                       <div className="flex items-center justify-between text-xs font-bold">
                         <span className="flex items-center gap-1 font-black">
                           @{handle}
-                          {verifiedBadge !== 'none' && <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-blue-500" />}
+                          {verifiedBadge !== 'none' && <Icon filled={CheckmarkCircle24Filled} active size="sm" className="text-blue-500" />}
                         </span>
                         <span>•••</span>
                       </div>
@@ -1272,7 +1273,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('linkedin', 400, 400)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>400 × 400</span>
                       </button>
                     </div>
@@ -1291,7 +1292,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         <div className="space-y-1">
                           <div className="flex items-center gap-1.5">
                             <h5 className="text-base font-black">{brandName}</h5>
-                            <CheckmarkCircle24Filled className="w-4 h-4 text-[#0077B5]" />
+                            <Icon filled={CheckmarkCircle24Filled} active size="md" className="text-[#0077B5]" />
                           </div>
                           <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                             {tagline || 'Bespoke Salon Studio & Booking Technology'}
@@ -1320,7 +1321,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('x', 400, 400)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>400 × 400</span>
                       </button>
                     </div>
@@ -1339,7 +1340,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         <div className="space-y-1">
                           <div className="flex items-center gap-1">
                             <h5 className="text-base font-black">{brandName}</h5>
-                            <CheckmarkCircle24Filled className="w-4 h-4 text-amber-500" />
+                            <Icon filled={CheckmarkCircle24Filled} active size="md" className="text-amber-500" />
                           </div>
                           <span className="text-xs text-slate-500">@{handle}</span>
                           <p className="text-xs text-slate-600 dark:text-slate-300 pt-1 leading-snug">{tagline}</p>
@@ -1368,7 +1369,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('tiktok', 200, 200)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>200 × 200</span>
                       </button>
                     </div>
@@ -1381,7 +1382,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                       <div className="space-y-0.5">
                         <h5 className="font-black text-sm flex items-center justify-center gap-1">
                           @{handle}
-                          <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-[#00F2FE]" />
+                          <Icon filled={CheckmarkCircle24Filled} active size="sm" className="text-[#00F2FE]" />
                         </h5>
                         <span className="text-xs text-slate-500">{brandName}</span>
                       </div>
@@ -1415,7 +1416,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('facebook', 180, 180)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>180 × 180</span>
                       </button>
                     </div>
@@ -1439,7 +1440,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         <div className="space-y-1">
                           <div className="flex items-center gap-1.5">
                             <h5 className="text-base font-black">{brandName}</h5>
-                            <CheckmarkCircle24Filled className="w-4 h-4 text-[#1877F2]" />
+                            <Icon filled={CheckmarkCircle24Filled} active size="md" className="text-[#1877F2]" />
                           </div>
                           <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                             {tagline || 'Beauty & Wellness Studio · 4.9 ★ (120+ reviews)'}
@@ -1468,7 +1469,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('youtube', 800, 800)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>800 × 800</span>
                       </button>
                     </div>
@@ -1482,7 +1483,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                           <div className="space-y-1 flex-1">
                             <h5 className="text-base font-black flex items-center gap-1">
                               {brandName}
-                              <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-slate-400" />
+                              <Icon filled={CheckmarkCircle24Filled} active size="sm" className="text-slate-400" />
                             </h5>
                             <p className="text-xs text-slate-500 font-mono">@{handle} · 24.8K subscribers · 128 videos</p>
                             <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">{tagline}</p>
@@ -1517,7 +1518,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                         onClick={() => handleDownload('whatsapp', 500, 500)}
                         className="btn-primary h-7 px-3 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <ArrowDownload24Filled className="w-3 h-3" />
+                        <Icon filled={ArrowDownload24Filled} active size="xs" />
                         <span>500 × 500</span>
                       </button>
                     </div>
@@ -1531,7 +1532,7 @@ export const SocialAvatarsStudio: React.FC<SocialAvatarsStudioProps> = ({
                           <div>
                             <h5 className="font-black text-xs leading-tight flex items-center gap-1">
                               {brandName}
-                              <CheckmarkCircle24Filled className="w-3 h-3 text-[#25D366]" />
+                              <Icon filled={CheckmarkCircle24Filled} active size="xs" className="text-[#25D366]" />
                             </h5>
                             <span className="text-[10px] text-emerald-200">{t('onlineStatusNow')}</span>
                           </div>

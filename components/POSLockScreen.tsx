@@ -6,8 +6,9 @@ import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { CircleCloudIcon } from '@/components/Logo';
 import { isPasskeySupported, authenticateStationPasskey } from '@/lib/passkey';
+import { Icon } from '@/components/primitives/Icon';
 import {
-  LockClosed24Filled,
+  LockClosed24Regular,
   Dismiss24Filled,
   Backspace24Filled,
   ShieldCheckmark24Regular,
@@ -121,7 +122,7 @@ export const POSLockScreen: React.FC = () => {
                 <CircleCloudIcon size={32} />
               </div>
               <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-[var(--color-accent-primary)] text-white flex items-center justify-center border-2 border-[var(--bg-primary)] shadow-sm">
-                <LockClosed24Filled className="w-3.5 h-3.5" />
+                <Icon regular={LockClosed24Regular} size="sm" className="w-3.5 h-3.5" />
               </div>
             </div>
 
@@ -144,7 +145,7 @@ export const POSLockScreen: React.FC = () => {
               disabled={isPasskeyLoading}
               className="w-full h-11 px-4 rounded-2xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-primary)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
             >
-              <Fingerprint24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+              <Icon filled={Fingerprint24Filled} size="sm" tone="accent" />
               <span>{isPasskeyLoading ? t('loading') || 'Verifying…' : t('unlockWithPasskey')}</span>
             </motion.button>
           )}
@@ -204,7 +205,7 @@ export const POSLockScreen: React.FC = () => {
               onClick={handleClear}
               className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold uppercase text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
             >
-              <Dismiss24Filled className="w-4 h-4" />
+              <Icon filled={Dismiss24Filled} size="sm" />
             </button>
 
             {/* Zero Button */}
@@ -222,13 +223,13 @@ export const POSLockScreen: React.FC = () => {
               onClick={handleBackspace}
               className="h-14 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 border border-[var(--border-subtle)] text-xs font-extrabold text-[var(--text-secondary)] transition-all flex items-center justify-center cursor-pointer"
             >
-              <Backspace24Filled className="w-5 h-5" />
+              <Icon filled={Backspace24Filled} size="md" className="w-5 h-5" />
             </button>
           </div>
 
           {/* Master Unlock / Hint */}
           <div className="pt-2 border-t border-[var(--border-subtle)] w-full flex items-center justify-center text-[10px] text-[var(--text-muted)] gap-1.5">
-            <ShieldCheckmark24Regular className="w-3.5 h-3.5 opacity-60" />
+            <Icon regular={ShieldCheckmark24Regular} size="sm" className="w-3.5 h-3.5 opacity-60" />
             <span>{t('emergencyUnlock')}</span>
           </div>
         </motion.div>

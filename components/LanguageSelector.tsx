@@ -2,8 +2,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { ChevronDown24Filled, Checkmark24Filled } from '@fluentui/react-icons';
+import { ChevronDown24Regular, Checkmark24Filled } from '@fluentui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CircleFlag } from '@/components/primitives/CircleFlag';
+import { Icon } from '@/components/primitives/Icon';
 
 interface LanguageSelectorProps {
   direction?: 'up' | 'down';
@@ -44,7 +46,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const heightClass =
     size === 'sm' ? 'h-8 px-2.5 rounded-xl text-xs' : 'h-10 px-3 rounded-2xl text-xs';
-  const flagSize = size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4';
+  const flagPx = size === 'sm' ? 14 : 16;
 
   return (
     <div ref={containerRef} className={`relative z-50 ${className}`}>
@@ -55,19 +57,17 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         aria-expanded={isOpen}
         aria-label="Select Language"
       >
-        <img
-          src={`https://hatscripts.github.io/circle-flags/flags/${currentLangObj.flagCode}.svg`}
-          alt={currentLangObj.label}
-          className={`${flagSize} rounded-full object-cover flex-shrink-0`}
-          loading="lazy"
-        />
+        <CircleFlag countryCode={currentLangObj.flagCode} size={flagPx} alt={currentLangObj.label} />
         {format === 'code' ? (
           <span className="uppercase text-[11px] font-black">{currentLangObj.id}</span>
         ) : (
           <span className="text-[11px] font-bold">{currentLangObj.label}</span>
         )}
-        <ChevronDown24Filled
-          className={`w-3 h-3 text-[var(--text-muted)] transition-transform duration-150 ${
+        <Icon
+          regular={ChevronDown24Regular}
+          size="xs"
+          tone="muted"
+          className={`transition-transform duration-150 ${
             isOpen
               ? direction === 'up'
                 ? ''
@@ -107,16 +107,11 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <img
-                      src={`https://hatscripts.github.io/circle-flags/flags/${lang.flagCode}.svg`}
-                      alt={lang.label}
-                      className="w-4 h-4 rounded-full object-cover flex-shrink-0"
-                      loading="lazy"
-                    />
+                    <CircleFlag countryCode={lang.flagCode} size={16} alt={lang.label} />
                     <span>{lang.label}</span>
                   </div>
                   {isSelected && (
-                    <Checkmark24Filled className="w-3.5 h-3.5 text-[#2BB5FF] flex-shrink-0" />
+                    <Icon filled={Checkmark24Filled} size="sm" tone="accent" />
                   )}
                 </button>
               );

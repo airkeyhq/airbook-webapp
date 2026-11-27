@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSmartPosition } from '@/lib/useSmartPosition';
+import { Drawer } from '@/components/primitives/Drawer';
 import {
   Color24Regular,
   Copy24Filled,
@@ -9,6 +11,7 @@ import {
   Sparkle24Regular,
   Dismiss24Filled,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface ColorPickerProps {
   label?: string;
@@ -16,6 +19,13 @@ interface ColorPickerProps {
   onChange: (hex: string) => void;
   className?: string;
   presets?: { name: string; hex: string }[];
+  /**
+   * Responsive presentation mode:
+   * - 'auto': Adapts automatically to mobile (<640px), tablet (640-1023px), and desktop (>=1024px)
+   * - 'desktop' | 'tablet' | 'mobile': Forces a specific layout (useful for previews)
+   * @default 'auto'
+   */
+  layoutMode?: 'auto' | 'desktop' | 'tablet' | 'mobile';
 }
 
 // Curated Luxury Salon & Spa Color DNA Presets
@@ -93,12 +103,43 @@ export function ColorPicker({
   onChange,
   className = '',
   presets = DEFAULT_AIRBOOK_PRESETS,
+  layoutMode = 'auto',
 }: ColorPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [hexInput, setHexInput] = useState(value);
+  const [viewportMode, setViewportMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const containerRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const satValPadRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (layoutMode !== 'auto') {
+      setViewportMode(layoutMode);
+      return;
+    }
+    const updateMode = () => {
+      if (window.innerWidth < 640) setViewportMode('mobile');
+      else if (window.innerWidth < 1024) setViewportMode('tablet');
+      else setViewportMode('desktop');
+    };
+    updateMode();
+    window.addEventListener('resize', updateMode);
+    return () => window.removeEventListener('resize', updateMode);
+  }, [layoutMode]);
+
+  const activeMode = layoutMode === 'auto' ? viewportMode : layoutMode;
+
+  const { positionClass, motionY } = useSmartPosition({
+    isOpen: isOpen && activeMode !== 'mobile',
+    triggerRef: containerRef,
+    floatingRef: popoverRef,
+    estimatedWidth: activeMode === 'desktop' ? 460 : 320,
+    estimatedHeight: activeMode === 'desktop' ? 275 : 350,
+    preferredVertical: 'bottom',
+    preferredHorizontal: 'left',
+    offset: 8,
+  });
 
   const hsl = hexToHsl(value);
   const [hue, setHue] = useState(hsl.h || 200);
@@ -153,13 +194,13 @@ export function ColorPicker({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  // Drag on Spectrum Pad
-  const handleSpectrumMove = useCallback(
-    (e: React.MouseEvent | MouseEvent) => {
+  // Drag on Spectrum Pad (Mouse + Touch)
+  const updateSpectrumFromPoint = useCallback(
+    (clientX: number, clientY: number) => {
       if (!satValPadRef.current) return;
       const rect = satValPadRef.current.getBoundingClientRect();
-      const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
-      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
 
       const newSat = Math.round((x / rect.width) * 100);
       const brightness = 1 - y / rect.height; // 0 (bottom) to 1 (top)
@@ -176,14 +217,25 @@ export function ColorPicker({
   );
 
   const handleSpectrumMouseDown = (e: React.MouseEvent) => {
-    handleSpectrumMove(e);
-    const onMouseMove = (moveEvent: MouseEvent) => handleSpectrumMove(moveEvent);
+    updateSpectrumFromPoint(e.clientX, e.clientY);
+    const onMouseMove = (moveEvent: MouseEvent) =>
+      updateSpectrumFromPoint(moveEvent.clientX, moveEvent.clientY);
     const onMouseUp = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+  };
+
+  const handleSpectrumTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    if (touch) updateSpectrumFromPoint(touch.clientX, touch.clientY);
+  };
+
+  const handleSpectrumTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    if (touch) updateSpectrumFromPoint(touch.clientX, touch.clientY);
   };
 
   // Hue slider change
@@ -208,6 +260,147 @@ export function ColorPicker({
       setLight(converted.l);
     }
   };
+
+  const studioContent = (
+    <div
+      className={
+        activeMode === 'desktop'
+          ? 'grid grid-cols-12 gap-4 pt-3 items-stretch'
+          : 'space-y-3.5'
+      }
+    >
+      {/* Left / Top: Spectrum Pad + Hue Slider */}
+      <div className={activeMode === 'desktop' ? 'col-span-6 space-y-3 flex flex-col justify-between' : 'space-y-3'}>
+        {/* ─── 2D Saturation/Brightness Spectrum Pad ─── */}
+        <div
+          ref={satValPadRef}
+          onMouseDown={handleSpectrumMouseDown}
+          onTouchStart={handleSpectrumTouchStart}
+          onTouchMove={handleSpectrumTouchMove}
+          className={`relative w-full rounded-2xl cursor-crosshair overflow-hidden border border-[var(--border-subtle)] shadow-inner select-none touch-none ${
+            activeMode === 'mobile' ? 'h-40' : activeMode === 'desktop' ? 'h-36' : 'h-28'
+          }`}
+          style={{
+            backgroundColor: `hsl(${hue}, 100%, 50%)`,
+            backgroundImage: `
+              linear-gradient(to top, #000, transparent),
+              linear-gradient(to right, #fff, transparent)
+            `,
+          }}
+        >
+          <div
+            className="absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow-[0_0_4px_rgba(0,0,0,0.8)] pointer-events-none transform transition-transform"
+            style={{
+              left: `${sat}%`,
+              top: `${100 - (light / (100 - sat / 2)) * 100}%`,
+              backgroundColor: value,
+            }}
+          />
+        </div>
+
+        {/* ─── Rainbow Hue Slider & Live Preview ─── */}
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-8 h-8 rounded-xl border border-black/10 dark:border-white/20 shadow-xs flex-shrink-0"
+            style={{ backgroundColor: value }}
+          />
+          <div className="flex-1">
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={hue}
+              onChange={(e) => handleHueChange(parseInt(e.target.value, 10))}
+              className="w-full h-3 rounded-full appearance-none cursor-pointer border border-[var(--border-subtle)] outline-none"
+              style={{
+                background:
+                  'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)',
+              }}
+            />
+          </div>
+          {typeof window !== 'undefined' && 'EyeDropper' in window && (
+            <button
+              type="button"
+              onClick={handleEyeDropper}
+              title="Pick Color from Screen"
+              className="p-2 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--color-accent-primary)] transition-colors cursor-pointer"
+            >
+              <Icon regular={Color24Regular} size="md" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Right / Bottom: Presets + Hex Input + Apply */}
+      <div className={activeMode === 'desktop' ? 'col-span-6 flex flex-col justify-between space-y-3' : 'space-y-3'}>
+        {/* ─── Curated Luxury Salon DNA Presets ─── */}
+        <div className="space-y-2">
+          <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            Curated Salon DNA Presets
+          </span>
+          <div className="grid grid-cols-4 gap-1.5">
+            {presets.map((preset) => {
+              const isSelected = value.toUpperCase() === preset.hex.toUpperCase();
+              return (
+                <button
+                  key={preset.hex}
+                  type="button"
+                  onClick={() => {
+                    onChange(preset.hex);
+                    setHexInput(preset.hex);
+                  }}
+                  title={`${preset.name} (${preset.hex})`}
+                  aria-label={`${preset.name} ${preset.hex}`}
+                  className={`group relative flex items-center justify-center p-1 rounded-xl border transition-all duration-100 cursor-pointer ${
+                    isSelected
+                      ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10 shadow-xs'
+                      : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)] hover:border-[var(--color-accent-primary)]/40'
+                  }`}
+                >
+                  <div
+                    className={`w-full rounded-lg border border-black/10 dark:border-white/10 shadow-xs relative flex items-center justify-center ${
+                      activeMode === 'mobile' ? 'h-9' : 'h-8'
+                    }`}
+                    style={{ backgroundColor: preset.hex }}
+                  >
+                    {isSelected && (
+                      <Icon filled={Checkmark24Filled} size="md" className="text-white drop-shadow-md" />
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ─── Manual Hex Input & Quick Apply ─── */}
+        <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center gap-2">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              maxLength={7}
+              value={hexInput}
+              onChange={(e) => handleHexInputChange(e.target.value)}
+              placeholder="#2BB5FF"
+              className={`w-full px-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] font-mono text-xs font-bold text-[var(--text-primary)] uppercase focus:outline-none focus:border-[var(--color-accent-primary)] transition-colors ${
+                activeMode === 'mobile' ? 'h-11' : 'h-9'
+              }`}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className={`btn-primary px-4 rounded-xl text-xs font-bold ${
+              activeMode === 'mobile' ? '!h-11' : '!h-9'
+            }`}
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -261,165 +454,61 @@ export function ColorPicker({
             className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
           >
             {copied ? (
-              <Checkmark24Filled className="w-4 h-4 text-emerald-500" />
+              <Icon filled={Checkmark24Filled} size="md" tone="success" />
             ) : (
-              <Copy24Filled className="w-4 h-4" />
+              <Icon filled={Copy24Filled} size="md" />
             )}
           </button>
-          <Color24Regular className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
+          <Icon regular={Color24Regular} size="md" tone="muted" className="group-hover:text-[var(--text-primary)] transition-colors" />
         </div>
       </div>
 
-      {/* ─── Custom-Coded Color Popover ─── */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.96 }}
-            transition={{ duration: 0.12, ease: 'easeOut' }}
-            className="absolute top-full left-0 mt-2 z-[250] w-72 p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl space-y-4 backdrop-blur-xl"
-          >
-            {/* Popover Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
-              <div className="flex items-center gap-1.5 text-xs font-black text-[var(--text-primary)]">
-                <Sparkle24Regular className="w-4 h-4 text-blue-500" />
-                <span>AirBook Color Studio</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-              >
-                <Dismiss24Filled className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* ─── 2D Saturation/Brightness Spectrum Pad ─── */}
-            <div
-              ref={satValPadRef}
-              onMouseDown={handleSpectrumMouseDown}
-              className="relative w-full h-36 rounded-2xl cursor-crosshair overflow-hidden border border-[var(--border-subtle)] shadow-inner select-none"
-              style={{
-                backgroundColor: `hsl(${hue}, 100%, 50%)`,
-                backgroundImage: `
-                  linear-gradient(to top, #000, transparent),
-                  linear-gradient(to right, #fff, transparent)
-                `,
-              }}
+      {/* ─── Mobile Bottom Drawer (reusing Drawer primitive) ─── */}
+      {activeMode === 'mobile' ? (
+        <Drawer
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          side="bottom"
+          size="lg"
+          title="AirBook Color Studio"
+          headerIcon={<Icon regular={Sparkle24Regular} size="md" className="text-[var(--color-accent-primary)]" />}
+        >
+          {studioContent}
+        </Drawer>
+      ) : (
+        /* ─── Desktop 2-Col / Tablet Compact Popover ─── */
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              ref={popoverRef}
+              initial={{ opacity: 0, y: motionY, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: motionY, scale: 0.96 }}
+              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className={`absolute z-[250] p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-2xl backdrop-blur-xl ${
+                activeMode === 'desktop' ? 'w-[460px]' : 'w-[320px] space-y-3'
+              } ${positionClass}`}
             >
-              {/* Dynamic Draggable Cursor Indicator */}
-              <div
-                className="absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow-[0_0_4px_rgba(0,0,0,0.8)] pointer-events-none transform transition-transform"
-                style={{
-                  left: `${sat}%`,
-                  top: `${100 - (light / (100 - sat / 2)) * 100}%`,
-                  backgroundColor: value,
-                }}
-              />
-            </div>
-
-            {/* ─── Rainbow Hue Slider & Live Preview ─── */}
-            <div className="flex items-center gap-3">
-              {/* Preview Circle */}
-              <div
-                className="w-9 h-9 rounded-2xl border border-black/10 dark:border-white/20 shadow-xs flex-shrink-0"
-                style={{ backgroundColor: value }}
-              />
-
-              {/* Hue Range Slider */}
-              <div className="flex-1 space-y-1">
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  value={hue}
-                  onChange={(e) => handleHueChange(parseInt(e.target.value, 10))}
-                  className="w-full h-3 rounded-full appearance-none cursor-pointer border border-[var(--border-subtle)] outline-none"
-                  style={{
-                    background:
-                      'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)',
-                  }}
-                />
-              </div>
-
-              {/* Eyedropper Button (if supported) */}
-              {typeof window !== 'undefined' && 'EyeDropper' in window && (
+              {/* Popover Header */}
+              <div className="flex items-center justify-between pb-2.5 border-b border-[var(--border-subtle)]">
+                <div className="flex items-center gap-1.5 text-xs font-black text-[var(--text-primary)]">
+                  <Icon regular={Sparkle24Regular} size="md" className="text-[var(--color-accent-primary)]" />
+                  <span>AirBook Color Studio</span>
+                </div>
                 <button
                   type="button"
-                  onClick={handleEyeDropper}
-                  title="Pick Color from Screen"
-                  className="p-2 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-blue-500 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                  className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                 >
-                  <Color24Regular className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} size="sm" />
                 </button>
-              )}
-            </div>
-
-            {/* ─── Curated Luxury Salon DNA Presets ─── */}
-            <div className="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
-                Curated Salon DNA Presets
-              </span>
-              <div className="grid grid-cols-4 gap-2">
-                {presets.map((preset) => {
-                  const isSelected = value.toUpperCase() === preset.hex.toUpperCase();
-                  return (
-                    <button
-                      key={preset.hex}
-                      type="button"
-                      onClick={() => {
-                        onChange(preset.hex);
-                        setHexInput(preset.hex);
-                      }}
-                      title={preset.name}
-                      className={`group relative flex flex-col items-center gap-1 p-1.5 rounded-xl border transition-all duration-100 ${
-                        isSelected
-                          ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10 shadow-xs'
-                          : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)] hover:border-[var(--color-accent-primary)]/40'
-                      }`}
-                    >
-                      <div
-                        className="w-full h-6 rounded-lg border border-black/10 dark:border-white/10 shadow-xs relative flex items-center justify-center"
-                        style={{ backgroundColor: preset.hex }}
-                      >
-                        {isSelected && (
-                          <Checkmark24Filled className="w-3.5 h-3.5 text-white drop-shadow-md" />
-                        )}
-                      </div>
-                      <span className="text-[9px] font-mono font-bold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] truncate max-w-full">
-                        {preset.hex}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ─── Manual Hex Input & Quick Apply ─── */}
-            <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center gap-2">
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  maxLength={7}
-                  value={hexInput}
-                  onChange={(e) => handleHexInputChange(e.target.value)}
-                  placeholder="#2BB5FF"
-                  className="w-full h-9 px-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] font-mono text-xs font-bold text-[var(--text-primary)] uppercase focus:outline-none focus:border-blue-500 transition-colors"
-                />
               </div>
 
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="btn-primary h-9 px-4 rounded-xl text-xs font-bold"
-              >
-                Apply
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {studioContent}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </div>
   );
 }

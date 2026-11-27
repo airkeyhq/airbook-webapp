@@ -7,10 +7,12 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { Checkbox } from '@/components/Checkbox';
+import { SignaturePad } from '@/components/primitives/SignaturePad';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Dismiss24Filled,
   CheckmarkCircle24Filled,
-  DocumentSignature24Filled,
+  DocumentSignature24Regular,
   Sparkle24Filled,
   ShieldCheckmark24Regular,
   ArrowReset24Filled,
@@ -52,9 +54,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
   const { t } = useTranslation();
   const { addToast } = useToast();
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [hasSignature, setHasSignature] = useState(false);
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -105,74 +105,6 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
     fetchTemplates();
   }, [isOpen]);
 
-  // Setup Canvas
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const timer = setTimeout(() => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * 2;
-      canvas.height = rect.height * 2;
-      ctx.scale(2, 2);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#007AFF';
-      ctx.lineWidth = 2.5;
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [isOpen]);
-
-  // Drawing Handlers
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    setIsDrawing(true);
-    const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-
-    ctx.beginPath();
-    ctx.moveTo(clientX - rect.left, clientY - rect.top);
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-
-    ctx.lineTo(clientX - rect.left, clientY - rect.top);
-    ctx.stroke();
-    setHasSignature(true);
-  };
-
-  const stopDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setHasSignature(false);
-  };
-
   // Submit Waiver
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,7 +113,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
       return;
     }
 
-    if (!hasSignature) {
+    if (!signatureDataUrl) {
       addToast('Please provide your digital signature.', 'error');
       return;
     }
@@ -190,9 +122,6 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
       addToast('You must accept the terms to proceed.', 'error');
       return;
     }
-
-    const canvas = canvasRef.current;
-    const signatureDataUrl = canvas ? canvas.toDataURL('image/png') : '';
 
     const currentTemplate = templates.find((t) => t.id === selectedTemplateId);
 
@@ -271,7 +200,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
           <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center flex-shrink-0">
-                <DocumentSignature24Filled className="w-5 h-5" />
+                <Icon regular={DocumentSignature24Regular} size="lg" />
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">
@@ -288,7 +217,7 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="lg" />
             </button>
           </div>
 
@@ -390,47 +319,17 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
                 )}
               </div>
 
-              {/* HTML5 Vector Signature Canvas */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                    <DocumentSignature24Filled className="w-4 h-4 text-blue-500" />
-                    <span>{t('drawSignaturePrompt')}</span>
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={clearCanvas}
-                    className="text-[11px] font-bold text-red-500 hover:text-red-600 flex items-center gap-1 cursor-pointer"
-                  >
-                    <ArrowReset24Filled className="w-3.5 h-3.5" />
-                    <span>{t('clearSignature')}</span>
-                  </button>
-                </div>
-
-                <div className="relative w-full h-36 rounded-2xl bg-white dark:bg-slate-900 border-2 border-dashed border-blue-500/40 overflow-hidden shadow-inner touch-none">
-                  <canvas
-                    ref={canvasRef}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseLeave={stopDrawing}
-                    onTouchStart={startDrawing}
-                    onTouchMove={draw}
-                    onTouchEnd={stopDrawing}
-                    className="w-full h-full cursor-crosshair block"
-                  />
-                  {!hasSignature && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-xs font-bold text-blue-500/40 uppercase tracking-wider">
-                      {t('drawSignaturePrompt')}
-                    </div>
-                  )}
-                </div>
-              </div>
+              {/* Unified SignaturePad Primitive */}
+              <SignaturePad
+                label={t('drawSignaturePrompt')}
+                placeholder={t('drawSignaturePrompt')}
+                clearLabel={t('clearSignature')}
+                onChange={setSignatureDataUrl}
+              />
 
               {/* Audit Badge */}
               <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 text-[10px] font-bold border border-emerald-500/20">
-                <ShieldCheckmark24Regular className="w-4 h-4 flex-shrink-0" />
+                <Icon regular={ShieldCheckmark24Regular} size="md" />
                 <span>
                   Tamper-evident audit lock: SHA-256 Vector Signature · Timestamp Verified
                 </span>
@@ -441,10 +340,10 @@ export const WaiverPadModal: React.FC<WaiverPadModalProps> = ({
             <div className="w-full border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 sm:p-5 rounded-none flex-shrink-0 z-30 flex items-center justify-end gap-3">
               <button
                 type="submit"
-                disabled={submitting || !hasSignature}
+                disabled={submitting || !signatureDataUrl}
                 className="btn-primary w-full sm:w-auto disabled:opacity-50"
               >
-                <CheckmarkCircle24Filled className="w-4 h-4" />
+                <Icon filled={CheckmarkCircle24Filled} size="md" />
                 <span>{submitting ? 'Recording…' : t('signWaiver')}</span>
               </button>
             </div>

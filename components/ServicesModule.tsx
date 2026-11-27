@@ -7,6 +7,7 @@ import { useToast } from './Toast';
 import { EmptyState } from './EmptyState';
 import { FloatingInput } from './FloatingInput';
 import { useAirBookStore } from '@/lib/store';
+import { Icon } from '@/components/primitives/Icon';
 import { Add24Filled, Dismiss24Filled, Save24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
 interface ServiceItem {
@@ -135,7 +136,7 @@ export const ServicesModule: React.FC = () => {
             onClick={() => setShowForm(!showForm)}
             className="btn-primary self-start sm:self-auto"
           >
-            <Add24Filled className="w-4 h-4" />
+            <Icon filled={Add24Filled} size="sm" />
             <span>{t('addService')}</span>
           </motion.button>
         )}
@@ -145,7 +146,7 @@ export const ServicesModule: React.FC = () => {
       <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Money24Regular className="w-5 h-5 text-[var(--text-secondary)]" />
+            <Icon regular={Money24Regular} size="md" tone="secondary" />
             <div>
               <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
                 {t('smartDynamicPricingTitle')}
@@ -212,7 +213,7 @@ export const ServicesModule: React.FC = () => {
               disabled={submitting}
               className="btn-primary"
             >
-              <Save24Filled className="w-4 h-4" />
+              <Icon filled={Save24Filled} size="sm" />
               <span>{submitting ? t('saving') : t('save')}</span>
             </button>
           </div>
@@ -280,7 +281,7 @@ export const ServicesModule: React.FC = () => {
                         {srv.category}
                       </span>
                       <span className="text-xs font-mono font-bold text-[var(--text-muted)] flex items-center gap-1">
-                        <Clock24Regular className="w-3 h-3" />
+                        <Icon regular={Clock24Regular} size="xs" />
                         {srv.durationMinutes} {t('minsSuffix')}
                       </span>
                     </div>

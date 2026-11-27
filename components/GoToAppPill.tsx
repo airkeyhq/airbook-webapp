@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
 import { ArrowRight24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 export interface GoToAppPillProps {
   name?: string | null;
@@ -37,7 +38,7 @@ export const GoToAppPill: React.FC<GoToAppPillProps> = ({
     <Link
       href={href}
       onClick={onClick}
-      className={`h-10 flex items-center gap-2 p-[6px] rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)]/60 border border-[var(--border-subtle)] hover:border-[#2BB5FF]/50 shadow-xs transition-all group cursor-pointer flex-shrink-0 select-none ${className}`}
+      className={`h-10 w-fit inline-flex items-center gap-2 p-[6px] rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)]/60 border border-[var(--border-subtle)] hover:border-[#2BB5FF]/50 shadow-xs transition-all group cursor-pointer flex-shrink-0 select-none ${className}`}
       title={`${displayName} · ${t('goToApp')}`}
     >
       {/* 28px Avatar with Concentric Margin & Live Indicator */}
@@ -47,13 +48,13 @@ export const GoToAppPill: React.FC<GoToAppPillProps> = ({
           alt={displayName}
           className="w-7 h-7 rounded-full object-cover ring-2 ring-[var(--bg-primary)]"
         />
-        <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1.5 ring-white dark:ring-black" />
+        <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-[1.5px] ring-white dark:ring-black" />
       </div>
 
       {/* 28px Tactile Electric Blue Inner Pill Button */}
       <span className="btn-primary !h-7 !px-3 !rounded-full text-[11px] font-black flex items-center gap-1 shadow-xs flex-shrink-0">
         <span>{t('goToApp')}</span>
-        <ArrowRight24Filled className="w-3 h-3" />
+        <Icon filled={ArrowRight24Filled} size="xs" />
       </span>
     </Link>
   );

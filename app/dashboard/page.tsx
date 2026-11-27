@@ -33,6 +33,7 @@ import { useInactivityLock } from '@/lib/useInactivityLock';
 import { useDemoShortcut } from '@/lib/useDemoShortcut';
 import { Toast, useToast } from '@/components/Toast';
 import { motion } from 'framer-motion';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Calendar24Filled,
   Calendar24Regular,
@@ -212,7 +213,7 @@ export default function DashboardPage() {
               { id: 'analytics', label: t('tabAnalytics'), icon: DataTrending24Filled },
               { id: 'settings', label: t('tabSettings'), icon: Settings24Filled },
             ].map((tab) => {
-              const Icon = tab.icon;
+              const TabIcon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
@@ -224,7 +225,7 @@ export default function DashboardPage() {
                       : 'text-[var(--text-secondary)] bg-black/5 dark:bg-white/5 hover:bg-black/10'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                  <Icon filled={TabIcon} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>{tab.label}</span>
                 </button>
               );

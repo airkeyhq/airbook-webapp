@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown24Regular, Checkmark24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 export interface SelectOption {
   value: string;
@@ -151,7 +152,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           transition={{ duration: 0.15 }}
           className="flex-shrink-0"
         >
-          <ChevronDown24Regular className={compact ? 'w-3.5 h-3.5 text-[var(--text-secondary)]' : 'w-4 h-4 text-[var(--text-secondary)]'} />
+          <Icon regular={ChevronDown24Regular} size={compact ? 'sm' : 'md'} tone="secondary" />
         </motion.span>
       </button>
 
@@ -195,7 +196,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                     </div>
                   </div>
                   {isSelected && (
-                    <Checkmark24Filled className="w-3.5 h-3.5 text-[var(--text-primary)] flex-shrink-0" />
+                    <Icon filled={Checkmark24Filled} size="sm" tone="primary" />
                   )}
                 </button>
               );

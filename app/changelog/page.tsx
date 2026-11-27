@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ArrowRight24Filled,
   Calendar24Regular,
@@ -82,7 +83,7 @@ export default function ChangelogPage() {
         {/* Header Title */}
         <div className="space-y-3 text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] text-xs font-extrabold">
-            <Sparkle24Regular className="w-3.5 h-3.5" />
+            <Icon regular={Sparkle24Regular} size="sm" />
             <span>Product Updates</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--text-primary)]">
@@ -124,14 +125,14 @@ export default function ChangelogPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 {rel.highlights.map((h, hIdx) => {
-                  const Icon = h.icon;
+                  const HighlightIcon = h.icon;
                   return (
                     <div
                       key={hIdx}
                       className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1.5 shadow-xs"
                     >
                       <div className="flex items-center gap-2 font-extrabold text-xs text-[var(--text-primary)]">
-                        <Icon className="w-4 h-4 text-[#2BB5FF]" />
+                        <Icon regular={HighlightIcon} size="sm" className="text-[#2BB5FF]" />
                         <span>{h.title}</span>
                       </div>
                       <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">{h.desc}</p>
@@ -154,7 +155,7 @@ export default function ChangelogPage() {
           <div className="pt-2">
             <Link href="/founding" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-xs">
               <span>{t('applyForFoundingProgram')}</span>
-              <ArrowRight24Filled className="w-3.5 h-3.5" />
+              <Icon filled={ArrowRight24Filled} active size="sm" />
             </Link>
           </div>
         </div>

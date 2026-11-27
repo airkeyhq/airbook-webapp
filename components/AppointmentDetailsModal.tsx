@@ -5,10 +5,11 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Appointment, useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Dismiss24Filled,
-  Clock24Filled,
-  Person24Filled,
+  Clock24Regular,
+  Person24Regular,
   Payment24Filled,
   DocumentText24Filled,
   Delete24Filled,
@@ -120,7 +121,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 </span>
                 {partyGuests.length > 1 && (
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center gap-1">
-                    <PeopleTeam24Regular className="w-3 h-3" />
+                    <Icon regular={PeopleTeam24Regular} size="xs" />
                     {t('partyOf')} {partyGuests.length}
                   </span>
                 )}
@@ -138,7 +139,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)] transition-colors"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="md" />
             </button>
           </div>
           <div className="w-full h-[1px] bg-[var(--border-subtle)] flex-shrink-0" />
@@ -150,7 +151,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 stack-md">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                  <Clock24Filled className="w-4 h-4" />
+                  <Icon regular={Clock24Regular} size="sm" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
@@ -165,7 +166,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               <div className="flex items-center justify-between pt-2 border-t border-black/5 dark:border-white/10">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
-                    <Person24Filled className="w-4 h-4" />
+                    <Icon regular={Person24Regular} size="sm" />
                   </div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
@@ -192,7 +193,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             {partyGuests.length > 1 && (
               <div className="rounded-2xl border border-black/5 dark:border-white/10 divide-y divide-[var(--border-subtle)] overflow-hidden">
                 <div className="px-4 py-2.5 bg-purple-500/5 flex items-center gap-2">
-                  <PeopleTeam24Regular className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                  <Icon regular={PeopleTeam24Regular} size="sm" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                   <p className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
                     {t('guestParty')}
                   </p>
@@ -225,7 +226,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               }}
               className="btn-primary w-full"
             >
-              <Payment24Filled className="w-4 h-4 flex-shrink-0" />
+              <Icon filled={Payment24Filled} size="sm" className="flex-shrink-0" />
               <span>{t('posCheckout')} (${appointment.price})</span>
             </motion.button>
 
@@ -238,7 +239,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               }}
               className="btn-secondary w-full"
             >
-              <DocumentText24Filled className="w-4 h-4 flex-shrink-0" />
+              <Icon filled={DocumentText24Filled} size="sm" className="flex-shrink-0" />
               <span>{t('clientNotesBtn')}</span>
             </button>
 
@@ -248,7 +249,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               onClick={handleDelete}
               className="w-full py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
-              <Delete24Filled className="w-4 h-4 flex-shrink-0" />
+              <Icon filled={Delete24Filled} size="sm" className="flex-shrink-0" />
               <span>{t('delete')}</span>
             </button>
           </div>

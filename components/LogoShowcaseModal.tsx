@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo, CircleCloudIconFlat, BlueprintBadgeIcon } from './Logo';
-import { Dismiss24Filled, Sparkle24Filled, Copy24Filled, Checkmark24Filled } from '@fluentui/react-icons';
+import { Dismiss24Filled, Sparkle24Regular, Copy24Filled, Checkmark24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface LogoShowcaseModalProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, on
           <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                <Sparkle24Filled className="w-6 h-6" />
+                <Icon regular={Sparkle24Regular} size="xl" />
               </div>
               <div>
                 <h2 className="text-xl font-black tracking-tight text-[var(--text-primary)]">
@@ -66,7 +67,7 @@ export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, on
               onClick={onClose}
               className="p-2 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="lg" />
             </button>
           </div>
 
@@ -165,9 +166,9 @@ export const LogoShowcaseModal: React.FC<LogoShowcaseModalProps> = ({ isOpen, on
                 className="flex items-center gap-1 hover:text-white transition-colors"
               >
                 {copiedIndex === 'snippet' ? (
-                  <Checkmark24Filled className="w-3.5 h-3.5 text-green-400" />
+                  <Icon filled={Checkmark24Filled} size="sm" className="text-green-400" />
                 ) : (
-                  <Copy24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Copy24Filled} size="sm" />
                 )}
                 <span>{copiedIndex === 'snippet' ? 'Copied!' : 'Copy React Code'}</span>
               </button>

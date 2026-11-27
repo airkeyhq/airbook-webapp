@@ -9,7 +9,9 @@ import { useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { CustomDomainStudio } from '@/components/CustomDomainStudio';
+import { QRCodeCard } from '@/components/QRCodeCard';
 import { getAvatarUrl } from '@/lib/avatars';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Globe24Regular,
   Globe24Filled,
@@ -380,7 +382,7 @@ export const OnlineBookingModule: React.FC = () => {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-xs">
-                <Globe24Filled className="w-5 h-5" />
+                <Icon regular={Globe24Regular} size="md" />
               </div>
               <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
                 {t('onlineBookingTitle')}
@@ -404,7 +406,7 @@ export const OnlineBookingModule: React.FC = () => {
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <Globe24Filled className="w-4 h-4" />
+          <Icon regular={Globe24Regular} filled={Globe24Filled} active={activeTab === 'links'} size="sm" />
           <span>{t('tabStudioLinks')}</span>
         </button>
 
@@ -417,7 +419,7 @@ export const OnlineBookingModule: React.FC = () => {
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <Clock24Filled className="w-4 h-4" />
+          <Icon regular={Clock24Regular} filled={Clock24Filled} active={activeTab === 'policies'} size="sm" />
           <span>{t('tabStudioPolicies')}</span>
         </button>
 
@@ -430,7 +432,7 @@ export const OnlineBookingModule: React.FC = () => {
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <Sparkle24Filled className="w-4 h-4" />
+          <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'branding'} size="sm" />
           <span>{t('tabStudioBranding')}</span>
         </button>
       </div>
@@ -569,7 +571,7 @@ export const OnlineBookingModule: React.FC = () => {
                             className="px-4 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
                             style={{ backgroundColor: brandColor }}
                           >
-                            <Calendar24Filled className="w-4 h-4" />
+                            <Icon filled={Calendar24Filled} size="sm" />
                             <span>{t('bookNowWidgetBtn')}</span>
                           </motion.button>
                         </div>
@@ -596,7 +598,7 @@ export const OnlineBookingModule: React.FC = () => {
                           className="px-5 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
                           style={{ backgroundColor: brandColor }}
                         >
-                          <Sparkle24Filled className="w-4 h-4" />
+                          <Icon filled={Sparkle24Filled} size="sm" />
                           <span>{t('bookNowWidgetBtn')}</span>
                         </motion.button>
                       </div>
@@ -613,9 +615,9 @@ export const OnlineBookingModule: React.FC = () => {
                     className="btn-secondary h-8 px-3 text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     {isCopiedSnippet ? (
-                      <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                      <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                     ) : (
-                      <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                      <Icon filled={Copy24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                     )}
                     <span>{isCopiedSnippet ? t('snippetCopied') : t('copySnippet')}</span>
                   </button>
@@ -662,9 +664,9 @@ export const OnlineBookingModule: React.FC = () => {
                     className="btn-secondary h-9 px-3.5 flex-shrink-0"
                   >
                     {isCopiedDeepLink ? (
-                      <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                      <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                     ) : (
-                      <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                      <Icon filled={Copy24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                     )}
                     <span>{isCopiedDeepLink ? t('linkCopied') : t('copyBookingLink')}</span>
                   </button>
@@ -779,7 +781,7 @@ export const OnlineBookingModule: React.FC = () => {
                       disabled={isConnectingStripe}
                       className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer mt-2"
                     >
-                      <Payment24Filled className="w-4 h-4" />
+                      <Icon filled={Payment24Filled} size="sm" />
                       <span>{isConnectingStripe ? 'Connecting…' : t('connectStripeBtn')}</span>
                     </button>
                   )}
@@ -899,7 +901,7 @@ export const OnlineBookingModule: React.FC = () => {
             onClick={handleSaveSettings}
             className="w-full btn-primary h-12 text-sm shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
-            <Save24Filled className="w-4 h-4 text-white" />
+            <Icon filled={Save24Filled} size="sm" className="text-white" />
             <span>{saving ? t('saving') : t('save')}</span>
           </motion.button>
         </div>
@@ -908,7 +910,7 @@ export const OnlineBookingModule: React.FC = () => {
         <div className="lg:col-span-5 sticky top-6 space-y-3">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-              <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
               <span>{t('mobileSimulatorTitle')}</span>
             </h3>
             <span className="text-[10px] font-mono text-[var(--text-secondary)]">{t('phonePreviewModel')}</span>
@@ -976,7 +978,7 @@ export const OnlineBookingModule: React.FC = () => {
                         color: brandColor,
                       }}
                     >
-                      <ShieldCheckmark24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <Icon regular={ShieldCheckmark24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{t('depositNoticeSimulator').replace('{percent}', String(depositPercent))}</span>
                     </div>
                   )}
@@ -989,7 +991,7 @@ export const OnlineBookingModule: React.FC = () => {
                     style={{ backgroundColor: brandColor }}
                   >
                     <span>{t('reserveAppointmentMock')}</span>
-                    <ArrowRight24Filled className="w-3 h-3" />
+                    <Icon filled={ArrowRight24Filled} size="xs" />
                   </div>
                   <p className="text-[8px] text-center text-[var(--text-secondary)] italic pt-1">
                     {t('freeCancellationNotice').replace('{hours}', String(cancellationNotice))}
@@ -1014,7 +1016,7 @@ export const OnlineBookingModule: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                    <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <Icon regular={QrCode24Regular} size="sm" tone="secondary" />
                     <span>{t('qrCodeModalTitle')}</span>
                   </h3>
                   <button
@@ -1022,63 +1024,19 @@ export const OnlineBookingModule: React.FC = () => {
                     onClick={() => setIsQrModalOpen(false)}
                     className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-4 h-4" />
+                    <Icon filled={Dismiss24Filled} size="sm" />
                   </button>
                 </div>
 
-                <p className="text-xs text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
-
-                {/* High-Resolution QR Vector Card */}
-                <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
-                  <svg viewBox="0 0 100 100" className="w-36 h-36">
-                    <rect x="0" y="0" width="100" height="100" fill="white" />
-                    <rect x="10" y="10" width="24" height="24" fill="black" />
-                    <rect x="14" y="14" width="16" height="16" fill="white" />
-                    <rect x="18" y="18" width="8" height="8" fill="black" />
-                    <rect x="66" y="10" width="24" height="24" fill="black" />
-                    <rect x="70" y="14" width="16" height="16" fill="white" />
-                    <rect x="74" y="18" width="8" height="8" fill="black" />
-                    <rect x="10" y="66" width="24" height="24" fill="black" />
-                    <rect x="14" y="70" width="16" height="16" fill="white" />
-                    <rect x="18" y="74" width="8" height="8" fill="black" />
-                    <rect x="40" y="10" width="8" height="8" fill="black" />
-                    <rect x="52" y="14" width="8" height="8" fill="black" />
-                    <rect x="40" y="26" width="8" height="8" fill="black" />
-                    <rect x="48" y="38" width="8" height="8" fill="black" />
-                    <rect x="14" y="44" width="8" height="8" fill="black" />
-                    <rect x="28" y="48" width="8" height="8" fill="black" />
-                    <rect x="66" y="44" width="8" height="8" fill="black" />
-                    <rect x="78" y="52" width="8" height="8" fill="black" />
-                    <rect x="40" y="66" width="8" height="8" fill="black" />
-                    <rect x="54" y="74" width="8" height="8" fill="black" />
-                    <rect x="70" y="74" width="8" height="8" fill="black" />
-                    <rect x="82" y="82" width="8" height="8" fill="black" />
-                  </svg>
-                </div>
-
-                <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate">
-                  getairbook.com/book/{slugInput}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyLink}
-                    className="btn-secondary flex-1"
-                  >
-                    <Copy24Filled className="w-3.5 h-3.5" />
-                    <span>{t('copyBookingLink')}</span>
-                  </button>
-                  <a
-                    href={`/book/${slugInput}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary flex-1"
-                  >
-                    <Open24Filled className="w-3.5 h-3.5" />
-                    <span>{t('openLiveBookingPage')}</span>
-                  </a>
-                </div>
+                <QRCodeCard
+                  description={t('qrCodeModalDesc')}
+                  url={`getairbook.com/book/${slugInput}`}
+                  openHref={`/book/${slugInput}`}
+                  copyLabel={t('copyBookingLink')}
+                  openLabel={t('openLiveBookingPage')}
+                  onCopy={handleCopyLink}
+                  downloadable
+                />
               </motion.div>
             </div>
           )}

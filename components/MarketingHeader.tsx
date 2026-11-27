@@ -10,6 +10,7 @@ import { getAvatarUrl } from '@/lib/avatars';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { CurrencySelector } from '@/components/CurrencySelector';
 import { GoToAppPill } from '@/components/GoToAppPill';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Filled,
   Sparkle24Regular,
@@ -91,8 +92,11 @@ export const MarketingHeader: React.FC = () => {
                 }`}
               >
                 <span>{t('productNav')}</span>
-                <ChevronDown24Filled
-                  className={`w-3 h-3 text-[var(--text-muted)] transition-transform duration-200 ${
+                <Icon
+                  filled={ChevronDown24Filled}
+                  active
+                  size="xs"
+                  className={`text-[var(--text-muted)] transition-transform duration-200 ${
                     activeNavDropdown === 'product' ? 'rotate-180' : ''
                   }`}
                 />
@@ -122,7 +126,7 @@ export const MarketingHeader: React.FC = () => {
                           className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                         >
                           <div className="w-10 h-10 rounded-2xl bg-sky-500/15 text-[#0284C7] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <Calendar24Regular className="w-5 h-5" />
+                            <Icon regular={Calendar24Regular} size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -141,7 +145,7 @@ export const MarketingHeader: React.FC = () => {
                           className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                         >
                           <div className="w-10 h-10 rounded-2xl bg-purple-500/15 text-[#9333EA] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <PeopleCommunity24Regular className="w-5 h-5" />
+                            <Icon regular={PeopleCommunity24Regular} size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -160,7 +164,7 @@ export const MarketingHeader: React.FC = () => {
                           className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                         >
                           <div className="w-10 h-10 rounded-2xl bg-rose-500/15 text-[#E11D48] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <Tag24Regular className="w-5 h-5" />
+                            <Icon regular={Tag24Regular} size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -179,7 +183,7 @@ export const MarketingHeader: React.FC = () => {
                           className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                         >
                           <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <Payment24Regular className="w-5 h-5" />
+                            <Icon regular={Payment24Regular} size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -251,8 +255,11 @@ export const MarketingHeader: React.FC = () => {
                 }`}
               >
                 <span>{t('solutionsNav')}</span>
-                <ChevronDown24Filled
-                  className={`w-3 h-3 text-[var(--text-muted)] transition-transform duration-200 ${
+                <Icon
+                  filled={ChevronDown24Filled}
+                  active
+                  size="xs"
+                  className={`text-[var(--text-muted)] transition-transform duration-200 ${
                     activeNavDropdown === 'solutions' ? 'rotate-180' : ''
                   }`}
                 />
@@ -321,8 +328,11 @@ export const MarketingHeader: React.FC = () => {
                 }`}
               >
                 <span>{t('resourcesNav')}</span>
-                <ChevronDown24Filled
-                  className={`w-3 h-3 text-[var(--text-muted)] transition-transform duration-200 ${
+                <Icon
+                  filled={ChevronDown24Filled}
+                  active
+                  size="xs"
+                  className={`text-[var(--text-muted)] transition-transform duration-200 ${
                     activeNavDropdown === 'resources' ? 'rotate-180' : ''
                   }`}
                 />
@@ -350,7 +360,7 @@ export const MarketingHeader: React.FC = () => {
                         className="flex items-start gap-3 p-3 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                          <ChatHelp24Regular className="w-5 h-5" />
+                          <Icon regular={ChatHelp24Regular} size="md" />
                         </div>
                         <div>
                           <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -369,7 +379,7 @@ export const MarketingHeader: React.FC = () => {
                         className="flex items-start gap-3 p-3 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                          <Sparkle24Regular className="w-5 h-5" />
+                          <Icon regular={Sparkle24Regular} size="md" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
@@ -393,7 +403,7 @@ export const MarketingHeader: React.FC = () => {
                         className="flex items-start gap-3 p-3 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                          <BookOpen24Regular className="w-5 h-5" />
+                          <Icon regular={BookOpen24Regular} size="md" />
                         </div>
                         <div>
                           <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -412,7 +422,7 @@ export const MarketingHeader: React.FC = () => {
                         className="flex items-start gap-3 p-3 rounded-2xl hover:bg-[var(--bg-secondary)] transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                          <ShieldCheckmark24Regular className="w-5 h-5" />
+                          <Icon regular={ShieldCheckmark24Regular} size="md" />
                         </div>
                         <div>
                           <p className="text-xs font-extrabold text-[var(--text-primary)]">
@@ -479,7 +489,7 @@ export const MarketingHeader: React.FC = () => {
                   className="btn-primary flex items-center gap-1.5"
                 >
                   <span>{t('applyForAccess')}</span>
-                  <ArrowRight24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
                 </Link>
               </>
             )}
@@ -491,7 +501,7 @@ export const MarketingHeader: React.FC = () => {
               className="lg:hidden h-10 w-10 flex items-center justify-center rounded-2xl bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] cursor-pointer"
               aria-label="Open Navigation Menu"
             >
-              <Navigation24Filled className="w-5 h-5" />
+              <Icon filled={Navigation24Filled} size="md" />
             </button>
           </div>
         </div>
@@ -531,7 +541,7 @@ export const MarketingHeader: React.FC = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
               </div>
@@ -548,7 +558,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)]"
                   >
                     <div className="w-9 h-9 rounded-xl bg-sky-500/15 text-[#0284C7] flex items-center justify-center flex-shrink-0">
-                      <Calendar24Regular className="w-4 h-4" />
+                      <Icon regular={Calendar24Regular} size="md" />
                     </div>
                     <div>
                       <p className="text-xs font-black text-[var(--text-primary)]">{t('navOnlineBookingTitle')}</p>
@@ -562,7 +572,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)]"
                   >
                     <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-[#9333EA] flex items-center justify-center flex-shrink-0">
-                      <PeopleCommunity24Regular className="w-4 h-4" />
+                      <Icon regular={PeopleCommunity24Regular} size="md" />
                     </div>
                     <div>
                       <p className="text-xs font-black text-[var(--text-primary)]">{t('navTeamSchedulesTitle')}</p>
@@ -576,7 +586,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)]"
                   >
                     <div className="w-9 h-9 rounded-xl bg-rose-500/15 text-[#E11D48] flex items-center justify-center flex-shrink-0">
-                      <Tag24Regular className="w-4 h-4" />
+                      <Icon regular={Tag24Regular} size="md" />
                     </div>
                     <div>
                       <p className="text-xs font-black text-[var(--text-primary)]">{t('navClientNotesTitle')}</p>
@@ -590,7 +600,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)]"
                   >
                     <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                      <Payment24Regular className="w-4 h-4" />
+                      <Icon regular={Payment24Regular} size="md" />
                     </div>
                     <div>
                       <p className="text-xs font-black text-[var(--text-primary)]">{t('navTapToPayTitle')}</p>
@@ -612,7 +622,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
                     <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                      <PlugConnected24Regular className="w-4 h-4" />
+                      <Icon regular={PlugConnected24Regular} size="md" />
                     </div>
                     <span>{t('navIntegrations')}</span>
                   </Link>
@@ -622,7 +632,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
                     <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
-                      <Alert24Regular className="w-4 h-4" />
+                      <Icon regular={Alert24Regular} size="md" />
                     </div>
                     <span>{t('navSmsReminders')}</span>
                   </Link>
@@ -632,7 +642,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)] text-xs font-bold text-[var(--text-primary)]"
                   >
                     <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
-                      <Shield24Regular className="w-4 h-4" />
+                      <Icon regular={Shield24Regular} size="md" />
                     </div>
                     <span>{t('navDepositSecurity')}</span>
                   </Link>
@@ -651,7 +661,7 @@ export const MarketingHeader: React.FC = () => {
                     className="flex items-center gap-3 p-3 rounded-2xl bg-[var(--bg-secondary)]"
                   >
                     <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
-                      <ChatHelp24Regular className="w-4 h-4" />
+                      <Icon regular={ChatHelp24Regular} size="md" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-black text-[var(--text-primary)] truncate">{t('navHelpCenterTitle')}</p>
@@ -666,7 +676,7 @@ export const MarketingHeader: React.FC = () => {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
-                        <BookOpen24Regular className="w-4 h-4" />
+                        <Icon regular={BookOpen24Regular} size="md" />
                       </div>
                       <span className="truncate">{t('blog')}</span>
                     </div>
@@ -682,7 +692,7 @@ export const MarketingHeader: React.FC = () => {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                        <Tag24Regular className="w-4 h-4" />
+                        <Icon regular={Tag24Regular} size="md" />
                       </div>
                       <span className="truncate">{t('navChangelog')}</span>
                     </div>
@@ -698,7 +708,7 @@ export const MarketingHeader: React.FC = () => {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
-                        <ShieldCheckmark24Regular className="w-4 h-4" />
+                        <Icon regular={ShieldCheckmark24Regular} size="md" />
                       </div>
                       <span className="truncate">{t('navDataProtection')}</span>
                     </div>
@@ -711,7 +721,7 @@ export const MarketingHeader: React.FC = () => {
                     className="p-3.5 rounded-2xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/25 text-xs font-bold text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-between"
                   >
                     <div className="flex items-center gap-2.5">
-                      <Sparkle24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                      <Icon filled={Sparkle24Filled} active size="md" className="text-[#2BB5FF]" />
                       <span>{t('foundingNav')}</span>
                     </div>
                     <span className="px-2 py-0.5 rounded-full bg-[#2BB5FF] text-white text-[9px] font-black uppercase flex-shrink-0">
@@ -783,7 +793,7 @@ export const MarketingHeader: React.FC = () => {
                     </div>
                     <div className="btn-primary h-9 px-3.5 rounded-xl text-xs font-black flex items-center gap-1 flex-shrink-0 shadow-xs">
                       <span>{t('goToApp')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} active size="sm" />
                     </div>
                   </Link>
                 ) : (
@@ -794,7 +804,7 @@ export const MarketingHeader: React.FC = () => {
                       className="btn-primary w-full h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-extrabold"
                     >
                       <span>{t('applyForAccess')}</span>
-                      <ArrowRight24Filled className="w-4 h-4" />
+                      <Icon filled={ArrowRight24Filled} active size="md" />
                     </Link>
                     <Link
                       href="/login"

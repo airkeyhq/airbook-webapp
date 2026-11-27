@@ -9,10 +9,12 @@ import { useToast } from '@/components/Toast';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { ColorPicker } from '@/components/ColorPicker';
 import { SocialAvatarsStudio } from '@/components/SocialAvatarsStudio';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Filled,
   Copy24Filled,
   Checkmark24Filled,
+  Checkmark24Regular,
   ArrowDownload24Filled,
   ArrowLeft24Filled,
   Box24Filled,
@@ -30,12 +32,13 @@ import {
   Link24Regular,
   Open24Filled,
   Color24Filled,
+  Color24Regular,
   LockClosed24Filled,
   Star24Filled,
   Search24Regular,
   Bot24Regular,
   DocumentText24Regular,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
 } from '@fluentui/react-icons';
 import Link from 'next/link';
 
@@ -705,7 +708,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
             <Link href="/dashboard" className="hover:text-blue-500 flex items-center gap-1 transition-colors">
-              <ArrowLeft24Filled className="w-3.5 h-3.5" /> {t('dashboard')}
+              <Icon filled={ArrowLeft24Filled} size="sm" className="w-3.5 h-3.5" /> {t('dashboard')}
             </Link>
             <span>/</span>
             <span>{t('brandStudioTitle')}</span>
@@ -727,7 +730,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             disabled={isSaving}
             className="btn-primary px-6"
           >
-            <Save24Filled className="w-4 h-4" />
+            <Icon filled={Save24Filled} size="sm" />
             <span>{isSaving ? t('savingState') : t('save')}</span>
           </button>
         </div>
@@ -738,7 +741,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         {/* Left Navigation Rail (Desktop: Vertical Sidebar / Mobile: Horizontal Swipe Strip) */}
         <nav className="w-full md:w-60 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hide-scrollbar">
           {activeTabsList.map((tab) => {
-            const Icon = tab.icon;
+            const TabIcon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
@@ -751,7 +754,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Icon className="w-4 h-4 flex-shrink-0 text-[var(--text-secondary)]" />
+                <Icon regular={TabIcon} size="sm" tone="secondary" className="flex-shrink-0" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -785,7 +788,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             {/* Left: General Brand Identity */}
             <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-5 shadow-xs">
               <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                 <span>{t('identityBio')}</span>
               </h3>
 
@@ -854,7 +857,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               {/* Color Customizer */}
               <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                 <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Color24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <Icon regular={Color24Regular} size="sm" tone="accent" />
                   <span>{t('primaryBrandColor')}</span>
                 </h3>
 
@@ -898,7 +901,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               {/* Curated 4K Studio Covers */}
               <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                 <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Image24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <Icon regular={Image24Regular} size="sm" tone="accent" />
                   <span>{t('curatedCovers')}</span>
                 </h3>
 
@@ -941,7 +944,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)]">
               <div className="space-y-1">
                 <h3 className="text-base font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Image24Filled className="w-5 h-5 text-blue-500" />
+                  <Icon regular={Image24Regular} size="md" className="text-blue-500" />
                   <span>
                     {photoStyle === 'candid'
                       ? t('brandPhotographyCandidTitle')
@@ -956,7 +959,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               </div>
 
               <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold">
-                <Sparkle24Regular className="w-4 h-4 flex-shrink-0" />
+                <Icon regular={Sparkle24Regular} size="sm" className="flex-shrink-0" />
                 <span>
                   {photoStyle === 'candid'
                     ? t('brandPhotographyCandidGuidelinesNote')
@@ -971,7 +974,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="p-1.5 rounded-lg bg-blue-500 text-white shadow-xs">
-                      <Bot24Regular className="w-4 h-4" />
+                      <Icon regular={Bot24Regular} size="sm" />
                     </span>
                     <h4 className="text-xs sm:text-sm font-black text-[var(--text-primary)] uppercase tracking-wider">
                       {t('aiPhotoSpecTitle')}
@@ -1002,7 +1005,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                     onClick={() => handleDownloadJSON('airbook-photo-brand-guidelines.json', photoBrandSpecString)}
                     className="btn-primary h-10 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={ArrowDownload24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('downloadJsonSpec')}</span>
                   </button>
 
@@ -1013,12 +1016,12 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   >
                     {copiedId === 'photo-brand-spec-json' ? (
                       <>
-                        <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                        <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                         <span>{t('jsonSpecCopied')}</span>
                       </>
                     ) : (
                       <>
-                        <Copy24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                         <span>{t('copyJsonSpec')}</span>
                       </>
                     )}
@@ -1029,7 +1032,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                     onClick={() => setShowPhotoSpecModal(!showPhotoSpecModal)}
                     className="btn-secondary h-10 px-3.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Code24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Code24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{showPhotoSpecModal ? t('closeJsonSpec') : t('viewJsonSpec')}</span>
                   </button>
                 </div>
@@ -1054,7 +1057,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                       className="text-[11px] font-bold text-blue-500 hover:underline flex items-center gap-1"
                     >
                       <span>Direct Raw URL</span>
-                      <Open24Filled className="w-3 h-3" />
+                      <Icon filled={Open24Filled} size="xs" />
                     </a>
                   </div>
                   <pre className="p-4 rounded-xl bg-gray-950 text-emerald-400 font-mono text-xs overflow-x-auto max-h-80 border border-white/10 select-all leading-relaxed">
@@ -1076,7 +1079,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Sparkle24Filled className="w-3.5 h-3.5" />
+                  <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={photoStyle === 'candid'} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('brandPhotographyCandidTab')}</span>
                 </button>
                 <button
@@ -1088,7 +1091,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Color24Filled className="w-3.5 h-3.5" />
+                  <Icon regular={Color24Regular} filled={Color24Filled} active={photoStyle === 'editorial'} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('brandPhotographyEditorialTab')}</span>
                 </button>
               </div>
@@ -1133,13 +1136,13 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                         className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100"
                         title="View Full Resolution"
                       >
-                        <Open24Filled className="w-3.5 h-3.5" />
+                        <Icon filled={Open24Filled} size="sm" className="w-3.5 h-3.5" />
                       </a>
 
                       {/* Active Cover Indicator Badge */}
                       {isCurrentCover && (
                         <div className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-xl bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                          <Checkmark24Filled className="w-3 h-3" />
+                          <Icon regular={Checkmark24Regular} size="xs" />
                           <span>Active Cover</span>
                         </div>
                       )}
@@ -1171,12 +1174,12 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                         >
                           {isCurrentCover ? (
                             <>
-                              <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                              <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                               <span>Selected</span>
                             </>
                           ) : (
                             <>
-                              <Image24Filled className="w-3.5 h-3.5" />
+                              <Icon filled={Image24Filled} size="sm" className="w-3.5 h-3.5" />
                               <span>{t('useAsCover')}</span>
                             </>
                           )}
@@ -1193,9 +1196,9 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                           title={t('copyAiPrompt')}
                         >
                           {isPromptCopied ? (
-                            <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                            <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                           ) : (
-                            <Sparkle24Filled className="w-3.5 h-3.5 text-blue-500" />
+                            <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5 text-blue-500" />
                           )}
                         </button>
 
@@ -1207,9 +1210,9 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                           title={t('copyPhotoUrl')}
                         >
                           {isCopied ? (
-                            <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                            <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                           ) : (
-                            <Copy24Filled className="w-3.5 h-3.5" />
+                            <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                           )}
                         </button>
                       </div>
@@ -1227,7 +1230,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-bold text-blue-600 dark:text-blue-400">
             <div className="flex items-center gap-2">
-              <Globe24Regular className="w-4 h-4" />
+              <Icon regular={Globe24Regular} size="sm" />
               <span>{t('tabLiveStorefront')}: <code>https://getairbook.com/book/{bookingSlug}</code></span>
             </div>
             <Link
@@ -1236,7 +1239,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors flex items-center gap-1"
             >
               <span>{t('viewAll')}</span>
-              <Open24Filled className="w-3.5 h-3.5" />
+              <Icon filled={Open24Filled} size="sm" className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -1302,7 +1305,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
               <div>
                 <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Image24Filled className="w-4 h-4 text-[#FF6347]" />
+                  <Icon regular={Image24Regular} size="sm" className="text-[#FF6347]" />
                   <span>{t('ogPreviewTitle')}</span>
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -1317,7 +1320,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   rel="noreferrer"
                   className="h-9 px-3.5 rounded-xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center gap-1.5"
                 >
-                  <Open24Filled className="w-3.5 h-3.5" />
+                  <Icon filled={Open24Filled} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('ogDownloadCard')}</span>
                 </a>
               </div>
@@ -1496,7 +1499,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   onClick={() => handleCopy('https://getairbook.com/opengraph-image', 'og-url')}
                   className="btn-primary h-11 px-5 flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap w-full sm:w-auto"
                 >
-                  <Copy24Filled className="w-4 h-4" />
+                  <Icon filled={Copy24Filled} size="sm" />
                   <span>{copiedId === 'og-url' ? t('linkCopied') : t('copyLink')}</span>
                 </button>
               </div>
@@ -1514,7 +1517,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   onClick={() => handleCopy('<meta property="og:image" content="https://getairbook.com/opengraph-image" />', 'og-meta')}
                   className="h-11 px-5 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap w-full sm:w-auto cursor-pointer"
                 >
-                  <Code24Filled className="w-4 h-4" />
+                  <Icon filled={Code24Filled} size="sm" />
                   <span>{copiedId === 'og-meta' ? t('badgeCopied') : t('ogCopyMetaTag')}</span>
                 </button>
               </div>
@@ -1544,7 +1547,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
           <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
             <div>
               <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                <Link24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                <Icon regular={Link24Regular} size="sm" tone="accent" />
                 <span>{t('directBookingUrl')}</span>
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -1566,7 +1569,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   onClick={() => handleCopy(fullBookingUrl, 'direct-link')}
                   className="btn-primary h-11 px-4 flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer"
                 >
-                  <Copy24Filled className="w-4 h-4" />
+                  <Icon filled={Copy24Filled} size="sm" />
                   <span>{copiedId === 'direct-link' ? t('linkCopied') : t('copyLink')}</span>
                 </button>
 
@@ -1575,7 +1578,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   target="_blank"
                   className="h-11 px-4 rounded-2xl border border-[var(--border-subtle)] hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold text-[var(--text-primary)] transition-colors flex items-center justify-center gap-1.5"
                 >
-                  <Open24Filled className="w-4 h-4" />
+                  <Icon filled={Open24Filled} size="sm" />
                   <span>Open</span>
                 </Link>
               </div>
@@ -1587,7 +1590,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-                  <Code24Filled className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                  <Icon regular={Code24Regular} size="sm" tone="accent" />
                   <span>{t('bookOnAirBookBadge')}</span>
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -1602,12 +1605,12 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               >
                 {copiedId === 'embed-badge' ? (
                   <>
-                    <Checkmark24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('badgeCopied')}</span>
                   </>
                 ) : (
                   <>
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('copyEmbedBadge')}</span>
                   </>
                 )}
@@ -1656,9 +1659,9 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 rel="noopener noreferrer"
                 className="btn-secondary h-9 px-3.5 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
               >
-                <Search24Regular className="w-3.5 h-3.5 text-blue-500" />
+                <Icon regular={Search24Regular} size="sm" className="w-3.5 h-3.5 text-blue-500" />
                 <span>{t('validateWithGoogle')}</span>
-                <Open24Filled className="w-3 h-3 text-[var(--text-muted)]" />
+                <Icon filled={Open24Filled} size="xs" tone="muted" />
               </a>
               <a
                 href="https://validator.schema.org/"
@@ -1666,9 +1669,9 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 rel="noopener noreferrer"
                 className="btn-secondary h-9 px-3.5 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
               >
-                <Code24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                <Icon filled={Code24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                 <span>{t('validateWithSchemaOrg')}</span>
-                <Open24Filled className="w-3 h-3 text-[var(--text-muted)]" />
+                <Icon filled={Open24Filled} size="xs" tone="muted" />
               </a>
             </div>
           </div>
@@ -1713,7 +1716,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Search24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={Search24Regular} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('viewVisualInspector')}</span>
                 </button>
                 <button
@@ -1725,7 +1728,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  <Code24Filled className="w-3.5 h-3.5" />
+                  <Icon regular={Code24Regular} filled={Code24Filled} active={schemaViewMode === 'code'} size="sm" className="w-3.5 h-3.5" />
                   <span>{t('viewJsonLdCode')}</span>
                 </button>
               </div>
@@ -1737,12 +1740,12 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               >
                 {copiedId === 'schema-jsonld' ? (
                   <>
-                    <Checkmark24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('jsonLdCopied')}</span>
                   </>
                 ) : (
                   <>
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('copyJsonLd')}</span>
                   </>
                 )}
@@ -1757,7 +1760,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
               <div className="p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2">
-                    <Search24Regular className="w-4 h-4 text-blue-500" />
+                    <Icon regular={Search24Regular} size="sm" className="text-blue-500" />
                     <span>{t('googlePreviewTitle')}</span>
                   </h4>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
@@ -1799,11 +1802,11 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                   {/* Google Structured Metadata Rating Bar */}
                   <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
                     <div className="flex items-center gap-0.5 text-amber-500">
-                      <Star24Filled className="w-3.5 h-3.5" />
-                      <Star24Filled className="w-3.5 h-3.5" />
-                      <Star24Filled className="w-3.5 h-3.5" />
-                      <Star24Filled className="w-3.5 h-3.5" />
-                      <Star24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Star24Filled} size="sm" className="w-3.5 h-3.5" />
+                      <Icon filled={Star24Filled} size="sm" className="w-3.5 h-3.5" />
+                      <Icon filled={Star24Filled} size="sm" className="w-3.5 h-3.5" />
+                      <Icon filled={Star24Filled} size="sm" className="w-3.5 h-3.5" />
+                      <Icon filled={Star24Filled} size="sm" className="w-3.5 h-3.5" />
                     </div>
                     <span className="font-bold">4.98</span>
                     <span className="text-slate-400">·</span>
@@ -1845,7 +1848,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 {/* Node 1: Entity Root */}
                 <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
-                    <Bot24Regular className="w-4 h-4 text-purple-500" />
+                    <Icon regular={Bot24Regular} size="sm" className="text-purple-500" />
                     <span>Entity Root</span>
                   </div>
                   <div className="space-y-2 text-xs">
@@ -1869,7 +1872,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 {/* Node 2: Rich Semantic Properties */}
                 <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
-                    <Sparkle24Regular className="w-4 h-4 text-emerald-500" />
+                    <Icon regular={Sparkle24Regular} size="sm" className="text-emerald-500" />
                     <span>Semantic Nodes</span>
                   </div>
                   <div className="space-y-2 text-xs">
@@ -1943,7 +1946,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 {/* Node 3: AI Crawler Retrieval Readiness */}
                 <div className="p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--text-muted)]">
-                    <CheckmarkCircle24Filled className="w-4 h-4 text-blue-500" />
+                    <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-blue-500" />
                     <span>AI Engine Discovery</span>
                   </div>
                   <div className="space-y-2 text-xs">
@@ -1976,7 +1979,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                     onClick={() => handleDownloadJSON(`airbook-schema-${selectedSchema}.jsonld`, currentJsonLdString)}
                     className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer text-slate-200"
                   >
-                    <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={ArrowDownload24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{t('downloadJsonLd')}</span>
                   </button>
                   <button
@@ -1984,7 +1987,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                     onClick={() => handleCopy(currentScriptTagString, 'schema-code-copy')}
                     className="btn-primary h-8 px-3 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                   >
-                    <Copy24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                     <span>{copiedId === 'schema-code-copy' ? t('jsonLdCopied') : t('copyJsonLd')}</span>
                   </button>
                 </div>
@@ -2056,7 +2059,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
                 onClick={() => handleDownloadSVG('airbook-logo-raw.svg', RAW_SVG_CODE)}
                 className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
-                <ArrowDownload24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowDownload24Filled} size="sm" className="w-3.5 h-3.5" />
                 <span>{t('downloadFile')}</span>
               </button>
             </div>

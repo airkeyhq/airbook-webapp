@@ -9,6 +9,7 @@ import { Toast, useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Filled,
   Sparkle24Regular,
@@ -289,7 +290,7 @@ Headers:
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[var(--border-subtle)]">
         <div>
           <h2 className="text-lg font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-            <Sparkle24Regular className="w-5 h-5 text-[var(--color-accent-primary)]" />
+            <Icon regular={Sparkle24Regular} size="md" tone="accent" />
             {t('mcpStudioTitle')}
           </h2>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-2xl leading-relaxed">
@@ -302,7 +303,7 @@ Headers:
           onClick={() => setIsCreateOpen(true)}
           className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap self-start sm:self-auto"
         >
-          <Add24Filled className="w-4 h-4" />
+          <Icon filled={Add24Filled} size="sm" />
           {t('createApiKeyBtn')}
         </button>
       </div>
@@ -356,7 +357,7 @@ Headers:
             onClick={handlePingMcp}
             className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 flex-shrink-0 self-start sm:self-auto"
           >
-            <Flash24Filled className={`w-4 h-4 text-blue-500 ${isPinging ? 'animate-spin' : ''}`} />
+            <Icon filled={Flash24Filled} size="sm" className={`text-blue-500 ${isPinging ? 'animate-spin' : ''}`} />
             <span>{isPinging ? t('mcpPingTesting') : t('testMcpBtn')}</span>
           </button>
         </div>
@@ -364,7 +365,7 @@ Headers:
         {/* Address Bar Row: Sleek Developer URL Pill with Embedded Copy Accessory */}
         <div className="h-12 w-full rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between pl-3.5 pr-1.5 gap-2 transition-all focus-within:border-[var(--color-accent-primary)] focus-within:ring-2 focus-within:ring-[#1A8EFF]/20">
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <Globe24Regular className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
+            <Icon regular={Globe24Regular} size="sm" tone="muted" className="flex-shrink-0" />
             <code className="font-mono text-xs font-semibold text-[var(--text-primary)] truncate select-all">
               {mcpEndpointUrl}
             </code>
@@ -376,7 +377,7 @@ Headers:
             className="btn-secondary h-9 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
             title={t('mcpEndpointCopy')}
           >
-            <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+            <Icon filled={Copy24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t('mcpEndpointCopy')}</span>
           </button>
         </div>
@@ -388,7 +389,7 @@ Headers:
             animate={{ opacity: 1, y: 0 }}
             className="p-3.5 rounded-2xl text-xs flex items-center gap-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-300 font-semibold"
           >
-            <Warning24Regular className="w-4 h-4 text-rose-500 flex-shrink-0" />
+            <Icon regular={Warning24Regular} size="sm" className="text-rose-500 flex-shrink-0" />
             <span>{pingResult.message}</span>
           </motion.div>
         )}
@@ -446,7 +447,7 @@ Headers:
                 >
                   <div className="flex items-start gap-3">
                     <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 mt-0.5">
-                      <Key24Regular className="w-4 h-4" />
+                      <Icon regular={Key24Regular} size="sm" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
@@ -479,7 +480,7 @@ Headers:
                       onClick={() => setKeyToRevoke(key)}
                       className="btn-tertiary px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 self-end sm:self-center flex items-center gap-1.5"
                     >
-                      <Delete24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Delete24Filled} size="sm" className="w-3.5 h-3.5" />
                       {t('revokeKeyBtn')}
                     </button>
                   )}
@@ -494,7 +495,7 @@ Headers:
       <div className="space-y-4 pt-4 border-t border-[var(--border-subtle)]">
         <div>
           <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-            <Bot24Regular className="w-4 h-4 text-blue-500" />
+            <Icon regular={Bot24Regular} size="sm" className="text-blue-500" />
             {t('agentConfigTitle')}
           </h3>
           <p className="text-xs text-[var(--text-secondary)]">
@@ -567,7 +568,7 @@ Headers:
             }}
             className="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors"
           >
-            <Copy24Filled className="w-3.5 h-3.5" />
+            <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
             {t('copyConfigBtn')}
           </button>
 
@@ -596,7 +597,7 @@ Headers:
 
                 <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between">
                   <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                    <Key24Regular className="w-4 h-4 text-blue-500" />
+                    <Icon regular={Key24Regular} size="sm" className="text-blue-500" />
                     {t('createApiKeyTitle')}
                   </h3>
                   <button
@@ -604,7 +605,7 @@ Headers:
                     onClick={() => setIsCreateOpen(false)}
                     className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
                   >
-                    <Dismiss24Filled className="w-4 h-4" />
+                    <Icon filled={Dismiss24Filled} size="sm" />
                   </button>
                 </div>
 
@@ -632,7 +633,7 @@ Headers:
                       disabled={isCreating || !keyName.trim()}
                       className="btn-primary px-5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2"
                     >
-                      <Sparkle24Filled className="w-4 h-4" />
+                      <Icon filled={Sparkle24Filled} size="sm" />
                       {isCreating ? 'Generating…' : t('createApiKeyBtn')}
                     </button>
                   </div>
@@ -657,14 +658,14 @@ Headers:
               >
                 <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between bg-blue-500/5">
                   <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                    <CheckmarkCircle24Regular className="w-5 h-5 text-emerald-500" />
+                    <Icon regular={CheckmarkCircle24Regular} size="md" className="text-emerald-500" />
                     {t('apiKeyCreatedTitle')}
                   </h3>
                 </div>
 
                 <div className="p-5 space-y-4">
                   <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-200 text-xs leading-relaxed flex items-start gap-2.5">
-                    <Warning24Regular className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <Icon regular={Warning24Regular} size="sm" className="text-amber-500 flex-shrink-0 mt-0.5" />
                     <span>{t('apiKeyRevealNotice')}</span>
                   </div>
 
@@ -675,7 +676,7 @@ Headers:
                       onClick={() => handleCopyText(revealedKey, t('apiKeyCopied'))}
                       className="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold flex-shrink-0 flex items-center gap-1.5"
                     >
-                      <Copy24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                       {t('copyApiKeyBtn')}
                     </button>
                   </div>

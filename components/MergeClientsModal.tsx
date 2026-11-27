@@ -14,6 +14,7 @@ import {
   Phone24Regular,
   Person24Regular,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 import type { ClientItemLike } from '@/lib/client-duplicates';
 
 export interface MergeClientsModalProps<T extends ClientItemLike = ClientItemLike> {
@@ -177,7 +178,7 @@ export const MergeClientsModal = <T extends ClientItemLike>({
               className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer flex-shrink-0"
               aria-label="Close"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="lg" />
             </button>
           </div>
 
@@ -185,7 +186,7 @@ export const MergeClientsModal = <T extends ClientItemLike>({
           <div className="p-5 md:p-6 overflow-y-auto space-y-4">
             {/* Explanatory Notice */}
             <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/20 text-xs">
-              <Sparkle24Regular className="w-4 h-4 text-[#2BB5FF] shrink-0 mt-0.5" />
+              <Icon regular={Sparkle24Regular} size="md" tone="accent" className="mt-0.5" />
               <div className="space-y-0.5">
                 <p className="font-bold text-[var(--text-primary)]">
                   {t('selectPrimary')}
@@ -265,7 +266,7 @@ export const MergeClientsModal = <T extends ClientItemLike>({
               <div className="rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] p-4 space-y-2 text-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <span className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                    <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <Icon filled={CheckmarkCircle24Filled} size="md" tone="success" />
                     {t('mergedResult')}
                   </span>
                   <span className="text-[var(--text-secondary)]">

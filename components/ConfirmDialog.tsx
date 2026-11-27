@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Warning24Regular, Dismiss24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -62,13 +63,13 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={onCancel}
             className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-muted)]"
           >
-            <Dismiss24Filled className="w-4 h-4" />
+            <Icon filled={Dismiss24Filled} size="md" />
           </button>
 
           <div className="flex items-start gap-4">
             {variant === 'danger' && (
               <div className="w-10 h-10 rounded-2xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                <Warning24Regular className="w-5 h-5 text-red-500" />
+                <Icon regular={Warning24Regular} size="lg" tone="danger" />
               </div>
             )}
             <div>

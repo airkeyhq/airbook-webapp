@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search24Filled, Add24Filled, WeatherMoon24Filled, WeatherSunny24Filled } from '@fluentui/react-icons';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 
 interface FloatingDockProps {
   activeTab?: string;
@@ -45,7 +46,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calenda
           className="flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
           title={t('searchCommandPalette')}
         >
-          <Search24Filled className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <Icon filled={Search24Filled} size="md" className="text-gray-500 dark:text-gray-400" />
           <span className="hidden sm:inline">{t('search')}</span>
           <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] bg-black/5 dark:bg-white/10 rounded-md font-mono font-bold">
             ⌘K
@@ -105,7 +106,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calenda
           className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2BB5FF] hover:bg-[#1A8EFF] text-white shadow-lg shadow-[#2BB5FF]/35"
           title={t('newBooking')}
         >
-          <Add24Filled className="w-5 h-5" />
+          <Icon filled={Add24Filled} size="lg" />
         </motion.button>
 
         <div className="h-4 w-[1px] bg-black/10 dark:bg-white/10 my-auto" />
@@ -120,9 +121,9 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({ activeTab = 'calenda
           title={t('toggleTheme')}
         >
           {theme === 'light' ? (
-            <WeatherMoon24Filled className="w-4 h-4 text-gray-700" />
+            <Icon filled={WeatherMoon24Filled} size="md" className="text-gray-700" />
           ) : (
-            <WeatherSunny24Filled className="w-4 h-4 text-amber-400" />
+            <Icon filled={WeatherSunny24Filled} size="md" className="text-amber-400" />
           )}
         </motion.button>
       </motion.div>

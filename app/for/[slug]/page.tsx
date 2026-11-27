@@ -9,10 +9,10 @@ import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { getDemoSpecialists } from '@/lib/i18n/demographics';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ArrowRight24Filled,
   Calendar24Filled,
-  CheckmarkCircle24Filled,
   CheckmarkCircle24Regular,
   Clock24Regular,
   Globe24Regular,
@@ -1709,7 +1709,7 @@ export default function IndustryFunnelPage() {
             <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-between space-y-6 text-left py-1">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)]/90 border border-[var(--border-subtle)] text-xs font-bold text-[#2BB5FF] shadow-xs">
-                  <Sparkle24Regular className="w-3.5 h-3.5" />
+                  <Icon regular={Sparkle24Regular} size="sm" />
                   <span>{config.badge[currentLang]}</span>
                 </div>
 
@@ -1750,7 +1750,7 @@ export default function IndustryFunnelPage() {
                     className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
                   >
                     <span>{t('goToDashboard')}</span>
-                    <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={ArrowRight24Filled} active size="sm" />
                   </Link>
                 ) : (
                   <Link
@@ -1758,14 +1758,14 @@ export default function IndustryFunnelPage() {
                     className="btn-primary px-7 py-3.5 text-xs flex items-center gap-2"
                   >
                     <span>{t('applyForFoundingProgram')}</span>
-                    <ArrowRight24Filled className="w-3.5 h-3.5" />
+                    <Icon filled={ArrowRight24Filled} active size="sm" />
                   </Link>
                 )}
                 <Link
                   href={session?.user ? '/book/aurelia-studio' : `/onboarding?redirect=${encodeURIComponent('/book/aurelia-studio')}&reason=demo_storefront`}
                   className="btn-secondary px-5 py-3.5 text-xs flex items-center gap-2"
                 >
-                  <Globe24Regular className="w-4 h-4 text-[var(--text-muted)]" />
+                  <Icon regular={Globe24Regular} size="sm" className="text-[var(--text-muted)]" />
                   <span>{t('seeLiveDemo')}</span>
                 </Link>
               </div>
@@ -1886,7 +1886,7 @@ export default function IndustryFunnelPage() {
                       animate={{ scale: 1, opacity: 1 }}
                       className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-2.5"
                     >
-                      <CheckmarkCircle24Filled className="w-5 h-5 flex-shrink-0" />
+                      <Icon regular={CheckmarkCircle24Regular} size="md" className="flex-shrink-0" />
                       <p className="text-xs font-extrabold leading-tight">{t('demoBookingSuccess')}</p>
                     </motion.div>
                   ) : (
@@ -1895,14 +1895,14 @@ export default function IndustryFunnelPage() {
                       onClick={() => setIsDemoBooked(true)}
                       className="btn-primary w-full py-3 text-xs flex items-center justify-center gap-2"
                     >
-                      <Calendar24Filled className="w-4 h-4" />
+                      <Icon filled={Calendar24Filled} active size="sm" />
                       <span>
                         {t('demoSimulateBook')} (${(config.simulator.servicePrice * 0.25).toFixed(2)} Deposit)
                       </span>
                     </button>
                   )}
                   <p className="text-[10px] text-center text-[var(--text-muted)] font-semibold mt-2 flex items-center justify-center gap-1">
-                    <LockClosed24Regular className="w-3 h-3 text-[var(--text-muted)]" />
+                    <Icon regular={LockClosed24Regular} size="xs" className="text-[var(--text-muted)]" />
                     <span>{t('demoDepositProtected')} • Apple Pay &amp; Google Pay</span>
                   </p>
                 </div>
@@ -1955,7 +1955,7 @@ export default function IndustryFunnelPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-center flex flex-col items-center shadow-xs">
             <div className="w-12 h-12 rounded-2xl bg-[#2BB5FF]/10 text-[#2BB5FF] flex items-center justify-center mb-1">
-              <Sparkle24Regular className="w-6 h-6" />
+              <Icon regular={Sparkle24Regular} size="lg" />
             </div>
             <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{config.pillar1.title[currentLang]}</h3>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{config.pillar1.desc[currentLang]}</p>
@@ -1963,7 +1963,7 @@ export default function IndustryFunnelPage() {
 
           <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-center flex flex-col items-center shadow-xs">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-1">
-              <ShieldCheckmark24Regular className="w-6 h-6" />
+              <Icon regular={ShieldCheckmark24Regular} size="lg" />
             </div>
             <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{config.pillar2.title[currentLang]}</h3>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{config.pillar2.desc[currentLang]}</p>
@@ -1971,7 +1971,7 @@ export default function IndustryFunnelPage() {
 
           <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2 text-center flex flex-col items-center shadow-xs">
             <div className="w-12 h-12 rounded-2xl bg-[#AF52DE]/10 text-[#AF52DE] flex items-center justify-center mb-1">
-              <Clock24Regular className="w-6 h-6" />
+              <Icon regular={Clock24Regular} size="lg" />
             </div>
             <h3 className="text-sm font-extrabold text-[var(--text-primary)]">{config.pillar3.title[currentLang]}</h3>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{config.pillar3.desc[currentLang]}</p>
@@ -1984,7 +1984,7 @@ export default function IndustryFunnelPage() {
         <div className="p-8 sm:p-12 rounded-[36px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-8 shadow-sm">
           <div className="max-w-2xl space-y-2 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] text-xs font-bold">
-              <Sparkle24Regular className="w-3.5 h-3.5" />
+              <Icon regular={Sparkle24Regular} size="sm" />
               <span>Tailored Daily Workflow</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-[var(--text-primary)] tracking-tight">
@@ -2045,7 +2045,7 @@ export default function IndustryFunnelPage() {
           <div className="flex-shrink-0 self-end sm:self-center">
             <div className="flex items-center gap-1 text-amber-500">
               {[...Array(5)].map((_, i) => (
-                <Star24Regular key={i} className="w-4 h-4 text-amber-500" />
+                <Icon key={i} regular={Star24Regular} size="sm" className="text-amber-500" />
               ))}
             </div>
             <p className="text-[10px] font-bold text-[var(--text-muted)] mt-1 text-right">
@@ -2100,7 +2100,7 @@ export default function IndustryFunnelPage() {
                 className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
               >
                 <span>{t('goToDashboard')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             ) : (
               <Link
@@ -2108,7 +2108,7 @@ export default function IndustryFunnelPage() {
                 className="btn-primary px-8 py-3.5 text-xs flex items-center gap-2"
               >
                 <span>{t('applyForFoundingProgram')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             )}
           </div>

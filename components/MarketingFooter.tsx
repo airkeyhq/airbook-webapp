@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
-import { Heart24Filled, Mail24Regular, News24Regular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
+import { Heart24Filled, Mail24Regular, News24Regular, CheckmarkCircle24Regular } from '@fluentui/react-icons';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { CurrencySelector } from '@/components/CurrencySelector';
 
@@ -51,7 +52,7 @@ export const MarketingFooter: React.FC = () => {
         <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xs">
           <div className="flex items-start gap-3.5 max-w-xl">
             <span className="w-9 h-9 rounded-xl bg-[#2BB5FF]/10 text-[#2BB5FF] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
-              <News24Regular className="w-4.5 h-4.5" />
+              <Icon regular={News24Regular} className="w-4.5 h-4.5" />
             </span>
             <div className="space-y-1">
               <h3 className="text-sm sm:text-base font-black tracking-tight text-[var(--text-primary)]">
@@ -67,7 +68,7 @@ export const MarketingFooter: React.FC = () => {
           <div className="w-full lg:w-auto flex-shrink-0">
             {isSubscribed ? (
               <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold shadow-xs">
-                <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500" />
+                <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500" />
                 <span>{t('subscribedSuccess')}</span>
               </div>
             ) : (
@@ -76,7 +77,7 @@ export const MarketingFooter: React.FC = () => {
                 className="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-[380px] p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
               >
                 <div className="flex items-center gap-2 px-3 w-full">
-                  <Mail24Regular className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
+                  <Icon regular={Mail24Regular} size="sm" tone="muted" className="flex-shrink-0" />
                   <input
                     type="email"
                     required
@@ -118,7 +119,7 @@ export const MarketingFooter: React.FC = () => {
             </p>
             <p className="text-[11px] text-[var(--text-secondary)] font-medium flex items-center gap-1">
               <span>{t('builtWithHeartPart1')}</span>
-              <Heart24Filled className="w-3.5 h-3.5 text-[#E11D48] fill-[#E11D48] inline-block" />
+              <Icon filled={Heart24Filled} size="sm" className="w-3.5 h-3.5 text-[#E11D48] fill-[#E11D48] inline-block" />
               <span>{t('builtWithHeartPart2')}</span>
             </p>
           </div>

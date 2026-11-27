@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckmarkCircle24Regular, ErrorCircle24Regular, Info24Regular, Dismiss24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 export type ToastVariant = 'success' | 'error' | 'info';
 
@@ -18,9 +19,9 @@ interface ToastProps {
 }
 
 const ICONS: Record<ToastVariant, React.ReactNode> = {
-  success: <CheckmarkCircle24Regular className="w-4 h-4 text-green-500 flex-shrink-0" />,
-  error: <ErrorCircle24Regular className="w-4 h-4 text-red-500 flex-shrink-0" />,
-  info: <Info24Regular className="w-4 h-4 text-blue-500 flex-shrink-0" />,
+  success: <Icon regular={CheckmarkCircle24Regular} size="md" tone="success" />,
+  error: <Icon regular={ErrorCircle24Regular} size="md" tone="danger" />,
+  info: <Icon regular={Info24Regular} size="md" tone="accent" />,
 };
 
 const STYLES: Record<ToastVariant, string> = {
@@ -49,7 +50,7 @@ export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
               onClick={() => onDismiss(toast.id)}
               className="ml-2 opacity-60 hover:opacity-100 transition-opacity"
             >
-              <Dismiss24Filled className="w-3.5 h-3.5" />
+              <Icon filled={Dismiss24Filled} size="sm" />
             </button>
           </motion.div>
         ))}

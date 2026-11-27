@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "audit:i18n": "node scripts/audit-i18n.mjs",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "prepare": "git config core.hooksPath .githooks || true",
+    "storybook": "STORYBOOK_DISABLE_TELEMETRY=1 storybook dev -p 6008 --ci",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.335",
@@ -32,6 +34,7 @@
     "hugeicons-react": "^0.4.0",
     "leaflet": "^1.9.4",
     "next": "16.3.0",
+    "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "stripe": "^22.4.0",
@@ -39,14 +42,23 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.6.0",
+    "@storybook/addon-a11y": "^11.0.0-rc.0",
+    "@storybook/addon-docs": "^11.0.0-rc.0",
+    "@storybook/nextjs": "^11.0.0-rc.0",
+    "@storybook/react": "^11.0.0-rc.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ajv": "^8.20.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "eslint-plugin-storybook": "11.0.0-rc.0",
     "puppeteer": "^25.9.0",
+    "storybook": "^11.0.0-rc.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

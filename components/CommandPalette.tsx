@@ -5,7 +5,8 @@ import { Command } from 'cmdk';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { Search24Regular, Add24Filled, WeatherMoon24Regular } from '@fluentui/react-icons';
+import { Search24Regular, Add24Filled, WeatherMoon24Filled } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 export const CommandPalette: React.FC = () => {
   const {
@@ -54,7 +55,7 @@ export const CommandPalette: React.FC = () => {
         >
           <Command className="w-full">
             <div className="flex items-center px-3 border-b border-black/5 dark:border-white/10 pb-2">
-              <Search24Regular className="w-4 h-4 text-gray-400 mr-2" />
+              <Icon regular={Search24Regular} size="md" className="text-gray-400 mr-2" />
               <Command.Input
                 autoFocus
                 placeholder={t('searchPlaceholder')}
@@ -75,7 +76,7 @@ export const CommandPalette: React.FC = () => {
                   }}
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[var(--text-primary)] hover:bg-blue-500 hover:text-white cursor-pointer transition-colors"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="md" />
                   <span>{t('createNewBookingSlot')}</span>
                 </Command.Item>
                 <Command.Item
@@ -85,7 +86,7 @@ export const CommandPalette: React.FC = () => {
                   }}
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[var(--text-primary)] hover:bg-blue-500 hover:text-white cursor-pointer transition-colors"
                 >
-                  <WeatherMoon24Regular className="w-4 h-4" />
+                  <Icon filled={WeatherMoon24Filled} size="md" />
                   <span>{t('toggleTheme')}</span>
                 </Command.Item>
               </Command.Group>

@@ -2,13 +2,14 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Search24Regular,
   Location24Filled,
   Navigation24Filled,
   Dismiss24Filled,
   Checkmark24Filled,
-  Pin24Filled,
+  Pin24Regular,
 } from '@fluentui/react-icons';
 import 'leaflet/dist/leaflet.css';
 
@@ -245,7 +246,7 @@ export function GeofenceMapPicker({
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div className="relative flex-1">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none">
-              <Search24Regular className="w-4 h-4" />
+              <Icon regular={Search24Regular} size="sm" />
             </span>
             <input
               type="text"
@@ -268,7 +269,7 @@ export function GeofenceMapPicker({
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1"
                 aria-label={t('clearSearch')}
               >
-                <Dismiss24Filled className="w-3.5 h-3.5" />
+                <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -282,7 +283,7 @@ export function GeofenceMapPicker({
               {isSearching ? (
                 <span className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
               ) : (
-                <Search24Regular className="w-4 h-4" />
+                <Icon regular={Search24Regular} size="sm" />
               )}
               <span>{t('search')}</span>
             </button>
@@ -297,7 +298,7 @@ export function GeofenceMapPicker({
               {locatingCurrent ? (
                 <span className="animate-spin w-4 h-4 border-2 border-[#2BB5FF] border-t-transparent rounded-full" />
               ) : (
-                <Navigation24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                <Icon filled={Navigation24Filled} size="sm" className="text-[#2BB5FF]" />
               )}
               <span className="hidden sm:inline">{t('geofenceMyGps')}</span>
             </button>
@@ -314,7 +315,7 @@ export function GeofenceMapPicker({
                 onClick={() => handleSelectResult(result)}
                 className="w-full px-3.5 py-2.5 text-left text-xs hover:bg-[var(--bg-secondary)] flex items-start gap-2.5 transition-colors"
               >
-                <Location24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0 mt-0.5" />
+                <Icon filled={Location24Filled} size="sm" className="text-[#2BB5FF] flex-shrink-0 mt-0.5" />
                 <span className="line-clamp-2 text-[var(--text-primary)] font-medium">
                   {result.display_name}
                 </span>
@@ -330,7 +331,7 @@ export function GeofenceMapPicker({
 
         {/* Overlay Instructions Badge */}
         <div className="absolute bottom-3 left-3 right-3 sm:right-auto z-[400] px-3.5 py-2 rounded-xl bg-[var(--bg-primary)]/90 backdrop-blur-md border border-[var(--border-subtle)] shadow-md text-[11px] text-[var(--text-secondary)] flex items-center gap-2">
-          <Pin24Filled className="w-4 h-4 text-[#2BB5FF] flex-shrink-0" />
+          <Icon regular={Pin24Regular} size="sm" className="text-[#2BB5FF] flex-shrink-0" />
           <span>{t('geofenceMapDragInstruction')}</span>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { FloatingInput } from '@/components/FloatingInput';
 import { CustomSelect } from '@/components/CustomSelect';
+import { Slider } from '@/components/primitives/Slider';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Location24Filled,
   Location24Regular,
@@ -18,6 +20,7 @@ import {
   Key24Regular,
   Key24Filled,
   Navigation24Filled,
+  Navigation24Regular,
   Checkmark24Filled,
   Save24Filled,
   ArrowClockwise24Filled,
@@ -244,7 +247,7 @@ export function GeofenceSettingsCard({
                 : 'bg-black/5 dark:bg-white/5 text-[var(--text-muted)] border border-[var(--border-subtle)]'
             }`}
           >
-            <ShieldCheckmark24Filled className="w-5 h-5" />
+            <Icon regular={ShieldCheckmark24Regular} filled={ShieldCheckmark24Filled} active={config.enabled} size="md" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -282,7 +285,7 @@ export function GeofenceSettingsCard({
       <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Location24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Location24Regular} size="sm" tone="secondary" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceMapSectionTitle')}
             </h4>
@@ -347,7 +350,7 @@ export function GeofenceSettingsCard({
       <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Shield24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Shield24Regular} size="md" className="text-[var(--text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceRadiusTitle')}
             </h4>
@@ -362,20 +365,17 @@ export function GeofenceSettingsCard({
         </p>
 
         {/* Tactile Range Slider */}
-        <div className="py-2">
-          <input
-            type="range"
+        <div className="py-1">
+          <Slider
+            variant="pill"
             min={50}
             max={2000}
             step={25}
+            suffix="m"
             value={config.radiusMeters}
-            onChange={(e) =>
-              setConfig((prev) => ({ ...prev, radiusMeters: Number(e.target.value) }))
+            onChange={(val) =>
+              setConfig((prev) => ({ ...prev, radiusMeters: Number(val) }))
             }
-            className="w-full cursor-pointer h-2.5 rounded-full"
-            style={{
-              background: `linear-gradient(to right, #2BB5FF 0%, #2BB5FF ${sliderPercent}%, rgba(148, 163, 184, 0.25) ${sliderPercent}%, rgba(148, 163, 184, 0.25) 100%)`,
-            }}
           />
         </div>
 
@@ -406,7 +406,7 @@ export function GeofenceSettingsCard({
         {/* Device Scope */}
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center gap-2">
-            <Phone24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Phone24Regular} size="md" className="text-[var(--text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceDeviceScopeTitle')}
             </h4>
@@ -471,7 +471,7 @@ export function GeofenceSettingsCard({
         {/* Roles & Admin Exemption */}
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center gap-2">
-            <People24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={People24Regular} size="md" className="text-[var(--text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceRolesTitle')}
             </h4>
@@ -527,7 +527,7 @@ export function GeofenceSettingsCard({
         {/* Salon Wi-Fi & Trusted IP Whitelist */}
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center gap-2">
-            <Globe24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Globe24Regular} size="md" className="text-[var(--text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceWifiTitle')}
             </h4>
@@ -547,7 +547,7 @@ export function GeofenceSettingsCard({
         {/* Strictness & Shift Validity */}
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center gap-2">
-            <Clock24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Icon regular={Clock24Regular} size="md" className="text-[var(--text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceShiftSessionTitle')}
             </h4>
@@ -595,7 +595,7 @@ export function GeofenceSettingsCard({
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Key24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+              <Icon regular={Key24Regular} size="sm" tone="secondary" />
               <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 {t('geofenceSupervisorPinTitle')}
               </h4>
@@ -628,7 +628,7 @@ export function GeofenceSettingsCard({
         {/* Live Distance Tool */}
         <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
           <div className="flex items-center gap-2">
-            <Navigation24Filled className="w-4 h-4 text-[#2BB5FF]" />
+            <Icon regular={Navigation24Regular} size="sm" className="text-[#2BB5FF]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
               {t('geofenceLiveTestTitle')}
             </h4>
@@ -648,7 +648,7 @@ export function GeofenceSettingsCard({
               {testingGps ? (
                 <span className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
               ) : (
-                <Navigation24Filled className="w-4 h-4 text-[#2BB5FF]" />
+                <Icon filled={Navigation24Filled} size="sm" className="text-[#2BB5FF]" />
               )}
               <span>{t('geofenceTestCurrentDistance')}</span>
             </button>
@@ -664,9 +664,9 @@ export function GeofenceSettingsCard({
             >
               <div className="flex items-center gap-2 font-bold">
                 {testResult.inside ? (
-                  <ShieldCheckmark24Filled className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Icon regular={ShieldCheckmark24Regular} size="sm" className="text-emerald-600 dark:text-emerald-400" />
                 ) : (
-                  <Alert24Regular className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <Icon regular={Alert24Regular} size="sm" className="text-amber-600 dark:text-amber-400" />
                 )}
                 <span>
                   {testResult.inside
@@ -694,7 +694,7 @@ export function GeofenceSettingsCard({
           {saving ? (
             <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
           ) : (
-            <Save24Filled className="w-4 h-4" />
+            <Icon filled={Save24Filled} size="sm" />
           )}
           <span>{t('save')}</span>
         </motion.button>

@@ -9,6 +9,7 @@ import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useSession } from '@/lib/auth-client';
 import { BLOG_POSTS, BlogPost } from '@/lib/blog/articles';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Sparkle24Regular,
   Sparkle24Filled,
@@ -52,7 +53,7 @@ export default function BlogIndexPage() {
         <header className="space-y-4 max-w-3xl">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#2BB5FF] text-xs font-black uppercase tracking-wider border border-[#2BB5FF]/20 shadow-xs">
-              <Sparkle24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+              <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-[#2BB5FF]" />
               <span>{t('blogTitle')}</span>
             </span>
 
@@ -64,7 +65,7 @@ export default function BlogIndexPage() {
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-secondary)] hover:text-[#2BB5FF] hover:border-[#2BB5FF]/40 transition-colors shadow-xs"
                 title="RSS 2.0 Feed"
               >
-                <Rss24Regular className="w-3 h-3 text-amber-500" />
+                <Icon regular={Rss24Regular} size="xs" className="text-amber-500" />
                 <span>{t('rssFeed')}</span>
               </Link>
               <Link
@@ -73,7 +74,7 @@ export default function BlogIndexPage() {
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-secondary)] hover:text-[#2BB5FF] hover:border-[#2BB5FF]/40 transition-colors shadow-xs"
                 title="Standard Plaintext AI Index"
               >
-                <Bot24Regular className="w-3 h-3 text-[#2BB5FF]" />
+                <Icon regular={Bot24Regular} size="xs" className="text-[#2BB5FF]" />
                 <span>{t('llmsTxt')}</span>
               </Link>
             </div>
@@ -116,19 +117,19 @@ export default function BlogIndexPage() {
                 <div className="lg:col-span-7 space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20 whitespace-nowrap shadow-2xs">
-                      <Sparkle24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{t('featuredArticle')}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] text-[10px] font-black uppercase tracking-wider border border-[#2BB5FF]/20 whitespace-nowrap shadow-2xs">
-                      <Tag24Regular className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
+                      <Icon regular={Tag24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
                       <span>{featuredPost.categoryLabel[language]}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
-                      <Clock24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <Icon regular={Clock24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{featuredPost.readTime[language]}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[11px] font-bold text-[var(--text-muted)] whitespace-nowrap shadow-2xs">
-                      <Calendar24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <Icon regular={Calendar24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{featuredPost.date}</span>
                     </span>
                   </div>
@@ -165,7 +166,7 @@ export default function BlogIndexPage() {
                       className="btn-primary px-4 py-2.5 rounded-2xl text-xs font-black flex items-center gap-1.5 shadow-md flex-shrink-0"
                     >
                       <span>{t('readPlaybook')}</span>
-                      <ArrowRight24Filled className="w-3.5 h-3.5" />
+                      <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>
@@ -173,7 +174,7 @@ export default function BlogIndexPage() {
                 {/* Visual Direct Answer / Key Takeaways Preview Snippet */}
                 <div className="lg:col-span-5 p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3">
                   <div className="text-xs font-black text-[var(--text-primary)] flex items-center gap-2">
-                    <Sparkle24Regular className="w-3.5 h-3.5 text-[#2BB5FF]" />
+                    <Icon regular={Sparkle24Regular} size="sm" className="w-3.5 h-3.5 text-[#2BB5FF]" />
                     <span>{t('keyTakeawaysTitle')}</span>
                   </div>
                   <ul className="text-xs space-y-2 text-[var(--text-secondary)] font-medium leading-relaxed">
@@ -201,11 +202,11 @@ export default function BlogIndexPage() {
                 <div className="space-y-3.5">
                   <div className="flex items-center justify-between gap-2 min-h-[26px]">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] font-black uppercase text-[10px] tracking-wider border border-[#2BB5FF]/20 shadow-2xs whitespace-nowrap">
-                      <Tag24Regular className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
+                      <Icon regular={Tag24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0 text-[#2BB5FF]" />
                       <span>{post.categoryLabel[language]}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[var(--text-muted)] bg-[var(--bg-primary)] px-2.5 py-1 rounded-full border border-[var(--border-subtle)] shadow-2xs whitespace-nowrap">
-                      <Clock24Regular className="w-3.5 h-3.5 flex-shrink-0" />
+                      <Icon regular={Clock24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{post.readTime[language]}</span>
                     </span>
                   </div>
@@ -243,7 +244,7 @@ export default function BlogIndexPage() {
                     className="btn-secondary px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 flex-shrink-0 shadow-2xs"
                   >
                     <span>{t('readPlaybook')}</span>
-                    <ArrowRight24Filled className="w-3 h-3" />
+                    <Icon filled={ArrowRight24Filled} size="xs" />
                   </Link>
                 </div>
               </article>
@@ -269,7 +270,7 @@ export default function BlogIndexPage() {
                 className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
               >
                 <span>{t('goToDashboard')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
             ) : (
               <Link
@@ -277,7 +278,7 @@ export default function BlogIndexPage() {
                 className="btn-primary w-full sm:w-auto px-6 h-12 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
               >
                 <span>{t('applyForFoundingProgram')}</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} size="sm" className="w-3.5 h-3.5" />
               </Link>
             )}
             <Link

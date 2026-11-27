@@ -7,8 +7,10 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { CustomSelect } from './CustomSelect';
 import { FloatingInput, FloatingTextarea } from './FloatingInput';
+import { DatePicker } from './primitives/DatePicker';
 import { EmptyState } from './EmptyState';
 import { useAirBookStore } from '@/lib/store';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Tag24Filled,
   Tag24Regular,
@@ -437,7 +439,7 @@ export const PackagesModule: React.FC = () => {
                   }}
                   className="btn-primary self-start sm:self-auto"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="sm" />
                   <span>{t('issueGiftCard')}</span>
                 </button>
               )}
@@ -457,7 +459,7 @@ export const PackagesModule: React.FC = () => {
                   }}
                   className="btn-primary self-start sm:self-auto"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="sm" />
                   <span>{t('createPackage')}</span>
                 </button>
               )}
@@ -476,7 +478,7 @@ export const PackagesModule: React.FC = () => {
                   }}
                   className="btn-primary self-start sm:self-auto"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="sm" />
                   <span>{t('createMembership')}</span>
                 </button>
               )}
@@ -509,7 +511,7 @@ export const PackagesModule: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <GiftCard24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={GiftCard24Regular} size="sm" tone="secondary" />
                 <span>{t('totalOutstandingBalance')}</span>
               </div>
               <div className="flex items-baseline justify-between">
@@ -524,7 +526,7 @@ export const PackagesModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Tag24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Tag24Regular} size="sm" tone="secondary" />
                 <span>{t('activePackages')}</span>
               </div>
               <div className="flex items-baseline justify-between">
@@ -539,7 +541,7 @@ export const PackagesModule: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Sparkle24Regular className="w-4 h-4 text-[var(--text-secondary)]" />
+                <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                 <span>{t('recurringRevenueMRR')}</span>
               </div>
               <div className="flex items-baseline justify-between">
@@ -565,7 +567,7 @@ export const PackagesModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <GiftCard24Regular className="w-4 h-4" />
+                <Icon regular={GiftCard24Regular} filled={GiftCard24Filled} active={activeTab === 'gift_cards'} size="sm" />
                 <span>{t('tabGiftCards')}</span>
                 {giftCards.length > 0 && (
                   <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
@@ -583,7 +585,7 @@ export const PackagesModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Tag24Regular className="w-4 h-4" />
+                <Icon regular={Tag24Regular} filled={Tag24Filled} active={activeTab === 'packages'} size="sm" />
                 <span>{t('tabServicePackages')}</span>
                 {packagesList.length > 0 && (
                   <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
@@ -601,7 +603,7 @@ export const PackagesModule: React.FC = () => {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Sparkle24Regular className="w-4 h-4" />
+                <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'memberships'} size="sm" />
                 <span>{t('tabMemberships')}</span>
                 {membershipsList.length > 0 && (
                   <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
@@ -651,7 +653,7 @@ export const PackagesModule: React.FC = () => {
                             : 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
                         }`}
                       >
-                        <GiftCard24Filled className="w-6 h-6" />
+                        <Icon regular={GiftCard24Regular} size="lg" />
                       </div>
 
                       <div className="space-y-1">
@@ -664,9 +666,9 @@ export const PackagesModule: React.FC = () => {
                           >
                             <span>{card.code}</span>
                             {copiedCode === card.code ? (
-                              <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" />
+                              <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
                             ) : (
-                              <Copy24Filled className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                              <Icon filled={Copy24Filled} size="sm" tone="muted" className="w-3.5 h-3.5" />
                             )}
                           </button>
 
@@ -772,7 +774,7 @@ export const PackagesModule: React.FC = () => {
                 >
                   <div className="flex items-start sm:items-center gap-3.5">
                     <div className="w-11 h-11 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
-                      <Tag24Filled className="w-6 h-6" />
+                      <Icon regular={Tag24Regular} size="lg" />
                     </div>
 
                     <div className="space-y-1">
@@ -808,7 +810,7 @@ export const PackagesModule: React.FC = () => {
                       type="button"
                       className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                      <Edit24Filled className="w-4 h-4" />
+                      <Icon filled={Edit24Filled} size="sm" />
                     </button>
                   </div>
                 </div>
@@ -858,7 +860,7 @@ export const PackagesModule: React.FC = () => {
                 >
                   <div className="flex items-start sm:items-center gap-3.5">
                     <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
-                      <Sparkle24Filled className="w-6 h-6" />
+                      <Icon regular={Sparkle24Regular} size="lg" />
                     </div>
 
                     <div className="space-y-1">
@@ -894,7 +896,7 @@ export const PackagesModule: React.FC = () => {
                       type="button"
                       className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                      <Edit24Filled className="w-4 h-4" />
+                      <Icon filled={Edit24Filled} size="sm" />
                     </button>
                   </div>
                 </div>
@@ -947,7 +949,7 @@ export const PackagesModule: React.FC = () => {
                     onClick={() => setIsGiftCardDrawerOpen(false)}
                     className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
 
@@ -1014,11 +1016,16 @@ export const PackagesModule: React.FC = () => {
                         value={gcSenderName}
                         onChange={(e) => setGcSenderName(e.target.value)}
                       />
-                      <FloatingInput
+                      <DatePicker
+                        floating
                         label={t('expiresOn')}
-                        type="date"
-                        value={gcExpiresAt}
-                        onChange={(e) => setGcExpiresAt(e.target.value)}
+                        value={gcExpiresAt ? new Date(`${gcExpiresAt}T00:00:00`) : new Date()}
+                        onChange={(d) => {
+                          const yyyy = d.getFullYear();
+                          const mm = String(d.getMonth() + 1).padStart(2, '0');
+                          const dd = String(d.getDate()).padStart(2, '0');
+                          setGcExpiresAt(`${yyyy}-${mm}-${dd}`);
+                        }}
                       />
                     </div>
 
@@ -1038,7 +1045,7 @@ export const PackagesModule: React.FC = () => {
                       disabled={saving}
                       className="btn-primary w-full disabled:opacity-50"
                     >
-                      <GiftCard24Filled className="w-4 h-4" />
+                      <Icon filled={GiftCard24Filled} size="sm" />
                       <span>{saving ? t('issuingGiftCard') : t('issueGiftCard')}</span>
                     </button>
                   </div>
@@ -1110,7 +1117,7 @@ export const PackagesModule: React.FC = () => {
                       disabled={saving}
                       className="btn-primary flex-1 disabled:opacity-50"
                     >
-                      <Checkmark24Filled className="w-4 h-4" />
+                      <Icon filled={Checkmark24Filled} size="sm" />
                       <span>{saving ? t('redeeming') : t('redeemGiftCard')}</span>
                     </button>
                   </div>
@@ -1162,7 +1169,7 @@ export const PackagesModule: React.FC = () => {
                     onClick={() => setIsPackageDrawerOpen(false)}
                     className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
 
@@ -1244,7 +1251,7 @@ export const PackagesModule: React.FC = () => {
                       disabled={saving}
                       className="btn-primary w-full disabled:opacity-50"
                     >
-                      <Tag24Filled className="w-4 h-4" />
+                      <Icon filled={Tag24Filled} size="sm" />
                       <span>{saving ? t('savingState') : editingPackage ? t('updatePackage') : t('createPackage')}</span>
                     </button>
 
@@ -1306,7 +1313,7 @@ export const PackagesModule: React.FC = () => {
                     onClick={() => setIsMembershipDrawerOpen(false)}
                     className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
                   >
-                    <Dismiss24Filled className="w-5 h-5" />
+                    <Icon filled={Dismiss24Filled} size="md" />
                   </button>
                 </div>
 
@@ -1369,7 +1376,7 @@ export const PackagesModule: React.FC = () => {
                       disabled={saving}
                       className="btn-primary w-full disabled:opacity-50"
                     >
-                      <Sparkle24Filled className="w-4 h-4" />
+                      <Icon filled={Sparkle24Filled} size="sm" />
                       <span>{saving ? t('savingState') : editingMembership ? t('updateTier') : t('createMembership')}</span>
                     </button>
 

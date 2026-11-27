@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { MarketingHeader } from '@/components/MarketingHeader';
 import { MarketingFooter } from '@/components/MarketingFooter';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ShieldCheckmark24Regular,
   LockClosed24Regular,
@@ -15,7 +16,7 @@ import {
   Key24Regular,
   Sparkle24Regular,
   ArrowRight24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
 } from '@fluentui/react-icons';
 
 export default function PrivacyPolicyPage() {
@@ -76,19 +77,19 @@ export default function PrivacyPolicyPage() {
               <p className="font-extrabold text-[var(--text-primary)]">Our 4 Core Privacy Guarantees:</p>
               <ul className="space-y-1.5 text-xs font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Zero Password Storage:</strong> We authenticate exclusively through biometrics (WebAuthn Passkeys), magic links, and Google OAuth.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>No Data Brokering:</strong> We never sell, rent, or trade your or your clients&apos; personal data to advertisers or third-party brokers.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Data Portability:</strong> You can export 100% of your appointments, client profiles, and financial ledger at any moment in open JSON/CSV format.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Strict Encryption:</strong> All data is encrypted in transit via TLS 1.3 and at rest with AES-256 encryption.</span>
                 </li>
               </ul>
@@ -104,19 +105,19 @@ export default function PrivacyPolicyPage() {
               <p className="font-extrabold text-[var(--text-primary)]">Nuestras 4 Garantías Fundamentales de Privacidad:</p>
               <ul className="space-y-1.5 text-xs font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Cero Almacenamiento de Contraseñas:</strong> Autenticamos exclusivamente mediante biometría (Passkeys WebAuthn), enlaces mágicos y Google OAuth.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Sin Venta de Datos:</strong> Nunca vendemos, alquilamos ni comercializamos tus datos o los de tus clientes a anunciantes o intermediarios.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Portabilidad Total:</strong> Puedes exportar el 100% de tus citas, perfiles de clientes e historial financiero en cualquier momento en formatos JSON/CSV.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Cifrado Estricto:</strong> Todos los datos se cifran en tránsito con TLS 1.3 y en reposo mediante cifrado AES-256.</span>
                 </li>
               </ul>
@@ -132,19 +133,19 @@ export default function PrivacyPolicyPage() {
               <p className="font-extrabold text-[var(--text-primary)]">Unsere 4 Datenschutz-Garantien:</p>
               <ul className="space-y-1.5 text-xs font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Keine Passwörter:</strong> Authentifizierung erfolgt ausschließlich über Biometrie (WebAuthn Passkeys), Magic Links und Google OAuth.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Kein Datenverkauf:</strong> Wir verkaufen oder vermieten Ihre Daten und die Ihrer Kunden zu keinem Zeitpunkt.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Datenportabilität:</strong> Sie können jederzeit alle Buchungen, Kundenprofile und Umsätze als CSV/JSON exportieren.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Vollständige Verschlüsselung:</strong> TLS 1.3 während der Übertragung und AES-256 im Ruhezustand.</span>
                 </li>
               </ul>
@@ -160,19 +161,19 @@ export default function PrivacyPolicyPage() {
               <p className="font-extrabold text-[var(--text-primary)]">Nos 4 Engagements Fondamentaux :</p>
               <ul className="space-y-1.5 text-xs font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Zéro Mot de Passe :</strong> Authentification biométrique par Passkeys WebAuthn, liens magiques et Google OAuth.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Aucune Vente de Données :</strong> Nous ne vendons ni ne louons vos informations à des tiers publicitaires.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Portabilité Totale :</strong> Exportez vos rendez-vous et vos fiches clients à tout instant en CSV ou JSON.</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckmarkCircle24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-emerald-500 flex-shrink-0" />
                   <span><strong>Chiffrement Sécurisé :</strong> TLS 1.3 en transit et AES-256 au repos.</span>
                 </li>
               </ul>
@@ -252,7 +253,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-600" />
+                <Icon regular={ShieldCheckmark24Regular} size="md" className="text-emerald-600" />
                 Zero Password Storage Guarantee
               </p>
               <p className="text-xs leading-relaxed">
@@ -268,7 +269,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 space-y-2">
               <p className="font-extrabold flex items-center gap-2">
-                <ShieldCheckmark24Regular className="w-5 h-5 text-emerald-600" />
+                <Icon regular={ShieldCheckmark24Regular} size="md" className="text-emerald-600" />
                 Garantía de Cero Almacenamiento de Contraseñas
               </p>
               <p className="text-xs leading-relaxed">
@@ -415,7 +416,7 @@ export default function PrivacyPolicyPage() {
         {/* Top Hero Banner */}
         <div className="max-w-4xl space-y-4 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2BB5FF]/10 text-[#0284C7] dark:text-[#2BB5FF] text-xs font-black uppercase tracking-wider">
-            <ShieldCheckmark24Regular className="w-4 h-4" />
+            <Icon regular={ShieldCheckmark24Regular} size="sm" />
             <span>{content.badge[lang]}</span>
           </div>
 
@@ -462,14 +463,14 @@ export default function PrivacyPolicyPage() {
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Data Protection Architecture</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
               <Link
                 href="/terms"
                 className="flex items-center justify-between text-xs font-extrabold text-[var(--text-primary)] hover:text-[#2BB5FF] transition-colors"
               >
                 <span>Terms of Service</span>
-                <ArrowRight24Filled className="w-3.5 h-3.5" />
+                <Icon filled={ArrowRight24Filled} active size="sm" />
               </Link>
             </div>
           </aside>
@@ -477,7 +478,7 @@ export default function PrivacyPolicyPage() {
           {/* Right Detailed Sections */}
           <div className="lg:col-span-8 space-y-10">
             {sections.map((sec) => {
-              const Icon = sec.icon;
+              const SecIcon = sec.icon;
               return (
                 <section
                   key={sec.id}
@@ -486,7 +487,7 @@ export default function PrivacyPolicyPage() {
                 >
                   <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] pb-4">
                     <div className="w-9 h-9 rounded-2xl bg-[#2BB5FF]/15 text-[#0284C7] dark:text-[#2BB5FF] flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5" />
+                      <Icon regular={SecIcon} size="md" />
                     </div>
                     <h2 className="text-lg sm:text-xl font-black text-[var(--text-primary)] tracking-tight">
                       {sec.title[lang]}

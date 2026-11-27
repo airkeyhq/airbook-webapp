@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Icon } from '@/components/primitives/Icon';
 import {
   ROADMAP_ISSUES,
   MILESTONE_EPICS,
@@ -18,7 +19,7 @@ import {
   Dismiss24Filled,
   Sparkle24Regular,
   ArrowRight24Filled,
-  CheckmarkCircle24Filled,
+  CheckmarkCircle24Regular,
   Clock24Regular,
   Add24Filled,
   Book24Regular,
@@ -190,7 +191,7 @@ export default function LinearRoadmapPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-600 dark:text-blue-400">
-              <Sparkle24Regular className="w-3.5 h-3.5" />
+              <Icon regular={Sparkle24Regular} size="sm" />
               <span>Linear Engine · GitHub Repository Sync (airkeyhq/airbook-webapp)</span>
             </div>
 
@@ -210,7 +211,7 @@ export default function LinearRoadmapPage() {
               disabled={isGitHubSyncing}
               className="btn-secondary h-10 px-3.5 rounded-2xl text-xs font-bold flex items-center gap-2 text-[var(--text-secondary)]"
             >
-              <ArrowSync24Regular className={`w-4 h-4 ${isGitHubSyncing ? 'animate-spin text-blue-500' : ''}`} />
+              <Icon regular={ArrowSync24Regular} size="sm" className={isGitHubSyncing ? 'animate-spin text-blue-500' : ''} />
               <span>{isGitHubSyncing ? 'Syncing GitHub…' : `GitHub Synced (${lastSyncTime})`}</span>
             </button>
 
@@ -218,7 +219,7 @@ export default function LinearRoadmapPage() {
               href="/in/100tasks"
               className="btn-secondary h-10 px-4 rounded-2xl text-xs font-bold flex items-center gap-2"
             >
-              <DocumentBulletList24Regular className="w-4 h-4 text-blue-500" />
+              <Icon regular={DocumentBulletList24Regular} size="sm" className="text-blue-500" />
               <span>100tasks Hub</span>
             </Link>
           </div>
@@ -228,7 +229,7 @@ export default function LinearRoadmapPage() {
         <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3 relative z-10">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-              <Tag24Regular className="w-3.5 h-3.5 text-blue-500" />
+              <Icon regular={Tag24Regular} size="sm" className="text-blue-500" />
               <span>Release Milestones & Epics</span>
             </h3>
             <span className="text-[11px] font-mono font-bold text-[var(--text-muted)]">
@@ -283,7 +284,7 @@ export default function LinearRoadmapPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search Input */}
           <div className="md:col-span-6 relative">
-            <Search24Regular className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+            <Icon regular={Search24Regular} size="sm" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -319,7 +320,7 @@ export default function LinearRoadmapPage() {
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <Grid24Regular className="w-3.5 h-3.5" />
+              <Icon regular={Grid24Regular} size="sm" />
               <span>Board</span>
             </button>
             <button
@@ -330,7 +331,7 @@ export default function LinearRoadmapPage() {
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <AppsListDetail24Regular className="w-3.5 h-3.5" />
+              <Icon regular={AppsListDetail24Regular} size="sm" />
               <span>List</span>
             </button>
           </div>
@@ -414,7 +415,7 @@ export default function LinearRoadmapPage() {
                       {/* Subtasks Count & GitHub Repo Spec Badge */}
                       <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] text-[var(--text-muted)]">
                         <span className="flex items-center gap-1">
-                          <Checkmark24Regular className="w-3 h-3" />
+                          <Icon regular={Checkmark24Regular} size="xs" />
                           <span>
                             {issue.subtasks.filter((s) => s.completed).length}/{issue.subtasks.length}
                           </span>
@@ -422,7 +423,7 @@ export default function LinearRoadmapPage() {
 
                         {issue.githubSpec && (
                           <span className="inline-flex items-center gap-1 text-blue-500 font-mono font-bold text-[10px]">
-                            <Code24Regular className="w-3 h-3" />
+                            <Icon regular={Code24Regular} size="xs" />
                             <span>{issue.githubSpec.branch || 'main'}</span>
                           </span>
                         )}
@@ -523,7 +524,7 @@ export default function LinearRoadmapPage() {
                   onClick={() => setActiveIssue(null)}
                   className="btn-tertiary w-9 h-9 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} active size="sm" />
                 </button>
               </div>
 
@@ -544,7 +545,7 @@ export default function LinearRoadmapPage() {
                   <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs font-black text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                        <Code24Regular className="w-4 h-4" />
+                        <Icon regular={Code24Regular} size="sm" />
                         <span>GitHub Code & Architecture Spec</span>
                       </h4>
                       <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-500">
@@ -565,7 +566,7 @@ export default function LinearRoadmapPage() {
                           className="btn-tertiary px-2 py-1 rounded-lg text-[10px] font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1 flex-shrink-0"
                         >
                           <span>Open</span>
-                          <Open24Filled className="w-3 h-3" />
+                          <Icon filled={Open24Filled} active size="xs" />
                         </a>
                       </div>
 
@@ -586,7 +587,7 @@ export default function LinearRoadmapPage() {
                       </div>
 
                       <div className="pt-1 flex items-center gap-1.5 text-[11px] font-mono text-[var(--text-secondary)]">
-                        <Code24Regular className="w-3 h-3 text-blue-500 flex-shrink-0" />
+                        <Icon regular={Code24Regular} size="xs" className="text-blue-500 flex-shrink-0" />
                         <span className="truncate">{activeIssue.githubSpec.repoPath}</span>
                       </div>
                     </div>
@@ -596,7 +597,7 @@ export default function LinearRoadmapPage() {
                 {/* Subtask Checklist */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-                    <CheckmarkCircle24Filled className="w-3.5 h-3.5 text-blue-500" />
+                    <Icon regular={CheckmarkCircle24Regular} size="sm" className="text-blue-500" />
                     <span>Implementation Subtasks</span>
                   </h4>
                   <div className="space-y-2">
@@ -614,7 +615,7 @@ export default function LinearRoadmapPage() {
                               : 'border border-[var(--border-subtle)] bg-[var(--bg-primary)]'
                           }`}
                         >
-                          {st.completed && <Checkmark24Regular className="w-3.5 h-3.5" />}
+                          {st.completed && <Icon regular={Checkmark24Regular} size="sm" />}
                         </button>
                         <span className={st.completed ? 'line-through text-[var(--text-muted)]' : 'font-medium'}>
                           {st.title}

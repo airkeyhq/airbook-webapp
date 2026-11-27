@@ -5,16 +5,15 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
+import { Icon } from '@/components/primitives/Icon';
 import {
   Dismiss24Filled,
-  ShieldCheckmark24Filled,
   ShieldCheckmark24Regular,
-  CheckmarkCircle24Filled,
-  Camera24Filled,
+  CheckmarkCircle24Regular,
+  Camera24Regular,
   Sparkle24Filled,
   ArrowRight24Filled,
-  Person24Filled,
-  DocumentCheckmark24Filled,
+  Person24Regular,
 } from '@fluentui/react-icons';
 
 interface KYCVerificationModalProps {
@@ -107,7 +106,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
           <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center flex-shrink-0">
-                <ShieldCheckmark24Filled className="w-5 h-5 text-blue-600" />
+                <Icon regular={ShieldCheckmark24Regular} size="md" className="text-blue-600" />
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">
@@ -124,7 +123,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
-              <Dismiss24Filled className="w-5 h-5" />
+              <Icon filled={Dismiss24Filled} size="md" />
             </button>
           </div>
 
@@ -177,7 +176,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
                   className="btn-primary w-full"
                 >
                   <span>Continue to Document Scan</span>
-                  <ArrowRight24Filled className="w-4 h-4" />
+                  <Icon filled={ArrowRight24Filled} size="sm" />
                 </button>
               </motion.div>
             )}
@@ -194,7 +193,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
 
                 <div className="relative w-full h-48 rounded-2xl bg-black/5 dark:bg-white/5 border-2 border-dashed border-blue-500/50 flex flex-col items-center justify-center overflow-hidden p-4">
                   <div className="w-36 h-24 rounded-xl border-2 border-blue-500/60 bg-blue-500/5 flex flex-col items-center justify-center gap-1.5 shadow-sm">
-                    <Camera24Filled className="w-6 h-6 text-blue-500" />
+                    <Icon regular={Camera24Regular} size="lg" className="text-blue-500" />
                     <span className="text-[10px] font-bold text-blue-600 uppercase">
                       {idType.replace('_', ' ')}
                     </span>
@@ -221,7 +220,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
                     onClick={handleStartLivenessScan}
                     className="btn-primary w-2/3"
                   >
-                    <Sparkle24Filled className="w-4 h-4" />
+                    <Icon filled={Sparkle24Filled} size="sm" />
                     <span>Proceed to 3D Selfie</span>
                   </button>
                 </div>
@@ -240,7 +239,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
 
                 {/* Biometric Scanning Oval Frame */}
                 <div className="relative w-40 h-52 mx-auto rounded-[50%] border-4 border-dashed border-blue-500/80 flex items-center justify-center overflow-hidden bg-blue-500/5 shadow-inner">
-                  <Person24Filled className="w-24 h-24 text-blue-500/30" />
+                  <Icon regular={Person24Regular} className="w-24 h-24 text-blue-500/30" />
                   
                   {/* Rotating radar scan */}
                   <motion.div
@@ -265,7 +264,7 @@ export const KYCVerificationModal: React.FC<KYCVerificationModalProps> = ({
             {step === 4 && (
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-5 py-4">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
-                  <CheckmarkCircle24Filled className="w-9 h-9" />
+                  <Icon regular={CheckmarkCircle24Regular} className="w-9 h-9" />
                 </div>
 
                 <div className="space-y-1">

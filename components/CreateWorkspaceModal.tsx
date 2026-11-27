@@ -10,10 +10,11 @@ import { Toast, useToast } from '@/components/Toast';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import {
-  Sparkle24Filled,
+  Sparkle24Regular,
   Dismiss24Filled,
   Add24Filled,
 } from '@fluentui/react-icons';
+import { Icon } from '@/components/primitives/Icon';
 
 interface CreateWorkspaceModalProps {
   isOpen: boolean;
@@ -128,7 +129,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
             <div className="w-full px-6 py-4 flex items-center justify-between flex-shrink-0 bg-[var(--bg-primary)] border-b border-[var(--border-subtle)] rounded-t-[32px] md:rounded-t-3xl">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
-                  <Sparkle24Filled className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <Icon regular={Sparkle24Regular} size="lg" className="text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-[var(--text-primary)]">
@@ -145,7 +146,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
                 onClick={onClose}
                 className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] transition-colors cursor-pointer"
               >
-                <Dismiss24Filled className="w-5 h-5" />
+                <Icon filled={Dismiss24Filled} size="lg" />
               </button>
             </div>
 
@@ -204,7 +205,7 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
                   disabled={isSubmitting || !name.trim()}
                   className="w-full h-12 btn-primary rounded-2xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} size="md" />
                   <span>{isSubmitting ? '...' : t('createWorkspaceBtn')}</span>
                 </button>
               </div>

@@ -8,11 +8,13 @@ import { CircleCloudIcon } from './Logo';
 import { AuthModal } from './AuthModal';
 import { CreateWorkspaceModal } from './CreateWorkspaceModal';
 import { NotificationCenterPopover } from './NotificationCenterPopover';
+import { QRCodeCard } from './QRCodeCard';
+import { Icon } from '@/components/primitives/Icon';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
 import {
-  ChevronDown24Filled,
+  ChevronDown24Regular,
   Share24Filled,
   Share24Regular,
   Sparkle24Filled,
@@ -23,6 +25,7 @@ import {
   Globe24Filled,
   Copy24Filled,
   Checkmark24Filled,
+  QrCode24Regular,
   QrCode24Filled,
   Dismiss24Filled,
   LockClosed24Filled,
@@ -155,7 +158,7 @@ export const DesktopHeader: React.FC = () => {
               </div>
             )}
             <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
-            <ChevronDown24Filled className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+            <Icon regular={ChevronDown24Regular} size="xs" tone="muted" className="sm:w-3.5 sm:h-3.5" />
           </button>
 
           {isWorkspaceMenuOpen && (
@@ -198,7 +201,7 @@ export const DesktopHeader: React.FC = () => {
                         <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
                       </div>
                       {ws.name === workspaceName && (
-                        <Checkmark24Filled className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                        <Icon filled={Checkmark24Filled} active size="md" className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
                       )}
                     </button>
                   ))
@@ -222,7 +225,7 @@ export const DesktopHeader: React.FC = () => {
                       <span className="text-xs font-bold text-[var(--text-primary)] truncate">{workspaceName || 'Aurelia Hair & Spa'}</span>
                       <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{currentSlug}</span>
                     </div>
-                    <Checkmark24Filled className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <Icon filled={Checkmark24Filled} active size="md" className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
                   </div>
                 )}
               </div>
@@ -235,7 +238,7 @@ export const DesktopHeader: React.FC = () => {
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
-                  <Add24Filled className="w-4 h-4" />
+                  <Icon filled={Add24Filled} active size="md" />
                   <span>{t('createNewWorkspace')}</span>
                 </button>
               </div>
@@ -255,7 +258,7 @@ export const DesktopHeader: React.FC = () => {
             aria-label={t('menu')}
             className="md:hidden w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 active:scale-95 transition-all text-[var(--text-primary)] cursor-pointer flex-shrink-0"
           >
-            <Navigation24Filled className="w-4 h-4" />
+            <Icon filled={Navigation24Filled} active size="md" />
           </button>
 
           {/* Desktop Only: Share Booking Trigger */}
@@ -265,7 +268,7 @@ export const DesktopHeader: React.FC = () => {
               className="w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] relative flex-shrink-0 cursor-pointer"
               aria-label={t('shareLink')}
             >
-              <Share24Filled className="w-4 h-4 text-[var(--text-primary)]" />
+              <Icon filled={Share24Filled} active size="md" className="text-[var(--text-primary)]" />
             </button>
 
             {/* Hover Tooltip */}
@@ -286,7 +289,7 @@ export const DesktopHeader: React.FC = () => {
                   onClick={() => setIsShareMenuOpen(false)}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
-                  <Globe24Filled className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <Icon filled={Globe24Filled} active size="md" className="text-blue-500 flex-shrink-0" />
                   <span>{t('openLiveBookingPage')}</span>
                 </a>
 
@@ -297,9 +300,9 @@ export const DesktopHeader: React.FC = () => {
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   {copied ? (
-                    <Checkmark24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <Icon filled={Checkmark24Filled} active size="md" className="text-emerald-500 flex-shrink-0" />
                   ) : (
-                    <Copy24Filled className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <Icon filled={Copy24Filled} active size="md" className="text-emerald-500 flex-shrink-0" />
                   )}
                   <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
                 </button>
@@ -313,7 +316,7 @@ export const DesktopHeader: React.FC = () => {
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
-                  <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
+                  <Icon filled={QrCode24Filled} active size="md" className="text-[var(--text-secondary)] flex-shrink-0" />
                   <span>{t('qrCodeModalTitle')}</span>
                 </button>
               </div>
@@ -332,7 +335,7 @@ export const DesktopHeader: React.FC = () => {
                 className="w-4 h-4 rounded-full object-cover flex-shrink-0"
               />
               <span className="uppercase text-[10px] tracking-wider">{language}</span>
-              <ChevronDown24Filled className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
+              <Icon regular={ChevronDown24Regular} size="xs" tone="muted" />
             </button>
 
             {isLangMenuOpen && (
@@ -370,7 +373,7 @@ export const DesktopHeader: React.FC = () => {
               aria-label={t('lockStation')}
               className="h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center cursor-pointer flex-shrink-0"
             >
-              <LockClosed24Filled className="w-4 h-4" />
+              <Icon filled={LockClosed24Filled} active size="md" />
             </button>
 
             {/* Hover Tooltip */}
@@ -405,7 +408,7 @@ export const DesktopHeader: React.FC = () => {
                     onClick={handleSignOut}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                   >
-                    <SignOut24Filled className="w-4 h-4" />
+                    <Icon filled={SignOut24Filled} active size="md" />
                     <span>{t('signOut')}</span>
                   </button>
                 ) : (
@@ -416,7 +419,7 @@ export const DesktopHeader: React.FC = () => {
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                   >
-                    <Person24Filled className="w-4 h-4" />
+                    <Icon filled={Person24Filled} active size="md" />
                     <span>{t('signIn')}</span>
                   </button>
                 )}
@@ -477,7 +480,7 @@ export const DesktopHeader: React.FC = () => {
                       className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 active:scale-95 transition-all flex items-center justify-center text-[var(--text-secondary)] cursor-pointer flex-shrink-0"
                       aria-label={t('close')}
                     >
-                      <Dismiss24Filled className="w-4 h-4" />
+                      <Icon filled={Dismiss24Filled} size="md" />
                     </button>
                   </div>
 
@@ -499,7 +502,7 @@ export const DesktopHeader: React.FC = () => {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-[var(--text-primary)] flex-shrink-0">
-                            <LockClosed24Filled className="w-4 h-4" />
+                            <Icon filled={LockClosed24Filled} active size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-bold text-[var(--text-primary)]">{t('lockStation')}</p>
@@ -518,14 +521,14 @@ export const DesktopHeader: React.FC = () => {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
-                            <Globe24Filled className="w-4 h-4" />
+                            <Icon filled={Globe24Filled} active size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-bold text-[var(--text-primary)]">{t('openLiveBookingPage')}</p>
                             <p className="text-[11px] text-[var(--text-secondary)]">getairbook.com/book/{currentSlug}</p>
                           </div>
                         </div>
-                        <Open24Filled className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
+                        <Icon filled={Open24Filled} active size="sm" className="text-[var(--text-muted)] flex-shrink-0" />
                       </a>
 
                       {/* Action 3: Copy Booking Link */}
@@ -536,7 +539,7 @@ export const DesktopHeader: React.FC = () => {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center flex-shrink-0">
-                            {copied ? <Checkmark24Filled className="w-4 h-4" /> : <Copy24Filled className="w-4 h-4" />}
+                            {copied ? <Icon filled={Checkmark24Filled} active size="md" /> : <Icon filled={Copy24Filled} active size="md" />}
                           </div>
                           <div>
                             <p className="text-xs font-bold text-[var(--text-primary)]">
@@ -558,7 +561,7 @@ export const DesktopHeader: React.FC = () => {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center flex-shrink-0">
-                            <QrCode24Filled className="w-4 h-4" />
+                            <Icon filled={QrCode24Filled} active size="md" />
                           </div>
                           <div>
                             <p className="text-xs font-bold text-[var(--text-primary)]">{t('qrCodeModalTitle')}</p>
@@ -594,7 +597,7 @@ export const DesktopHeader: React.FC = () => {
                               className="w-5 h-5 rounded-full object-cover flex-shrink-0"
                             />
                             <span className="truncate">{lang.label}</span>
-                            {isSelected && <Checkmark24Filled className="w-3.5 h-3.5 ml-auto text-blue-500 flex-shrink-0" />}
+                            {isSelected && <Icon filled={Checkmark24Filled} active size="sm" className="ml-auto text-blue-500 flex-shrink-0" />}
                           </button>
                         );
                       })}
@@ -612,7 +615,7 @@ export const DesktopHeader: React.FC = () => {
                         }}
                         className="w-full h-11 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 active:scale-97 transition-all flex items-center justify-center gap-2 text-xs font-bold border border-red-500/20 cursor-pointer"
                       >
-                        <SignOut24Filled className="w-4 h-4" />
+                        <Icon filled={SignOut24Filled} active size="md" />
                         <span>{t('signOut')}</span>
                       </button>
                     ) : (
@@ -624,7 +627,7 @@ export const DesktopHeader: React.FC = () => {
                         }}
                         className="w-full btn-primary h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-extrabold cursor-pointer"
                       >
-                        <Person24Filled className="w-4 h-4" />
+                        <Icon filled={Person24Filled} active size="md" />
                         <span>{t('signIn')}</span>
                       </button>
                     )}
@@ -648,7 +651,7 @@ export const DesktopHeader: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                  <QrCode24Filled className="w-4 h-4 text-[var(--text-secondary)]" />
+                  <Icon regular={QrCode24Regular} size="md" tone="secondary" />
                   <span>{t('qrCodeModalTitle')}</span>
                 </h3>
                 <button
@@ -656,64 +659,20 @@ export const DesktopHeader: React.FC = () => {
                   onClick={() => setIsQrModalOpen(false)}
                   className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
                 >
-                  <Dismiss24Filled className="w-4 h-4" />
+                  <Icon filled={Dismiss24Filled} size="md" />
                 </button>
               </div>
 
-              <p className="text-xs text-[var(--text-secondary)]">{t('qrCodeModalDesc')}</p>
-
-              {/* High-Resolution QR Vector Card */}
-              <div className="p-6 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-md mx-auto w-48 h-48">
-                <svg viewBox="0 0 100 100" className="w-36 h-36">
-                  <rect x="0" y="0" width="100" height="100" fill="white" />
-                  <rect x="10" y="10" width="24" height="24" fill="black" />
-                  <rect x="14" y="14" width="16" height="16" fill="white" />
-                  <rect x="18" y="18" width="8" height="8" fill="black" />
-                  <rect x="66" y="10" width="24" height="24" fill="black" />
-                  <rect x="70" y="14" width="16" height="16" fill="white" />
-                  <rect x="74" y="18" width="8" height="8" fill="black" />
-                  <rect x="10" y="66" width="24" height="24" fill="black" />
-                  <rect x="14" y="70" width="16" height="16" fill="white" />
-                  <rect x="18" y="74" width="8" height="8" fill="black" />
-                  <rect x="40" y="10" width="8" height="8" fill="black" />
-                  <rect x="52" y="14" width="8" height="8" fill="black" />
-                  <rect x="40" y="26" width="8" height="8" fill="black" />
-                  <rect x="48" y="38" width="8" height="8" fill="black" />
-                  <rect x="14" y="44" width="8" height="8" fill="black" />
-                  <rect x="28" y="48" width="8" height="8" fill="black" />
-                  <rect x="66" y="44" width="8" height="8" fill="black" />
-                  <rect x="78" y="52" width="8" height="8" fill="black" />
-                  <rect x="40" y="66" width="8" height="8" fill="black" />
-                  <rect x="54" y="74" width="8" height="8" fill="black" />
-                  <rect x="62" y="66" width="8" height="8" fill="black" />
-                  <rect x="78" y="80" width="8" height="8" fill="black" />
-                </svg>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-[11px] font-mono text-blue-500 font-bold truncate">
-                  {publicBookingUrl}
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyDirectLink}
-                    className="btn-secondary flex-1"
-                  >
-                    {copied ? <Checkmark24Filled className="w-3.5 h-3.5 text-emerald-500" /> : <Copy24Filled className="w-3.5 h-3.5" />}
-                    <span>{copied ? t('linkCopied') : t('copyBookingLink')}</span>
-                  </button>
-                  <a
-                    href={`/book/${currentSlug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary flex-1"
-                  >
-                    <Open24Filled className="w-3.5 h-3.5" />
-                    <span>{t('openLiveBookingPage')}</span>
-                  </a>
-                </div>
-              </div>
+              <QRCodeCard
+                description={t('qrCodeModalDesc')}
+                url={publicBookingUrl}
+                openHref={`/book/${currentSlug}`}
+                copyLabel={t('copyBookingLink')}
+                copiedLabel={t('linkCopied')}
+                openLabel={t('openLiveBookingPage')}
+                onCopy={handleCopyDirectLink}
+                downloadable
+              />
             </motion.div>
           </div>
         )}
