@@ -7,6 +7,7 @@ import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
 import { ToggleGroup } from '@/components/primitives/ToggleGroup';
 import { StatCard } from '@/components/StatCard';
+import { EmptyState } from '@/components/EmptyState';
 import {
   DataTrending24Regular,
   Money24Regular,
@@ -272,9 +273,11 @@ export const AnalyticsModule: React.FC = () => {
             innerClassName="p-5 space-y-4"
           >
             {dailySeries.length === 0 ? (
-              <p className="text-xs text-[var(--text-secondary)] py-6 text-center">
-                {t('noRevenueDataRange')}
-              </p>
+              <EmptyState
+                icon={DataTrending24Regular}
+                title={t('noRevenueDataRange')}
+                className="!min-h-[160px] !p-6 !border-0 !bg-transparent"
+              />
             ) : (
               <div className="flex items-end gap-1.5 h-36 pt-4 overflow-x-auto">
                 {dailySeries.map((pt) => {
@@ -326,9 +329,11 @@ export const AnalyticsModule: React.FC = () => {
             innerClassName="p-5 space-y-4"
           >
             {payrollRows.length === 0 ? (
-              <p className="text-xs text-[var(--text-secondary)] py-6 text-center">
-                {t('noPayrollData')}
-              </p>
+              <EmptyState
+                icon={People24Regular}
+                title={t('noPayrollData')}
+                className="!min-h-[160px] !p-6 !border-0 !bg-transparent"
+              />
             ) : (
               <div className="divide-y divide-[var(--border-subtle)]">
                 {payrollRows.map((row) => (
