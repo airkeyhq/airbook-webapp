@@ -12,6 +12,9 @@ import { EmptyState } from './EmptyState';
 import { useAirBookStore } from '@/lib/store';
 import { Icon } from '@/components/primitives/Icon';
 import { Card } from '@/components/primitives/Card';
+import { ToggleGroup } from '@/components/primitives/ToggleGroup';
+import { InlineIndicator } from '@/components/primitives/Indicator';
+import { StatCard } from '@/components/StatCard';
 import {
   Tag24Filled,
   Tag24Regular,
@@ -510,109 +513,88 @@ export const PackagesModule: React.FC = () => {
         <div className="space-y-6">
           {/* Live Metrics Ribbon */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            <Card className="p-4 space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={GiftCard24Regular} size="sm" tone="secondary" />
-                <span>{t('totalOutstandingBalance')}</span>
-              </div>
-              <div className="flex items-baseline justify-between">
-                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-                  ${totalGiftCardBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <span className="text-[11px] font-bold text-[var(--text-muted)]">
-                  {activeGiftCardsCount} {t('activeCards')}
-                </span>
-              </div>
-            </Card>
+            <StatCard
+              title={t('totalOutstandingBalance')}
+              value={totalGiftCardBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              prefix="$"
+              subtitle={`${activeGiftCardsCount} ${t('activeCards')}`}
+              icon={<Icon regular={GiftCard24Regular} size="sm" tone="secondary" />}
+            />
 
-            <Card className="p-4 space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={Tag24Regular} size="sm" tone="secondary" />
-                <span>{t('activePackages')}</span>
-              </div>
-              <div className="flex items-baseline justify-between">
-                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-                  {activePackagesCount}
-                </p>
-                <span className="text-[11px] font-bold text-[var(--text-muted)]">
-                  {t('totalBundlesCount').replace('{count}', String(packagesList.length))}
-                </span>
-              </div>
-            </Card>
+            <StatCard
+              title={t('activePackages')}
+              value={activePackagesCount}
+              subtitle={t('totalBundlesCount').replace('{count}', String(packagesList.length))}
+              icon={<Icon regular={Tag24Regular} size="sm" tone="secondary" />}
+            />
 
-            <Card className="p-4 space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
-                <span>{t('recurringRevenueMRR')}</span>
-              </div>
-              <div className="flex items-baseline justify-between">
-                <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-                  ${Math.round(estimatedMRR).toLocaleString()} {t('perMonthShort')}
-                </p>
-                <span className="text-[11px] font-bold text-[var(--text-muted)]">
-                  {activeMembershipsCount} {t('activeMemberships')}
-                </span>
-              </div>
-            </Card>
+            <StatCard
+              title={t('recurringRevenueMRR')}
+              value={Math.round(estimatedMRR).toLocaleString()}
+              prefix="$"
+              suffix={` ${t('perMonthShort')}`}
+              subtitle={`${activeMembershipsCount} ${t('activeMemberships')}`}
+              icon={<Icon regular={Sparkle24Regular} size="sm" tone="secondary" />}
+            />
           </div>
 
           <div className="space-y-3.5">
             {/* Segmented Control */}
-            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit overflow-x-auto">
-              <button
-                type="button"
-                onClick={() => setActiveTab('gift_cards')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  activeTab === 'gift_cards'
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <Icon regular={GiftCard24Regular} filled={GiftCard24Filled} active={activeTab === 'gift_cards'} size="sm" />
-                <span>{t('tabGiftCards')}</span>
-                {giftCards.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {giftCards.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('packages')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  activeTab === 'packages'
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <Icon regular={Tag24Regular} filled={Tag24Filled} active={activeTab === 'packages'} size="sm" />
-                <span>{t('tabServicePackages')}</span>
-                {packagesList.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {packagesList.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('memberships')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  activeTab === 'memberships'
-                    ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'memberships'} size="sm" />
-                <span>{t('tabMemberships')}</span>
-                {membershipsList.length > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-mono font-extrabold">
-                    {membershipsList.length}
-                  </span>
-                )}
-              </button>
-            </div>
+            <ToggleGroup
+              variant="segmented"
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as 'gift_cards' | 'packages' | 'memberships')}
+              options={[
+                {
+                  value: 'gift_cards',
+                  icon: <Icon regular={GiftCard24Regular} filled={GiftCard24Filled} active={activeTab === 'gift_cards'} size="sm" />,
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <span>{t('tabGiftCards')}</span>
+                      {giftCards.length > 0 && (
+                        <InlineIndicator
+                          value={giftCards.length}
+                          variant={activeTab === 'gift_cards' ? 'pill-solid' : 'pill-muted'}
+                          rolling
+                        />
+                      )}
+                    </span>
+                  ),
+                },
+                {
+                  value: 'packages',
+                  icon: <Icon regular={Tag24Regular} filled={Tag24Filled} active={activeTab === 'packages'} size="sm" />,
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <span>{t('tabServicePackages')}</span>
+                      {packagesList.length > 0 && (
+                        <InlineIndicator
+                          value={packagesList.length}
+                          variant={activeTab === 'packages' ? 'pill-solid' : 'pill-muted'}
+                          rolling
+                        />
+                      )}
+                    </span>
+                  ),
+                },
+                {
+                  value: 'memberships',
+                  icon: <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'memberships'} size="sm" />,
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <span>{t('tabMemberships')}</span>
+                      {membershipsList.length > 0 && (
+                        <InlineIndicator
+                          value={membershipsList.length}
+                          variant={activeTab === 'memberships' ? 'pill-solid' : 'pill-muted'}
+                          rolling
+                        />
+                      )}
+                    </span>
+                  ),
+                },
+              ]}
+            />
 
       {/* ─── TAB 1: GIFT CARDS ─── */}
       {activeTab === 'gift_cards' && (
