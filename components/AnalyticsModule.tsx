@@ -67,6 +67,7 @@ export const AnalyticsModule: React.FC = () => {
   const checkoutNonce = useAirBookStore((s) => s.checkoutNonce);
   const bumpCheckoutNonce = useAirBookStore((s) => s.bumpCheckoutNonce);
   const [range, setRange] = useState<DateRangeKey>('30d');
+  const [activeTab, setActiveTab] = useState<'revenue' | 'payroll' | 'expenses'>('revenue');
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [expensesList, setExpensesList] = useState<ExpenseItem[]>([]);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -254,9 +255,34 @@ export const AnalyticsModule: React.FC = () => {
             />
           </div>
 
-          {/* Daily Revenue Trend Chart */}
-          <Card
-            variant="envelope"
+          <div className="space-y-4">
+            <ToggleGroup
+              variant="segmented"
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as 'revenue' | 'payroll' | 'expenses')}
+              options={[
+                {
+                  value: 'revenue',
+                  label: t('revenueTrendTitle'),
+                  icon: <Icon regular={DataTrending24Regular} size="sm" />,
+                },
+                {
+                  value: 'payroll',
+                  label: t('staffPayrollTitle'),
+                  icon: <Icon regular={People24Regular} size="sm" />,
+                },
+                {
+                  value: 'expenses',
+                  label: t('expensesTitle'),
+                  icon: <Icon regular={Receipt24Regular} size="sm" />,
+                },
+              ]}
+            />
+
+            {/* TAB 1: Daily Revenue Trend Chart */}
+            {activeTab === 'revenue' && (
+              <Card
+                variant="envelope"
             trayHeader={
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -301,10 +327,12 @@ export const AnalyticsModule: React.FC = () => {
               </div>
             )}
           </Card>
+            )}
 
-          {/* Staff Commission & Payroll Breakdown */}
-          <Card
-            variant="envelope"
+            {/* TAB 2: Staff Commission & Payroll Breakdown */}
+            {activeTab === 'payroll' && (
+              <Card
+                variant="envelope"
             trayHeader={
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -364,10 +392,12 @@ export const AnalyticsModule: React.FC = () => {
               </div>
             )}
           </Card>
+            )}
 
-          {/* Studio Expenses & Tax-Ready P&L Ledger */}
-          <Card
-            variant="envelope"
+            {/* TAB 3: Studio Expenses & Tax-Ready P&L Ledger */}
+            {activeTab === 'expenses' && (
+              <Card
+                variant="envelope"
             trayHeader={
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -459,6 +489,8 @@ export const AnalyticsModule: React.FC = () => {
               </div>
             )}
           </Card>
+            )}
+          </div>
         </>
       )}
     </div>
