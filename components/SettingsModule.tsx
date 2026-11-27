@@ -751,7 +751,7 @@ export const SettingsModule: React.FC = () => {
 
             {/* Stripe Connect Direct Payouts Card */}
             <Section title={t('stripeConnectTitle')} icon={Payment24Regular}>
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 border border-indigo-500/20 space-y-4">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="px-3 py-2 rounded-2xl bg-[#635BFF] flex items-center justify-center shadow-md shadow-[#635BFF]/30 flex-shrink-0">
@@ -1651,7 +1651,7 @@ export const SettingsModule: React.FC = () => {
 
                 {/* Lock Overlay Banner if not in Beta or Local Dev */}
                 {!canAccessAddons && (
-                  <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-500/20 space-y-3">
+                  <div className="p-5 rounded-2xl bg-amber-500/5 border border-amber-500/20 space-y-3">
                     <div className="flex items-start gap-3">
                       <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex-shrink-0">
                         <Icon regular={LockClosed24Regular} size="md" />

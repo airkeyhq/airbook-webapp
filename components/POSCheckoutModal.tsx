@@ -55,7 +55,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { updateAppointmentStatus } = useAirBookStore();
+  const { updateAppointmentStatus, bumpCheckoutNonce } = useAirBookStore();
 
   // Dynamic Cart State
   const [editablePrice, setEditablePrice] = useState<number>(totalPrice);
@@ -91,6 +91,13 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   const [giftCardCodeInput, setGiftCardCodeInput] = useState('');
   const [verifiedGiftCard, setVerifiedGiftCard] = useState<any | null>(null);
   const [checkingCard, setCheckingCard] = useState(false);
+
+  // Packages & Memberships Perks State
+  const [availablePackages, setAvailablePackages] = useState<any[]>([]);
+  const [availableMemberships, setAvailableMemberships] = useState<any[]>([]);
+  const [appliedPerk, setAppliedPerk] = useState<{ type: 'package' | 'membership'; id: string; name: string; discountPercent: number } | null>(null);
+  const [showPerkPicker, setShowPerkPicker] = useState(false);
+
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -119,6 +126,24 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           }
         })
         .catch((err) => console.warn('Failed to load Zelle info for POS:', err));
+
+      fetch('/api/packages')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.packages)) {
+            setAvailablePackages(data.packages.filter((p: any) => p.isActive !== false));
+          }
+        })
+        .catch((err) => console.warn('Failed to load packages for POS:', err));
+
+      fetch('/api/memberships')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.memberships)) {
+            setAvailableMemberships(data.memberships.filter((m: any) => m.isActive !== false));
+          }
+        })
+        .catch((err) => console.warn('Failed to load memberships for POS:', err));
     }
   }, [isOpen]);
 
@@ -132,6 +157,8 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
     setSplitCardAmount('');
     setGiftCardCodeInput('');
     setVerifiedGiftCard(null);
+    setAppliedPerk(null);
+    setShowPerkPicker(false);
     setCartProducts([]);
     setShowProductPicker(false);
     setIsCompleted(false);
@@ -169,8 +196,11 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
   // Math Calculations
   const retailItemsTotal = cartProducts.reduce((acc, p) => acc + (p.retailPriceCents * p.qty) / 100, 0);
   const subtotal = (Number(editablePrice) || 0) + retailItemsTotal;
+  const perkDiscount = appliedPerk
+    ? Math.round(((subtotal * appliedPerk.discountPercent) / 100) * 100) / 100
+    : 0;
   const depositCredit = Number(depositPaid) || 0;
-  const taxableSubtotal = Math.max(0, subtotal - depositCredit);
+  const taxableSubtotal = Math.max(0, subtotal - depositCredit - perkDiscount);
   const estimatedTax = Math.round(taxableSubtotal * 0.0825 * 100) / 100; // 8.25% standard
 
   const tipAmount = customTip !== ''
@@ -220,7 +250,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
           subtotalCents: Math.round(subtotal * 100),
           tipCents: Math.round(tipAmount * 100),
           taxCents: Math.round(estimatedTax * 100),
-          discountCents: Math.round(depositCredit * 100),
+          discountCents: Math.round((depositCredit + perkDiscount) * 100),
           totalCents: Math.round(finalTotal * 100),
           paymentMethod,
         }),
@@ -233,6 +263,7 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
         if (appointmentId) {
           updateAppointmentStatus(appointmentId, 'completed');
         }
+        bumpCheckoutNonce();
         addToast(t('paymentSuccessTitle'), 'success');
         onCheckoutComplete?.(data.invoice);
       } else {
@@ -517,6 +548,84 @@ export const POSCheckoutModal: React.FC<POSCheckoutModalProps> = ({
                           <button
                             type="button"
                             onClick={() => setShowProductPicker(false)}
+                            className="text-[10px] text-[var(--text-muted)] hover:underline block text-right"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Package / Membership Redemption */}
+                  {(availablePackages.length > 0 || availableMemberships.length > 0) && (
+                    <div className="pt-1">
+                      {appliedPerk ? (
+                        <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
+                          <span className="font-semibold flex items-center gap-1.5">
+                            <span>{appliedPerk.name} (-{appliedPerk.discountPercent}%)</span>
+                            <button
+                              type="button"
+                              onClick={() => setAppliedPerk(null)}
+                              className="text-[10px] text-rose-500 hover:underline cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </span>
+                          <span className="font-bold">-${perkDiscount.toFixed(2)}</span>
+                        </div>
+                      ) : !showPerkPicker ? (
+                        <button
+                          type="button"
+                          onClick={() => setShowPerkPicker(true)}
+                          className="text-[11px] font-bold text-[#2BB5FF] hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>+ Apply Package / Membership</span>
+                        </button>
+                      ) : (
+                        <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-1.5 mt-1">
+                          <p className="text-[10px] font-bold uppercase text-[var(--text-secondary)]">Select Package or Membership:</p>
+                          <div className="max-h-28 overflow-y-auto space-y-1">
+                            {availableMemberships.map((mem) => (
+                              <div
+                                key={mem.id}
+                                onClick={() => {
+                                  setAppliedPerk({
+                                    type: 'membership',
+                                    id: mem.id,
+                                    name: mem.name,
+                                    discountPercent: mem.discountPercentRetail || 15,
+                                  });
+                                  setShowPerkPicker(false);
+                                }}
+                                className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex justify-between items-center cursor-pointer text-xs"
+                              >
+                                <span className="font-medium text-[var(--text-primary)]">{mem.name}</span>
+                                <span className="font-bold text-emerald-600 font-mono">-{mem.discountPercentRetail || 15}%</span>
+                              </div>
+                            ))}
+                            {availablePackages.map((pkg) => (
+                              <div
+                                key={pkg.id}
+                                onClick={() => {
+                                  setAppliedPerk({
+                                    type: 'package',
+                                    id: pkg.id,
+                                    name: pkg.name,
+                                    discountPercent: pkg.discountPercent || 15,
+                                  });
+                                  setShowPerkPicker(false);
+                                }}
+                                className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex justify-between items-center cursor-pointer text-xs"
+                              >
+                                <span className="font-medium text-[var(--text-primary)]">{pkg.name}</span>
+                                <span className="font-bold text-emerald-600 font-mono">-{pkg.discountPercent || 15}%</span>
+                              </div>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowPerkPicker(false)}
                             className="text-[10px] text-[var(--text-muted)] hover:underline block text-right"
                           >
                             Cancel

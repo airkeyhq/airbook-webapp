@@ -3,6 +3,8 @@
 import React from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import { ShoppingBag24Regular, CheckmarkCircle24Regular } from '@fluentui/react-icons';
 
 export const MarketplaceModule: React.FC = () => {
@@ -17,9 +19,9 @@ export const MarketplaceModule: React.FC = () => {
             <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
               {t('marketplaceTitle')}
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold uppercase">
+            <Badge variant="subtle" size="xs" className="font-mono uppercase">
               {t('comingSoonV12')}
-            </span>
+            </Badge>
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
             {t('marketplaceDesc')}
@@ -28,7 +30,7 @@ export const MarketplaceModule: React.FC = () => {
       </div>
 
       {/* Honest Roadmap Teaser Card */}
-      <div className="p-8 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-center space-y-4 shadow-xs">
+      <Card variant="surface" className="p-8 text-center space-y-4">
         <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex items-center justify-center mx-auto">
           <Icon regular={ShoppingBag24Regular} className="w-7 h-7" />
         </div>
@@ -61,12 +63,12 @@ export const MarketplaceModule: React.FC = () => {
         </div>
 
         <div className="pt-2">
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-xs font-extrabold">
+          <Badge variant="subtle" size="md" className="gap-1.5">
             <Icon regular={ShoppingBag24Regular} size="sm" className="w-3.5 h-3.5" />
             <span>{t('marketplaceScheduledFor')}</span>
-          </span>
+          </Badge>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

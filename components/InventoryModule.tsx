@@ -11,6 +11,9 @@ import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
 import { useAirBookStore } from '@/lib/store';
 import { Icon } from '@/components/primitives/Icon';
+import { SearchInput } from '@/components/primitives/SearchInput';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -53,6 +56,7 @@ export const InventoryModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const workspaceId = useAirBookStore((s) => s.workspaceId);
+  const checkoutNonce = useAirBookStore((s) => s.checkoutNonce);
   const CATEGORY_OPTIONS = useMemo(() => getCategoryOptions(t), [t]);
 
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -111,7 +115,7 @@ export const InventoryModule: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [workspaceId]);
+  }, [workspaceId, checkoutNonce]);
 
   const openEditDrawer = (prod: ProductItem) => {
     setEditingProduct(prod);
@@ -399,24 +403,13 @@ export const InventoryModule: React.FC = () => {
         {!loading && products.length > 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
-              <div className="relative md:col-span-3">
-                <Icon regular={Search24Regular} size="sm" tone="muted" className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
+              <div className="md:col-span-3">
+                <SearchInput
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={setSearchQuery}
                   placeholder={t('searchInventoryPlaceholder')}
-                  className="w-full h-10 pl-9 pr-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
+                  shortcut=""
                 />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-                  >
-                    <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
-                  </button>
-                )}
               </div>
 
               <div className="w-full md:col-span-1">
@@ -435,7 +428,7 @@ export const InventoryModule: React.FC = () => {
                 description={t('noProductsSub')}
               />
             ) : (
-              <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden divide-y divide-[var(--border-subtle)] shadow-xs">
+              <Card className="overflow-hidden divide-y divide-[var(--border-subtle)] p-0">
                 {filteredProducts.map((prod) => {
                   const isLowStock = prod.stockQuantity <= (prod.lowStockAlertThreshold ?? 5) && prod.stockQuantity > 0;
                   const isOutOfStock = prod.stockQuantity === 0;
@@ -474,9 +467,9 @@ export const InventoryModule: React.FC = () => {
                           </div>
 
                           <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
-                            <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] font-bold text-[10px]">
+                            <Badge variant="subtle" size="xs">
                               {prod.category}
-                            </span>
+                            </Badge>
                             <span className="hidden sm:inline">•</span>
                             <span className="text-[var(--text-muted)] font-mono">
                               {t('costLabel')}: ${((prod.costPriceCents || 0) / 100).toFixed(2)}
@@ -490,21 +483,17 @@ export const InventoryModule: React.FC = () => {
                       </div>
 
                       <div className="flex items-center justify-between sm:justify-end gap-4">
-                        <div className="text-left sm:text-right">
+                        <div className="text-left sm:text-right space-y-1">
                           <p className="text-sm sm:text-base font-black text-[var(--text-primary)] font-mono">
                             ${((prod.retailPriceCents || 0) / 100).toFixed(2)}
                           </p>
-                          <span
-                            className={`text-[10px] font-extrabold uppercase tracking-wider ${
-                              isOutOfStock
-                                ? 'text-red-600 dark:text-red-400'
-                                : isLowStock
-                                ? 'text-amber-600 dark:text-amber-400'
-                                : 'text-emerald-600 dark:text-emerald-400'
-                            }`}
+                          <Badge
+                            variant={isOutOfStock ? 'danger' : isLowStock ? 'warning' : 'success'}
+                            size="xs"
+                            dot
                           >
                             {isOutOfStock ? t('outOfStock') : isLowStock ? t('lowStock') : t('inStock')}
-                          </span>
+                          </Badge>
                         </div>
 
                         <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)]">
@@ -530,7 +519,7 @@ export const InventoryModule: React.FC = () => {
                     </div>
                   );
                 })}
-              </div>
+              </Card>
             )}
           </>
         )}

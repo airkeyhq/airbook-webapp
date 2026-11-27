@@ -10,6 +10,8 @@ import { EmptyState } from '@/components/EmptyState';
 import { InlineIndicator } from '@/components/primitives/Indicator';
 import { getAvatarUrl } from '@/lib/avatars';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import {
   Payment24Filled,
   Calendar24Regular,
@@ -44,7 +46,7 @@ interface InvoiceRecord {
 
 export const POSModule: React.FC = () => {
   const { t } = useTranslation();
-  const { appointments, selectedDateStr, openBookingDrawer, isDemoMode, workspaceId } = useAirBookStore();
+  const { appointments, selectedDateStr, openBookingDrawer, isDemoMode, workspaceId, checkoutNonce, bumpCheckoutNonce } = useAirBookStore();
 
   const DEMO_INVOICES: InvoiceRecord[] = useMemo(
     () => [
@@ -137,7 +139,7 @@ export const POSModule: React.FC = () => {
     } else {
       fetchRecentInvoices();
     }
-  }, [isDemoMode, workspaceId, DEMO_INVOICES]);
+  }, [isDemoMode, workspaceId, DEMO_INVOICES, checkoutNonce]);
 
   const todayApts = appointments.filter((a) => a.dateStr === selectedDateStr);
   const totalRevenue = todayApts.reduce((sum, a) => sum + a.price, 0);
@@ -202,37 +204,37 @@ export const POSModule: React.FC = () => {
         <div className="space-y-6">
           {/* Daily Metrics Header Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                 <Icon regular={Calendar24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('appointmentsToday')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">{todayApts.length}</p>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                 <Icon regular={Money24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('revenueToday')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">${totalRevenue}</p>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                 <Icon regular={CheckmarkCircle24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('completed')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">{completedCount}</p>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                 <Icon regular={Tag24Regular} size="sm" tone="secondary" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgTicket')}</span>
               </div>
               <p className="text-lg font-black text-[var(--text-primary)] font-mono">${avgTicket}</p>
-            </div>
+            </Card>
           </div>
 
           {/* Segmented Control & Content Area */}
@@ -295,7 +297,7 @@ export const POSModule: React.FC = () => {
                     }}
                   />
                 ) : (
-                  <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
+                  <Card className="divide-y divide-[var(--border-subtle)] overflow-hidden p-0">
                     {todayApts.map((apt) => {
                       const isPaid = apt.status === 'completed' || apt.paymentStatus === 'paid';
                       return (
@@ -362,7 +364,7 @@ export const POSModule: React.FC = () => {
                         </div>
                       );
                     })}
-                  </div>
+                  </Card>
                 )}
               </div>
             )}
@@ -380,7 +382,7 @@ export const POSModule: React.FC = () => {
                     title={t('noInvoicesYet')}
                   />
                 ) : (
-                  <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
+                  <Card className="divide-y divide-[var(--border-subtle)] overflow-hidden p-0">
                     {invoices.slice(0, 15).map((inv) => (
                       <div
                         key={inv.id}
@@ -401,16 +403,16 @@ export const POSModule: React.FC = () => {
                         </div>
 
                         <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
-                          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-mono uppercase font-bold text-[var(--text-secondary)]">
+                          <Badge variant="subtle" size="xs" className="font-mono uppercase">
                             {inv.paymentMethod}
-                          </span>
+                          </Badge>
                           <span className="font-extrabold text-[var(--text-primary)] font-mono text-xs">
                             ${(inv.totalCents / 100).toFixed(2)}
                           </span>
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </Card>
                 )}
               </div>
             )}
@@ -443,6 +445,7 @@ export const POSModule: React.FC = () => {
         description={t('terminalPaymentDescription')}
         onPaymentCollected={() => {
           setIsTerminalOpen(false);
+          bumpCheckoutNonce();
           fetchRecentInvoices();
         }}
       />

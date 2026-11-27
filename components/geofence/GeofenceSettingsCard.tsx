@@ -7,6 +7,8 @@ import { useToast } from '@/components/Toast';
 import { FloatingInput } from '@/components/FloatingInput';
 import { CustomSelect } from '@/components/CustomSelect';
 import { Slider } from '@/components/primitives/Slider';
+import { Switch } from '@/components/primitives/Switch';
+import { Checkbox } from '@/components/Checkbox';
 import { Icon } from '@/components/primitives/Icon';
 import {
   Location24Filled,
@@ -58,34 +60,6 @@ interface GeofenceSettingsCardProps {
 }
 
 const RADIUS_PRESETS = [50, 100, 250, 500, 1000];
-
-function ToggleSwitch({
-  enabled,
-  onToggle,
-  disabled = false,
-}: {
-  enabled: boolean;
-  onToggle: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onToggle}
-      className={`relative w-11 h-6 rounded-full p-0.5 transition-colors flex items-center cursor-pointer ${
-        enabled ? 'bg-[#2BB5FF]' : 'bg-black/15 dark:bg-white/20'
-      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-      aria-pressed={enabled}
-    >
-      <motion.div
-        animate={{ x: enabled ? 20 : 0 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className="w-5 h-5 rounded-full bg-white shadow-sm flex items-center justify-center"
-      />
-    </button>
-  );
-}
 
 export function GeofenceSettingsCard({
   initialConfig = DEFAULT_GEOFENCE_CONFIG,
@@ -274,9 +248,9 @@ export function GeofenceSettingsCard({
           <span className="text-xs font-bold text-[var(--text-secondary)]">
             {config.enabled ? t('enabledState') : t('disabledState')}
           </span>
-          <ToggleSwitch
-            enabled={config.enabled}
-            onToggle={() => setConfig((prev) => ({ ...prev, enabled: !prev.enabled }))}
+          <Switch
+            checked={config.enabled}
+            onChange={(checked) => setConfig((prev) => ({ ...prev, enabled: checked }))}
           />
         </div>
       </div>
@@ -484,20 +458,17 @@ export function GeofenceSettingsCard({
             {(['staff', 'receptionist', 'manager'] as GeofenceRole[]).map((role) => {
               const checked = config.enforcedRoles.includes(role);
               return (
-                <label
+                <div
                   key={role}
-                  className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 cursor-pointer"
+                  className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
                 >
-                  <span className="text-xs font-bold text-[var(--text-primary)] capitalize">
-                    {t(`geofenceRole_${role}` as any)}
-                  </span>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={checked}
                     onChange={() => handleToggleRole(role)}
-                    className="w-4 h-4 rounded text-[#2BB5FF]"
+                    label={<span className="capitalize">{t(`geofenceRole_${role}` as any)}</span>}
+                    size="sm"
                   />
-                </label>
+                </div>
               );
             })}
 
@@ -511,10 +482,10 @@ export function GeofenceSettingsCard({
                   {t('geofenceExemptAdminsDesc')}
                 </span>
               </div>
-              <ToggleSwitch
-                enabled={config.exemptAdmins}
-                onToggle={() =>
-                  setConfig((prev) => ({ ...prev, exemptAdmins: !prev.exemptAdmins }))
+              <Switch
+                checked={config.exemptAdmins}
+                onChange={(checked) =>
+                  setConfig((prev) => ({ ...prev, exemptAdmins: checked }))
                 }
               />
             </div>

@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Icon } from '@/components/primitives/Icon';
-import { DataTrending24Regular, Money24Regular, People24Regular, Sparkle24Regular, ArrowUp24Regular } from '@fluentui/react-icons';
+import { StatCard } from '@/components/StatCard';
+import { DataTrending24Regular, Money24Regular, People24Regular, Sparkle24Regular } from '@fluentui/react-icons';
 import { useAirBookStore } from '@/lib/store';
 
 interface AnalyticsData {
@@ -19,6 +20,7 @@ interface AnalyticsData {
 export const AnalyticsModule: React.FC = () => {
   const { t } = useTranslation();
   const workspaceId = useAirBookStore((s) => s.workspaceId);
+  const checkoutNonce = useAirBookStore((s) => s.checkoutNonce);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,7 @@ export const AnalyticsModule: React.FC = () => {
       }
     }
     fetchAnalytics();
-  }, [workspaceId]);
+  }, [workspaceId, checkoutNonce]);
 
   const revNum = data ? data.totalRevenue : 0;
   const rev = revNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -80,37 +82,31 @@ export const AnalyticsModule: React.FC = () => {
         <>
           {/* Metrics Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={Money24Regular} size="sm" tone="secondary" />
-                <span>{t('metricTotalRevenue')}</span>
-              </div>
-              <p className="text-xl font-black text-[var(--text-primary)] font-mono">${rev.toLocaleString()}</p>
-            </div>
+            <StatCard
+              title={t('metricTotalRevenue')}
+              value={rev}
+              prefix="$"
+              icon={<Icon regular={Money24Regular} size="sm" tone="secondary" />}
+            />
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={DataTrending24Regular} size="sm" tone="secondary" />
-                <span>{t('netProfit')}</span>
-              </div>
-              <p className="text-xl font-black text-[var(--text-primary)] font-mono">${net.toLocaleString()}</p>
-            </div>
+            <StatCard
+              title={t('netProfit')}
+              value={net}
+              prefix="$"
+              icon={<Icon regular={DataTrending24Regular} size="sm" tone="secondary" />}
+            />
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
-                <span>{t('appointments')}</span>
-              </div>
-              <p className="text-xl font-black text-[var(--text-primary)] font-mono">{apts}</p>
-            </div>
+            <StatCard
+              title={t('appointments')}
+              value={apts}
+              icon={<Icon regular={Sparkle24Regular} size="sm" tone="secondary" />}
+            />
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-                <Icon regular={People24Regular} size="sm" tone="secondary" />
-                <span>{t('metricTotalClients')}</span>
-              </div>
-              <p className="text-xl font-black text-[var(--text-primary)] font-mono">{clientsCount}</p>
-            </div>
+            <StatCard
+              title={t('metricTotalClients')}
+              value={clientsCount}
+              icon={<Icon regular={People24Regular} size="sm" tone="secondary" />}
+            />
           </div>
         </>
       )}

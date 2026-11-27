@@ -21,10 +21,12 @@ import {
   ChevronLeft24Filled,
   ChevronRight24Filled,
   Clock24Filled,
+  Cut24Filled,
 } from '@fluentui/react-icons';
 
 export type DashboardTab =
   | 'calendar'
+  | 'services'
   | 'crm'
   | 'pos'
   | 'kiosk'
@@ -49,6 +51,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
 
   const NAV_ITEMS = [
     { id: 'calendar' as DashboardTab, label: t('tabCalendar'), icon: Calendar24Filled, badge: appointments.length },
+    { id: 'services' as DashboardTab, label: t('tabServices'), icon: Cut24Filled },
     { id: 'crm' as DashboardTab, label: t('tabCrm'), icon: Person24Filled },
     { id: 'pos' as DashboardTab, label: t('tabPos'), icon: Payment24Filled },
     { id: 'kiosk' as DashboardTab, label: t('tabKiosk'), icon: Clock24Filled },

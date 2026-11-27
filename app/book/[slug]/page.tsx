@@ -606,7 +606,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
         {/* Top Header: Brand & Language Selector */}
         <div className="flex items-start justify-between pb-5 border-b border-[var(--border-subtle)] gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 text-white flex items-center justify-center font-extrabold text-lg shadow-md flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#2BB5FF] text-white flex items-center justify-center font-extrabold text-lg shadow-xs flex-shrink-0">
               {workspace?.name ? workspace.name.charAt(0).toUpperCase() : 'A'}
             </div>
             <div className="min-w-0">
@@ -1290,7 +1290,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                   whileTap={{ scale: 0.97 }}
                   disabled={submitting}
                   onClick={handleConfirmBooking}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white font-extrabold text-xs shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  className="btn-primary w-full py-3.5 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <Icon regular={ShieldCheckmark24Regular} size="sm" />
                   <span>

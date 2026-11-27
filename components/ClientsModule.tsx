@@ -9,6 +9,9 @@ import { useToast } from '@/components/Toast';
 import { EmptyState } from '@/components/EmptyState';
 import { FloatingInput, FloatingTextarea } from '@/components/FloatingInput';
 import { Icon } from '@/components/primitives/Icon';
+import { SearchInput } from '@/components/primitives/SearchInput';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -378,25 +381,12 @@ export const ClientsModule: React.FC = () => {
           <>
             {/* Search & Tag Filter Bar */}
             <div className="space-y-3">
-              <div className="relative">
-                <Icon regular={Search24Regular} size="sm" tone="muted" className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('searchClientsPlaceholder')}
-                  className="w-full h-10 pl-9 pr-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-                  >
-                    <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder={t('searchClientsPlaceholder')}
+                shortcut=""
+              />
 
               {/* Tag Filter Chips */}
               {allUniqueTags.length > 1 && (
@@ -432,7 +422,7 @@ export const ClientsModule: React.FC = () => {
                 description={t('noClientsSub')}
               />
             ) : (
-              <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden bg-[var(--bg-primary)] shadow-xs">
+              <Card className="divide-y divide-[var(--border-subtle)] overflow-hidden p-0">
               {filteredClients.map((cli) => {
                 const avatarSrc = cli.avatarUrl || getAvatarUrl(cli.name);
                 const specsCount = (cli.customSpecs || []).length;
@@ -455,26 +445,23 @@ export const ClientsModule: React.FC = () => {
                           </h3>
 
                           {(cli.tags || []).slice(0, 2).map((tVal) => (
-                            <span
-                              key={tVal}
-                              className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold"
-                            >
+                            <Badge key={tVal} variant="default" size="xs">
                               {tVal}
-                            </span>
+                            </Badge>
                           ))}
 
                           {specsCount > 0 && (
-                            <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-bold flex items-center gap-1">
+                            <Badge variant="dashed-purple" size="xs" className="gap-1">
                               <Icon regular={Note24Regular} size="xs" />
                               <span>{specsCount} {t('specs')}</span>
-                            </span>
+                            </Badge>
                           )}
 
                           {cli.isKycVerified && (
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
-                              <Icon regular={ShieldCheckmark24Regular} size="xs" className="text-emerald-500" />
+                            <Badge variant="success" size="xs" dot className="gap-1">
+                              <Icon regular={ShieldCheckmark24Regular} size="xs" />
                               <span>{t('idVerified')}</span>
-                            </span>
+                            </Badge>
                           )}
                         </div>
 
@@ -517,7 +504,7 @@ export const ClientsModule: React.FC = () => {
                   </div>
                 );
               })}
-            </div>
+            </Card>
           )}
         </>
       )}

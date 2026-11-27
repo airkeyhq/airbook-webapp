@@ -969,7 +969,7 @@ export const BrandDAMModule: React.FC<BrandDAMModuleProps> = ({ initialTab = 'id
             </div>
 
             {/* AI Agent Photo Brand Spec (.JSON) Action Banner */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-sky-500/10 border border-blue-500/20 space-y-3.5">
+            <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3.5">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

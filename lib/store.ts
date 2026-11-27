@@ -150,6 +150,8 @@ export interface AirBookState {
   setAppointments: (appointments: Appointment[]) => void;
   updateAppointmentStatus: (id: string, status: 'confirmed' | 'pending' | 'completed') => void;
   deleteAppointment: (id: string) => void;
+  checkoutNonce: number;
+  bumpCheckoutNonce: () => void;
   setServices: (services: Service[]) => void;
   setStaffMembers: (staff: Staff[]) => void;
   addStation: (station: Omit<StationItem, 'id'>) => void;
@@ -611,6 +613,8 @@ export const useAirBookStore = create<AirBookState>((set) => ({
         a.id === id ? { ...a, status, paymentStatus: status === 'completed' ? 'paid' : a.paymentStatus } : a
       ),
     })),
+  checkoutNonce: 0,
+  bumpCheckoutNonce: () => set((state) => ({ checkoutNonce: state.checkoutNonce + 1 })),
   setServices: (srvs) => set({ services: srvs }),
   setStaffMembers: (stf) => set({ staffMembers: stf }),
 

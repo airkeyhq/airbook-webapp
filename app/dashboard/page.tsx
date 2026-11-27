@@ -51,6 +51,7 @@ import {
   Clock24Regular,
   Clock24Filled,
   Money24Regular,
+  Cut24Filled,
 } from '@fluentui/react-icons';
 import type { Appointment } from '@/lib/store';
 
@@ -202,6 +203,7 @@ export default function DashboardPage() {
           <div className="md:hidden flex items-center justify-start px-3 py-2.5 border-b border-slate-200/80 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 overflow-x-auto gap-1.5 hide-scrollbar rounded-t-2xl sm:rounded-t-[24px]">
             {[
               { id: 'calendar', label: t('tabCalendar'), icon: Calendar24Filled },
+              { id: 'services', label: t('tabServices'), icon: Cut24Filled },
               { id: 'crm', label: t('tabCrm'), icon: Person24Filled },
               { id: 'pos', label: t('tabPos'), icon: Payment24Filled },
               { id: 'kiosk', label: t('tabKiosk'), icon: Clock24Filled },
@@ -237,6 +239,13 @@ export default function DashboardPage() {
             <div className="flex-1 flex flex-col h-full overflow-hidden">
               <DateStrip />
               <TimeGrid onSelectAppointment={(apt) => setSelectedAppointment(apt)} />
+            </div>
+          )}
+
+          {/* Module: Services & Pricing Menu */}
+          {activeTab === 'services' && (
+            <div className="flex-1 overflow-y-auto p-4">
+              <ServicesModule />
             </div>
           )}
 

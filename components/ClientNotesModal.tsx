@@ -957,7 +957,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                         {afterImage ? (
                           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-blue-500/30 ring-1 ring-blue-500/20 group bg-black/5 dark:bg-white/5">
                             <img src={afterImage} alt="After" className="w-full h-full object-cover" />
-                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-[9px] shadow-xs">
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#2BB5FF] text-white font-black text-[9px] shadow-xs">
                               {t('afterBadge')}
                             </span>
                             <button
@@ -1090,7 +1090,7 @@ export const ClientNotesModal: React.FC<ClientNotesModalProps> = ({
                                   className="relative aspect-[4/3] rounded-xl overflow-hidden border border-blue-500/40 ring-1 ring-blue-500/20 group cursor-zoom-in bg-black/5 dark:bg-white/5"
                                 >
                                   <img src={item.afterUrl} alt="After" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-[9px] shadow-xs">
+                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#2BB5FF] text-white font-black text-[9px] shadow-xs">
                                     {t('afterBadge')}
                                   </span>
                                 </div>

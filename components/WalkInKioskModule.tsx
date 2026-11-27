@@ -57,7 +57,7 @@ interface WaitlistEntry {
 export const WalkInKioskModule: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { services, staffMembers, workspaceName, workspaceId, posPasscode, posPasskeyEnabled } = useAirBookStore();
+  const { services, staffMembers, workspaceName, workspaceId, posPasscode, posPasskeyEnabled, addAppointment, isDemoMode } = useAirBookStore();
 
   const [queue, setQueue] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -253,6 +253,7 @@ export const WalkInKioskModule: React.FC = () => {
 
   // Status transitions
   const handleUpdateStatus = async (id: string, newStatus: 'in_chair' | 'completed' | 'cancelled') => {
+    const guest = queue.find((q) => q.id === id);
     try {
       const res = await fetch('/api/waitlists', {
         method: 'PATCH',
@@ -265,6 +266,78 @@ export const WalkInKioskModule: React.FC = () => {
         setQueue((prev) =>
           prev.map((q) => (q.id === id ? { ...q, status: newStatus, servedAt: newStatus === 'in_chair' ? new Date().toISOString() : q.servedAt } : q))
         );
+
+        // When seating a walk-in guest, create a real appointment so it syncs with Calendar (TimeGrid) & POS Queue
+        if (newStatus === 'in_chair' && guest) {
+          const matchedService =
+            services.find((s) => s.id === guest.serviceId || s.name === guest.serviceName) || services[0];
+          const matchedStaff =
+            staffMembers.find((st) => st.id === guest.staffId || st.name === guest.staffName) || staffMembers[0];
+
+          const now = new Date();
+          const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const startTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          const durationMinutes = matchedService?.durationMinutes || 45;
+          const price = matchedService?.price || 75;
+
+          if (!isDemoMode) {
+            fetch('/api/bookings/create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                workspaceId,
+                clientName: guest.clientName,
+                clientPhone: guest.clientPhone,
+                clientEmail: guest.clientEmail,
+                serviceId: matchedService?.id || 'srv-walkin',
+                staffId: matchedStaff?.id || 'stf-walkin',
+                durationMinutes,
+                price,
+                dateStr,
+                startTime,
+                notes: guest.notes || 'Seated from Walk-In Kiosk',
+              }),
+            })
+              .then((r) => r.json())
+              .then((bookingRes) => {
+                if (bookingRes?.success && bookingRes.appointment) {
+                  const apt = bookingRes.appointment;
+                  addAppointment({
+                    clientId: apt.clientId,
+                    clientName: guest.clientName,
+                    serviceId: apt.serviceId || matchedService?.id || 'srv-walkin',
+                    serviceName: guest.serviceName || matchedService?.name || 'Walk-In Service',
+                    staffId: apt.staffId || matchedStaff?.id || 'stf-walkin',
+                    staffName: guest.staffName || matchedStaff?.name || 'Specialist',
+                    dateStr,
+                    startTime,
+                    durationMinutes,
+                    price,
+                    color: matchedStaff?.color || '#2BB5FF',
+                    status: 'confirmed',
+                    notes: guest.notes,
+                  });
+                }
+              })
+              .catch((err) => console.warn('Walk-in appointment sync error:', err));
+          } else {
+            addAppointment({
+              clientName: guest.clientName,
+              serviceId: matchedService?.id || 'srv-walkin',
+              serviceName: guest.serviceName || matchedService?.name || 'Walk-In Service',
+              staffId: matchedStaff?.id || 'stf-walkin',
+              staffName: guest.staffName || matchedStaff?.name || 'Specialist',
+              dateStr,
+              startTime,
+              durationMinutes,
+              price,
+              color: matchedStaff?.color || '#2BB5FF',
+              status: 'confirmed',
+              notes: guest.notes,
+            });
+          }
+        }
+
         addToast(data.message || 'Status updated.', 'success');
       }
     } catch (err) {
