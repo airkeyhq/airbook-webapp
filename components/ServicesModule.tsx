@@ -156,7 +156,7 @@ export const ServicesModule: React.FC = () => {
       </div>
 
       {/* Smart Dynamic Pricing Control Card - Roadmap Teaser */}
-      <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-2">
+      <Card className="p-4 space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon regular={Money24Regular} size="md" tone="secondary" />
@@ -173,7 +173,7 @@ export const ServicesModule: React.FC = () => {
             {t('comingSoonV11')}
           </Badge>
         </div>
-      </div>
+      </Card>
       {showForm && (
         <motion.form
           initial={{ opacity: 0, y: -10 }}
@@ -285,12 +285,13 @@ export const ServicesModule: React.FC = () => {
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span
-                        className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-wider"
-                        style={{ backgroundColor: srv.colorTag || '#00C7BE' }}
-                      >
-                        {srv.category}
-                      </span>
+                      <Badge variant="subtle" size="xs" className="uppercase tracking-wider gap-1.5">
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: srv.colorTag || '#00C7BE' }}
+                        />
+                        <span>{srv.category}</span>
+                      </Badge>
                       <span className="text-xs font-mono font-bold text-[var(--text-muted)] flex items-center gap-1">
                         <Icon regular={Clock24Regular} size="xs" />
                         {srv.durationMinutes} {t('minsSuffix')}
@@ -304,11 +305,9 @@ export const ServicesModule: React.FC = () => {
                       <span className="text-xs text-[var(--text-secondary)]">{t('priceLabel')}: </span>
                       <span className="text-sm font-bold text-[var(--text-primary)]">${priceDollars}</span>
                     </div>
-                    <div className="text-right">
-                      <span className="text-[11px] text-green-600 dark:text-green-400 font-semibold">
-                        {t('depositLabel')} (${depositDollars})
-                      </span>
-                    </div>
+                    <Badge variant="success" size="xs">
+                      {t('depositLabel')} (${depositDollars})
+                    </Badge>
                   </div>
                 </Card>
               );
