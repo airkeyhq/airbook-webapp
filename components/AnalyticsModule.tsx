@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Icon } from '@/components/primitives/Icon';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
+import { ToggleGroup } from '@/components/primitives/ToggleGroup';
 import { StatCard } from '@/components/StatCard';
 import {
   DataTrending24Regular,
@@ -195,22 +196,16 @@ export const AnalyticsModule: React.FC = () => {
         </div>
 
         {/* Date-Range Segmented Control */}
-        <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit">
-          {rangeOptions.map((opt) => (
-            <button
-              key={opt.key}
-              type="button"
-              onClick={() => setRange(opt.key)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                range === opt.key
-                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        <ToggleGroup
+          variant="segmented"
+          size="sm"
+          value={range}
+          onChange={(val) => setRange(val as DateRangeKey)}
+          options={rangeOptions.map((opt) => ({
+            value: opt.key,
+            label: opt.label,
+          }))}
+        />
       </div>
 
       {loading && (
@@ -259,19 +254,23 @@ export const AnalyticsModule: React.FC = () => {
           </div>
 
           {/* Daily Revenue Trend Chart */}
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Icon regular={DataTrending24Regular} size="sm" tone="secondary" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                  {t('revenueTrendTitle')}
-                </h3>
+          <Card
+            variant="envelope"
+            trayHeader={
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Icon regular={DataTrending24Regular} size="sm" tone="secondary" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    {t('revenueTrendTitle')}
+                  </h3>
+                </div>
+                <Badge variant="subtle" size="xs" className="font-mono">
+                  {dailySeries.length}d
+                </Badge>
               </div>
-              <Badge variant="subtle" size="xs" className="font-mono">
-                {dailySeries.length}d
-              </Badge>
-            </div>
-
+            }
+            innerClassName="p-5 space-y-4"
+          >
             {dailySeries.length === 0 ? (
               <p className="text-xs text-[var(--text-secondary)] py-6 text-center">
                 {t('noRevenueDataRange')}
@@ -301,27 +300,31 @@ export const AnalyticsModule: React.FC = () => {
           </Card>
 
           {/* Staff Commission & Payroll Breakdown */}
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Icon regular={People24Regular} size="sm" tone="secondary" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                  {t('staffPayrollTitle')}
-                </h3>
+          <Card
+            variant="envelope"
+            trayHeader={
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Icon regular={People24Regular} size="sm" tone="secondary" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    {t('staffPayrollTitle')}
+                  </h3>
+                </div>
+
+                {payrollRows.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleExportPayrollCsv}
+                    className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                  >
+                    <Icon filled={ArrowDownload24Filled} size="xs" />
+                    <span>{t('exportPayrollCsv')}</span>
+                  </button>
+                )}
               </div>
-
-              {payrollRows.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleExportPayrollCsv}
-                  className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
-                >
-                  <Icon filled={ArrowDownload24Filled} size="xs" />
-                  <span>{t('exportPayrollCsv')}</span>
-                </button>
-              )}
-            </div>
-
+            }
+            innerClassName="p-5 space-y-4"
+          >
             {payrollRows.length === 0 ? (
               <p className="text-xs text-[var(--text-secondary)] py-6 text-center">
                 {t('noPayrollData')}
@@ -358,25 +361,29 @@ export const AnalyticsModule: React.FC = () => {
           </Card>
 
           {/* Studio Expenses & Tax-Ready P&L Ledger */}
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Icon regular={Receipt24Regular} size="sm" tone="secondary" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                  {t('expensesTitle')}
-                </h3>
+          <Card
+            variant="envelope"
+            trayHeader={
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Icon regular={Receipt24Regular} size="sm" tone="secondary" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    {t('expensesTitle')}
+                  </h3>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowExpenseForm((v) => !v)}
+                  className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                >
+                  <Icon filled={Add24Filled} size="xs" />
+                  <span>{t('addExpenseBtn')}</span>
+                </button>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setShowExpenseForm((v) => !v)}
-                className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
-              >
-                <Icon filled={Add24Filled} size="xs" />
-                <span>{t('addExpenseBtn')}</span>
-              </button>
-            </div>
-
+            }
+            innerClassName="p-5 space-y-4"
+          >
             {showExpenseForm && (
               <form onSubmit={handleAddExpense} className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 border-t border-[var(--border-subtle)]">
                 <CustomSelect
