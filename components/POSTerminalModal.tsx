@@ -182,12 +182,6 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
       onClose={onClose}
       size="lg"
       title={t('terminalTitle')}
-      description={t('terminalDesc')}
-      headerIcon={
-        <div className="w-9 h-9 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center">
-          <Icon regular={Payment24Regular} size="md" tone="secondary" />
-        </div>
-      }
       footer={dialogFooter}
     >
       <div className="space-y-5">
