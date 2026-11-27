@@ -56,7 +56,7 @@ export const ServicesModule: React.FC = () => {
           id: sv.id,
           name: sv.name,
           category: sv.category,
-          duration: sv.durationMinutes,
+          durationMinutes: sv.durationMinutes,
           price: sv.priceCents / 100,
           color: sv.colorTag || '#00C7BE',
         }));
@@ -76,11 +76,22 @@ export const ServicesModule: React.FC = () => {
 
   useEffect(() => {
     if (isDemoMode) {
-      setServiceList(demoServices as any);
+      setServiceList(
+        demoServices.map((s) => ({
+          id: s.id,
+          name: s.name,
+          category: s.category || 'General',
+          durationMinutes: s.durationMinutes,
+          priceCents: Math.round((s.price || 0) * 100),
+          colorTag: s.color,
+        }))
+      );
+      setLoading(false);
     } else {
       fetchServices();
     }
-  }, [isDemoMode, workspaceId, demoServices]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDemoMode, workspaceId]);
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
