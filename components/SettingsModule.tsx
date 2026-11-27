@@ -610,7 +610,7 @@ export const SettingsModule: React.FC = () => {
       {/* Main 2-Column Responsive Layout: Left Nav Rail + Right Content Surface */}
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Navigation Rail (Desktop: Vertical Sidebar / Mobile: Horizontal Swipe Strip) */}
-        <nav className="w-full md:w-56 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hide-scrollbar">
+        <nav className="w-full md:w-56 md:sticky md:top-6 flex-shrink-0 flex md:flex-col overflow-x-auto md:overflow-visible gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hide-scrollbar">
           {TAB_LIST.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
