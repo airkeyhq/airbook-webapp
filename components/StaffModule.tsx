@@ -906,19 +906,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
             </h3>
             <form onSubmit={handleSendInvite} className="space-y-3.5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
-                    {t('emailAddress')}
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="teammate@salon.com"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    className="input-base w-full"
-                  />
-                </div>
+                <FloatingInput
+                  label={t('emailAddress')}
+                  type="email"
+                  required
+                  placeholder="teammate@salon.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
                     {t('selectRole')}
@@ -974,9 +969,10 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                       </div>
                       <div>
                         <p className="text-xs font-bold text-[var(--text-primary)]">{inv.email}</p>
-                        <p className="text-[11px] text-[var(--text-secondary)] capitalize mt-0.5">
-                          {inv.role} • {t('statusPending')}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[11px] text-[var(--text-secondary)] capitalize">{inv.role}</span>
+                          <Badge variant="warning" size="xs">{t('statusPending')}</Badge>
+                        </div>
                       </div>
                     </div>
                     <button
