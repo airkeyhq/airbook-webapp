@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { db } from '@/db';
-import { appointments, clients, gift_cards, services, staff, workspaces } from '@/db/schema';
-import { and, desc, eq, inArray, sql } from 'drizzle-orm';
+import { appointments, clients, gift_cards, invoices, services, signed_waivers, staff, workspaces } from '@/db/schema';
+import { and, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { CLIENT_SESSION_COOKIE, verifyClientSession } from '@/lib/client-session';
 
 export async function GET() {
@@ -28,6 +28,10 @@ export async function GET() {
         totalVisits: clients.totalVisits,
         totalSpentCents: clients.totalSpentCents,
         walletBalanceCents: clients.walletBalanceCents,
+        preferences: clients.preferences,
+        allergies: clients.allergies,
+        photos: clients.photos,
+        isKycVerified: clients.isKycVerified,
       })
       .from(clients)
       .innerJoin(workspaces, eq(clients.workspaceId, workspaces.id))
@@ -59,6 +63,44 @@ export async function GET() {
             .limit(40)
         : [];
 
+    const receipts =
+      clientIds.length > 0
+        ? await db
+            .select({
+              id: invoices.id,
+              receiptNumber: invoices.receiptNumber,
+              totalCents: invoices.totalCents,
+              tipCents: invoices.tipCents,
+              paymentMethod: invoices.paymentMethod,
+              status: invoices.status,
+              createdAt: invoices.createdAt,
+              workspaceName: workspaces.name,
+            })
+            .from(invoices)
+            .innerJoin(workspaces, eq(invoices.workspaceId, workspaces.id))
+            .where(inArray(invoices.clientId, clientIds))
+            .orderBy(desc(invoices.createdAt))
+            .limit(30)
+        : [];
+
+    const waivers = await db
+      .select({
+        id: signed_waivers.id,
+        templateTitle: signed_waivers.templateTitle,
+        createdAt: signed_waivers.createdAt,
+        agreedClauses: signed_waivers.agreedClauses,
+        workspaceName: workspaces.name,
+      })
+      .from(signed_waivers)
+      .innerJoin(workspaces, eq(signed_waivers.workspaceId, workspaces.id))
+      .where(
+        clientIds.length > 0
+          ? or(sql`LOWER(${signed_waivers.clientEmail}) = ${email}`, inArray(signed_waivers.clientId, clientIds))
+          : sql`LOWER(${signed_waivers.clientEmail}) = ${email}`
+      )
+      .orderBy(desc(signed_waivers.createdAt))
+      .limit(20);
+
     const activeGiftCards = await db
       .select({
         id: gift_cards.id,
@@ -69,6 +111,13 @@ export async function GET() {
       .from(gift_cards)
       .innerJoin(workspaces, eq(gift_cards.workspaceId, workspaces.id))
       .where(and(sql`LOWER(${gift_cards.recipientEmail}) = ${email}`, eq(gift_cards.status, 'active')));
+
+    const photos = clientRows.flatMap((c) =>
+      (c.photos || []).map((p) => ({
+        ...p,
+        workspaceName: c.workspaceName,
+      }))
+    );
 
     const totalVisits = clientRows.reduce((s, c) => s + (c.totalVisits || 0), 0);
     const totalSpentCents = clientRows.reduce((s, c) => s + (c.totalSpentCents || 0), 0);
@@ -87,11 +136,47 @@ export async function GET() {
         walletBalanceCents,
         loyaltyPoints,
         loyaltyTier,
+        preferences: clientRows.find((c) => c.preferences)?.preferences || '',
+        allergies: clientRows.find((c) => c.allergies)?.allergies || '',
+        isKycVerified: clientRows.some((c) => c.isKycVerified),
       },
       bookings,
+      receipts,
+      waivers,
+      photos,
       giftCards: activeGiftCards,
     });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Failed to load client portal.' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(CLIENT_SESSION_COOKIE)?.value;
+    const session = verifyClientSession(token);
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const email = session.email.toLowerCase();
+
+    const updateFields: Record<string, any> = {};
+    if (typeof body?.preferences === 'string') updateFields.preferences = body.preferences.trim();
+    if (typeof body?.allergies === 'string') updateFields.allergies = body.allergies.trim();
+
+    if (Object.keys(updateFields).length > 0) {
+      await db
+        .update(clients)
+        .set(updateFields)
+        .where(sql`LOWER(${clients.email}) = ${email}`);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || 'Failed to update client preferences.' }, { status: 500 });
   }
 }
