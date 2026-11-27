@@ -16,6 +16,7 @@ import {
   Delete24Filled,
   PeopleTeam24Regular,
   Warning24Filled,
+  Edit24Filled,
 } from '@fluentui/react-icons';
 
 interface PartyGuestRow {
@@ -41,16 +42,30 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   onOpenPOS,
   onOpenNotes,
 }) => {
-  const { deleteAppointment, updateAppointmentStatus, bumpCheckoutNonce } = useAirBookStore();
+  const { deleteAppointment, updateAppointmentStatus, updateAppointmentDetails, bumpCheckoutNonce } = useAirBookStore();
   const { t } = useTranslation();
   const { addToast } = useToast();
   const [partyGuests, setPartyGuests] = useState<PartyGuestRow[]>([]);
   const [chargingNoShow, setChargingNoShow] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editDate, setEditDate] = useState('');
+  const [editTime, setEditTime] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (appointment) {
+      setEditDate(appointment.dateStr);
+      setEditTime(appointment.startTime);
+      setEditNotes(appointment.notes || '');
+      setIsEditing(false);
+    }
+  }, [appointment]);
 
   useEffect(() => {
     if (!appointment?.groupId) {
@@ -80,6 +95,34 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
       console.warn('Failed to delete appointment from DB:', err);
     }
     onClose();
+  };
+
+  const handleSaveReschedule = async () => {
+    if (!appointment || !editDate || !editTime) return;
+    try {
+      setSavingEdit(true);
+      const res = await fetch('/api/appointments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: appointment.id,
+          dateStr: editDate,
+          startTime: editTime,
+          notes: editNotes,
+        }),
+      });
+      if (res.ok) {
+        updateAppointmentDetails(appointment.id, { dateStr: editDate, startTime: editTime, notes: editNotes });
+        addToast(t('savedToProfile') || 'Appointment updated.', 'success');
+        setIsEditing(false);
+      } else {
+        addToast('Failed to update appointment.', 'error');
+      }
+    } catch {
+      addToast('Network error updating appointment.', 'error');
+    } finally {
+      setSavingEdit(false);
+    }
   };
 
   const handleMarkNoShowFee = async () => {
@@ -235,6 +278,64 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               </div>
             </div>
 
+            {/* Inline Staff Reschedule / Edit Form */}
+            {isEditing && (
+              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-3">
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">
+                      {t('date') || 'Date'}
+                    </label>
+                    <input
+                      type="date"
+                      value={editDate}
+                      onChange={(e) => setEditDate(e.target.value)}
+                      className="input-base w-full text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">
+                      {t('time')}
+                    </label>
+                    <input
+                      type="time"
+                      value={editTime}
+                      onChange={(e) => setEditTime(e.target.value)}
+                      className="input-base w-full text-xs font-mono"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">
+                    {t('notes') || 'Notes'}
+                  </label>
+                  <input
+                    type="text"
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    className="input-base w-full text-xs"
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold"
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={savingEdit}
+                    onClick={handleSaveReschedule}
+                    className="btn-primary h-8 px-3 rounded-xl text-xs font-bold"
+                  >
+                    {savingEdit ? t('saving') : t('save')}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Party Guest List */}
             {partyGuests.length > 1 && (
               <div className="rounded-2xl border border-black/5 dark:border-white/10 divide-y divide-[var(--border-subtle)] overflow-hidden">
@@ -277,17 +378,27 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             </motion.button>
 
             {/* Client Notes & Specs Button */}
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                onOpenNotes();
-              }}
-              className="btn-secondary w-full"
-            >
-              <Icon filled={DocumentText24Filled} size="sm" className="flex-shrink-0" />
-              <span>{t('clientNotesBtn')}</span>
-            </button>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenNotes();
+                }}
+                className="btn-secondary w-full"
+              >
+                <Icon filled={DocumentText24Filled} size="sm" className="flex-shrink-0" />
+                <span>{t('clientNotesBtn')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditing((v) => !v)}
+                className="btn-secondary w-full"
+              >
+                <Icon filled={Edit24Filled} size="sm" className="flex-shrink-0" />
+                <span>{t('edit') || 'Reschedule'}</span>
+              </button>
+            </div>
 
             {/* Mark No-Show & Charge Fee */}
             {appointment.status !== 'completed' && appointment.status !== 'no_show' && (

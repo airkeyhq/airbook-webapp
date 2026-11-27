@@ -25,6 +25,7 @@ export async function GET(req: Request) {
     const workspaceId = searchParams.get('workspaceId');
     const dateStr = searchParams.get('dateStr');
     const durationMinutes = Number(searchParams.get('durationMinutes') || 45);
+    const bufferMinutes = Math.max(0, Math.min(60, Number(searchParams.get('bufferMinutes') ?? 10)));
 
     if (!dateStr || (!staffId && !workspaceId)) {
       return NextResponse.json({ error: 'dateStr and either staffId or workspaceId are required.' }, { status: 400 });
@@ -62,8 +63,8 @@ export async function GET(req: Request) {
         );
 
       const busyRanges = existing.map((a) => ({
-        start: toMinutes(a.startTime),
-        end: toMinutes(a.endTime || a.startTime),
+        start: Math.max(0, toMinutes(a.startTime) - bufferMinutes),
+        end: toMinutes(a.endTime || a.startTime) + bufferMinutes,
       }));
 
       const slots: string[] = [];

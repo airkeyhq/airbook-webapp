@@ -149,6 +149,7 @@ export interface AirBookState {
   addAppointment: (appointment: Omit<Appointment, 'id'>) => void;
   setAppointments: (appointments: Appointment[]) => void;
   updateAppointmentStatus: (id: string, status: 'confirmed' | 'pending' | 'completed' | 'no_show') => void;
+  updateAppointmentDetails: (id: string, updates: Partial<Pick<Appointment, 'dateStr' | 'startTime' | 'notes'>>) => void;
   deleteAppointment: (id: string) => void;
   checkoutNonce: number;
   bumpCheckoutNonce: () => void;
@@ -614,6 +615,10 @@ export const useAirBookStore = create<AirBookState>((set) => ({
           ? { ...a, status, paymentStatus: status === 'completed' || status === 'no_show' ? 'paid' : a.paymentStatus }
           : a
       ),
+    })),
+  updateAppointmentDetails: (id, updates) =>
+    set((state) => ({
+      appointments: state.appointments.map((a) => (a.id === id ? { ...a, ...updates } : a)),
     })),
   checkoutNonce: 0,
   bumpCheckoutNonce: () => set((state) => ({ checkoutNonce: state.checkoutNonce + 1 })),

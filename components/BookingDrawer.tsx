@@ -59,6 +59,9 @@ export const BookingDrawer: React.FC = () => {
   const [startTime, setStartTime] = useState(selectedSlotTime || '14:00');
   const [notes, setNotes] = useState('');
   const [extraGuests, setExtraGuests] = useState<ExtraGuestRow[]>([]);
+  const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
+  const [repeatInterval, setRepeatInterval] = useState<'none' | 'weekly' | 'biweekly' | 'monthly'>('none');
+  const [repeatCount, setRepeatCount] = useState<number>(3);
   const [selectedColor, setSelectedColor] = useState('#FF4D8D');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -136,16 +139,29 @@ export const BookingDrawer: React.FC = () => {
     setSubmitting(true);
     setErrorMessage(null);
 
+    const selectedAddons = services.filter((s) => selectedAddonIds.includes(s.id) && s.id !== currentService.id);
+    const addonDuration = selectedAddons.reduce((sum, a) => sum + a.durationMinutes, 0);
+    const addonPrice = selectedAddons.reduce((sum, a) => sum + a.price, 0);
+    const combinedNotes = [
+      notes.trim(),
+      selectedAddons.length > 0 ? `Add-ons: ${selectedAddons.map((a) => a.name).join(', ')}` : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
+
     const allGuests = [
       {
         guestName: clientName.trim(),
         serviceId: currentService.id,
-        serviceName: currentService.name,
+        serviceName:
+          selectedAddons.length > 0
+            ? `${currentService.name} + ${selectedAddons.map((a) => a.name).join(', ')}`
+            : currentService.name,
         staffId: currentStaff.id,
         staffName: currentStaff.name,
-        durationMinutes: currentService.durationMinutes,
-        price: currentService.price,
-        priceCents: Math.round(currentService.price * 100),
+        durationMinutes: currentService.durationMinutes + addonDuration,
+        price: currentService.price + addonPrice,
+        priceCents: Math.round((currentService.price + addonPrice) * 100),
         startTime,
         color: selectedColor || currentService.color,
       },
@@ -167,53 +183,65 @@ export const BookingDrawer: React.FC = () => {
       }),
     ];
 
-    const optimisticGroupId = allGuests.length > 1 ? `grp-${Date.now()}` : null;
+    const intervalDays =
+      repeatInterval === 'weekly' ? 7 : repeatInterval === 'biweekly' ? 14 : repeatInterval === 'monthly' ? 28 : 0;
+    const totalOccurrences = intervalDays > 0 ? Math.max(2, Math.min(8, repeatCount)) : 1;
+    const targetDates = Array.from({ length: totalOccurrences }, (_, idx) => {
+      const base = new Date(`${selectedDateStr}T12:00:00`);
+      base.setDate(base.getDate() + idx * intervalDays);
+      return base.toISOString().slice(0, 10);
+    });
 
-    // Optimistically add each guest appointment to Zustand store
-    for (const g of allGuests) {
-      addAppointment({
-        clientId: selectedClient?.id,
-        clientName: g.guestName,
-        clientAvatar: selectedClient?.avatarUrl || getAvatarUrl(g.guestName),
-        serviceId: g.serviceId,
-        serviceName: g.serviceName,
-        staffId: g.staffId,
-        staffName: g.staffName,
-        dateStr: selectedDateStr,
-        startTime: g.startTime,
-        durationMinutes: g.durationMinutes,
-        price: g.price,
-        color: g.color,
-        status: 'confirmed',
-        notes,
-        groupId: optimisticGroupId,
-        partySize: allGuests.length,
-      });
+    // Optimistically add each guest appointment across all recurring dates
+    for (const targetDate of targetDates) {
+      const optimisticGroupId = allGuests.length > 1 ? `grp-${Date.now()}-${targetDate}` : null;
+      for (const g of allGuests) {
+        addAppointment({
+          clientId: selectedClient?.id,
+          clientName: g.guestName,
+          clientAvatar: selectedClient?.avatarUrl || getAvatarUrl(g.guestName),
+          serviceId: g.serviceId,
+          serviceName: g.serviceName,
+          staffId: g.staffId,
+          staffName: g.staffName,
+          dateStr: targetDate,
+          startTime: g.startTime,
+          durationMinutes: g.durationMinutes,
+          price: g.price,
+          color: g.color,
+          status: 'confirmed',
+          notes: combinedNotes,
+          groupId: optimisticGroupId,
+          partySize: allGuests.length,
+        });
+      }
     }
 
     try {
-      await fetch('/api/bookings/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          workspaceId,
-          clientId: selectedClient?.id,
-          clientName: clientName.trim(),
-          clientEmail: selectedClient?.email,
-          clientPhone: selectedClient?.phone,
-          dateStr: selectedDateStr,
-          startTime,
-          notes,
-          guests: allGuests.map((g) => ({
-            guestName: g.guestName,
-            staffId: g.staffId,
-            serviceId: g.serviceId,
-            durationMinutes: g.durationMinutes,
-            priceCents: g.priceCents,
-            startTime: g.startTime,
-          })),
-        }),
-      });
+      for (const targetDate of targetDates) {
+        await fetch('/api/bookings/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            workspaceId,
+            clientId: selectedClient?.id,
+            clientName: clientName.trim(),
+            clientEmail: selectedClient?.email,
+            clientPhone: selectedClient?.phone,
+            dateStr: targetDate,
+            startTime,
+            notes: combinedNotes,
+            guests: allGuests.map((g) => ({
+              guestName: g.guestName,
+              staffId: g.staffId,
+              serviceId: g.serviceId,
+              durationMinutes: g.durationMinutes,
+              priceCents: g.priceCents,
+              startTime: g.startTime,
+            })),
+          }),
+        });
+      }
       if (allGuests.length > 1) {
         addToast(t('partyBookingCreatedToast'), 'success');
       }
@@ -227,6 +255,8 @@ export const BookingDrawer: React.FC = () => {
       setShowSuggestions(false);
       setNotes('');
       setExtraGuests([]);
+      setSelectedAddonIds([]);
+      setRepeatInterval('none');
       closeBookingDrawer();
     }
   };
@@ -546,6 +576,66 @@ export const BookingDrawer: React.FC = () => {
                   <Icon filled={Add24Filled} size="xs" />
                   <span>{t('addPartyGuestBtn')}</span>
                 </button>
+              )}
+            </div>
+
+            {/* Service Add-Ons */}
+            {services.length > 1 && (
+              <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">
+                  {t('addonsLabel')}
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {services
+                    .filter((s) => s.id !== currentService?.id)
+                    .map((addon) => {
+                      const active = selectedAddonIds.includes(addon.id);
+                      return (
+                        <button
+                          key={addon.id}
+                          type="button"
+                          onClick={() =>
+                            setSelectedAddonIds((prev) =>
+                              active ? prev.filter((id) => id !== addon.id) : [...prev, addon.id]
+                            )
+                          }
+                          className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
+                            active
+                              ? 'bg-[#2BB5FF]/15 text-[#2BB5FF] border-[#2BB5FF]/40'
+                              : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
+                          }`}
+                        >
+                          + {addon.name} (${addon.price})
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+
+            {/* Recurring Appointment */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[var(--border-subtle)]">
+              <CustomSelect
+                label={t('repeatLabel')}
+                value={repeatInterval}
+                onChange={(v) => setRepeatInterval(v as any)}
+                options={[
+                  { value: 'none', label: t('repeatNone') },
+                  { value: 'weekly', label: t('repeatWeekly') },
+                  { value: 'biweekly', label: t('repeatBiweekly') },
+                  { value: 'monthly', label: t('repeatMonthly') },
+                ]}
+              />
+              {repeatInterval !== 'none' && (
+                <CustomSelect
+                  label={t('occurrencesLabel')}
+                  value={String(repeatCount)}
+                  onChange={(v) => setRepeatCount(Number(v))}
+                  options={[2, 3, 4, 5, 6, 8].map((n) => ({
+                    value: String(n),
+                    label: `${n}x`,
+                  }))}
+                />
               )}
             </div>
 

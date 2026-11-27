@@ -393,6 +393,17 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
           } catch (err) {
             console.warn('Deposit checkout error:', err);
           }
+        } else {
+          // $0 deposit: prepare Stripe SetupIntent card-on-file for no-show protection
+          fetch('/api/stripe/connect/setup-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              workspaceId: workspace.id,
+              clientName: clientName.trim(),
+              clientEmail: clientEmail.trim(),
+            }),
+          }).catch(() => {});
         }
 
         for (const g of guests) {
