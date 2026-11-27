@@ -777,32 +777,24 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-xs font-bold w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={() => setProviderColorMode('auto')}
-                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                    providerColorMode === 'auto'
-                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5" />
-                  <span>{t('colorModeAutoBalanced')}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setProviderColorMode('custom')}
-                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl transition-all duration-100 flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                    providerColorMode === 'custom'
-                      ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  <Icon filled={Edit24Filled} size="sm" className="w-3.5 h-3.5" />
-                  <span>{t('colorModeCustom')}</span>
-                </button>
-              </div>
+              <ToggleGroup
+                variant="segmented"
+                size="sm"
+                value={providerColorMode}
+                onChange={(val) => setProviderColorMode(val as 'auto' | 'custom')}
+                options={[
+                  {
+                    value: 'auto',
+                    label: t('colorModeAutoBalanced'),
+                    icon: <Icon filled={Sparkle24Filled} size="sm" className="w-3.5 h-3.5" />,
+                  },
+                  {
+                    value: 'custom',
+                    label: t('colorModeCustom'),
+                    icon: <Icon filled={Edit24Filled} size="sm" className="w-3.5 h-3.5" />,
+                  },
+                ]}
+              />
             </div>
           </Card>
 
