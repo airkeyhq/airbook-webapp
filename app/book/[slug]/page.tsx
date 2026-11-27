@@ -130,6 +130,25 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [lastBookingId, setLastBookingId] = useState<string>('');
+  const [familyMembers, setFamilyMembers] = useState<Array<{ id: string; name: string; relationship: string }>>([]);
+  const [joiningPartyRef, setJoiningPartyRef] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const partyParam = new URLSearchParams(window.location.search).get('party');
+      if (partyParam) setJoiningPartyRef(partyParam);
+    }
+    fetch('/api/client-portal/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.success) {
+          if (Array.isArray(data.familyMembers)) setFamilyMembers(data.familyMembers);
+          if (data.profile?.name && !clientName) setClientName(data.profile.name);
+          if (data.profile?.email && !clientEmail) setClientEmail(data.profile.email);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Load workspace, services, and staff
   useEffect(() => {
@@ -796,6 +815,42 @@ export default function PublicBookingPage({ params }: { params: Promise<{ slug?:
                         }`}
                       >
                         {cat === 'all' ? t('allCategories') : cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Group Invite Banner & 1-Tap Family Pills */}
+                {joiningPartyRef && (
+                  <div className="px-3.5 py-2.5 rounded-xl bg-[#2BB5FF]/10 border border-[#2BB5FF]/25 text-xs font-semibold text-[#2BB5FF]">
+                    Joining a group booking — pick your service &amp; time to reserve your spot.
+                  </div>
+                )}
+
+                {familyMembers.length > 0 && guests.length < 6 && (
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] mr-1">
+                      Family:
+                    </span>
+                    {familyMembers.map((fm) => (
+                      <button
+                        key={fm.id}
+                        type="button"
+                        onClick={() => {
+                          if (guests.length >= 6) return;
+                          setGuests((prev) => [
+                            ...prev,
+                            {
+                              id: `g-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+                              name: fm.name,
+                              serviceId: dbServices[0]?.id || '',
+                              staffId: 'anyone',
+                            },
+                          ]);
+                        }}
+                        className="px-2.5 py-1 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[#2BB5FF]/50 text-[11px] font-bold text-[var(--text-primary)] transition-all cursor-pointer"
+                      >
+                        + {fm.name} ({fm.relationship})
                       </button>
                     ))}
                   </div>

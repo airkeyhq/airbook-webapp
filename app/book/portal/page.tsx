@@ -22,6 +22,10 @@ import {
   Camera24Regular,
   ShieldCheckmark24Filled,
   Save24Filled,
+  PeopleTeam24Regular,
+  Add24Filled,
+  Delete24Filled,
+  Share24Regular,
 } from '@fluentui/react-icons';
 
 interface PortalProfile {
@@ -39,6 +43,7 @@ interface PortalProfile {
 
 interface PortalBooking {
   id: string;
+  groupId?: string | null;
   dateStr: string;
   startTime: string;
   durationMinutes: number;
@@ -84,6 +89,13 @@ interface PortalGiftCard {
   workspaceName: string;
 }
 
+interface FamilyMember {
+  id: string;
+  name: string;
+  relationship: string;
+  notes?: string;
+}
+
 type PortalTab = 'bookings' | 'loyalty' | 'receipts' | 'profile';
 
 function ClientPortalInner() {
@@ -95,6 +107,10 @@ function ClientPortalInner() {
   const [receipts, setReceipts] = useState<PortalReceipt[]>([]);
   const [waivers, setWaivers] = useState<PortalWaiver[]>([]);
   const [photos, setPhotos] = useState<PortalPhoto[]>([]);
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+  const [newFamName, setNewFamName] = useState('');
+  const [newFamRel, setNewFamRel] = useState('Child');
+  const [newFamNotes, setNewFamNotes] = useState('');
   const [giftCards, setGiftCards] = useState<PortalGiftCard[]>([]);
 
   // Preferences Form
@@ -123,6 +139,7 @@ function ClientPortalInner() {
           setReceipts(data.receipts || []);
           setWaivers(data.waivers || []);
           setPhotos(data.photos || []);
+          setFamilyMembers(data.familyMembers || []);
           setGiftCards(data.giftCards || []);
           return;
         }
@@ -217,6 +234,39 @@ function ClientPortalInner() {
     } finally {
       setSavingPrefs(false);
     }
+  };
+
+  const handleSaveFamily = async (nextList: FamilyMember[]) => {
+    setFamilyMembers(nextList);
+    try {
+      const res = await fetch('/api/client-portal/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ familyMembers: nextList }),
+      });
+      if (res.ok) {
+        toast.success('Family profiles updated.');
+      }
+    } catch {
+      toast.error('Could not save family profile.');
+    }
+  };
+
+  const handleAddFamilyMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFamName.trim()) return;
+    const next: FamilyMember[] = [
+      ...familyMembers,
+      {
+        id: `fam-${Date.now()}`,
+        name: newFamName.trim(),
+        relationship: newFamRel,
+        notes: newFamNotes.trim() || undefined,
+      },
+    ];
+    setNewFamName('');
+    setNewFamNotes('');
+    await handleSaveFamily(next);
   };
 
   const handleSignOut = async () => {
@@ -448,12 +498,27 @@ function ClientPortalInner() {
 
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {b.status !== 'cancelled' && b.status !== 'completed' && b.status !== 'no_show' && (
-                            <Link
-                              href={`/book/manage/${b.id}`}
-                              className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold inline-flex items-center"
-                            >
-                              Manage / Reschedule
-                            </Link>
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const url = `${window.location.origin}/book/${b.workspaceSlug}?party=${encodeURIComponent(b.groupId || b.id)}`;
+                                  navigator.clipboard.writeText(url);
+                                  toast.success('Group invite link copied!');
+                                }}
+                                className="btn-secondary h-8 px-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-1"
+                                title="Invite friend to group booking"
+                              >
+                                <Icon regular={Share24Regular} size="xs" />
+                                <span>Invite</span>
+                              </button>
+                              <Link
+                                href={`/book/manage/${b.id}`}
+                                className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold inline-flex items-center"
+                              >
+                                Manage
+                              </Link>
+                            </>
                           )}
                           <Link
                             href={`/book/${b.workspaceSlug}`}
@@ -563,6 +628,71 @@ function ClientPortalInner() {
             {/* TAB 4: Profile, Photos & Waivers */}
             {activeTab === 'profile' && (
               <div className="space-y-4">
+                <Card className="p-5 sm:p-6 space-y-4">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                    <Icon regular={PeopleTeam24Regular} size="sm" tone="secondary" />
+                    <span>Family & Dependents ({familyMembers.length})</span>
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    Save kids or family members so you can add them in 1 tap when booking together.
+                  </p>
+
+                  {familyMembers.length > 0 && (
+                    <div className="divide-y divide-[var(--border-subtle)]">
+                      {familyMembers.map((fm) => (
+                        <div key={fm.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-[var(--text-primary)]">{fm.name}</span>
+                              <Badge variant="subtle" size="xs">{fm.relationship}</Badge>
+                            </div>
+                            {fm.notes && <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{fm.notes}</p>}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSaveFamily(familyMembers.filter((m) => m.id !== fm.id))}
+                            className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                          >
+                            <Icon filled={Delete24Filled} size="xs" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleAddFamilyMember} className="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-2 border-t border-[var(--border-subtle)]">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Name (e.g. Liam)"
+                      value={newFamName}
+                      onChange={(e) => setNewFamName(e.target.value)}
+                      className="input-base text-xs"
+                    />
+                    <select
+                      value={newFamRel}
+                      onChange={(e) => setNewFamRel(e.target.value)}
+                      className="input-base text-xs"
+                    >
+                      <option value="Child">Child</option>
+                      <option value="Partner">Partner</option>
+                      <option value="Parent">Parent</option>
+                      <option value="Guest">Guest</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Notes (optional)"
+                      value={newFamNotes}
+                      onChange={(e) => setNewFamNotes(e.target.value)}
+                      className="input-base text-xs"
+                    />
+                    <button type="submit" className="btn-secondary h-10 text-xs font-bold flex items-center justify-center gap-1">
+                      <Icon filled={Add24Filled} size="xs" />
+                      <span>Add</span>
+                    </button>
+                  </form>
+                </Card>
+
                 <Card className="p-5 sm:p-6 space-y-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
                     Care Preferences & Allergies

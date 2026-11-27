@@ -30,6 +30,7 @@ export async function GET() {
         walletBalanceCents: clients.walletBalanceCents,
         preferences: clients.preferences,
         allergies: clients.allergies,
+        customSpecs: clients.customSpecs,
         photos: clients.photos,
         isKycVerified: clients.isKycVerified,
       })
@@ -44,6 +45,7 @@ export async function GET() {
         ? await db
             .select({
               id: appointments.id,
+              groupId: appointments.groupId,
               dateStr: appointments.dateStr,
               startTime: appointments.startTime,
               durationMinutes: appointments.durationMinutes,
@@ -119,6 +121,24 @@ export async function GET() {
       }))
     );
 
+    const familyMap = new Map<string, { id: string; name: string; relationship: string; notes?: string }>();
+    for (const row of clientRows) {
+      for (const spec of row.customSpecs || []) {
+        if (spec.label?.startsWith('family:')) {
+          const relationship = spec.label.slice('family:'.length) || 'Family';
+          if (!familyMap.has(spec.id)) {
+            familyMap.set(spec.id, {
+              id: spec.id,
+              name: spec.value,
+              relationship,
+              notes: spec.date || undefined,
+            });
+          }
+        }
+      }
+    }
+    const familyMembers = Array.from(familyMap.values());
+
     const totalVisits = clientRows.reduce((s, c) => s + (c.totalVisits || 0), 0);
     const totalSpentCents = clientRows.reduce((s, c) => s + (c.totalSpentCents || 0), 0);
     const walletBalanceCents = clientRows.reduce((s, c) => s + (c.walletBalanceCents || 0), 0);
@@ -144,6 +164,7 @@ export async function GET() {
       receipts,
       waivers,
       photos,
+      familyMembers,
       giftCards: activeGiftCards,
     });
   } catch (err: any) {
@@ -167,6 +188,30 @@ export async function PATCH(req: Request) {
     const updateFields: Record<string, any> = {};
     if (typeof body?.preferences === 'string') updateFields.preferences = body.preferences.trim();
     if (typeof body?.allergies === 'string') updateFields.allergies = body.allergies.trim();
+
+    if (Array.isArray(body?.familyMembers)) {
+      const existingRows = await db
+        .select({ id: clients.id, customSpecs: clients.customSpecs })
+        .from(clients)
+        .where(sql`LOWER(${clients.email}) = ${email}`);
+
+      const familySpecs = body.familyMembers
+        .filter((f: any) => f && typeof f.name === 'string' && f.name.trim())
+        .map((f: any) => ({
+          id: String(f.id || `fam-${Date.now()}`),
+          label: `family:${String(f.relationship || 'Family').trim()}`,
+          value: String(f.name).trim(),
+          date: f.notes ? String(f.notes).trim() : undefined,
+        }));
+
+      for (const row of existingRows) {
+        const nonFamily = (row.customSpecs || []).filter((s) => !s.label?.startsWith('family:'));
+        await db
+          .update(clients)
+          .set({ customSpecs: [...nonFamily, ...familySpecs] })
+          .where(eq(clients.id, row.id));
+      }
+    }
 
     if (Object.keys(updateFields).length > 0) {
       await db
