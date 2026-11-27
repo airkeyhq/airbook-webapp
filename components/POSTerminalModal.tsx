@@ -9,17 +9,17 @@ import { Icon } from '@/components/primitives/Icon';
 import { Dialog } from '@/components/primitives/Dialog';
 import { Alert } from '@/components/primitives/Alert';
 import { Badge } from '@/components/primitives/Badge';
+import { Card } from '@/components/primitives/Card';
+import { EmptyState } from '@/components/EmptyState';
 import {
   Payment24Filled,
   Payment24Regular,
-  Dismiss24Filled,
+  Phone24Regular,
   Add24Filled,
-  CheckmarkCircle24Regular,
-  Warning24Regular,
-  Wifi124Regular,
-  WifiOff24Regular,
   ArrowSync24Filled,
   ArrowSync24Regular,
+  Wifi124Regular,
+  WifiOff24Regular,
 } from '@fluentui/react-icons';
 
 interface POSTerminalModalProps {
@@ -29,13 +29,6 @@ interface POSTerminalModalProps {
   description?: string;
   onPaymentCollected?: (paymentIntentId: string) => void;
 }
-
-const READER_ICONS: Record<string, string> = {
-  bbpos_wisepad3: '🔷',
-  stripe_s700: '🟦',
-  bbpos_chipper2x: '🔹',
-  tap_to_pay: '📱',
-};
 
 export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
   isOpen,
@@ -189,15 +182,10 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
       onClose={onClose}
       size="lg"
       title={t('terminalTitle')}
-      description={
-        <>
-          {t('terminalDesc')} ·{' '}
-          <span className="font-bold text-emerald-600">${(amountCents / 100).toFixed(2)}</span>
-        </>
-      }
+      description={t('terminalDesc')}
       headerIcon={
-        <div className="w-9 h-9 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-          <Icon regular={Payment24Regular} size="md" className="text-blue-600" />
+        <div className="w-9 h-9 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center">
+          <Icon regular={Payment24Regular} size="md" tone="secondary" />
         </div>
       }
       footer={dialogFooter}
@@ -238,8 +226,11 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                       <button type="button" onClick={fetchReaders} className="p-1.5 rounded-lg hover:bg-black/5 transition-colors cursor-pointer">
                         <Icon filled={ArrowSync24Filled} size="sm" tone="muted" className={`w-3.5 h-3.5 ${isLoadingReaders ? 'animate-spin' : ''}`} />
                       </button>
-                      <button type="button" onClick={() => setShowPairForm(!showPairForm)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-extrabold cursor-pointer">
+                      <button
+                        type="button"
+                        onClick={() => setShowPairForm(!showPairForm)}
+                        className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                      >
                         <Icon filled={Add24Filled} size="xs" />
                         <span>{t('terminalPairNew')}</span>
                       </button>
@@ -249,33 +240,49 @@ export const POSTerminalModal: React.FC<POSTerminalModalProps> = ({
                   {isLoadingReaders ? (
                     <div className="py-6 text-center text-xs text-[var(--text-muted)]">Scanning for readers…</div>
                   ) : readers.length === 0 ? (
-                    <div className="py-6 text-center text-xs text-[var(--text-muted)] border border-dashed border-[var(--border-subtle)] rounded-2xl">
-                      No readers paired yet. Click "Pair New Reader" to add one.
-                    </div>
+                    <EmptyState
+                      icon={Payment24Regular}
+                      title="No readers paired yet"
+                      description="Click Pair New Reader to add one."
+                      className="!min-h-[160px] !p-6"
+                    />
                   ) : (
                     <div className="space-y-2">
-                      {readers.map((reader) => (
-                        <button key={reader.id} type="button" onClick={() => setSelectedReaderId(reader.id)}
-                          className={`w-full p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-                            selectedReaderId === reader.id
-                              ? 'border-blue-500 bg-blue-500/5 ring-1 ring-blue-500/20'
-                              : 'border-[var(--border-subtle)] hover:border-black/20'
-                          }`}>
-                          <span className="text-xl">{READER_ICONS[reader.device_type] || '🔷'}</span>
-                          <div className="flex-1">
-                            <p className="text-xs font-extrabold text-[var(--text-primary)]">{reader.label}</p>
-                            <p className="text-[10px] text-[var(--text-muted)] capitalize">{reader.device_type?.replace(/_/g, ' ')}</p>
-                          </div>
-                          <Badge
-                            variant={reader.status === 'online' ? 'success' : 'subtle'}
-                            size="xs"
-                            className="uppercase gap-1"
+                      {readers.map((reader) => {
+                        const isSelected = selectedReaderId === reader.id;
+                        return (
+                          <Card
+                            key={reader.id}
+                            variant="interactive"
+                            onClick={() => setSelectedReaderId(reader.id)}
+                            className={`!p-3.5 !rounded-2xl flex items-center gap-3 ${
+                              isSelected
+                                ? '!border-[#2BB5FF] ring-1 ring-[#2BB5FF]/25'
+                                : ''
+                            }`}
                           >
-                            {reader.status === 'online' ? <Icon regular={Wifi124Regular} className="w-2.5 h-2.5" /> : <Icon regular={WifiOff24Regular} className="w-2.5 h-2.5" />}
-                            <span>{reader.status}</span>
-                          </Badge>
-                        </button>
-                      ))}
+                            <div className="w-9 h-9 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center flex-shrink-0">
+                              <Icon
+                                regular={reader.device_type === 'tap_to_pay' ? Phone24Regular : Payment24Regular}
+                                size="sm"
+                                tone={isSelected ? 'accent' : 'secondary'}
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">{reader.label}</p>
+                              <p className="text-[10px] text-[var(--text-muted)] capitalize">{reader.device_type?.replace(/_/g, ' ')}</p>
+                            </div>
+                            <Badge
+                              variant={reader.status === 'online' ? 'success' : 'subtle'}
+                              size="xs"
+                              className="uppercase gap-1"
+                            >
+                              {reader.status === 'online' ? <Icon regular={Wifi124Regular} className="w-2.5 h-2.5" /> : <Icon regular={WifiOff24Regular} className="w-2.5 h-2.5" />}
+                              <span>{reader.status}</span>
+                            </Badge>
+                          </Card>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
