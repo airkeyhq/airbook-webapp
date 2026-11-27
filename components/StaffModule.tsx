@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Icon } from '@/components/primitives/Icon';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
+import { DataTable } from '@/components/DataTable';
 import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -953,44 +954,69 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <span>{t('pendingInvites')}</span>
               </h3>
             }
-            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : 'divide-y divide-[var(--border-subtle)] p-0'}
+            innerClassName="p-0 overflow-hidden"
           >
             {pendingInvitesList.length === 0 ? (
-              <EmptyState
-                icon={Mail24Regular}
-                title={t('noPendingInvites')}
-                description={t('inviteFormHint')}
-              />
-            ) : (
-              <div>
-                {pendingInvitesList.map((inv) => (
-                  <div
-                    key={inv.id}
-                    className="flex items-center justify-between px-5 py-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-extrabold text-xs shadow-xs">
-                        {inv.email.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-[var(--text-primary)]">{inv.email}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[11px] text-[var(--text-secondary)] capitalize">{inv.role}</span>
-                          <Badge variant="warning" size="xs">{t('statusPending')}</Badge>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleRevokeInvite(inv.id)}
-                      className="px-3.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors flex items-center gap-1.5"
-                    >
-                      <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
-                      <span>{t('revokeInvite')}</span>
-                    </button>
-                  </div>
-                ))}
+              <div className="p-5 sm:p-6">
+                <EmptyState
+                  icon={Mail24Regular}
+                  title={t('noPendingInvites')}
+                  description={t('inviteFormHint')}
+                />
               </div>
+            ) : (
+              <DataTable
+                data={pendingInvitesList}
+                getRowKey={(inv) => inv.id}
+                searchable={false}
+                columns={[
+                  {
+                    key: 'email',
+                    header: t('emailAddress'),
+                    sortable: true,
+                    sortValue: (inv) => inv.email,
+                    render: (inv) => (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-extrabold text-xs flex-shrink-0">
+                          {inv.email.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-xs font-bold text-[var(--text-primary)]">{inv.email}</span>
+                      </div>
+                    ),
+                  },
+                  {
+                    key: 'role',
+                    header: t('selectRole'),
+                    sortable: true,
+                    sortValue: (inv) => inv.role,
+                    render: (inv) => (
+                      <span className="text-xs text-[var(--text-secondary)] capitalize">{inv.role}</span>
+                    ),
+                  },
+                  {
+                    key: 'status',
+                    header: t('tasksStatusLabel'),
+                    render: () => (
+                      <Badge variant="warning" size="xs">{t('statusPending')}</Badge>
+                    ),
+                  },
+                  {
+                    key: 'actions',
+                    header: '',
+                    align: 'right',
+                    render: (inv) => (
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeInvite(inv.id)}
+                        className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+                      >
+                        <Icon filled={Dismiss24Filled} size="sm" className="w-3.5 h-3.5" />
+                        <span>{t('revokeInvite')}</span>
+                      </button>
+                    ),
+                  },
+                ]}
+              />
             )}
           </Card>
         </div>
