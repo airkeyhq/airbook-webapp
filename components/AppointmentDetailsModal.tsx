@@ -97,7 +97,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
         }),
       });
       if (res.ok) {
-        updateAppointmentStatus(appointment.id, 'completed');
+        updateAppointmentStatus(appointment.id, 'no_show');
         bumpCheckoutNonce();
         addToast(t('noShowRecordedToast'), 'success');
         onClose();
@@ -150,8 +150,20 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           <div className="w-full px-6 py-4 flex items-start justify-between flex-shrink-0 bg-[var(--bg-primary)]">
             <div>
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                  {t('statusConfirmed')}
+                <span
+                  className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+                    appointment.status === 'no_show'
+                      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                      : appointment.status === 'completed'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                  }`}
+                >
+                  {appointment.status === 'no_show'
+                    ? t('noShows')
+                    : appointment.status === 'completed'
+                    ? t('completed')
+                    : t('statusConfirmed')}
                 </span>
                 {partyGuests.length > 1 && (
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center gap-1">
@@ -278,7 +290,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             </button>
 
             {/* Mark No-Show & Charge Fee */}
-            {appointment.status !== 'completed' && (
+            {appointment.status !== 'completed' && appointment.status !== 'no_show' && (
               <button
                 type="button"
                 disabled={chargingNoShow}

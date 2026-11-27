@@ -42,7 +42,7 @@ export interface Appointment {
   depositPaidCents?: number;
   paymentStatus?: 'paid' | 'unpaid' | 'deposit_paid' | string;
   color: string;
-  status: 'confirmed' | 'pending' | 'completed';
+  status: 'confirmed' | 'pending' | 'completed' | 'no_show';
   notes?: string;
   groupId?: string | null; // Links sibling appointments booked together as one party
   partySize?: number; // Total guests in this party, when part of a group booking
@@ -148,7 +148,7 @@ export interface AirBookState {
   // Actions
   addAppointment: (appointment: Omit<Appointment, 'id'>) => void;
   setAppointments: (appointments: Appointment[]) => void;
-  updateAppointmentStatus: (id: string, status: 'confirmed' | 'pending' | 'completed') => void;
+  updateAppointmentStatus: (id: string, status: 'confirmed' | 'pending' | 'completed' | 'no_show') => void;
   deleteAppointment: (id: string) => void;
   checkoutNonce: number;
   bumpCheckoutNonce: () => void;
@@ -610,7 +610,9 @@ export const useAirBookStore = create<AirBookState>((set) => ({
   updateAppointmentStatus: (id, status) =>
     set((state) => ({
       appointments: state.appointments.map((a) =>
-        a.id === id ? { ...a, status, paymentStatus: status === 'completed' ? 'paid' : a.paymentStatus } : a
+        a.id === id
+          ? { ...a, status, paymentStatus: status === 'completed' || status === 'no_show' ? 'paid' : a.paymentStatus }
+          : a
       ),
     })),
   checkoutNonce: 0,
