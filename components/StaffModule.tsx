@@ -914,20 +914,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                 />
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] block">
-                    {t('selectRole')}
-                  </label>
-                  <CustomSelect
-                    value={inviteRole}
-                    onChange={(val) => setInviteRole(val as any)}
-                    options={[
-                      { value: 'staff', label: t('staff') },
-                      { value: 'manager', label: t('manager') },
-                      { value: 'receptionist', label: t('roleReceptionist') },
-                    ]}
-                  />
-                </div>
+                <CustomSelect
+                  label={t('selectRole')}
+                  value={inviteRole}
+                  onChange={(val) => setInviteRole(val as any)}
+                  options={[
+                    { value: 'staff', label: t('staff') },
+                    { value: 'manager', label: t('manager') },
+                    { value: 'receptionist', label: t('roleReceptionist') },
+                  ]}
+                />
               </div>
               <div className="flex justify-end pt-1">
                 <motion.button
