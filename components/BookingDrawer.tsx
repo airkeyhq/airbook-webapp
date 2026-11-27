@@ -8,14 +8,25 @@ import {
   Sparkle24Filled,
   Sparkle24Regular,
   CheckmarkCircle24Filled,
+  Add24Filled,
+  Delete24Filled,
+  PeopleTeam24Regular,
 } from '@fluentui/react-icons';
 import { Icon } from '@/components/primitives/Icon';
 import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useToast } from '@/components/Toast';
 import { getAvatarUrl } from '@/lib/avatars';
 import type { ClientItem } from '@/components/ClientsModule';
+
+interface ExtraGuestRow {
+  id: string;
+  guestName: string;
+  serviceId: string;
+  staffId: string;
+}
 
 export const BookingDrawer: React.FC = () => {
   const {
@@ -30,6 +41,7 @@ export const BookingDrawer: React.FC = () => {
     isDemoMode,
   } = useAirBookStore();
   const { t } = useTranslation();
+  const { addToast } = useToast();
 
   const storeSelectedStaffId = useAirBookStore((s) => s.selectedStaffId);
 
@@ -46,6 +58,7 @@ export const BookingDrawer: React.FC = () => {
   );
   const [startTime, setStartTime] = useState(selectedSlotTime || '14:00');
   const [notes, setNotes] = useState('');
+  const [extraGuests, setExtraGuests] = useState<ExtraGuestRow[]>([]);
   const [selectedColor, setSelectedColor] = useState('#FF4D8D');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -103,6 +116,19 @@ export const BookingDrawer: React.FC = () => {
   const currentService = services.find((s) => s.id === selectedServiceId) || services[0];
   const currentStaff = staffMembers.find((s) => s.id === selectedStaffId) || staffMembers[0];
 
+  const handleAddExtraGuest = () => {
+    if (extraGuests.length >= 5) return;
+    setExtraGuests((prev) => [
+      ...prev,
+      {
+        id: `eg-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+        guestName: '',
+        serviceId: currentService?.id || services[0]?.id || '',
+        staffId: staffMembers[Math.min(prev.length + 1, Math.max(0, staffMembers.length - 1))]?.id || currentStaff?.id || '',
+      },
+    ]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim()) return;
@@ -110,23 +136,60 @@ export const BookingDrawer: React.FC = () => {
     setSubmitting(true);
     setErrorMessage(null);
 
-    // Optimistically add to Zustand store
-    addAppointment({
-      clientId: selectedClient?.id,
-      clientName: clientName.trim(),
-      clientAvatar: selectedClient?.avatarUrl || getAvatarUrl(clientName.trim()),
-      serviceId: currentService.id,
-      serviceName: currentService.name,
-      staffId: currentStaff.id,
-      staffName: currentStaff.name,
-      dateStr: selectedDateStr,
-      startTime: startTime,
-      durationMinutes: currentService.durationMinutes,
-      price: currentService.price,
-      color: selectedColor || currentService.color,
-      status: 'confirmed',
-      notes: notes,
-    });
+    const allGuests = [
+      {
+        guestName: clientName.trim(),
+        serviceId: currentService.id,
+        serviceName: currentService.name,
+        staffId: currentStaff.id,
+        staffName: currentStaff.name,
+        durationMinutes: currentService.durationMinutes,
+        price: currentService.price,
+        priceCents: Math.round(currentService.price * 100),
+        startTime,
+        color: selectedColor || currentService.color,
+      },
+      ...extraGuests.map((eg, idx) => {
+        const srv = services.find((s) => s.id === eg.serviceId) || currentService;
+        const stf = staffMembers.find((st) => st.id === eg.staffId) || currentStaff;
+        return {
+          guestName: eg.guestName.trim() || `${clientName.trim()} (${t('partyGuestLabel')} ${idx + 2})`,
+          serviceId: srv.id,
+          serviceName: srv.name,
+          staffId: stf.id,
+          staffName: stf.name,
+          durationMinutes: srv.durationMinutes,
+          price: srv.price,
+          priceCents: Math.round(srv.price * 100),
+          startTime,
+          color: srv.color || selectedColor,
+        };
+      }),
+    ];
+
+    const optimisticGroupId = allGuests.length > 1 ? `grp-${Date.now()}` : null;
+
+    // Optimistically add each guest appointment to Zustand store
+    for (const g of allGuests) {
+      addAppointment({
+        clientId: selectedClient?.id,
+        clientName: g.guestName,
+        clientAvatar: selectedClient?.avatarUrl || getAvatarUrl(g.guestName),
+        serviceId: g.serviceId,
+        serviceName: g.serviceName,
+        staffId: g.staffId,
+        staffName: g.staffName,
+        dateStr: selectedDateStr,
+        startTime: g.startTime,
+        durationMinutes: g.durationMinutes,
+        price: g.price,
+        color: g.color,
+        status: 'confirmed',
+        notes,
+        groupId: optimisticGroupId,
+        partySize: allGuests.length,
+      });
+    }
 
     try {
       await fetch('/api/bookings/create', {
@@ -138,16 +201,22 @@ export const BookingDrawer: React.FC = () => {
           clientName: clientName.trim(),
           clientEmail: selectedClient?.email,
           clientPhone: selectedClient?.phone,
-          serviceId: currentService.id,
-          serviceName: currentService.name,
-          staffId: currentStaff.id,
           dateStr: selectedDateStr,
-          startTime: startTime,
-          durationMinutes: currentService.durationMinutes,
-          priceCents: Math.round(currentService.price * 100),
-          notes: notes,
+          startTime,
+          notes,
+          guests: allGuests.map((g) => ({
+            guestName: g.guestName,
+            staffId: g.staffId,
+            serviceId: g.serviceId,
+            durationMinutes: g.durationMinutes,
+            priceCents: g.priceCents,
+            startTime: g.startTime,
+          })),
         }),
       });
+      if (allGuests.length > 1) {
+        addToast(t('partyBookingCreatedToast'), 'success');
+      }
     } catch (err) {
       console.warn('Booking persisted to UI store (DB sync pending):', err);
     } finally {
@@ -157,6 +226,7 @@ export const BookingDrawer: React.FC = () => {
       setSuggestions([]);
       setShowSuggestions(false);
       setNotes('');
+      setExtraGuests([]);
       closeBookingDrawer();
     }
   };
@@ -403,6 +473,80 @@ export const BookingDrawer: React.FC = () => {
                   };
                 })}
               />
+            </div>
+
+            {/* Multi-Guest Party Builder */}
+            <div className="space-y-2.5 pt-2 border-t border-[var(--border-subtle)]">
+              {extraGuests.map((eg, idx) => (
+                <div
+                  key={eg.id}
+                  className="p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-2.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5">
+                      <Icon regular={PeopleTeam24Regular} size="xs" />
+                      {t('partyGuestLabel')} {idx + 2}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setExtraGuests((prev) => prev.filter((item) => item.id !== eg.id))}
+                      className="p-1 rounded-lg text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                    >
+                      <Icon filled={Delete24Filled} size="xs" />
+                    </button>
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder={t('partyGuestNameOptional')}
+                    value={eg.guestName}
+                    onChange={(e) =>
+                      setExtraGuests((prev) =>
+                        prev.map((item) => (item.id === eg.id ? { ...item, guestName: e.target.value } : item))
+                      )
+                    }
+                    className="input-base w-full text-xs"
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <CustomSelect
+                      value={eg.serviceId}
+                      onChange={(val) =>
+                        setExtraGuests((prev) =>
+                          prev.map((item) => (item.id === eg.id ? { ...item, serviceId: val } : item))
+                        )
+                      }
+                      options={services.map((s) => ({
+                        value: s.id,
+                        label: `${s.name} ($${s.price})`,
+                      }))}
+                    />
+                    <CustomSelect
+                      value={eg.staffId}
+                      onChange={(val) =>
+                        setExtraGuests((prev) =>
+                          prev.map((item) => (item.id === eg.id ? { ...item, staffId: val } : item))
+                        )
+                      }
+                      options={staffMembers.map((st) => ({
+                        value: st.id,
+                        label: st.name,
+                      }))}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {extraGuests.length < 5 && (
+                <button
+                  type="button"
+                  onClick={handleAddExtraGuest}
+                  className="btn-secondary w-full h-9 text-xs font-bold flex items-center justify-center gap-1.5"
+                >
+                  <Icon filled={Add24Filled} size="xs" />
+                  <span>{t('addPartyGuestBtn')}</span>
+                </button>
+              )}
             </div>
 
             </div>
