@@ -1,0 +1,22 @@
+[07:36:05.154] [INFO] storybook v11.0.0-rc.0
+[07:36:05.844] [DEBUG] Getting package.json info for /Users/eduardo/Documents/antigravity/proud-tesla/package.json...
+[07:36:06.466] [WARN] @storybook/nextjs is deprecated and will be removed in Storybook 12. Migrate to @storybook/nextjs-vite — the automigration is available via `storybook upgrade` (accept the fix) or `storybook migrate nextjs-to-nextjs-vite`.
+[07:36:07.114] [DEBUG] Serving static files from node_modules/@chromatic-com/storybook/assets at /addon-visual-tests-assets
+[07:36:07.114] [DEBUG] Serving static files from public at /
+[07:36:07.118] [INFO] Starting...
+[07:36:07.207] [WARN] No story files found for the specified pattern: stories/**/*.mdx
+[07:36:07.207] [WARN] No story files found for the specified pattern: components/**/*.stories.@(js|jsx|mjs|ts|tsx)
+[07:36:07.219] [DEBUG] readDependencyManifest: could not resolve "@modelcontextprotocol/sdk"
+[07:36:07.407] [DEBUG] Starting preview..
+[07:36:07.433] [INFO] Addon-docs: using MDX3
+[07:36:07.435] [INFO] Using implicit CSS loaders
+[07:36:07.642] [INFO] Using SWC as compiler
+[07:36:07.785] [INFO] Using default Webpack5 setup
+[07:36:12.803] [WARN] Force closed preview build
+[07:36:12.804] [ERROR] Error: listen EADDRINUSE: address already in use 127.0.0.1:6008
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at node:net:2203:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[07:36:12.805] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.

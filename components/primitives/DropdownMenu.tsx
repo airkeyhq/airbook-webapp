@@ -114,7 +114,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
                     entry.onClick?.();
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-2.5 py-2 rounded-xl text-xs font-semibold transition-colors select-none ${
+                  className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-left text-xs font-semibold transition-colors select-none ${
                     entry.disabled
                       ? 'opacity-40 cursor-not-allowed'
                       : entry.danger
@@ -122,9 +122,9 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
                         : 'text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] cursor-pointer'
                   }`}
                 >
-                  <span className="flex items-center gap-2 min-w-0">
+                  <span className="flex items-center gap-3 min-w-0">
                     {entry.icon && (
-                      <span className="w-4 h-4 flex items-center justify-center flex-shrink-0 [&>svg]:w-full [&>svg]:h-full">
+                      <span className="min-w-4 min-h-4 flex items-center justify-center flex-shrink-0 [&>svg]:w-4 [&>svg]:h-4">
                         {entry.icon}
                       </span>
                     )}

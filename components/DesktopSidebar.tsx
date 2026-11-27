@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Indicator, InlineIndicator } from '@/components/primitives/Indicator';
+import { Badge } from '@/components/primitives/Badge';
+import { PillButton } from '@/components/primitives/PillButton';
 import { Icon as OzoneIcon } from '@/components/primitives/Icon';
 import {
   Calendar24Filled,
@@ -81,19 +83,18 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
         )}
 
         <div className="relative group">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            whileHover={{ scale: 1.08 }}
+          <PillButton
+            iconOnly
+            size="sm"
             onClick={toggleSidebar}
             aria-label={isSidebarCollapsed ? t('expandSidebar') : t('collapseSidebar')}
-            className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-[var(--text-primary)] flex items-center justify-center transition-colors flex-shrink-0"
           >
             {isSidebarCollapsed ? (
               <OzoneIcon filled={ChevronRight24Filled} size="md" />
             ) : (
               <OzoneIcon filled={ChevronLeft24Filled} size="md" />
             )}
-          </motion.button>
+          </PillButton>
 
           {isSidebarCollapsed && (
             <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[60] drop-shadow-2xl">
@@ -117,26 +118,41 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center ${
                   isSidebarCollapsed ? 'justify-center py-3' : 'justify-between px-3 py-2.5'
-                } rounded-2xl text-xs font-bold transition-all relative ${
+                } rounded-2xl text-xs font-bold transition-colors relative ${
                   isActive
-                    ? 'bg-[var(--nav-active-bg)] text-[var(--nav-active-fg)] shadow-md'
+                    ? 'text-[var(--nav-active-fg)]'
                     : 'text-[var(--nav-inactive)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
+                {isActive && (
+                  <motion.span
+                    layoutId="sidebarActivePill"
+                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    className="absolute inset-0 rounded-2xl bg-[var(--nav-active-bg)] shadow-md"
+                  />
+                )}
+                <div className="relative z-10 flex items-center gap-2.5">
                   <Indicator
                     show={isSidebarCollapsed && item.badge !== undefined && item.badge > 0}
                     color="danger"
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <motion.span
+                      animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                      whileHover={{ scale: 1.15, rotate: -4 }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                      className="inline-flex items-center justify-center flex-shrink-0"
+                    >
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                    </motion.span>
                   </Indicator>
                   {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
 
                 {!isSidebarCollapsed && item.soon && (
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-extrabold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex-shrink-0">
+                  <Badge variant="warning" size="xs" className="flex-shrink-0">
                     {t('comingSoon')}
-                  </span>
+                  </Badge>
                 )}
 
                 {!isSidebarCollapsed && item.badge !== undefined && (
@@ -153,9 +169,9 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
                 <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform -translate-x-1 group-hover:translate-x-0 z-[60] flex items-center gap-2 drop-shadow-2xl">
                   <span>{item.label}</span>
                   {item.soon && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-extrabold bg-amber-500/20 text-amber-400">
+                    <Badge variant="warning" size="xs">
                       SOON
-                    </span>
+                    </Badge>
                   )}
                   {item.badge !== undefined && item.badge > 0 && (
                     <InlineIndicator value={item.badge} variant="pill-solid" />
@@ -175,7 +191,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
             <div className="flex items-center gap-1.5 font-extrabold text-amber-600 dark:text-amber-400">
               <OzoneIcon filled={Sparkle24Filled} size="md" />
               <span>{t('upgradeTo')}</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[9px] uppercase font-bold tracking-wider leading-none">PRO</span>
+              <Badge variant="warning" size="xs">PRO</Badge>
             </div>
             <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
               {t('upgradeProDesc')}

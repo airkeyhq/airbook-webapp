@@ -6,6 +6,7 @@ import { format, addDays, startOfWeek } from 'date-fns';
 import { ArrowLeft24Filled, ArrowRight24Filled, People24Filled } from '@fluentui/react-icons';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/primitives/Icon';
+import { PillButton, PillGroup } from '@/components/primitives/PillButton';
 
 export const DateStrip: React.FC = () => {
   const {
@@ -60,51 +61,60 @@ export const DateStrip: React.FC = () => {
           </span>
         </div>
 
-        {/* View Toggle & Navigation Controls (Standardized h-9 / 36px Height Token) */}
+        {/* View Toggle & Navigation Controls */}
         <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
           {/* View Toggle (Day / Week) */}
-          <div className="h-8 sm:h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-1 gap-0.5">
-            <button
-              onClick={() => setViewMode('day')}
-              className={`h-6 sm:h-7 flex items-center px-2.5 sm:px-3 rounded-full text-[11px] sm:text-xs font-extrabold transition-all ${
-                viewMode === 'day' ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {t('day')}
-            </button>
-            <button
-              onClick={() => setViewMode('week')}
-              className={`h-6 sm:h-7 flex items-center px-2.5 sm:px-3 rounded-full text-[11px] sm:text-xs font-extrabold transition-all ${
-                viewMode === 'week' ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {t('week')}
-            </button>
-          </div>
+          <PillGroup>
+            {(['day', 'week'] as const).map((mode) => {
+              const isActive = viewMode === mode;
+              return (
+                <PillButton
+                  key={mode}
+                  variant="ghost"
+                  size="sm"
+                  active={isActive}
+                  onClick={() => setViewMode(mode)}
+                  className={`relative font-extrabold !bg-transparent ${
+                    isActive ? '!text-black dark:!text-black' : ''
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="dateStripViewMode"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                      className="absolute inset-0 rounded-full bg-white shadow-sm"
+                    />
+                  )}
+                  <span className="relative z-10">{t(mode)}</span>
+                </PillButton>
+              );
+            })}
+          </PillGroup>
 
-          <button
-            onClick={handleToday}
-            className="h-8 sm:h-9 flex items-center px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[11px] sm:text-xs font-extrabold text-[var(--text-primary)]"
-          >
+          <PillButton onClick={handleToday} className="font-extrabold text-[var(--text-primary)]">
             {t('today')}
-          </button>
+          </PillButton>
 
-          <div className="h-8 sm:h-9 flex items-center bg-black/5 dark:bg-white/10 rounded-full p-0.5 sm:p-1 gap-0.5">
-            <button
+          <PillGroup>
+            <PillButton
+              variant="ghost"
+              size="sm"
+              iconOnly
               onClick={handlePrev}
               aria-label={t('previous')}
-              className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <Icon filled={ArrowLeft24Filled} size="sm" />
-            </button>
-            <button
+            </PillButton>
+            <PillButton
+              variant="ghost"
+              size="sm"
+              iconOnly
               onClick={handleNext}
               aria-label={t('next')}
-              className="h-7 w-7 flex items-center justify-center rounded-full hover:bg-black/10 text-[var(--text-primary)]"
             >
               <Icon filled={ArrowRight24Filled} size="sm" />
-            </button>
-          </div>
+            </PillButton>
+          </PillGroup>
         </div>
       </div>
 

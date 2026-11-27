@@ -10,6 +10,9 @@ import { CreateWorkspaceModal } from './CreateWorkspaceModal';
 import { NotificationCenterPopover } from './NotificationCenterPopover';
 import { QRCodeCard } from './QRCodeCard';
 import { Icon } from '@/components/primitives/Icon';
+import { PillButton } from '@/components/primitives/PillButton';
+import { DropdownMenu, type DropdownMenuItem } from '@/components/primitives/DropdownMenu';
+import { Avatar } from '@/components/primitives/Avatar';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getAvatarUrl } from '@/lib/avatars';
@@ -135,115 +138,90 @@ export const DesktopHeader: React.FC = () => {
   return (
     <>
       <header
-        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-[20px] px-2.5 sm:px-4 flex items-center justify-between flex-shrink-0 z-50 relative shadow-sm gap-1.5 overflow-visible"
+        className="w-full h-14 bg-white dark:bg-[#141720] border border-slate-200/80 dark:border-white/10 rounded-full px-2.5 flex items-center justify-between flex-shrink-0 z-50 relative shadow-sm gap-1.5 overflow-visible"
       >
-        {/* Left: Workspace Dropdown Pill & Sidebar Toggle */}
+        {/* Left: Workspace Dropdown Pill */}
         <div ref={workspaceDropdownRef} className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 relative z-[100]">
-          <button
-            onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
-            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0 cursor-pointer"
-          >
-            {logoUrl ? (
-              <img
-                src={logoUrl}
-                alt={workspaceName}
-                className="w-5 h-5 rounded-full object-cover flex-shrink-0 ring-1 ring-black/10 dark:ring-white/10"
-              />
-            ) : (
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center font-extrabold text-[10px] text-white flex-shrink-0 shadow-xs"
-                style={{ backgroundColor: brandColor }}
-              >
-                {workspaceInitials}
-              </div>
-            )}
-            <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
-            <Icon regular={ChevronDown24Regular} size="xs" tone="muted" className="sm:w-3.5 sm:h-3.5" />
-          </button>
-
-          {isWorkspaceMenuOpen && (
-            <div className="absolute left-0 top-11 mt-1 w-64 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
-              
-              <div className="max-h-60 overflow-y-auto space-y-1">
-                {workspaces.length > 0 ? (
-                  workspaces.map((ws) => (
-                    <button
-                      key={ws.id}
-                      onClick={() => {
-                        useAirBookStore.getState().setWorkspaceId(ws.id);
-                        useAirBookStore.getState().setWorkspaceName(ws.name);
-                        useAirBookStore.getState().setWorkspaceSlug(ws.slug);
-                        if (ws.plan) {
-                          useAirBookStore.getState().setWorkspacePlan(ws.plan, ws.subscriptionStatus);
-                        }
-                        setIsWorkspaceMenuOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors group cursor-pointer ${
-                        ws.name === workspaceName ? 'bg-black/5 dark:bg-white/5' : ''
-                      }`}
-                    >
-                      {ws.logoUrl ? (
-                        <img
-                          src={ws.logoUrl}
-                          alt={ws.name}
-                          className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0"
-                          style={{ backgroundColor: ws.brandColor || '#007AFF' }}
-                        >
-                          {ws.name.trim().split(/\s+/).map((w: string) => w[0]).slice(0, 2).join('').toUpperCase() || ws.name.charAt(0)}
-                        </div>
-                      )}
-                      <div className="flex flex-col flex-1 truncate">
-                        <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
-                        <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
-                      </div>
-                      {ws.name === workspaceName && (
-                        <Icon filled={Checkmark24Filled} active size="md" className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                      )}
-                    </button>
-                  ))
-                ) : (
-                  <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left bg-black/5 dark:bg-white/5">
-                    {logoUrl ? (
-                      <img
-                        src={logoUrl}
-                        alt={workspaceName}
-                        className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+          <DropdownMenu
+            preferredHorizontal="left"
+            trigger={
+              <PillButton className="!pl-1.5 gap-2 font-extrabold text-[var(--text-primary)]">
+                <Avatar
+                  size="xs"
+                  src={logoUrl || undefined}
+                  alt={workspaceName}
+                  fallback={workspaceInitials}
+                  style={logoUrl ? undefined : { backgroundColor: brandColor }}
+                />
+                <span className="truncate max-w-[85px] sm:max-w-[200px]">{workspaceName}</span>
+                <Icon regular={ChevronDown24Regular} size="xs" tone="muted" className="sm:w-3.5 sm:h-3.5" />
+              </PillButton>
+            }
+            items={[
+              ...(workspaces.length > 0
+                ? workspaces.map((ws): DropdownMenuItem => ({
+                    id: ws.id,
+                    icon: (
+                      <Avatar
+                        size="sm"
+                        src={ws.logoUrl || undefined}
+                        alt={ws.name}
+                        fallback={ws.name.trim().split(/\s+/).map((w: string) => w[0]).slice(0, 2).join('').toUpperCase() || ws.name.charAt(0)}
+                        style={ws.logoUrl ? undefined : { backgroundColor: ws.brandColor || '#007AFF' }}
                       />
-                    ) : (
-                      <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white flex-shrink-0"
-                        style={{ backgroundColor: brandColor }}
-                      >
-                        {workspaceInitials}
+                    ),
+                    label: (
+                      <div className="flex items-center justify-between gap-2 min-w-0 w-44">
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-xs font-bold text-[var(--text-primary)] truncate">{ws.name}</span>
+                          <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{ws.slug}</span>
+                        </div>
+                        {ws.name === workspaceName && (
+                          <Icon filled={Checkmark24Filled} active size="md" className="text-sky-500 flex-shrink-0" />
+                        )}
                       </div>
-                    )}
-                    <div className="flex flex-col flex-1 truncate">
-                      <span className="text-xs font-bold text-[var(--text-primary)] truncate">{workspaceName || 'Aurelia Hair & Spa'}</span>
-                      <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{currentSlug}</span>
-                    </div>
-                    <Icon filled={Checkmark24Filled} active size="md" className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-1 mt-1 border-t border-[var(--border-subtle)] space-y-0.5">
-                <button
-                  onClick={() => {
-                    setIsWorkspaceMenuOpen(false);
-                    setIsCreateWorkspaceOpen(true);
-                  }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  <Icon filled={Add24Filled} active size="md" />
-                  <span>{t('createNewWorkspace')}</span>
-                </button>
-              </div>
-            </div>
-          )}
+                    ),
+                    onClick: () => {
+                      useAirBookStore.getState().setWorkspaceId(ws.id);
+                      useAirBookStore.getState().setWorkspaceName(ws.name);
+                      useAirBookStore.getState().setWorkspaceSlug(ws.slug);
+                      if (ws.plan) {
+                        useAirBookStore.getState().setWorkspacePlan(ws.plan, ws.subscriptionStatus);
+                      }
+                    },
+                  }))
+                : [
+                    {
+                      id: 'current-workspace',
+                      icon: (
+                        <Avatar
+                          size="sm"
+                          src={logoUrl || undefined}
+                          alt={workspaceName}
+                          fallback={workspaceInitials}
+                          style={logoUrl ? undefined : { backgroundColor: brandColor }}
+                        />
+                      ),
+                      label: (
+                        <div className="flex items-center justify-between gap-2 min-w-0 w-44">
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-bold text-[var(--text-primary)] truncate">{workspaceName || 'Aurelia Hair & Spa'}</span>
+                            <span className="text-[10px] text-[var(--text-muted)] truncate">getairbook.com/book/{currentSlug}</span>
+                          </div>
+                          <Icon filled={Checkmark24Filled} active size="md" className="text-sky-500 flex-shrink-0" />
+                        </div>
+                      ),
+                    },
+                  ]),
+              { type: 'separator', id: 'ws-sep' },
+              {
+                id: 'create-workspace',
+                icon: <Icon filled={Add24Filled} active size="md" className="text-sky-500" />,
+                label: <span className="text-sky-500 font-bold">{t('createNewWorkspace')}</span>,
+                onClick: () => setIsCreateWorkspaceOpen(true),
+              },
+            ]}
+          />
         </div>
 
         {/* Right Action Pills */}
@@ -252,24 +230,25 @@ export const DesktopHeader: React.FC = () => {
           <NotificationCenterPopover />
 
           {/* Mobile Menu Trigger Button (md:hidden) */}
-          <button
-            type="button"
+          <PillButton
+            iconOnly
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label={t('menu')}
-            className="md:hidden w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 active:scale-95 transition-all text-[var(--text-primary)] cursor-pointer flex-shrink-0"
+            className="md:hidden"
           >
             <Icon filled={Navigation24Filled} active size="md" />
-          </button>
+          </PillButton>
 
           {/* Desktop Only: Share Booking Trigger */}
           <div ref={shareMenuRef} className="hidden md:block relative z-[100] group">
-            <button
+            <PillButton
+              iconOnly
               onClick={() => setIsShareMenuOpen(!isShareMenuOpen)}
-              className="w-9 h-9 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-[var(--text-primary)] relative flex-shrink-0 cursor-pointer"
+              active={isShareMenuOpen}
               aria-label={t('shareLink')}
             >
-              <Icon filled={Share24Filled} active size="md" className="text-[var(--text-primary)]" />
-            </button>
+              <Icon filled={Share24Filled} active size="md" />
+            </PillButton>
 
             {/* Hover Tooltip */}
             {!isShareMenuOpen && (
@@ -325,9 +304,9 @@ export const DesktopHeader: React.FC = () => {
 
           {/* Desktop Only: Language Switcher Pill */}
           <div ref={langMenuRef} className="hidden md:block relative z-[100]">
-            <button
+            <PillButton
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="h-9 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              active={isLangMenuOpen}
             >
               <img
                 src={`https://hatscripts.github.io/circle-flags/flags/${availableLanguages.find((l) => l.id === language)?.flagCode || 'us'}.svg`}
@@ -336,7 +315,7 @@ export const DesktopHeader: React.FC = () => {
               />
               <span className="uppercase text-[10px] tracking-wider">{language}</span>
               <Icon regular={ChevronDown24Regular} size="xs" tone="muted" />
-            </button>
+            </PillButton>
 
             {isLangMenuOpen && (
               <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-1.5 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">
@@ -367,14 +346,13 @@ export const DesktopHeader: React.FC = () => {
 
           {/* Desktop Only: Quick Lock Station Action */}
           <div className="hidden md:block relative z-[100] group">
-            <button
-              type="button"
+            <PillButton
+              iconOnly
               onClick={() => lockPos()}
               aria-label={t('lockStation')}
-              className="h-9 w-9 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 active:scale-95 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center cursor-pointer flex-shrink-0"
             >
               <Icon filled={LockClosed24Filled} active size="md" />
-            </button>
+            </PillButton>
 
             {/* Hover Tooltip */}
             <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] font-extrabold whitespace-nowrap shadow-2xl border border-white/20 dark:border-slate-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 transform translate-y-[-2px] group-hover:translate-y-0 z-30 drop-shadow-2xl">
@@ -385,17 +363,20 @@ export const DesktopHeader: React.FC = () => {
 
           {/* Desktop Only: User Profile Pill / Dropdown */}
           <div ref={userDropdownRef} className="hidden md:block relative z-[100]">
-            <button
+            <PillButton
+              iconOnly={!userName}
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-              className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors text-xs font-bold text-[var(--text-primary)]"
+              active={isUserDropdownOpen}
+              className={userName ? '!pl-1.5 gap-2' : ''}
             >
-              <img
+              <Avatar
+                size="xs"
                 src={getAvatarUrl(userName || 'Operator', session?.user?.image)}
                 alt={userName || 'User'}
-                className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+                fallback={userName?.charAt(0) || 'U'}
               />
-              <span className="hidden md:inline">{userName}</span>
-            </button>
+              {userName && <span className="hidden md:inline">{userName}</span>}
+            </PillButton>
 
             {isUserDropdownOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#141720] border border-slate-200/90 dark:border-white/10 rounded-2xl shadow-2xl p-2 z-[150] animate-in fade-in zoom-in-95 flex flex-col gap-1">

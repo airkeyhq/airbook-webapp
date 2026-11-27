@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/components/Toast';
 import { FloatingInput } from '@/components/FloatingInput';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
 import {
   Globe24Filled,
   Globe24Regular,
@@ -160,18 +161,24 @@ export const CustomDomainStudio: React.FC = () => {
   return (
     <div className="space-y-5">
       {/* ─── Top Configuration Overview Card ─── */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Icon regular={Globe24Regular} size="sm" tone="secondary" />
-              <span>{t('customDomainTitle')}</span>
-            </h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
-              {t('customDomainDesc')}
-            </p>
+      <Card
+        variant="envelope"
+        innerClassName="space-y-4"
+        trayHeader={
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Icon regular={Globe24Regular} size="sm" tone="secondary" />
+                <span>{t('customDomainTitle')}</span>
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">
+                {t('customDomainDesc')}
+              </p>
+            </div>
           </div>
-
+        }
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {savedDomain && (
             <div className="flex items-center gap-2">
               <button
@@ -235,7 +242,7 @@ export const CustomDomainStudio: React.FC = () => {
             <span>{isSaving ? '...' : t('save')}</span>
           </button>
         </div>
-      </div>
+      </Card>
 
       {/* ─── DNS Configuration Instructions & Live Verification ─── */}
       {savedDomain && !domainVerified && (

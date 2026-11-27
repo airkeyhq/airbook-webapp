@@ -321,7 +321,7 @@ export default function DashboardPage() {
 
           {/* Module 11: Dedicated Online Booking Studio */}
           {activeTab === 'onlineBooking' && (
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto">
               <OnlineBookingModule />
             </div>
           )}

@@ -14,6 +14,12 @@ import { getAvatarUrl } from '@/lib/avatars';
 import { Icon } from '@/components/primitives/Icon';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
+import { PillButton, PillGroup } from '@/components/primitives/PillButton';
+import { Dialog } from '@/components/primitives/Dialog';
+import { Avatar } from '@/components/primitives/Avatar';
+import { Switch } from '@/components/primitives/Switch';
+import { Input } from '@/components/primitives/Input';
+import { Breadcrumbs } from '@/components/primitives/Breadcrumbs';
 import {
   Globe24Regular,
   Globe24Filled,
@@ -43,6 +49,7 @@ import {
   Location24Regular,
   ArrowRight24Filled,
   Payment24Filled,
+  Eye24Regular,
   Payment24Regular,
   Color24Regular,
   Image24Regular,
@@ -94,18 +101,23 @@ function StudioSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="p-5 sm:p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-          <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
-          <span>{title}</span>
-        </h3>
-        {badge && (
-          <Badge variant="subtle" size="xs" className="font-mono">
-            {badge}
-          </Badge>
-        )}
-      </div>
+    <Card
+      variant="envelope"
+      innerClassName="space-y-4"
+      trayHeader={
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+            <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
+            <span>{title}</span>
+          </h3>
+          {badge && (
+            <Badge variant="subtle" size="xs" className="font-mono">
+              {badge}
+            </Badge>
+          )}
+        </div>
+      }
+    >
       {children}
     </Card>
   );
@@ -124,12 +136,12 @@ function StudioField({ label, children }: { label: string; children: React.React
 }
 
 const BRAND_PALETTES = [
-  { name: 'Electric Blue', hex: '#007AFF', bg: 'bg-[#007AFF]' },
-  { name: 'Obsidian Dark', hex: '#18181B', bg: 'bg-[#18181B]' },
-  { name: 'Emerald Luxe', hex: '#059669', bg: 'bg-[#059669]' },
-  { name: 'Rose Gold', hex: '#E11D48', bg: 'bg-[#E11D48]' },
-  { name: 'Sunset Amber', hex: '#D97706', bg: 'bg-[#D97706]' },
-  { name: 'Violet Prestige', hex: '#7C3AED', bg: 'bg-[#7C3AED]' },
+  { name: 'Blue', hex: '#007AFF', bg: 'bg-[#007AFF]' },
+  { name: 'Obsidian', hex: '#18181B', bg: 'bg-[#18181B]' },
+  { name: 'Emerald', hex: '#059669', bg: 'bg-[#059669]' },
+  { name: 'Rose', hex: '#E11D48', bg: 'bg-[#E11D48]' },
+  { name: 'Amber', hex: '#D97706', bg: 'bg-[#D97706]' },
+  { name: 'Violet', hex: '#7C3AED', bg: 'bg-[#7C3AED]' },
 ];
 
 export const OnlineBookingModule: React.FC = () => {
@@ -377,67 +389,58 @@ export const OnlineBookingModule: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 space-y-6 pb-24">
-      {/* Header Banner with Action Buttons */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] shadow-xs space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-xs">
-                <Icon regular={Globe24Regular} size="md" />
-              </div>
-              <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
-                {t('onlineBookingTitle')}
-              </h2>
-            </div>
-            <p className="text-xs text-[var(--text-secondary)] max-w-xl">
-              {t('onlineBookingDesc')}
-            </p>
-          </div>
-        </div>
+    <div className="w-full p-4 sm:p-6 space-y-6 pb-24">
+      {/* Header */}
+      <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 px-4 sm:px-6 py-3 bg-[var(--bg-secondary)]/85 backdrop-blur-md border-b border-[var(--border-subtle)] flex items-center justify-between flex-wrap gap-3">
+        <Breadcrumbs
+          items={[
+            { label: t('onlineBookingTitle') },
+            {
+              label:
+                activeTab === 'links'
+                  ? t('tabStudioLinks')
+                  : activeTab === 'policies'
+                    ? t('tabStudioPolicies')
+                    : t('tabStudioBranding'),
+            },
+          ]}
+        />
       </div>
 
       {/* Sub-Tab Segmented Control */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit overflow-x-auto">
-        <button
-          type="button"
-          onClick={() => setActiveTab('links')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            activeTab === 'links'
-              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          <Icon regular={Globe24Regular} filled={Globe24Filled} active={activeTab === 'links'} size="sm" />
-          <span>{t('tabStudioLinks')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('policies')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            activeTab === 'policies'
-              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          <Icon regular={Clock24Regular} filled={Clock24Filled} active={activeTab === 'policies'} size="sm" />
-          <span>{t('tabStudioPolicies')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('branding')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            activeTab === 'branding'
-              ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          <Icon regular={Sparkle24Regular} filled={Sparkle24Filled} active={activeTab === 'branding'} size="sm" />
-          <span>{t('tabStudioBranding')}</span>
-        </button>
-      </div>
+      <PillGroup className="w-fit overflow-x-auto">
+        {(
+          [
+            { id: 'links', label: t('tabStudioLinks'), regular: Globe24Regular, filled: Globe24Filled },
+            { id: 'policies', label: t('tabStudioPolicies'), regular: Clock24Regular, filled: Clock24Filled },
+            { id: 'branding', label: t('tabStudioBranding'), regular: Sparkle24Regular, filled: Sparkle24Filled },
+          ] as const
+        ).map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <PillButton
+              key={tab.id}
+              variant="ghost"
+              size="sm"
+              active={isActive}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative !bg-transparent ${isActive ? '!text-[var(--text-primary)] font-extrabold' : ''}`}
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="onlineBookingTab"
+                  transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                  className="absolute inset-0 rounded-full bg-[var(--bg-primary)] shadow-xs"
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon regular={tab.regular} filled={tab.filled} active={isActive} size="sm" />
+                <span>{tab.label}</span>
+              </span>
+            </PillButton>
+          );
+        })}
+      </PillGroup>
 
       {/* Main Studio Grid: Left Configuration & Right Live Mobile Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -473,26 +476,36 @@ export const OnlineBookingModule: React.FC = () => {
                   {t('embedWidgetsDesc')}
                 </p>
 
-                <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-full overflow-x-auto">
+                <PillGroup className="w-full overflow-x-auto hide-scrollbar">
                   {[
-                    { id: 'iframe', label: t('widgetTypeIframe') },
-                    { id: 'button', label: t('widgetTypeButton') },
-                    { id: 'modal', label: t('widgetTypeModal') },
-                  ].map((w) => (
-                    <button
-                      key={w.id}
-                      type="button"
-                      onClick={() => setWidgetType(w.id as any)}
-                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center whitespace-nowrap ${
-                        widgetType === w.id
-                          ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                      }`}
-                    >
-                      {w.label}
-                    </button>
-                  ))}
-                </div>
+                    { id: 'iframe', label: 'iFrame' },
+                    { id: 'button', label: 'Button' },
+                    { id: 'modal', label: 'Popup' },
+                  ].map((w) => {
+                    const isActive = widgetType === w.id;
+                    return (
+                      <PillButton
+                        key={w.id}
+                        variant="ghost"
+                        size="sm"
+                        active={isActive}
+                        onClick={() => setWidgetType(w.id as any)}
+                        className={`relative flex-1 !bg-transparent whitespace-nowrap ${
+                          isActive ? '!text-[var(--text-primary)] font-extrabold' : ''
+                        }`}
+                      >
+                        {isActive && (
+                          <motion.span
+                            layoutId="widgetTypeTab"
+                            transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                            className="absolute inset-0 rounded-full bg-[var(--bg-primary)] shadow-xs"
+                          />
+                        )}
+                        <span className="relative z-10">{w.label}</span>
+                      </PillButton>
+                    );
+                  })}
+                </PillGroup>
 
                 {/* ─── LIVE INTERACTIVE WIDGET PREVIEW CANVAS ─── */}
                 <div className="rounded-2xl border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-secondary)] shadow-xs space-y-0">
@@ -506,9 +519,9 @@ export const OnlineBookingModule: React.FC = () => {
                         yourwebsite.com/booking
                       </span>
                     </div>
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 flex-shrink-0">
+                    <Badge variant="default" size="xs" className="flex-shrink-0">
                       {t('liveWidgetPreview')}
-                    </span>
+                    </Badge>
                   </div>
 
                   {/* Preview Canvas Area */}
@@ -518,19 +531,18 @@ export const OnlineBookingModule: React.FC = () => {
                       <div className="w-full max-w-sm rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 shadow-md space-y-3">
                         <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
                           <div className="flex items-center gap-2">
-                            <div
-                              className="w-7 h-7 rounded-xl flex items-center justify-center text-white text-[11px] font-black shadow-xs"
+                            <Avatar
+                              size="xs"
+                              fallback="A"
                               style={{ backgroundColor: brandColor }}
-                            >
-                              A
-                            </div>
+                            />
                             <span className="text-xs font-extrabold text-[var(--text-primary)]">
                               {workspaceSlug || 'my-salon'}
                             </span>
                           </div>
-                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                          <Badge variant="success" size="xs" dot>
                             Online
-                          </span>
+                          </Badge>
                         </div>
 
                         <div className="space-y-1.5">
@@ -544,14 +556,13 @@ export const OnlineBookingModule: React.FC = () => {
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => addToast('✓ iFrame booking widget clicked (preview)', 'success')}
-                          className="w-full py-2.5 rounded-xl text-white font-extrabold text-xs shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
-                          style={{ backgroundColor: brandColor }}
+                        <PillButton
+                          variant="primary"
+                          onClick={() => addToast('iFrame booking widget clicked (preview)', 'success')}
+                          className="w-full"
                         >
                           {t('bookNowWidgetBtn')}
-                        </button>
+                        </PillButton>
                       </div>
                     )}
 
@@ -565,17 +576,14 @@ export const OnlineBookingModule: React.FC = () => {
                         </div>
 
                         <div className="flex justify-end">
-                          <motion.button
-                            type="button"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => addToast('✓ Floating action button triggers booking drawer (preview)', 'success')}
-                            className="px-4 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
-                            style={{ backgroundColor: brandColor }}
+                          <PillButton
+                            variant="primary"
+                            size="lg"
+                            onClick={() => addToast('Floating action button triggers booking drawer (preview)', 'success')}
                           >
                             <Icon filled={Calendar24Filled} size="sm" />
                             <span>{t('bookNowWidgetBtn')}</span>
-                          </motion.button>
+                          </PillButton>
                         </div>
                       </div>
                     )}
@@ -592,17 +600,14 @@ export const OnlineBookingModule: React.FC = () => {
                           </p>
                         </div>
 
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => addToast('✓ Modal popup trigger clicked (preview)', 'success')}
-                          className="px-5 py-2.5 rounded-full text-white font-extrabold text-xs flex items-center gap-2 shadow-xl cursor-pointer"
-                          style={{ backgroundColor: brandColor }}
+                        <PillButton
+                          variant="primary"
+                          size="lg"
+                          onClick={() => addToast('Modal popup trigger clicked (preview)', 'success')}
                         >
                           <Icon filled={Sparkle24Filled} size="sm" />
                           <span>{t('bookNowWidgetBtn')}</span>
-                        </motion.button>
+                        </PillButton>
                       </div>
                     )}
                   </div>
@@ -611,18 +616,18 @@ export const OnlineBookingModule: React.FC = () => {
                 {/* Code Snippet Box */}
                 <div className="p-4 rounded-2xl bg-black/90 dark:bg-black text-emerald-400 font-mono text-xs overflow-x-auto space-y-3 relative">
                   <pre className="whitespace-pre-wrap">{getWidgetSnippet()}</pre>
-                  <button
-                    type="button"
+                  <PillButton
+                    size="sm"
                     onClick={handleCopySnippet}
-                    className="btn-secondary h-8 px-3 text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    className="!bg-white/15 !text-white hover:!bg-white/25"
                   >
                     {isCopiedSnippet ? (
-                      <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
+                      <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-400" />
                     ) : (
-                      <Icon filled={Copy24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
+                      <Icon filled={Copy24Filled} size="sm" className="w-3.5 h-3.5" />
                     )}
                     <span>{isCopiedSnippet ? t('snippetCopied') : t('copySnippet')}</span>
-                  </button>
+                  </PillButton>
                 </div>
               </StudioSection>
 
@@ -659,11 +664,10 @@ export const OnlineBookingModule: React.FC = () => {
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs font-mono overflow-x-auto">
-                  <span className="text-blue-600 dark:text-blue-400 font-extrabold truncate">{deepLinkUrl}</span>
-                  <button
-                    type="button"
+                  <span className="text-sky-500 font-extrabold truncate">{deepLinkUrl}</span>
+                  <PillButton
                     onClick={handleCopyDeepLink}
-                    className="btn-secondary h-9 px-3.5 flex-shrink-0"
+                    className="flex-shrink-0"
                   >
                     {isCopiedDeepLink ? (
                       <Icon filled={Checkmark24Filled} size="sm" className="w-3.5 h-3.5 text-emerald-500" />
@@ -671,7 +675,7 @@ export const OnlineBookingModule: React.FC = () => {
                       <Icon filled={Copy24Filled} size="sm" tone="secondary" className="w-3.5 h-3.5" />
                     )}
                     <span>{isCopiedDeepLink ? t('linkCopied') : t('copyBookingLink')}</span>
-                  </button>
+                  </PillButton>
                 </div>
               </StudioSection>
             </div>
@@ -716,7 +720,7 @@ export const OnlineBookingModule: React.FC = () => {
                       <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowAnyoneToggle')}</p>
                       <p className="text-[11px] text-[var(--text-secondary)]">{t('allowAnyoneToggleDesc')}</p>
                     </div>
-                    <Toggle enabled={allowAnyoneSpecialist} onToggle={() => setAllowAnyoneSpecialist(!allowAnyoneSpecialist)} />
+                    <Switch checked={allowAnyoneSpecialist} onChange={setAllowAnyoneSpecialist} />
                   </div>
 
                   <div className="py-3 flex items-center justify-between gap-3">
@@ -724,7 +728,7 @@ export const OnlineBookingModule: React.FC = () => {
                       <p className="text-xs font-bold text-[var(--text-primary)]">{t('allowPartyToggle')}</p>
                       <p className="text-[11px] text-[var(--text-secondary)]">{t('allowPartyToggleDesc')}</p>
                     </div>
-                    <Toggle enabled={allowPartyBooking} onToggle={() => setAllowPartyBooking(!allowPartyBooking)} />
+                    <Switch checked={allowPartyBooking} onChange={setAllowPartyBooking} />
                   </div>
                 </div>
               </StudioSection>
@@ -767,25 +771,22 @@ export const OnlineBookingModule: React.FC = () => {
                       <p className="text-xs font-bold text-[var(--text-primary)]">{t('stripePayoutsActive')}</p>
                       <p className="text-[11px] text-[var(--text-secondary)]">{t('stripePayoutsDesc')}</p>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${
-                      stripeConnected
-                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                        : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
-                    }`}>
+                    <Badge variant={stripeConnected ? 'success' : 'warning'} size="sm">
                       {stripeConnected ? t('stripePayoutsActive') : t('connectStripeBtn')}
-                    </span>
+                    </Badge>
                   </div>
 
                   {!stripeConnected && (
-                    <button
-                      type="button"
+                    <PillButton
+                      variant="primary"
+                      size="lg"
                       onClick={handleConnectStripe}
                       disabled={isConnectingStripe}
-                      className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer mt-2"
+                      className="w-full mt-2"
                     >
                       <Icon filled={Payment24Filled} size="sm" />
                       <span>{isConnectingStripe ? 'Connecting…' : t('connectStripeBtn')}</span>
-                    </button>
+                    </PillButton>
                   )}
                 </div>
               </StudioSection>
@@ -798,34 +799,32 @@ export const OnlineBookingModule: React.FC = () => {
               {/* Color Palette Selector */}
               <StudioSection title={t('brandColorPalette')} icon={Color24Regular}>
                 <div className="space-y-3">
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
-                    {BRAND_PALETTES.map((pal) => (
-                      <button
-                        key={pal.hex}
-                        type="button"
-                        onClick={() => setBrandColor(pal.hex)}
-                        className={`p-2.5 rounded-2xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
-                          brandColor.toLowerCase() === pal.hex.toLowerCase()
-                            ? 'border-blue-500 bg-blue-500/10 shadow-sm'
-                            : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-black/20 dark:hover:border-white/20'
-                        }`}
-                      >
-                        <div className={`w-6 h-6 rounded-full ${pal.bg} shadow-xs`} />
-                        <span className="text-[10px] font-extrabold text-[var(--text-primary)] truncate w-full text-center">
-                          {pal.name}
-                        </span>
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    {BRAND_PALETTES.map((pal) => {
+                      const isSelected = brandColor.toLowerCase() === pal.hex.toLowerCase();
+                      return (
+                        <PillButton
+                          key={pal.hex}
+                          variant={isSelected ? 'outline' : 'soft'}
+                          active={isSelected}
+                          onClick={() => setBrandColor(pal.hex)}
+                          className={`!pl-2 gap-2 ${isSelected ? '!border-sky-500 !bg-sky-500/10 !text-[var(--text-primary)]' : ''}`}
+                        >
+                          <span className={`w-4 h-4 rounded-full ${pal.bg} flex-shrink-0`} />
+                          <span>{pal.name}</span>
+                        </PillButton>
+                      );
+                    })}
                   </div>
 
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-[11px] font-bold text-[var(--text-secondary)]">{t('customHex')}</span>
-                    <input
+                  <div className="pt-1 max-w-xs">
+                    <FloatingInput
+                      label={t('customHex')}
                       type="text"
                       value={brandColor}
                       onChange={(e) => setBrandColor(e.target.value)}
                       placeholder="#007AFF"
-                      className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--text-primary)] w-32 focus:outline-none uppercase"
+                      className="font-mono uppercase"
                     />
                   </div>
                 </div>
@@ -908,143 +907,100 @@ export const OnlineBookingModule: React.FC = () => {
           </motion.button>
         </div>
 
-        {/* Right Column: Interactive Mobile Live Simulator */}
-        <div className="lg:col-span-5 sticky top-6 space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-              <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
-              <span>{t('mobileSimulatorTitle')}</span>
-            </h3>
-            <span className="text-[10px] font-mono text-[var(--text-secondary)]">{t('phonePreviewModel')}</span>
-          </div>
-
-          {/* Smartphone Frame Container */}
-          <div className="mx-auto w-full max-w-[340px] rounded-[44px] p-3.5 bg-slate-900 shadow-2xl border-4 border-slate-800 relative overflow-hidden">
-            {/* Dynamic Island / Camera Notch */}
-            <div className="w-24 h-4 bg-black rounded-full mx-auto mb-2.5 flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rounded-full bg-slate-950 border border-slate-800 ml-auto mr-2" />
-            </div>
-
-            {/* Inner Mobile Screen Content */}
-            <div className="rounded-[32px] bg-[var(--bg-primary)] p-0 border border-black/10 dark:border-white/10 text-[var(--text-primary)] overflow-hidden min-h-[500px] flex flex-col">
+        {/* Right Column: Interactive Mobile Live Preview */}
+        <div className="lg:col-span-5 sticky top-6">
+          <Card
+            variant="envelope-flush"
+            className="mx-auto w-full max-w-[360px]"
+            trayHeader={
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Icon regular={Eye24Regular} size="sm" tone="secondary" />
+                <span>Preview</span>
+              </span>
+            }
+          >
+            <div className="text-[var(--text-primary)] flex flex-col">
               {/* Cover Banner */}
-              <div className="h-24 w-full relative bg-slate-800">
+              <div className="h-28 w-full relative bg-slate-800">
                 <img src={coverImageUrl} alt="Cover" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-white">
-                  <span className="text-xs font-black truncate">{workspaceName || 'My Studio'}</span>
-                  <span className="px-2 py-0.2 rounded-full bg-emerald-500/80 text-[8px] font-black uppercase">
-                    {t('statusOpenSimulator')}
-                  </span>
-                </div>
               </div>
 
-              {/* Bio & Notice */}
-              <div className="p-3.5 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <p className="text-[10px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+              {/* Content */}
+              <div className="p-4 space-y-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  {/* Studio Header */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Avatar
+                        size="sm"
+                        fallback={(workspaceName || 'M').charAt(0).toUpperCase()}
+                        style={{ backgroundColor: brandColor }}
+                      />
+                      <span className="text-sm font-extrabold text-[var(--text-primary)] truncate">
+                        {workspaceName || 'My Studio'}
+                      </span>
+                    </div>
+                    <Badge variant="success" size="xs" dot className="flex-shrink-0">
+                      {t('statusOpenSimulator')}
+                    </Badge>
+                  </div>
+
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
                     {bio}
                   </p>
 
-                  {bookingNotice && (
-                    <div className="p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[9px] text-[var(--text-secondary)]">
-                      ℹ️ {bookingNotice}
+                  {/* Sample Service Card */}
+                  <Card className="p-3.5 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-extrabold text-[var(--text-primary)] truncate">
+                        {services[0]?.name || 'Signature Consultation'}
+                      </p>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {t('specialistCountLabel')}
+                      </p>
                     </div>
-                  )}
-
-                  {/* Sample Service Item Preview */}
-                  <div className="p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[var(--text-primary)]">{t('selectedServiceLabel')}</span>
-                      <span className="text-[9px] text-[var(--text-secondary)]">{t('specialistCountLabel')}</span>
-                    </div>
-                    <div className="p-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <div
-                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: brandColor }}
-                        />
-                        <span className="font-bold truncate">{services[0]?.name || 'Signature Consultation'}</span>
-                      </div>
-                      <span className="font-extrabold">${services[0]?.price || 75}</span>
-                    </div>
-                  </div>
-
-                  {/* Deposit notice badge in simulator */}
-                  {parseInt(depositPercent, 10) > 0 && (
-                    <div
-                      className="p-2 rounded-xl text-[9px] flex items-center gap-1.5 border"
-                      style={{
-                        backgroundColor: `${brandColor}15`,
-                        borderColor: `${brandColor}30`,
-                        color: brandColor,
-                      }}
-                    >
-                      <Icon regular={ShieldCheckmark24Regular} size="sm" className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span>{t('depositNoticeSimulator').replace('{percent}', String(depositPercent))}</span>
-                    </div>
-                  )}
+                    <span className="text-xs font-extrabold text-[var(--text-primary)] flex-shrink-0">
+                      ${services[0]?.price || 75}
+                    </span>
+                  </Card>
                 </div>
 
                 {/* Mobile CTA Mock Button */}
                 <div className="pt-2">
-                  <div
-                    className="w-full py-2.5 rounded-xl text-white font-bold text-[10px] text-center shadow-md flex items-center justify-center gap-1.5"
-                    style={{ backgroundColor: brandColor }}
+                  <PillButton
+                    variant="primary"
+                    size="lg"
+                    className="w-full"
                   >
                     <span>{t('reserveAppointmentMock')}</span>
                     <Icon filled={ArrowRight24Filled} size="xs" />
-                  </div>
+                  </PillButton>
                   <p className="text-[8px] text-center text-[var(--text-secondary)] italic pt-1">
                     {t('freeCancellationNotice').replace('{hours}', String(cancellationNotice))}
                   </p>
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
 
       {/* QR Code Modal */}
-      {mounted && createPortal(
-        <AnimatePresence>
-          {isQrModalOpen && (
-            <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="w-full max-w-sm rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] p-6 shadow-2xl space-y-4 text-center"
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                    <Icon regular={QrCode24Regular} size="sm" tone="secondary" />
-                    <span>{t('qrCodeModalTitle')}</span>
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setIsQrModalOpen(false)}
-                    className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] cursor-pointer"
-                  >
-                    <Icon filled={Dismiss24Filled} size="sm" />
-                  </button>
-                </div>
-
-                <QRCodeCard
-                  description={t('qrCodeModalDesc')}
-                  url={`getairbook.com/book/${slugInput}`}
-                  openHref={`/book/${slugInput}`}
-                  copyLabel={t('copyBookingLink')}
-                  openLabel={t('openLiveBookingPage')}
-                  onCopy={handleCopyLink}
-                  downloadable
-                />
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+      <Dialog
+        open={isQrModalOpen}
+        onClose={() => setIsQrModalOpen(false)}
+        title={t('qrCodeModalTitle')}
+      >
+        <QRCodeCard
+          description={t('qrCodeModalDesc')}
+          url={`getairbook.com/book/${slugInput}`}
+          openHref={`/book/${slugInput}`}
+          copyLabel={t('copyBookingLink')}
+          openLabel={t('openLiveBookingPage')}
+          onCopy={handleCopyLink}
+          downloadable
+        />
+      </Dialog>
     </div>
   );
 };
