@@ -12,6 +12,8 @@ import { Icon } from '@/components/primitives/Icon';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
 import { DataTable } from '@/components/DataTable';
+import { ToggleGroup } from '@/components/primitives/ToggleGroup';
+import { InlineIndicator } from '@/components/primitives/Indicator';
 import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -726,37 +728,34 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       ) : (
         <div className="space-y-6">
           {/* Sub Navigation Tabs */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] w-fit">
-            <button
-              type="button"
-              onClick={() => setActiveTab('roster')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'roster'
-                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              <Icon regular={People24Regular} size="sm" />
-              <span>{t('currentTeam')}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('invites')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'invites'
-                  ? 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-xs font-extrabold'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              <Icon regular={Mail24Regular} size="sm" />
-              <span>{t('pendingInvites')}</span>
-              {pendingInvitesList.length > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-accent-primary)] text-white text-[10px] font-extrabold">
-                  {pendingInvitesList.length}
-                </span>
-              )}
-            </button>
-          </div>
+          <ToggleGroup
+            variant="segmented"
+            value={activeTab}
+            onChange={(val) => setActiveTab(val as 'roster' | 'invites')}
+            options={[
+              {
+                value: 'roster',
+                label: t('currentTeam'),
+                icon: <Icon regular={People24Regular} size="sm" />,
+              },
+              {
+                value: 'invites',
+                icon: <Icon regular={Mail24Regular} size="sm" />,
+                label: (
+                  <span className="flex items-center gap-2">
+                    <span>{t('pendingInvites')}</span>
+                    {pendingInvitesList.length > 0 && (
+                      <InlineIndicator
+                        value={pendingInvitesList.length}
+                        variant={activeTab === 'invites' ? 'pill-solid' : 'pill-muted'}
+                        rolling
+                      />
+                    )}
+                  </span>
+                ),
+              },
+            ]}
+          />
 
           {/* Roster Tab View */}
           {activeTab === 'roster' && (
