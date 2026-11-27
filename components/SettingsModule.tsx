@@ -785,7 +785,7 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Live Balance & Instant Payouts Ribbon */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)]/70 border border-[var(--border-subtle)] space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                       {t('payoutAvailableBalance')}
@@ -837,7 +837,7 @@ export const SettingsModule: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-black/5 dark:border-white/10 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                   <Icon regular={CheckmarkCircle24Regular} size="sm" className="flex-shrink-0" />
                   <span>{t('stripeConnected')} · {t('expressPayoutsActive')}</span>
                 </div>
