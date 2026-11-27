@@ -899,11 +899,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       {activeTab === 'invites' && (
         <div className="space-y-6">
           {/* Invite Form Card */}
-          <Card className="p-5 sm:p-6 space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Icon regular={Add24Regular} size="sm" tone="secondary" />
-              <span>{t('inviteTeamMembers')}</span>
-            </h3>
+          <Card
+            variant="envelope"
+            trayHeader={
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Icon regular={Add24Regular} size="sm" tone="secondary" />
+                <span>{t('inviteTeamMembers')}</span>
+              </h3>
+            }
+            innerClassName="p-5 sm:p-6"
+          >
             <form onSubmit={handleSendInvite} className="space-y-3.5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <FloatingInput
@@ -940,12 +945,16 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           </Card>
 
           {/* Pending Invites List & Empty State */}
-          <Card className="p-5 sm:p-6 space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
-              <Icon regular={Mail24Regular} size="sm" tone="secondary" />
-              <span>{t('pendingInvites')}</span>
-            </h3>
-
+          <Card
+            variant="envelope"
+            trayHeader={
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Icon regular={Mail24Regular} size="sm" tone="secondary" />
+                <span>{t('pendingInvites')}</span>
+              </h3>
+            }
+            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : 'divide-y divide-[var(--border-subtle)] p-0'}
+          >
             {pendingInvitesList.length === 0 ? (
               <EmptyState
                 icon={Mail24Regular}
@@ -953,11 +962,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 description={t('inviteFormHint')}
               />
             ) : (
-              <div className="space-y-2.5">
+              <div>
                 {pendingInvitesList.map((inv) => (
                   <div
                     key={inv.id}
-                    className="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] hover:border-blue-500/30 transition-colors"
+                    className="flex items-center justify-between px-5 py-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                   >
                     <div className="flex items-center gap-3.5">
                       <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-extrabold text-xs shadow-xs">
