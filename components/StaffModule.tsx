@@ -9,6 +9,8 @@ import { CustomSelect } from '@/components/CustomSelect';
 import { FloatingInput } from '@/components/FloatingInput';
 import { EmptyState } from '@/components/EmptyState';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import { Add24Filled, Add24Regular, Dismiss24Filled, Save24Filled, People24Regular, Person24Regular, Color24Regular, Sparkle24Filled, Edit24Filled, Calendar24Filled, CheckmarkCircle24Filled, MoreHorizontal24Filled, Print24Filled, DismissCircle24Filled, Delete24Filled, Mail24Regular, Mail24Filled, ChevronDown24Regular, Clock24Regular } from '@fluentui/react-icons';
 
 interface StaffItem {
@@ -758,7 +760,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           {activeTab === 'roster' && (
             <div className="space-y-3.5">
           {/* Calendar Provider Color Setting Control Banner */}
-          <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
+          <Card className="p-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start sm:items-center gap-3">
                 <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] flex-shrink-0">
@@ -801,7 +803,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -841,13 +843,11 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                   const isCustomPhoto = (stf as any).avatarUrl && (stf as any).avatarUrl.startsWith('http');
 
                   return (
-                    <motion.div
+                    <Card
                       key={stf.id}
-                      whileHover={{ y: -2, scale: 1.008 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.08, ease: 'easeOut' }}
+                      variant="interactive"
                       onClick={() => handleCardClick(stf)}
-                      className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-start justify-between gap-4 shadow-xs hover:border-black/20 dark:hover:border-white/20 cursor-pointer transition-all duration-100 ease-out group"
+                      className="p-5 flex items-start justify-between gap-4 hover:-translate-y-0.5 transition-all duration-100 ease-out group"
                     >
                       <div className="flex items-center gap-4">
                         <div className="relative p-1 rounded-2xl bg-black/5 dark:bg-white/5 flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -872,22 +872,19 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">{stf.role}</p>
                           <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-[var(--text-secondary)] font-semibold">
                             {stf.stationName && (
-                              <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px]">
+                              <Badge variant="default" size="xs">
                                 {stf.stationName}
-                              </span>
+                              </Badge>
                             )}
                             <span>{stf.commissionPercent ?? 70}{t('commissionSuffix')}</span>
-                            <span>•</span>
-                            {stf.isActive === false ? (
-                              <span className="text-amber-600 dark:text-amber-400 font-bold">{t('temporarilyDeactivate')}</span>
-                            ) : (
-                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('onShift')}</span>
-                            )}
+                            <Badge variant={stf.isActive === false ? 'warning' : 'success'} size="xs" dot>
+                              {stf.isActive === false ? t('temporarilyDeactivate') : t('onShift')}
+                            </Badge>
                           </div>
                         </div>
                       </div>
 
-                    </motion.div>
+                    </Card>
                   );
                 })}
                 </div>
@@ -901,7 +898,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       {activeTab === 'invites' && (
         <div className="space-y-6">
           {/* Invite Form Card */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+          <Card className="p-5 sm:p-6 space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
               <Icon regular={Add24Regular} size="sm" tone="secondary" />
               <span>{t('inviteTeamMembers')}</span>
@@ -948,10 +945,10 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 </motion.button>
               </div>
             </form>
-          </div>
+          </Card>
 
           {/* Pending Invites List & Empty State */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+          <Card className="p-5 sm:p-6 space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
               <Icon regular={Mail24Regular} size="sm" tone="secondary" />
               <span>{t('pendingInvites')}</span>
@@ -993,7 +990,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 ))}
               </div>
             )}
-          </div>
+          </Card>
         </div>
       )}
         </div>
