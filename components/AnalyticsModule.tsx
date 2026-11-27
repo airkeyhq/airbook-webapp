@@ -420,9 +420,16 @@ export const AnalyticsModule: React.FC = () => {
             )}
 
             {expensesList.length === 0 ? (
-              <p className="text-xs text-[var(--text-secondary)] py-4 text-center">
-                {t('noExpensesYet')}
-              </p>
+              <EmptyState
+                icon={Receipt24Regular}
+                title={t('noExpensesYet')}
+                action={{
+                  label: t('addExpenseBtn'),
+                  onClick: () => setShowExpenseForm(true),
+                  icon: Add24Filled,
+                }}
+                className="!min-h-[180px] !p-6 !border-0 !bg-transparent"
+              />
             ) : (
               <div className="divide-y divide-[var(--border-subtle)]">
                 {expensesList.slice(0, 10).map((exp) => (
