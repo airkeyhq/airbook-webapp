@@ -954,7 +954,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 <span>{t('pendingInvites')}</span>
               </h3>
             }
-            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : 'p-0 overflow-hidden'}
+            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : '!p-0 overflow-hidden'}
           >
             {pendingInvitesList.length === 0 ? (
               <EmptyState
