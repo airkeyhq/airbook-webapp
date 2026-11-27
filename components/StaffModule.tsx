@@ -397,7 +397,8 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
       fetchStaff();
       fetchInvitations();
     }
-  }, [isDemoMode, workspaceId, demoStaff]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDemoMode, workspaceId]);
 
   const handleSendInvite = async (e: React.FormEvent) => {
     e.preventDefault();
