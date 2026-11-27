@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckmarkCircle24Regular, ErrorCircle24Regular, Info24Regular, Dismiss24Filled } from '@fluentui/react-icons';
 import { Icon } from '@/components/primitives/Icon';
+import { toast as sonnerToast, dismissToast } from '@/components/primitives/Sonner';
 
 export type ToastVariant = 'success' | 'error' | 'info';
 
@@ -59,24 +60,21 @@ export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
   );
 };
 
-// Hook for easy usage
-let toastQueue: ((msg: ToastMessage) => void)[] = [];
-
+// Hook bridged to global Ozone Sonner queue so every module's addToast() renders at root
 export function useToast() {
-  const [toasts, setToasts] = React.useState<ToastMessage[]>([]);
-
   const addToast = React.useCallback((message: string, variant: ToastVariant = 'success') => {
-    const id = `toast-${Date.now()}-${Math.random()}`;
-    const newToast: ToastMessage = { id, message, variant };
-    setToasts((prev) => [...prev, newToast]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3500);
+    if (variant === 'error') {
+      sonnerToast.error(message);
+    } else if (variant === 'info') {
+      sonnerToast.info(message);
+    } else {
+      sonnerToast.success(message);
+    }
   }, []);
 
   const dismiss = React.useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    dismissToast(id);
   }, []);
 
-  return { toasts, addToast, dismiss };
+  return { toasts: [] as ToastMessage[], addToast, dismiss };
 }
