@@ -12,6 +12,8 @@ import { CustomDomainStudio } from '@/components/CustomDomainStudio';
 import { QRCodeCard } from '@/components/QRCodeCard';
 import { getAvatarUrl } from '@/lib/avatars';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import {
   Globe24Regular,
   Globe24Filled,
@@ -92,20 +94,20 @@ function StudioSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-4 shadow-xs">
+    <Card className="p-5 sm:p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
           <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
           <span>{title}</span>
         </h3>
         {badge && (
-          <span className="text-[10px] font-mono font-extrabold text-[var(--text-secondary)] bg-black/5 dark:bg-white/10 px-2.5 py-0.5 rounded-full border border-[var(--border-subtle)]">
+          <Badge variant="subtle" size="xs" className="font-mono">
             {badge}
-          </span>
+          </Badge>
         )}
       </div>
       {children}
-    </div>
+    </Card>
   );
 }
 
