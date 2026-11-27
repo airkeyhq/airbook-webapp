@@ -16,6 +16,7 @@ import { MCPStudio } from '@/components/MCPStudio';
 import { EmptyState } from '@/components/EmptyState';
 import { Checkbox } from '@/components/Checkbox';
 import { Card } from '@/components/primitives/Card';
+import { StatCard } from '@/components/StatCard';
 import { getAvatarUrl } from '@/lib/avatars';
 import { GeofenceSettingsCard } from '@/components/geofence/GeofenceSettingsCard';
 import { Icon } from '@/components/primitives/Icon';
@@ -1983,35 +1984,24 @@ export const SettingsModule: React.FC = () => {
 
             {/* Aggregated Organization Metrics (Neutral Tokens - Zero Color Sprinkles) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                  {t('totalEnterpriseLocations')}
-                </span>
-                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
-                  {locations.length}
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('activePhysicalBranches')}</p>
-              </div>
+              <StatCard
+                title={t('totalEnterpriseLocations')}
+                value={locations.length}
+                subtitle={t('activePhysicalBranches')}
+              />
 
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                  {t('networkRevenue')}
-                </span>
-                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
-                  ${(totalEnterpriseGross / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('monthlyConsolidatedGross')}</p>
-              </div>
+              <StatCard
+                title={t('networkRevenue')}
+                value={(totalEnterpriseGross / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                prefix="$"
+                subtitle={t('monthlyConsolidatedGross')}
+              />
 
-              <div className="p-4 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                  {t('networkStaff')}
-                </span>
-                <p className="text-2xl font-black text-[var(--text-primary)] font-mono">
-                  {totalEnterpriseStaff}
-                </p>
-                <p className="text-[10px] text-[var(--text-muted)] font-medium">{t('practitionersAndSpecialists')}</p>
-              </div>
+              <StatCard
+                title={t('networkStaff')}
+                value={totalEnterpriseStaff}
+                subtitle={t('practitionersAndSpecialists')}
+              />
             </div>
 
             {/* Branch Cards / Empty State */}

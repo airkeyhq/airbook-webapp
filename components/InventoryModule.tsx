@@ -14,6 +14,7 @@ import { Icon } from '@/components/primitives/Icon';
 import { SearchInput } from '@/components/primitives/SearchInput';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
+import { StatCard } from '@/components/StatCard';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -321,43 +322,31 @@ export const InventoryModule: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Icon regular={Box24Regular} size="sm" tone="secondary" />
-            <span>{t('totalStockUnits')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{metrics.totalUnits}</p>
-        </div>
+        <StatCard
+          title={t('totalStockUnits')}
+          value={metrics.totalUnits}
+          icon={<Icon regular={Box24Regular} size="sm" tone="secondary" />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Icon regular={Warning24Regular} size="sm" tone="secondary" />
-            <span>{t('lowStock')}</span>
-          </div>
-          <p className={`text-xl font-black font-mono ${metrics.lowStockCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[var(--text-primary)]'}`}>
-            {metrics.lowStockCount}
-          </p>
-        </div>
+        <StatCard
+          title={t('lowStock')}
+          value={metrics.lowStockCount}
+          icon={<Icon regular={Warning24Regular} size="sm" tone={metrics.lowStockCount > 0 ? 'warning' : 'secondary'} />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Icon regular={Money24Regular} size="sm" tone="secondary" />
-            <span>{t('inventoryValuation')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-            ${Math.round(metrics.inventoryValuation).toLocaleString()}
-          </p>
-        </div>
+        <StatCard
+          title={t('inventoryValuation')}
+          value={Math.round(metrics.inventoryValuation).toLocaleString()}
+          prefix="$"
+          icon={<Icon regular={Money24Regular} size="sm" tone="secondary" />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
-            <Icon regular={ArrowTrending24Regular} size="sm" tone="secondary" />
-            <span>{t('metricRetailPotential')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">
-            ${Math.round(metrics.retailRevenuePotential).toLocaleString()}
-          </p>
-        </div>
+        <StatCard
+          title={t('metricRetailPotential')}
+          value={Math.round(metrics.retailRevenuePotential).toLocaleString()}
+          prefix="$"
+          icon={<Icon regular={ArrowTrending24Regular} size="sm" tone="secondary" />}
+        />
       </div>
 
       {metrics.lowStockCount > 0 && (
