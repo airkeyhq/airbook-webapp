@@ -12,6 +12,7 @@ import { Icon } from '@/components/primitives/Icon';
 import { SearchInput } from '@/components/primitives/SearchInput';
 import { Card } from '@/components/primitives/Card';
 import { Badge } from '@/components/primitives/Badge';
+import { StatCard } from '@/components/StatCard';
 import {
   Add24Filled,
   Dismiss24Filled,
@@ -283,37 +284,31 @@ export const ClientsModule: React.FC = () => {
 
       {/* Quick Metrics Header Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Icon regular={People24Regular} size="sm" tone="secondary" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalClients')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{totalClientsCount}</p>
-        </div>
+        <StatCard
+          title={t('metricTotalClients')}
+          value={totalClientsCount}
+          icon={<Icon regular={People24Regular} size="sm" tone="secondary" />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricVipMembers')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">{vipCount}</p>
-        </div>
+        <StatCard
+          title={t('metricVipMembers')}
+          value={vipCount}
+          icon={<Icon regular={Sparkle24Regular} size="sm" tone="secondary" />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Icon regular={Money24Regular} size="sm" tone="secondary" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricTotalRevenue')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">${totalLifetimeRevenue.toFixed(0)}</p>
-        </div>
+        <StatCard
+          title={t('metricTotalRevenue')}
+          value={totalLifetimeRevenue.toFixed(0)}
+          prefix="$"
+          icon={<Icon regular={Money24Regular} size="sm" tone="secondary" />}
+        />
 
-        <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
-            <Icon regular={Tag24Regular} size="sm" tone="secondary" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">{t('metricAvgLifetimeValue')}</span>
-          </div>
-          <p className="text-xl font-black text-[var(--text-primary)] font-mono">${avgSpendPerClient.toFixed(0)}</p>
-        </div>
+        <StatCard
+          title={t('metricAvgLifetimeValue')}
+          value={avgSpendPerClient.toFixed(0)}
+          prefix="$"
+          icon={<Icon regular={Tag24Regular} size="sm" tone="secondary" />}
+        />
       </div>
 
       {/* Duplicate Clients Detection & Review Banner (Estancia Pattern) */}
