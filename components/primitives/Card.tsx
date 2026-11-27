@@ -4,12 +4,12 @@ import React from 'react';
 
 export interface CardProps {
   children: React.ReactNode;
-  variant?: 'surface' | 'glass' | 'dashed' | 'interactive' | 'envelope';
-  /** Optional header slot rendered in the outer tray when variant="envelope" */
+  variant?: 'surface' | 'glass' | 'dashed' | 'interactive' | 'envelope' | 'envelope-flush';
+  /** Optional header slot rendered in the outer tray when variant="envelope" or "envelope-flush" */
   trayHeader?: React.ReactNode;
-  /** Optional footer slot rendered in the outer tray when variant="envelope" */
+  /** Optional footer slot rendered in the outer tray when variant="envelope" or "envelope-flush" */
   trayFooter?: React.ReactNode;
-  /** Class overrides for the inner card surface when variant="envelope" */
+  /** Class overrides for the inner card surface when variant="envelope" or "envelope-flush" */
   innerClassName?: string;
   className?: string;
   onClick?: () => void;
@@ -20,9 +20,10 @@ export interface CardProps {
  *
  * Hierarchy in AirBook:
  * 1. `envelope` — Top-level section/module frame (dashboards, POS checkout, billing, settings groups).
- * 2. `surface` / `interactive` — Individual content or clickable items inside a page or envelope tray.
- * 3. `glass` — Floating overlays over calendar/map content.
- * 4. `dashed` — Empty states and upload dropzones.
+ * 2. `envelope-flush` — Envelope tray with zero inner padding (`p-0 overflow-hidden`) for flush DataTables and edge-to-edge lists.
+ * 3. `surface` / `interactive` — Individual content or clickable items inside a page or envelope tray.
+ * 4. `glass` — Floating overlays over calendar/map content.
+ * 5. `dashed` — Empty states and upload dropzones.
  */
 export const Card: React.FC<CardProps> = ({
   children,
@@ -33,7 +34,8 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   onClick,
 }) => {
-  if (variant === 'envelope') {
+  if (variant === 'envelope' || variant === 'envelope-flush') {
+    const innerPadding = variant === 'envelope-flush' ? 'p-0 overflow-hidden' : 'p-5';
     return (
       <div
         onClick={onClick}
@@ -41,7 +43,7 @@ export const Card: React.FC<CardProps> = ({
       >
         {trayHeader && <div className="px-3 pt-1.5 pb-2.5">{trayHeader}</div>}
         <div
-          className={`rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 shadow-xs ${innerClassName}`}
+          className={`rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] ${innerPadding} shadow-xs ${innerClassName}`}
         >
           {children}
         </div>

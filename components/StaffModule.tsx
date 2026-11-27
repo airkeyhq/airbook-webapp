@@ -947,14 +947,14 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
 
           {/* Pending Invites List & Empty State */}
           <Card
-            variant="envelope"
+            variant={pendingInvitesList.length === 0 ? 'envelope' : 'envelope-flush'}
             trayHeader={
               <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
                 <Icon regular={Mail24Regular} size="sm" tone="secondary" />
                 <span>{t('pendingInvites')}</span>
               </h3>
             }
-            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : '!p-0 overflow-hidden'}
+            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : ''}
           >
             {pendingInvitesList.length === 0 ? (
               <EmptyState
