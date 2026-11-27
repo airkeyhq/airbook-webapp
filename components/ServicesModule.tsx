@@ -8,6 +8,8 @@ import { EmptyState } from './EmptyState';
 import { FloatingInput } from './FloatingInput';
 import { useAirBookStore } from '@/lib/store';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import { Add24Filled, Dismiss24Filled, Save24Filled, Clock24Regular, Money24Regular, Tag24Regular, Sparkle24Filled } from '@fluentui/react-icons';
 
 interface ServiceItem {
@@ -156,9 +158,9 @@ export const ServicesModule: React.FC = () => {
               </p>
             </div>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] border border-[var(--border-subtle)] text-[10px] font-mono font-extrabold uppercase whitespace-nowrap">
+          <Badge variant="subtle" size="xs" className="font-mono uppercase whitespace-nowrap">
             {t('comingSoonV11')}
-          </span>
+          </Badge>
         </div>
       </div>
       {showForm && (
@@ -266,11 +268,9 @@ export const ServicesModule: React.FC = () => {
               const depositDollars = srv.depositCents ? srv.depositCents / 100 : Math.round(priceDollars * 0.2);
 
               return (
-                <motion.div
+                <Card
                   key={srv.id}
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.1, ease: 'easeOut' }}
-                  className="p-5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-4 shadow-xs transition-all duration-100 ease-out"
+                  className="p-5 flex flex-col justify-between space-y-4 hover:-translate-y-0.5 transition-transform duration-100"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -299,7 +299,7 @@ export const ServicesModule: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                </motion.div>
+                </Card>
               );
             })}
           </div>
