@@ -946,24 +946,28 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
           </Card>
 
           {/* Pending Invites List & Empty State */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2 px-1">
-              <Icon regular={Mail24Regular} size="sm" tone="secondary" />
-              <span>{t('pendingInvites')}</span>
-            </h3>
+          <Card
+            variant="envelope"
+            trayHeader={
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                <Icon regular={Mail24Regular} size="sm" tone="secondary" />
+                <span>{t('pendingInvites')}</span>
+              </h3>
+            }
+            innerClassName={pendingInvitesList.length === 0 ? 'p-5 sm:p-6' : 'p-0 overflow-hidden'}
+          >
             {pendingInvitesList.length === 0 ? (
-              <Card className="p-5 sm:p-6">
-                <EmptyState
-                  icon={Mail24Regular}
-                  title={t('noPendingInvites')}
-                  description={t('inviteFormHint')}
-                />
-              </Card>
+              <EmptyState
+                icon={Mail24Regular}
+                title={t('noPendingInvites')}
+                description={t('inviteFormHint')}
+              />
             ) : (
               <DataTable
                 data={pendingInvitesList}
                 getRowKey={(inv) => inv.id}
                 searchable={false}
+                className="!border-0 !shadow-none !rounded-none !bg-transparent"
                 columns={[
                   {
                     key: 'email',
@@ -1013,7 +1017,7 @@ export const StaffModule: React.FC<StaffModuleProps> = ({ onNavigateToCalendar }
                 ]}
               />
             )}
-          </div>
+          </Card>
         </div>
       )}
         </div>
