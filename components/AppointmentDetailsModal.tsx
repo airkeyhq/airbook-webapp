@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Appointment, useAirBookStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useToast } from '@/components/Toast';
 import { Icon } from '@/components/primitives/Icon';
 import {
   Dismiss24Filled,
@@ -14,6 +15,7 @@ import {
   DocumentText24Filled,
   Delete24Filled,
   PeopleTeam24Regular,
+  Warning24Filled,
 } from '@fluentui/react-icons';
 
 interface PartyGuestRow {
@@ -39,9 +41,11 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   onOpenPOS,
   onOpenNotes,
 }) => {
-  const { deleteAppointment } = useAirBookStore();
+  const { deleteAppointment, updateAppointmentStatus, bumpCheckoutNonce } = useAirBookStore();
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const [partyGuests, setPartyGuests] = useState<PartyGuestRow[]>([]);
+  const [chargingNoShow, setChargingNoShow] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -76,6 +80,36 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
       console.warn('Failed to delete appointment from DB:', err);
     }
     onClose();
+  };
+
+  const handleMarkNoShowFee = async () => {
+    if (!appointment || chargingNoShow) return;
+    try {
+      setChargingNoShow(true);
+      const res = await fetch('/api/appointments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: appointment.id,
+          status: 'no_show',
+          chargeNoShowFee: true,
+          feeCents: Math.round((appointment.price || 0) * 100),
+        }),
+      });
+      if (res.ok) {
+        updateAppointmentStatus(appointment.id, 'completed');
+        bumpCheckoutNonce();
+        addToast(t('noShowRecordedToast'), 'success');
+        onClose();
+      } else {
+        addToast('Failed to record no-show fee.', 'error');
+      }
+    } catch (err) {
+      console.warn('Failed to record no-show fee:', err);
+      addToast('Network error recording no-show fee.', 'error');
+    } finally {
+      setChargingNoShow(false);
+    }
   };
 
   if (!mounted) return null;
@@ -242,6 +276,19 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               <Icon filled={DocumentText24Filled} size="sm" className="flex-shrink-0" />
               <span>{t('clientNotesBtn')}</span>
             </button>
+
+            {/* Mark No-Show & Charge Fee */}
+            {appointment.status !== 'completed' && (
+              <button
+                type="button"
+                disabled={chargingNoShow}
+                onClick={handleMarkNoShowFee}
+                className="w-full py-2.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Icon filled={Warning24Filled} size="sm" className="flex-shrink-0" />
+                <span>{t('markNoShowFeeBtn')} (${appointment.price})</span>
+              </button>
+            )}
 
             {/* Delete Appointment Button */}
             <button

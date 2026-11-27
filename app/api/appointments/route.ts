@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { appointments, clients, services, staff } from '@/db/schema';
-import { eq, and, gte, lte } from 'drizzle-orm';
+import { appointments, clients, services, staff, invoices } from '@/db/schema';
+import { eq, and, gte, lte, sql } from 'drizzle-orm';
 import { sendCancellationNotification } from '@/lib/notifications';
 
 export async function GET(req: Request) {
@@ -76,7 +76,7 @@ export async function GET(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { id, status, notes, startTime, dateStr, paymentStatus } = body;
+    const { id, status, notes, startTime, dateStr, paymentStatus, chargeNoShowFee, feeCents } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Appointment ID is required.' }, { status: 400 });
@@ -88,12 +88,43 @@ export async function PATCH(req: Request) {
     if (startTime) updateFields.startTime = startTime;
     if (dateStr) updateFields.dateStr = dateStr;
     if (paymentStatus) updateFields.paymentStatus = paymentStatus;
+    if (status === 'no_show' && chargeNoShowFee) {
+      updateFields.paymentStatus = 'paid';
+    }
 
     const [updated] = await db
       .update(appointments)
       .set(updateFields)
       .where(eq(appointments.id, id))
       .returning();
+
+    // Increment client noShowCount and record no-show fee invoice if requested
+    if (status === 'no_show' && updated) {
+      if (updated.clientId) {
+        await db
+          .update(clients)
+          .set({ noShowCount: sql`${clients.noShowCount} + 1` })
+          .where(eq(clients.id, updated.clientId));
+      }
+      if (chargeNoShowFee) {
+        const amountCents = typeof feeCents === 'number' && feeCents > 0 ? feeCents : updated.priceCents;
+        if (amountCents > 0) {
+          await db.insert(invoices).values({
+            workspaceId: updated.workspaceId,
+            clientId: updated.clientId,
+            appointmentId: updated.id,
+            subtotalCents: amountCents,
+            tipCents: 0,
+            taxCents: 0,
+            discountCents: 0,
+            totalCents: amountCents,
+            paymentMethod: 'no_show_fee',
+            receiptNumber: `NOSHOW-${Date.now().toString(36).toUpperCase()}`,
+            status: 'paid',
+          });
+        }
+      }
+    }
 
     // If appointment was cancelled, dispatch Novu notification
     if (status === 'cancelled' && updated) {
