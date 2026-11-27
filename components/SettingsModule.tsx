@@ -752,7 +752,7 @@ export const SettingsModule: React.FC = () => {
 
             {/* Stripe Connect Direct Payouts Card */}
             <Section title={t('stripeConnectTitle')} icon={Payment24Regular}>
-              <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
+              <div className="space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="px-3 py-2 rounded-2xl bg-[#635BFF] flex items-center justify-center shadow-md shadow-[#635BFF]/30 flex-shrink-0">
@@ -785,8 +785,8 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* Live Balance & Instant Payouts Ribbon */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-black/5 dark:border-white/10">
-                  <div className="p-3.5 rounded-xl bg-white/80 dark:bg-black/30 border border-black/5 dark:border-white/10 space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                  <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)]/70 border border-[var(--border-subtle)] space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                       {t('payoutAvailableBalance')}
                     </span>
@@ -798,7 +798,7 @@ export const SettingsModule: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-white/80 dark:bg-black/30 border border-black/5 dark:border-white/10 space-y-1">
+                  <div className="p-3.5 rounded-2xl bg-[var(--bg-secondary)]/70 border border-[var(--border-subtle)] space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                       {t('payoutPendingBalance')}
                     </span>
@@ -843,7 +843,7 @@ export const SettingsModule: React.FC = () => {
                 </div>
 
                 {/* 2. Zelle & Direct Peer Transfer Configuration */}
-                <form onSubmit={handleSaveZelle} className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] space-y-3.5">
+                <form onSubmit={handleSaveZelle} className="pt-5 border-t border-[var(--border-subtle)] space-y-3.5">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
