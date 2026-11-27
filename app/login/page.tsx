@@ -146,11 +146,11 @@ function LoginFormContent() {
         <span>{t('backToHome')}</span>
       </Link>
 
-      {/* Animated background orb */}
+      {/* Subtle ambient background accent */}
       <motion.div
-        animate={{ scale: [1, 1.08, 1], rotate: [0, 60, 0] }}
+        animate={{ scale: [1, 1.08, 1] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-violet-400/10 via-blue-400/8 to-pink-400/10 rounded-full blur-3xl pointer-events-none"
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#2BB5FF]/8 rounded-full blur-3xl pointer-events-none"
       />
 
       {/* Auth Card */}

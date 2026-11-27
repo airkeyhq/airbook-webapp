@@ -171,7 +171,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
       {/* Sidebar Footer Card: Upgrade to Pro */}
       <div className="mt-auto pt-2">
         {!isSidebarCollapsed ? (
-          <div className="p-3.5 rounded-3xl glass-panel bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-amber-500/30 text-xs space-y-2">
+          <div className="p-3.5 rounded-3xl glass-panel bg-amber-500/10 border border-amber-500/30 text-xs space-y-2">
             <div className="flex items-center gap-1.5 font-extrabold text-amber-600 dark:text-amber-400">
               <OzoneIcon filled={Sparkle24Filled} size="md" />
               <span>{t('upgradeTo')}</span>
@@ -183,7 +183,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
             <button
               type="button"
               onClick={openPricingModal}
-              className="w-full py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-[11px] shadow-md transition-all active:scale-96"
+              className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-[11px] shadow-md transition-all active:scale-96"
             >
               {t('upgradeNow')}
             </button>
@@ -193,7 +193,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ activeTab, setAc
             <button
               type="button"
               onClick={openPricingModal}
-              className="mx-auto w-10 h-10 rounded-2xl glass-panel bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 cursor-pointer hover:scale-105 transition-transform"
+              className="mx-auto w-10 h-10 rounded-2xl glass-panel bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 cursor-pointer hover:scale-105 transition-transform"
             >
               <OzoneIcon filled={Sparkle24Filled} size="md" />
             </button>

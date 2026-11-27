@@ -147,11 +147,11 @@ export default function OnboardingPage() {
         <span>{t('backToLogin')}</span>
       </Link>
 
-      {/* Background glow */}
+      {/* Subtle ambient background accent */}
       <motion.div
         animate={{ scale: [1, 1.06, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-blue-500/8 via-violet-500/6 to-pink-500/8 rounded-full blur-3xl pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#2BB5FF]/8 rounded-full blur-3xl pointer-events-none"
       />
 
       {/* Onboarding Card */}
@@ -167,7 +167,7 @@ export default function OnboardingPage() {
           <motion.div
             animate={{ width: `${progressPercent}%` }}
             transition={{ type: 'spring', stiffness: 200, damping: 28 }}
-            className="h-full bg-gradient-to-r from-blue-500 to-violet-500"
+            className="h-full bg-[#2BB5FF]"
           />
         </div>
 
@@ -427,7 +427,7 @@ export default function OnboardingPage() {
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.1 }}
-                  className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-blue-500 via-violet-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-blue-500/25"
+                  className="w-20 h-20 rounded-3xl bg-[#2BB5FF] flex items-center justify-center shadow-2xl shadow-[#2BB5FF]/25"
                 >
                   <Icon regular={Sparkle24Regular} className="w-9 h-9 text-white" />
                 </motion.div>
