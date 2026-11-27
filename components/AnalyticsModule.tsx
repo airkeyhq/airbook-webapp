@@ -12,8 +12,14 @@ import {
   People24Regular,
   Sparkle24Regular,
   ArrowDownload24Filled,
+  Add24Filled,
+  Delete24Filled,
+  Receipt24Regular,
 } from '@fluentui/react-icons';
 import { useAirBookStore } from '@/lib/store';
+import { useToast } from '@/components/Toast';
+import { CustomSelect } from '@/components/CustomSelect';
+import { FloatingInput } from '@/components/FloatingInput';
 
 interface DailyRevenuePoint {
   date: string;
@@ -42,14 +48,30 @@ interface AnalyticsData {
   staffPayroll?: StaffPayrollRow[];
 }
 
+interface ExpenseItem {
+  id: string;
+  category: string;
+  amountCents: number;
+  description?: string | null;
+  dateStr: string;
+}
+
 type DateRangeKey = '7d' | '30d' | '90d' | 'all';
 
 export const AnalyticsModule: React.FC = () => {
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const workspaceId = useAirBookStore((s) => s.workspaceId);
   const checkoutNonce = useAirBookStore((s) => s.checkoutNonce);
+  const bumpCheckoutNonce = useAirBookStore((s) => s.bumpCheckoutNonce);
   const [range, setRange] = useState<DateRangeKey>('30d');
   const [data, setData] = useState<AnalyticsData | null>(null);
+  const [expensesList, setExpensesList] = useState<ExpenseItem[]>([]);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expCategory, setExpCategory] = useState('supplies');
+  const [expAmount, setExpAmount] = useState('');
+  const [expDesc, setExpDesc] = useState('');
+  const [savingExpense, setSavingExpense] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,12 +80,19 @@ export const AnalyticsModule: React.FC = () => {
         setLoading(true);
         const params = new URLSearchParams({ range });
         if (workspaceId) params.set('workspaceId', workspaceId);
-        const res = await fetch(`/api/analytics?${params.toString()}`);
-        const json = await res.json();
+        const [analyticsRes, expensesRes] = await Promise.all([
+          fetch(`/api/analytics?${params.toString()}`),
+          fetch(workspaceId ? `/api/expenses?workspaceId=${encodeURIComponent(workspaceId)}` : '/api/expenses'),
+        ]);
+        const json = await analyticsRes.json();
         if (json.success && json.analytics) {
           setData(json.analytics);
         } else {
           setData(null);
+        }
+        const expJson = await expensesRes.json();
+        if (expJson.success && Array.isArray(expJson.expenses)) {
+          setExpensesList(expJson.expenses);
         }
       } catch (err) {
         console.warn('Failed to load analytics from DB:', err);
@@ -74,6 +103,50 @@ export const AnalyticsModule: React.FC = () => {
     }
     fetchAnalytics();
   }, [workspaceId, checkoutNonce, range]);
+
+  const handleAddExpense = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const amt = Number(expAmount);
+    if (!workspaceId || !amt || amt <= 0) return;
+    try {
+      setSavingExpense(true);
+      const res = await fetch('/api/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workspaceId,
+          category: expCategory,
+          amountCents: Math.round(amt * 100),
+          description: expDesc.trim() || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setExpAmount('');
+        setExpDesc('');
+        setShowExpenseForm(false);
+        addToast(t('expenseSavedToast'), 'success');
+        bumpCheckoutNonce();
+      } else {
+        addToast(json.error || 'Failed to log expense.', 'error');
+      }
+    } catch {
+      addToast('Network error logging expense.', 'error');
+    } finally {
+      setSavingExpense(false);
+    }
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    try {
+      const res = await fetch(`/api/expenses?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (res.ok) {
+        bumpCheckoutNonce();
+      }
+    } catch (err) {
+      console.warn('Failed to delete expense:', err);
+    }
+  };
 
   const revNum = data ? data.totalRevenue : 0;
   const rev = revNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -277,6 +350,90 @@ export const AnalyticsModule: React.FC = () => {
                       <span className="font-extrabold text-[var(--text-primary)]">
                         {t('payoutOwedLabel')}: ${row.payoutOwed.toFixed(2)}
                       </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          {/* Studio Expenses & Tax-Ready P&L Ledger */}
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Icon regular={Receipt24Regular} size="sm" tone="secondary" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                  {t('expensesTitle')}
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowExpenseForm((v) => !v)}
+                className="btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5"
+              >
+                <Icon filled={Add24Filled} size="xs" />
+                <span>{t('addExpenseBtn')}</span>
+              </button>
+            </div>
+
+            {showExpenseForm && (
+              <form onSubmit={handleAddExpense} className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 border-t border-[var(--border-subtle)]">
+                <CustomSelect
+                  value={expCategory}
+                  onChange={setExpCategory}
+                  options={[
+                    { value: 'rent', label: t('catRent') },
+                    { value: 'supplies', label: t('expCatSupplies') },
+                    { value: 'payroll', label: t('catPayroll') },
+                    { value: 'marketing', label: t('catMarketing') },
+                  ]}
+                />
+                <FloatingInput
+                  label={t('expenseAmountLabel')}
+                  type="number"
+                  required
+                  value={expAmount}
+                  onChange={(e) => setExpAmount(e.target.value)}
+                />
+                <FloatingInput
+                  label={t('expenseDescriptionLabel')}
+                  value={expDesc}
+                  onChange={(e) => setExpDesc(e.target.value)}
+                />
+                <button type="submit" disabled={savingExpense} className="btn-primary h-11">
+                  {savingExpense ? t('saving') : t('save')}
+                </button>
+              </form>
+            )}
+
+            {expensesList.length === 0 ? (
+              <p className="text-xs text-[var(--text-secondary)] py-4 text-center">
+                {t('noExpensesYet')}
+              </p>
+            ) : (
+              <div className="divide-y divide-[var(--border-subtle)]">
+                {expensesList.slice(0, 10).map((exp) => (
+                  <div key={exp.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Badge variant="subtle" size="xs" className="uppercase font-mono">
+                        {exp.category}
+                      </Badge>
+                      <span className="font-semibold text-[var(--text-primary)] truncate">
+                        {exp.description || exp.dateStr}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      <span className="font-mono font-bold text-[var(--text-primary)]">
+                        -${(exp.amountCents / 100).toFixed(2)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteExpense(exp.id)}
+                        className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                      >
+                        <Icon filled={Delete24Filled} size="xs" />
+                      </button>
                     </div>
                   </div>
                 ))}

@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { appointments, clients, services, staff, invoices } from '@/db/schema';
+import { appointments, clients, services, staff, invoices, waitlists, workspaces } from '@/db/schema';
 import { eq, and, gte, lte, sql } from 'drizzle-orm';
-import { sendCancellationNotification } from '@/lib/notifications';
+import {
+  sendCancellationNotification,
+  sendRescheduledNotification,
+  sendWaitlistChairReadyNotification,
+} from '@/lib/notifications';
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
     const workspaceId = searchParams.get('workspaceId');
     const dateStr = searchParams.get('dateStr');
     const startDate = searchParams.get('startDate');
@@ -15,6 +20,9 @@ export async function GET(req: Request) {
 
     const conditions = [];
 
+    if (id) {
+      conditions.push(eq(appointments.id, id));
+    }
     if (workspaceId) {
       conditions.push(eq(appointments.workspaceId, workspaceId));
     }
@@ -42,6 +50,10 @@ export async function GET(req: Request) {
         paymentStatus: appointments.paymentStatus,
         notes: appointments.notes,
         createdAt: appointments.createdAt,
+        workspace: {
+          name: workspaces.name,
+          slug: workspaces.slug,
+        },
         client: {
           id: clients.id,
           name: clients.name,
@@ -62,6 +74,7 @@ export async function GET(req: Request) {
         },
       })
       .from(appointments)
+      .leftJoin(workspaces, eq(appointments.workspaceId, workspaces.id))
       .leftJoin(clients, eq(appointments.clientId, clients.id))
       .leftJoin(services, eq(appointments.serviceId, services.id))
       .leftJoin(staff, eq(appointments.staffId, staff.id))
@@ -126,7 +139,7 @@ export async function PATCH(req: Request) {
       }
     }
 
-    // If appointment was cancelled, dispatch Novu notification
+    // If appointment was cancelled, dispatch cancellation + waitlist auto-fill notifications
     if (status === 'cancelled' && updated) {
       (async () => {
         try {
@@ -137,8 +150,11 @@ export async function PATCH(req: Request) {
               clientPhone: clients.phone,
               serviceName: services.name,
               staffName: staff.name,
+              workspaceName: workspaces.name,
+              workspaceSlug: workspaces.slug,
             })
             .from(appointments)
+            .leftJoin(workspaces, eq(appointments.workspaceId, workspaces.id))
             .leftJoin(clients, eq(appointments.clientId, clients.id))
             .leftJoin(services, eq(appointments.serviceId, services.id))
             .leftJoin(staff, eq(appointments.staffId, staff.id))
@@ -155,11 +171,71 @@ export async function PATCH(req: Request) {
               staffName: details.staffName || 'Specialist',
               dateStr: updated.dateStr,
               startTime: updated.startTime,
-              reason: notes || 'Cancelled by salon',
+              reason: notes || 'Cancelled',
+            });
+          }
+
+          // Waitlist auto-fill: notify up to 3 waiting guests in this workspace
+          const waitingGuests = await db
+            .select()
+            .from(waitlists)
+            .where(and(eq(waitlists.workspaceId, updated.workspaceId), eq(waitlists.status, 'waiting')))
+            .limit(3);
+
+          for (const guest of waitingGuests) {
+            if (!guest.clientEmail) continue;
+            await sendWaitlistChairReadyNotification({
+              email: guest.clientEmail,
+              clientName: guest.clientName,
+              workspaceName: details?.workspaceName || 'AirBook Studio',
+              serviceName: guest.serviceName || details?.serviceName || 'Appointment Slot',
+              staffName: guest.staffName || details?.staffName || 'Specialist',
+              claimUrl: details?.workspaceSlug
+                ? `${process.env.NEXT_PUBLIC_APP_URL || 'https://getairbook.com'}/book/${details.workspaceSlug}`
+                : undefined,
             });
           }
         } catch (e) {
-          console.warn('Failed to send cancellation notification:', e);
+          console.warn('Failed to send cancellation / waitlist auto-fill notification:', e);
+        }
+      })();
+    }
+
+    // If appointment was rescheduled, notify the client
+    if ((startTime || dateStr) && status !== 'cancelled' && updated) {
+      (async () => {
+        try {
+          const [details] = await db
+            .select({
+              clientName: clients.name,
+              clientEmail: clients.email,
+              serviceName: services.name,
+              staffName: staff.name,
+              workspaceName: workspaces.name,
+            })
+            .from(appointments)
+            .leftJoin(workspaces, eq(appointments.workspaceId, workspaces.id))
+            .leftJoin(clients, eq(appointments.clientId, clients.id))
+            .leftJoin(services, eq(appointments.serviceId, services.id))
+            .leftJoin(staff, eq(appointments.staffId, staff.id))
+            .where(eq(appointments.id, id))
+            .limit(1);
+
+          if (details?.clientEmail) {
+            await sendRescheduledNotification({
+              email: details.clientEmail,
+              clientName: details.clientName || 'Client',
+              workspaceName: details.workspaceName || 'AirBook Studio',
+              serviceName: details.serviceName || 'Service',
+              staffName: details.staffName || 'Specialist',
+              oldDateStr: updated.dateStr,
+              oldStartTime: updated.startTime,
+              newDateStr: dateStr || updated.dateStr,
+              newStartTime: startTime || updated.startTime,
+            });
+          }
+        } catch (e) {
+          console.warn('Failed to send reschedule notification:', e);
         }
       })();
     }
