@@ -10,6 +10,7 @@ import { CustomSelect } from './CustomSelect';
 import { FloatingInput, FloatingTextarea } from './FloatingInput';
 import { EmptyState } from './EmptyState';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
 import {
   Send24Filled,
   Send24Regular,
@@ -322,7 +323,7 @@ export const MarketingModule: React.FC = () => {
       {/* ─── SECTION 2: UNIFORM METRICS & BALANCE RIBBON ─── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {/* Metric 1: SMS Credits Balance */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
+        <Card className="p-4 sm:p-5 flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
             <Icon regular={Phone24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
@@ -342,10 +343,10 @@ export const MarketingModule: React.FC = () => {
               <span>{t('topUpBtn')}</span>
             </button>
           </div>
-        </div>
+        </Card>
 
         {/* Metric 2: Email Marketing Engine */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3">
+        <Card className="p-4 sm:p-5 flex flex-col justify-between space-y-3">
           <div className="flex items-center gap-2">
             <Icon regular={Mail24Regular} size="sm" tone="secondary" />
             <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
@@ -360,7 +361,7 @@ export const MarketingModule: React.FC = () => {
               {t('zeroPerMessage')}
             </span>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* ─── SECTION 3: STRUCTURED AUTOMATED RETENTION TRIGGERS ─── */}

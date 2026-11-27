@@ -11,6 +11,7 @@ import { DatePicker } from './primitives/DatePicker';
 import { EmptyState } from './EmptyState';
 import { useAirBookStore } from '@/lib/store';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
 import {
   Tag24Filled,
   Tag24Regular,
@@ -509,7 +510,7 @@ export const PackagesModule: React.FC = () => {
         <div className="space-y-6">
           {/* Live Metrics Ribbon */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                 <Icon regular={GiftCard24Regular} size="sm" tone="secondary" />
                 <span>{t('totalOutstandingBalance')}</span>
@@ -522,9 +523,9 @@ export const PackagesModule: React.FC = () => {
                   {activeGiftCardsCount} {t('activeCards')}
                 </span>
               </div>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                 <Icon regular={Tag24Regular} size="sm" tone="secondary" />
                 <span>{t('activePackages')}</span>
@@ -537,9 +538,9 @@ export const PackagesModule: React.FC = () => {
                   {t('totalBundlesCount').replace('{count}', String(packagesList.length))}
                 </span>
               </div>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                 <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                 <span>{t('recurringRevenueMRR')}</span>
@@ -552,7 +553,7 @@ export const PackagesModule: React.FC = () => {
                   {activeMembershipsCount} {t('activeMemberships')}
                 </span>
               </div>
-            </div>
+            </Card>
           </div>
 
           <div className="space-y-3.5">

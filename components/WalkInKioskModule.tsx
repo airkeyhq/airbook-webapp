@@ -13,6 +13,8 @@ import { InlineIndicator } from '@/components/primitives/Indicator';
 import { isPasskeySupported, authenticateStationPasskey } from '@/lib/passkey';
 import { CircleCloudIcon } from '@/components/Logo';
 import { Icon } from '@/components/primitives/Icon';
+import { Card } from '@/components/primitives/Card';
+import { Badge } from '@/components/primitives/Badge';
 import {
   Add24Filled,
   Phone24Filled,
@@ -439,15 +441,15 @@ export const WalkInKioskModule: React.FC = () => {
         <div className="space-y-6">
           {/* Metrics Ribbon */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                   <Icon regular={Clock24Regular} size="sm" tone="secondary" />
                   <span>{t('waiting')}</span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                <Badge variant="subtle" size="xs">
                   {t('metricQueueLength')}
-                </span>
+                </Badge>
               </div>
               <div className="flex items-baseline justify-between pt-1">
                 <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -457,17 +459,17 @@ export const WalkInKioskModule: React.FC = () => {
                   {t('metricGuestsWaiting')}
                 </span>
               </div>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                   <Icon regular={Sparkle24Regular} size="sm" tone="secondary" />
                   <span>{t('inChair')}</span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                <Badge variant="subtle" size="xs">
                   {t('metricActiveInService')}
-                </span>
+                </Badge>
               </div>
               <div className="flex items-baseline justify-between pt-1">
                 <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -477,17 +479,17 @@ export const WalkInKioskModule: React.FC = () => {
                   {t('metricStationsActive')}
                 </span>
               </div>
-            </div>
+            </Card>
 
-            <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+            <Card className="p-4 space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[var(--text-secondary)] text-xs font-semibold">
                   <Icon regular={Clock24Regular} size="sm" tone="secondary" />
                   <span>{t('estWait')}</span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-secondary)] text-[10px] font-bold">
+                <Badge variant="subtle" size="xs">
                   {t('metricRealTimeEst')}
-                </span>
+                </Badge>
               </div>
               <div className="flex items-baseline justify-between pt-1">
                 <p className="text-xl font-black text-[var(--text-primary)] font-mono">
@@ -497,7 +499,7 @@ export const WalkInKioskModule: React.FC = () => {
                   {t('metricNextOpenSlot')}
                 </span>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Segmented Control & Active Tab Content */}
